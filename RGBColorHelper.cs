@@ -1,4 +1,6 @@
-﻿namespace chroma_yeelight
+﻿using System;
+
+namespace chroma_yeelight
 {
     /// <summary>
     /// Helper for colors
