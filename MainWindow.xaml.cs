@@ -118,7 +118,7 @@ namespace chroma_yeelight
 
                 var random = new Random();
 
-                /*var timer = new Timer() { Interval = 50 };
+                var timer = new Timer() { Interval = 1000 };
                 timer.Elapsed += async (bla1, bla2) =>
                 {
                     var currColor = new ColoreColor(random.Next(256), random.Next(256), random.Next(256));
@@ -146,13 +146,12 @@ namespace chroma_yeelight
                         var sentBytes = deviceToSocket[dev].Send(sentData);
                     });
                 };
-                timer.Start();
 
-                */
+                timer.Start();
                 
                 var captureInstance = SoundHelper.GetCaptureInstance();
 
-                captureInstance.DataAvailable += (ss, ee) => this.OnNewSoundReceived(ss, ee, currDevices, deviceToSocket);
+                captureInstance.DataAvailable += (ss, ee) => this.OnNewSoundReceived(ss, ee, currDevices, deviceToSocket, chroma);
                 captureInstance.RecordingStopped += (ss, ee) => captureInstance.Dispose();
 
                 try
@@ -185,18 +184,10 @@ namespace chroma_yeelight
             //var chroma = await ColoreProvider.CreateNativeAsync();
         }
 
-        private void OnNewSoundReceived(object sender, NAudio.Wave.WaveInEventArgs e, List<Device> currDevices, Dictionary<Device, Socket> deviceToSocketsMap)
+        private void OnNewSoundReceived(object sender, NAudio.Wave.WaveInEventArgs e, List<Device> currDevices, Dictionary<Device, Socket> deviceToSocketsMap, IChroma chroma)
         {
-            /*if (currentIteration > maxBuffer)
-            {
-                currentIteration = 0;
-                return;
-            }*/
-
             float max = 0;
             float sample = 0;
-            float average = 0;
-            float averageSum = 0;
 
             var buffer = new WaveBuffer(e.Buffer);
             // interpret as 32 bit floating point audio
@@ -209,11 +200,7 @@ namespace chroma_yeelight
                 if (sample < 0) sample = -sample;
                 // is this the max value?
                 if (sample > max) max = sample;
-
-                averageSum += sample;
             }
-
-            average = averageSum / (e.BytesRecorded / 4);
 
             // ColorHelper.ComputeRGBColor(ColoreColor.Purple.R, ColoreColor.Purple.G, ColoreColor.Purple.B)
 
@@ -231,7 +218,7 @@ namespace chroma_yeelight
 
             else if (max > 0.50 && max <= 0.65)
             {
-                max = 0.8f;
+                max = 0.6f;
                 count3++;
             }
 
@@ -255,31 +242,10 @@ namespace chroma_yeelight
             string data = JsonConvert.SerializeObject(command, DeviceSerializerSettings);
             byte[] sentData = Encoding.ASCII.GetBytes(data + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
 
-            var serverParams2 = new List<object>() { max > 0 ? 100 * (1-max) : 1 };
-
-            Command command2 = new Command()
-            {
-                Id = 1,
-                Method = "set_bright",
-                Params = serverParams2
-            };
-
-            string data2 = JsonConvert.SerializeObject(command, DeviceSerializerSettings);
-            byte[] sentData2 = Encoding.ASCII.GetBytes(data + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
-
             for (int i = 0; i < currDevices.Count; i++)
             {
-                if (i % 2 == 0)
-                {
-                    deviceToSocketsMap[currDevices[i]].Send(sentData);
-                }
-                else
-                {
-                    deviceToSocketsMap[currDevices[i]].Send(sentData2);
-                }
+                deviceToSocketsMap[currDevices[i]].Send(sentData);
             }
-
-            //currentIteration++;
         }
     }
 }
