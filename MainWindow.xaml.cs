@@ -115,39 +115,6 @@ namespace chroma_yeelight
                 currDevices.ForEach(dev => deviceToSocket[dev] = listener.Accept());
 
                 var chroma = await ColoreProvider.CreateNativeAsync();
-
-                var random = new Random();
-
-                var timer = new Timer() { Interval = 1000 };
-                timer.Elapsed += async (bla1, bla2) =>
-                {
-                    var currColor = new ColoreColor(random.Next(256), random.Next(256), random.Next(256));
-
-                    await chroma.SetAllAsync(currColor);
-
-                    currDevices.ForEach(dev =>
-                    {
-                        int value = ColorHelper.ComputeRGBColor(currColor.R, currColor.G, currColor.B);
-
-                        // var serverParams = new List<object>() { value, "smooth", 500 };
-                        // var serverParams = new List<object>() { value, "sudden", null };
-                        var serverParams = new List<object>() { value, "smooth", 100 };
-
-                        Command command = new Command()
-                        {
-                            Id = 1,
-                            Method = "set_rgb",
-                            Params = serverParams
-                        };
-
-                        string data = JsonConvert.SerializeObject(command, DeviceSerializerSettings);
-                        byte[] sentData = Encoding.ASCII.GetBytes(data + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
-
-                        var sentBytes = deviceToSocket[dev].Send(sentData);
-                    });
-                };
-
-                timer.Start();
                 
                 var captureInstance = SoundHelper.GetCaptureInstance();
 
@@ -163,28 +130,9 @@ namespace chroma_yeelight
                     throw new AudioCaptureAccessDeniedException("Hello! Yes! Yes, Eliran Sabag. Make sure there are no background softwares running in your pc that are capturing background activity! (including MOBO software, Realtek HD, Asus Sonic etc.)", ex);
                 }
             }
-
-            /*while (true)
-            {
-                foreach (var device in currDevices)
-                {
-                    
-
-                    // var currColor = chroma.Keyboard[Colore.Effects.Keyboard.Key.F];
-                    var currColor = new ColoreColor(random.Next(256), random.Next(256), random.Next(256));
-
-                    //await chroma.SetAllAsync(currColor);
-
-                    await device.SetRGBColor(currColor.R, currColor.G, currColor.B).ConfigureAwait(true);
-                }
-            }*/
-
-            //var appInfo = new AppInfo("My app", "I liek 69 dicks", "John Doe", "me@example.com", Category.Application);
-            //var chroma = await ColoreProvider.CreateRestAsync(appInfo, new Uri("http://localhost:54235"));
-            //var chroma = await ColoreProvider.CreateNativeAsync();
         }
 
-        private void OnNewSoundReceived(object sender, NAudio.Wave.WaveInEventArgs e, List<Device> currDevices, Dictionary<Device, Socket> deviceToSocketsMap, IChroma chroma)
+        private async void OnNewSoundReceived(object sender, NAudio.Wave.WaveInEventArgs e, List<Device> currDevices, Dictionary<Device, Socket> deviceToSocketsMap, IChroma chroma)
         {
             float max = 0;
             float sample = 0;
@@ -202,49 +150,69 @@ namespace chroma_yeelight
                 if (sample > max) max = sample;
             }
 
+            ColoreColor color = ColoreColor.Black;
             // ColorHelper.ComputeRGBColor(ColoreColor.Purple.R, ColoreColor.Purple.G, ColoreColor.Purple.B)
 
             if (max > 0.1 && max <= 0.3)
             {
                 max = 0.01f;
                 count1++;
+                color = ColoreColor.Red;
             }
 
             else if (max > 0.3 && max <= 0.50)
             {
                 max = 0.3f;
                 count2++;
+                color = ColoreColor.Orange;
             }
 
             else if (max > 0.50 && max <= 0.65)
             {
                 max = 0.6f;
                 count3++;
+                color = ColoreColor.Yellow;
             }
 
             else if (max > 0.65)
             {
                 max = 1f;
                 count4++;
+                color = new ColoreColor(0, 255, 255);
             }
+
+
+            await chroma.SetAllAsync(color);
+            var colorValue = ColorHelper.ComputeRGBColor(color.R, color.G, color.B);
 
             var serverParams = new List<object>() { max > 0 ? 100 * max : 1 };
 
             // We create 2 commands that opposite each other.
             // When one is extremely bright, the other one is extremely dark.
-            Command command = new Command()
+            Command brightnessCommand = new Command()
             {
                 Id = 1,
                 Method = "set_bright",
                 Params = serverParams
             };
 
-            string data = JsonConvert.SerializeObject(command, DeviceSerializerSettings);
+            string data = JsonConvert.SerializeObject(brightnessCommand, DeviceSerializerSettings);
             byte[] sentData = Encoding.ASCII.GetBytes(data + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
+
+            Command colorCommand = new Command()
+            {
+                Id = 1,
+                Method = "set_rgb",
+                Params = new List<object>() { colorValue, "smooth", 100 }
+            };
+
+            string colorData = JsonConvert.SerializeObject(colorCommand, DeviceSerializerSettings);
+            byte[] colorSentData = Encoding.ASCII.GetBytes(colorData + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
 
             for (int i = 0; i < currDevices.Count; i++)
             {
                 deviceToSocketsMap[currDevices[i]].Send(sentData);
+                deviceToSocketsMap[currDevices[i]].Send(colorSentData);
             }
         }
     }
