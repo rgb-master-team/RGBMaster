@@ -15,6 +15,8 @@ Feel free to suggest any idea you have for this app, or even make one yourself a
 - Music Mode -
   - [ ] Add configuration settings (transition of the lights & effects - smooth or sudden, etc.)
   - [ ] Add options such as frequency/time between color changes
+  - [ ] Allow defining the color spectrum for each volume level
+  - [ ] Allow defining the spectrum levels themselves (volume levels that trigger changes)
 - Misc
   - [ ] Add some basic explanation
   - [ ] Add references to libraries used for this to work
