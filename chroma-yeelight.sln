@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "chroma-yeelight", "chroma-yeelight.csproj", "{95FBB4E8-AA50-447A-A00A-D77E01B9886E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{77781A75-00A9-421E-84B5-F21BCB6FF396}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yeelight", "Yeelight\Yeelight.csproj", "{D1C05942-BA9F-4E7E-88E7-DB4692CC8E3B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,22 @@ Global
 		{95FBB4E8-AA50-447A-A00A-D77E01B9886E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{95FBB4E8-AA50-447A-A00A-D77E01B9886E}.Release|x64.ActiveCfg = Release|x64
 		{95FBB4E8-AA50-447A-A00A-D77E01B9886E}.Release|x64.Build.0 = Release|x64
+		{77781A75-00A9-421E-84B5-F21BCB6FF396}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77781A75-00A9-421E-84B5-F21BCB6FF396}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77781A75-00A9-421E-84B5-F21BCB6FF396}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{77781A75-00A9-421E-84B5-F21BCB6FF396}.Debug|x64.Build.0 = Debug|Any CPU
+		{77781A75-00A9-421E-84B5-F21BCB6FF396}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77781A75-00A9-421E-84B5-F21BCB6FF396}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77781A75-00A9-421E-84B5-F21BCB6FF396}.Release|x64.ActiveCfg = Release|Any CPU
+		{77781A75-00A9-421E-84B5-F21BCB6FF396}.Release|x64.Build.0 = Release|Any CPU
+		{D1C05942-BA9F-4E7E-88E7-DB4692CC8E3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1C05942-BA9F-4E7E-88E7-DB4692CC8E3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1C05942-BA9F-4E7E-88E7-DB4692CC8E3B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D1C05942-BA9F-4E7E-88E7-DB4692CC8E3B}.Debug|x64.Build.0 = Debug|Any CPU
+		{D1C05942-BA9F-4E7E-88E7-DB4692CC8E3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1C05942-BA9F-4E7E-88E7-DB4692CC8E3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1C05942-BA9F-4E7E-88E7-DB4692CC8E3B}.Release|x64.ActiveCfg = Release|Any CPU
+		{D1C05942-BA9F-4E7E-88E7-DB4692CC8E3B}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
