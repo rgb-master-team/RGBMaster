@@ -115,6 +115,8 @@
     </ApplicationDefinition>
     <Compile Include="AudioCaptureAccessDeniedException.cs" />
     <Compile Include="DeviceCommandFailedException.cs" />
+    <Compile Include="DiscoveryFailedException.cs" />
+    <Compile Include="DuplicateProvidersException.cs" />
     <Compile Include="RGBColorHelper.cs" />
     <Compile Include="SoundHelper.cs" />
     <Compile Include="YeelightCommand.cs" />
@@ -159,6 +161,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Infrastructure\Infrastructure.csproj">
+      <Project>{77781A75-00A9-421E-84B5-F21BCB6FF396}</Project>
+      <Name>Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="RazerChroma\RazerChroma.csproj">
+      <Project>{35DDA3DC-117D-495F-92D4-73DB53D5DE06}</Project>
+      <Name>RazerChroma</Name>
+    </ProjectReference>
+    <ProjectReference Include="Yeelight\Yeelight.csproj">
+      <Project>{D1C05942-BA9F-4E7E-88E7-DB4692CC8E3B}</Project>
+      <Name>Yeelight</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />

@@ -1,4 +1,4 @@
-﻿using Colore;
+﻿using AuraSDKDotNet;
 using Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -6,15 +6,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RazerChroma
+namespace Aura
 {
-    public class RazerChromaDevice : Device
+    public class AuraDevice : Device
     {
-        private readonly IChroma internalChromaDriver;
+        private readonly AuraSDKDotNet.AuraDevice internalAuraDevice;
 
-        public RazerChromaDevice(IChroma internalChromaDriver)
+        public AuraDevice(AuraSDKDotNet.AuraDevice internalAuraDevice)
         {
-            this.internalChromaDriver = internalChromaDriver;
+            this.internalAuraDevice = internalAuraDevice;
         }
 
         public override Task<byte> GetBrightnessPercentage()
@@ -32,9 +32,11 @@ namespace RazerChroma
             throw new NotImplementedException();
         }
 
-        public async override Task SetColor(System.Drawing.Color color)
+        public override Task SetColor(System.Drawing.Color color)
         {
-            await internalChromaDriver.SetAllAsync(new Colore.Data.Color(color.R, color.G, color.B));
+            this.internalAuraDevice.SetColors(new Color[] { new Color(color.R, color.G, color.B) });
+
+            return Task.CompletedTask;
         }
     }
 }

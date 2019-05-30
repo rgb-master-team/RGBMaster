@@ -8,6 +8,7 @@ namespace Infrastructure
 {
     public abstract class Provider
     {
+        public abstract string ProviderName { get; }
         public abstract IEnumerable<OperationType> SupportedOperations { get; }
         public abstract Task<IEnumerable<Device>> Discover();
     }

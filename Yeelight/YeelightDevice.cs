@@ -28,7 +28,10 @@ namespace Yeelight
         public async override Task<Color> GetColor()
         {
             var hexColor = (int)(await InternalDevice.GetProp(YeelightAPI.Models.PROPERTIES.rgb));
-            return Color.FromArgb(1, hexColor, hexColor, hexColor);
+            int r = ((byte)(hexColor >> 16)); // = 0
+            int g = ((byte)(hexColor >> 8)); // = 0
+            int b = ((byte)(hexColor >> 0)); // = 255
+            return Color.FromArgb(r, g, b);
         }
 
         public async override Task SetBrightnessPercentage(byte brightness)

@@ -28,6 +28,10 @@ using Newtonsoft.Json.Serialization;
 using YeelightAPI.Models;
 using System.Drawing;
 using NAudio.Wave;
+using Infrastructure;
+using Yeelight;
+using RazerChroma;
+using Device = Infrastructure.Device;
 
 namespace chroma_yeelight
 {
@@ -57,7 +61,37 @@ namespace chroma_yeelight
 
         private async void SyncButton_Click(object sender, RoutedEventArgs e)
         {
-            Dictionary<Device, Socket> deviceToSocket = new Dictionary<Device, Socket>();
+            var providers = GetProviders();
+
+            Dictionary<Provider, IEnumerable<Device>> providerToDevices = new Dictionary<Provider, IEnumerable<Infrastructure.Device>>();
+            foreach (var provider in providers)
+            {
+                IEnumerable<Device> devices;
+                try
+                {
+                    devices = await provider.Discover();
+                }
+                catch (Exception ex)
+                {
+                    throw new DiscoveryFailedException(provider, ex);
+                }
+
+                if (providerToDevices.ContainsKey(provider))
+                {
+                    throw new DuplicateProvidersException(provider, null);
+                }
+
+                providerToDevices.Add(provider, devices);
+            }
+
+            // Ask the user which devices he wants.. Pass this to another event.. idk. and then -
+            foreach (var device in providerToDevices.Values.SelectMany(prov => prov))
+            {
+
+            }
+
+
+            /*Dictionary<Device, Socket> deviceToSocket = new Dictionary<Device, Socket>();
 
             var currDevices = await DeviceLocator.Discover();
 
@@ -128,8 +162,12 @@ namespace chroma_yeelight
                 catch (Exception ex)
                 {
                     throw new AudioCaptureAccessDeniedException("Hello! Yes! Yes, Eliran Sabag. Make sure there are no background softwares running in your pc that are capturing background activity! (including MOBO software, Realtek HD, Asus Sonic etc.)", ex);
-                }
+                }*/
             }
+
+        private IEnumerable<Provider> GetProviders()
+        {
+            return new List<Provider>() { new YeelightProvider(), new RazerChromaProvider() };
         }
 
         private async void OnNewSoundReceived(object sender, NAudio.Wave.WaveInEventArgs e, List<Device> currDevices, Dictionary<Device, Socket> deviceToSocketsMap, IChroma chroma)

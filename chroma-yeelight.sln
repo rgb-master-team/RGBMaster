@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yeelight", "Yeelight\Yeelig
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazerChroma", "RazerChroma\RazerChroma.csproj", "{35DDA3DC-117D-495F-92D4-73DB53D5DE06}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aura", "Aura\Aura.csproj", "{B9F38984-C531-4D32-B0D7-C03B52EA5DB2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,14 @@ Global
 		{35DDA3DC-117D-495F-92D4-73DB53D5DE06}.Release|Any CPU.Build.0 = Release|Any CPU
 		{35DDA3DC-117D-495F-92D4-73DB53D5DE06}.Release|x64.ActiveCfg = Release|Any CPU
 		{35DDA3DC-117D-495F-92D4-73DB53D5DE06}.Release|x64.Build.0 = Release|Any CPU
+		{B9F38984-C531-4D32-B0D7-C03B52EA5DB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9F38984-C531-4D32-B0D7-C03B52EA5DB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9F38984-C531-4D32-B0D7-C03B52EA5DB2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B9F38984-C531-4D32-B0D7-C03B52EA5DB2}.Debug|x64.Build.0 = Debug|Any CPU
+		{B9F38984-C531-4D32-B0D7-C03B52EA5DB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9F38984-C531-4D32-B0D7-C03B52EA5DB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9F38984-C531-4D32-B0D7-C03B52EA5DB2}.Release|x64.ActiveCfg = Release|Any CPU
+		{B9F38984-C531-4D32-B0D7-C03B52EA5DB2}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
