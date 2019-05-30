@@ -10,6 +10,5 @@ namespace Infrastructure
     {
         public abstract IEnumerable<OperationType> SupportedOperations { get; }
         public abstract Task<IEnumerable<Device>> Discover();
-        public abstract Task SendRequest(OperationType requestType, IEnumerable<Device> devices, IEnumerable<object> args);
     }
 }

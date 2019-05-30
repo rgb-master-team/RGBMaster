@@ -14,8 +14,6 @@ namespace Infrastructure
 
         public abstract Task<byte> GetBrightnessPercentage();
         public abstract Task SetBrightnessPercentage(byte brightness);
-
-        public abstract Task ExecuteRequest(OperationType operationType, IEnumerable<object> args);
         
         // TODO - Exceptions or error messages or both? Hmmmst..
     }

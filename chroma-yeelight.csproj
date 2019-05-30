@@ -56,8 +56,8 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Colore, Version=6.1.0.505, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Colore.6.1.0-unstable0505\lib\net451\Colore.dll</HintPath>
+    <Reference Include="Colore, Version=6.0.0.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Colore.6.0.0-rc0005\lib\net451\Colore.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.Annotations, Version=11.1.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>packages\JetBrains.Annotations.11.1.0\lib\net20\JetBrains.Annotations.dll</HintPath>
