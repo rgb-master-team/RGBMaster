@@ -14,7 +14,7 @@ namespace chroma_yeelight
         {
         }
 
-        public AudioCaptureAccessDeniedException(string message, Exception innerException) : base(message, innerException)
+        public AudioCaptureAccessDeniedException(Exception innerException) : base("Make sure there are no background softwares running in your pc that are capturing background activity! (including MOBO software, Realtek HD, Asus Sonic etc.)", innerException)
         {
         }
 

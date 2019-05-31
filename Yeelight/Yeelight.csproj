@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="YeelightDevice.cs" />
+    <Compile Include="YeelightDeviceNotSupportedException.cs" />
     <Compile Include="YeelightProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

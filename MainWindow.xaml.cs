@@ -84,37 +84,31 @@ namespace chroma_yeelight
                 providerToDevices.Add(provider, devices);
             }
 
-            // Ask the user which devices he wants.. Pass this to another event.. idk. and then -
-            foreach (var device in providerToDevices.Values.SelectMany(prov => prov))
-            {
+            // GetSelectedDevices from the user or something.. and then:
+            var selectedDevices = providerToDevices.Values.SelectMany(devices => devices);
 
+            foreach (var device in selectedDevices)
+            {
+                await device.Connect();
             }
 
+            var captureInstance = SoundHelper.GetCaptureInstance();
+
+            captureInstance.DataAvailable += (ss, ee) => this.OnNewSoundReceived(ss, ee, currDevices, deviceToSocket, chroma);
+            captureInstance.RecordingStopped += (ss, ee) => captureInstance.Dispose();
+
+            try
+            {
+                captureInstance.StartRecording();
+            }
+            catch (Exception ex)
+            {
+                throw new AudioCaptureAccessDeniedException(ex);
+            }
 
             /*Dictionary<Device, Socket> deviceToSocket = new Dictionary<Device, Socket>();
 
-            var currDevices = await DeviceLocator.Discover();
-
-            if (!currDevices.Any())
-            {
-                throw new NoDevicesFoundException();
-            }
-
-            var ipAddress = Dns.GetHostEntry(Dns.GetHostName()).AddressList.Where(addr => addr.AddressFamily == AddressFamily.InterNetwork).First();
-
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
-
-            currDevices.ForEach(async dev =>
-            {
-                await dev.Connect();
-
-                var supportedOps = dev.SupportedOperations;
-
-                if (!supportedOps.Contains(YeelightAPI.Models.METHODS.SetMusicMode))
-                {
-                    throw new YeelightDeviceNotSupportedException();
-                }
-            });
+            
 
             using (Socket listener = new Socket(ipAddress.AddressFamily,
                 SocketType.Stream, ProtocolType.Tcp))
@@ -163,7 +157,7 @@ namespace chroma_yeelight
                 {
                     throw new AudioCaptureAccessDeniedException("Hello! Yes! Yes, Eliran Sabag. Make sure there are no background softwares running in your pc that are capturing background activity! (including MOBO software, Realtek HD, Asus Sonic etc.)", ex);
                 }*/
-            }
+        }
 
         private IEnumerable<Provider> GetProviders()
         {

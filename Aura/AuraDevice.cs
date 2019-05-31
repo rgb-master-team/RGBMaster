@@ -17,6 +17,16 @@ namespace Aura
             this.internalAuraDevice = internalAuraDevice;
         }
 
+        public override Task Connect()
+        {
+            return Task.CompletedTask;
+        }
+
+        public override Task Disconnect()
+        {
+            return Task.CompletedTask;
+        }
+
         public override Task<byte> GetBrightnessPercentage()
         {
             throw new NotImplementedException();

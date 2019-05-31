@@ -14,6 +14,9 @@ namespace Infrastructure
 
         public abstract Task<byte> GetBrightnessPercentage();
         public abstract Task SetBrightnessPercentage(byte brightness);
+
+        public abstract Task Connect();
+        public abstract Task Disconnect();
         
         // TODO - Exceptions or error messages or both? Hmmmst..
     }
