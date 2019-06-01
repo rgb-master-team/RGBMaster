@@ -34,13 +34,14 @@ using RazerChroma;
 using Device = Infrastructure.Device;
 using Aura;
 using Logitech;
+using MahApps.Metro.Controls;
 
 namespace chroma_yeelight
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
         private int count1 = 0;
         private int count2 = 0;
@@ -210,7 +211,11 @@ namespace chroma_yeelight
                 color = Color.Violet;
             }
 
-            byte brightnessPercentage = (byte)(max * 100);
+            this.Dispatcher.Invoke(() =>
+            {
+                musicProgressBar.Value = max;
+                musicProgressBar.Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(color.R, color.G, color.B));
+            });
 
             var tasks = new List<Task>();
 
