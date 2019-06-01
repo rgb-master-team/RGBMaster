@@ -55,6 +55,25 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Colore, Version=6.0.0.5, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Colore.6.0.0-rc0005\lib\net451\Colore.dll</HintPath>
@@ -163,9 +182,17 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="Aura\Aura.csproj">
+      <Project>{B9F38984-C531-4D32-B0D7-C03B52EA5DB2}</Project>
+      <Name>Aura</Name>
+    </ProjectReference>
     <ProjectReference Include="Infrastructure\Infrastructure.csproj">
       <Project>{77781A75-00A9-421E-84B5-F21BCB6FF396}</Project>
       <Name>Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="Logitech\Logitech.csproj">
+      <Project>{2710A83D-1ED3-48EB-8E96-3B98E08AAAFE}</Project>
+      <Name>Logitech</Name>
     </ProjectReference>
     <ProjectReference Include="RazerChroma\RazerChroma.csproj">
       <Project>{35DDA3DC-117D-495F-92D4-73DB53D5DE06}</Project>

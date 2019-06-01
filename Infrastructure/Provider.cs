@@ -10,6 +10,8 @@ namespace Infrastructure
     {
         public abstract string ProviderName { get; }
         public abstract IEnumerable<OperationType> SupportedOperations { get; }
+        public abstract Task Register();
+        public abstract Task Unregister();
         public abstract Task<IEnumerable<Device>> Discover();
     }
 }

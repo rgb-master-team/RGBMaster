@@ -22,6 +22,14 @@ namespace Yeelight
             return (await DeviceLocator.Discover()).Select(device => new YeelightDevice(device));
         }
 
-        
+        public override Task Register()
+        {
+            return Task.CompletedTask;
+        }
+
+        public override Task Unregister()
+        {
+            return Task.CompletedTask;
+        }
     }
 }

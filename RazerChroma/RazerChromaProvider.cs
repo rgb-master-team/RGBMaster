@@ -10,6 +10,7 @@ namespace RazerChroma
 {
     public class RazerChromaProvider : Provider
     {
+        private IChroma internalChromaProvider;
         private readonly List<OperationType> chromaSupportedOps = new List<OperationType>() { OperationType.SetColor };
         public override IEnumerable<OperationType> SupportedOperations => chromaSupportedOps;
 
@@ -17,8 +18,18 @@ namespace RazerChroma
 
         public async override Task<IEnumerable<Device>> Discover()
         {
-            var chroma = await ColoreProvider.CreateNativeAsync();
-            return new List<Device>(1) { new RazerChromaDevice(chroma) };
+            return new List<Device>(1) { new RazerChromaDevice(internalChromaProvider) };
+        }
+
+        public async override Task Register()
+        {
+            internalChromaProvider = await ColoreProvider.CreateNativeAsync();
+        }
+
+        public override Task Unregister()
+        {
+            internalChromaProvider.Unregister();
+            return Task.CompletedTask;
         }
     }
 }

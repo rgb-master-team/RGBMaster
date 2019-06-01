@@ -32,6 +32,8 @@ using Infrastructure;
 using Yeelight;
 using RazerChroma;
 using Device = Infrastructure.Device;
+using Aura;
+using Logitech;
 
 namespace chroma_yeelight
 {
@@ -161,7 +163,7 @@ namespace chroma_yeelight
 
         private IEnumerable<Provider> GetProviders()
         {
-            return new List<Provider>() { new YeelightProvider(), new RazerChromaProvider() };
+            return new List<Provider>() { new YeelightProvider(), new RazerChromaProvider(), /*new AuraProvider()*/ new LogitechProvider() };
         }
 
         private async void OnNewSoundReceived(object sender, NAudio.Wave.WaveInEventArgs e, List<Device> currDevices)
@@ -219,7 +221,7 @@ namespace chroma_yeelight
 
             foreach (var device in currDevices)
             {
-                tasks.Add(device.SetBrightnessPercentage(brightnessPercentage));
+                //tasks.Add(device.SetBrightnessPercentage(brightnessPercentage));
                 tasks.Add(device.SetColor(color));
             }
 
