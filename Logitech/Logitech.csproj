@@ -42,10 +42,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LogitechAllPeripheralsDevice.cs" />
+    <Compile Include="LogitechHeadsetDevice.cs" />
     <Compile Include="LogitechInitFailedException.cs" />
+    <Compile Include="LogitechKeyboardDevice.cs" />
+    <Compile Include="LogitechMouseDevice.cs" />
+    <Compile Include="LogitechMousematDevice.cs" />
     <Compile Include="LogitechProvider.cs" />
     <Compile Include="LogitechGSDK.cs" />
+    <Compile Include="LogitechSpeakerDevice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -53,6 +57,11 @@
       <Project>{77781A75-00A9-421E-84B5-F21BCB6FF396}</Project>
       <Name>Infrastructure</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="LogitechLedEnginesWrapper.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

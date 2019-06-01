@@ -47,6 +47,10 @@ namespace chroma_yeelight
         private int count3 = 0;
         private int count4 = 0;
 
+        private WasapiLoopbackCapture captureInstance = null;
+        private IEnumerable<Provider> providers;
+        private IEnumerable<Device> selectedDevices;
+
         /// <summary>
         /// Serializer settings
         /// </summary>
@@ -61,11 +65,47 @@ namespace chroma_yeelight
             InitializeComponent();
         }
 
-        private async void SyncButton_Click(object sender, RoutedEventArgs e)
+        private async void StartSyncBtn_Click(object sender, RoutedEventArgs e)
         {
-            var providers = GetProviders();
+            this.providers = GetProviders();
+            RegisterProviders();
+            Dictionary<Provider, IEnumerable<Device>> providerToDevices = await DiscoverProvidersDevices();
 
-            Dictionary<Provider, IEnumerable<Device>> providerToDevices = new Dictionary<Provider, IEnumerable<Infrastructure.Device>>();
+            // GetSelectedDevices from the user or something.. and then:
+            selectedDevices = GetSelectedDevices(providerToDevices);
+            await ConnectToSelectedDevices();
+
+            this.captureInstance = SoundHelper.GetCaptureInstance();
+
+            captureInstance.DataAvailable += (ss, ee) => this.OnNewSoundReceived(ss, ee, selectedDevices);
+            captureInstance.RecordingStopped += (ss, ee) => captureInstance.Dispose();
+
+            try
+            {
+                captureInstance.StartRecording();
+            }
+            catch (Exception ex)
+            {
+                throw new AudioCaptureAccessDeniedException(ex);
+            }
+        }
+
+        private async Task ConnectToSelectedDevices()
+        {
+            foreach (var device in selectedDevices)
+            {
+                await device.Connect();
+            }
+        }
+
+        private IEnumerable<Device> GetSelectedDevices(Dictionary<Provider, IEnumerable<Device>> providerToDevices)
+        {
+            return providerToDevices.Values.SelectMany(devices => devices).ToList();
+        }
+
+        private async Task<Dictionary<Provider, IEnumerable<Device>>> DiscoverProvidersDevices()
+        {
+            Dictionary<Provider, IEnumerable<Device>> providerToDevices = new Dictionary<Provider, IEnumerable<Device>>();
             foreach (var provider in providers)
             {
                 IEnumerable<Device> devices;
@@ -86,87 +126,30 @@ namespace chroma_yeelight
                 providerToDevices.Add(provider, devices);
             }
 
-            // GetSelectedDevices from the user or something.. and then:
-            var selectedDevices = providerToDevices.Values.SelectMany(devices => devices).ToList();
+            return providerToDevices;
+        }
 
-            foreach (var device in selectedDevices)
-            {
-                await device.Connect();
-            }
-
-            var captureInstance = SoundHelper.GetCaptureInstance();
-
-            captureInstance.DataAvailable += (ss, ee) => this.OnNewSoundReceived(ss, ee, selectedDevices);
-            captureInstance.RecordingStopped += (ss, ee) => captureInstance.Dispose();
-
-            try
-            {
-                captureInstance.StartRecording();
-            }
-            catch (Exception ex)
-            {
-                throw new AudioCaptureAccessDeniedException(ex);
-            }
-
-            /*Dictionary<Device, Socket> deviceToSocket = new Dictionary<Device, Socket>();
-
-            
-
-            using (Socket listener = new Socket(ipAddress.AddressFamily,
-                SocketType.Stream, ProtocolType.Tcp))
+        private async void RegisterProviders()
+        {
+            foreach (var provider in providers)
             {
                 try
                 {
-                    listener.Bind(localEndPoint);
+                    await provider.Register();
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Failed to bind the socket to the specified ip and port.", ex);
+                    throw new ProviderRegistrationFailedException(provider, ex);
                 }
-
-                listener.Listen(int.MaxValue);
-
-                foreach (var device in currDevices)
-                {
-                    try
-                    {
-                        var setMusicResult = await device.StartMusicMode(ipAddress.ToString(), 11000);
-                        if (!setMusicResult)
-                        {
-                            throw new DeviceCommandFailedException();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Exception("An unexpected error has occured. Please check your connection and try to reset the bulbs if the issue persists.", ex);
-                    }
-                }
-
-                currDevices.ForEach(dev => deviceToSocket[dev] = listener.Accept());
-
-                var chroma = await ColoreProvider.CreateNativeAsync();
-                
-                var captureInstance = SoundHelper.GetCaptureInstance();
-
-                captureInstance.DataAvailable += (ss, ee) => this.OnNewSoundReceived(ss, ee, currDevices, deviceToSocket, chroma);
-                captureInstance.RecordingStopped += (ss, ee) => captureInstance.Dispose();
-
-                try
-                {
-                    captureInstance.StartRecording();
-                }
-                catch (Exception ex)
-                {
-                    throw new AudioCaptureAccessDeniedException("Hello! Yes! Yes, Eliran Sabag. Make sure there are no background softwares running in your pc that are capturing background activity! (including MOBO software, Realtek HD, Asus Sonic etc.)", ex);
-                }*/
+            }
         }
 
         private IEnumerable<Provider> GetProviders()
         {
-            return new List<Provider>() { new YeelightProvider(), new RazerChromaProvider(), /*new AuraProvider()*/ new LogitechProvider() };
+            return new List<Provider>() { new YeelightProvider(), new RazerChromaProvider(), /*new AuraProvider(),*/ new LogitechProvider() };
         }
 
-        private async void OnNewSoundReceived(object sender, NAudio.Wave.WaveInEventArgs e, List<Device> currDevices)
+        private async Task OnNewSoundReceived(object sender, NAudio.Wave.WaveInEventArgs e, IEnumerable<Device> currDevices)
         {
             float max = 0;
             float sample = 0;
@@ -225,7 +208,21 @@ namespace chroma_yeelight
                 tasks.Add(device.SetColor(color));
             }
 
-            Task.WaitAll(tasks.ToArray());
+            await Task.WhenAll(tasks.ToArray());
+        }
+
+        private async void StopSyncingBtn_Click(object sender, RoutedEventArgs e)
+        {
+            captureInstance.StopRecording();
+            foreach (var device in selectedDevices)
+            {
+                await device.Disconnect();
+            }
+
+            foreach (var provider in this.providers)
+            {
+                await provider.Unregister();
+            }
         }
     }
 }

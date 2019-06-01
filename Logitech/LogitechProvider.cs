@@ -17,9 +17,10 @@ namespace Logitech
 
         public override Task<IEnumerable<Device>> Discover()
         {
-            return Task.FromResult<IEnumerable<Device>>(new List<Device>() { new LogitechAllPeripheralsDevice() });
+            return Task.FromResult<IEnumerable<Device>>(new List<Device>() { new LogitechMouseDevice() });
             
 
+            /*
             // Set all devices to Black
             LogitechGSDK.LogiLedSetLighting(0, 0, 0);
 
@@ -30,7 +31,7 @@ namespace Logitech
             LogitechGSDK.LogiLedSetLightingForKeyWithKeyName(KeyboardNames.I, 0, 100, 100);
 
 
-            /*
+            
             // Set RGB mouse logo to Red
             LogitechGSDK.LogiLedSetLightingForTargetZone(DeviceType.Mouse, 1, 100, 0, 0);
 
@@ -44,9 +45,7 @@ namespace Logitech
             // Set G633/G933 headset logos to White, backsides to Purple
             LogitechGSDK.LogiLedSetLightingForTargetZone(DeviceType.Headset, 0, 100, 100, 100);
             LogitechGSDK.LogiLedSetLightingForTargetZone(DeviceType.Headset, 1, 100, 0, 100);
-            */
-
-            LogitechGSDK.LogiLedShutdown();
+           */
         }
 
         public override Task Register()
@@ -67,7 +66,6 @@ namespace Logitech
         public override Task Unregister()
         {
             LogitechGSDK.LogiLedShutdown();
-
             return Task.CompletedTask;
         }
     }

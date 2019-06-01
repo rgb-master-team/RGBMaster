@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Button x:Name="SyncButton" Content="Start Syncing" HorizontalAlignment="Left" Margin="356,169,0,0" VerticalAlignment="Top" Width="75" Click="SyncButton_Click"/>
+        <Button x:Name="StartSyncBtn" Content="Start Syncing" HorizontalAlignment="Left" Margin="356,169,0,0" VerticalAlignment="Top" Width="75" Click="StartSyncBtn_Click"/>
+        <Button x:Name="StopSyncingBtn" Content="Stop Syncing" HorizontalAlignment="Left" Margin="356,228,0,0" VerticalAlignment="Top" Width="75" Click="StopSyncingBtn_Click"/>
 
     </Grid>
 </Window>

@@ -67,6 +67,7 @@ namespace Yeelight
 
         public override Task Disconnect()
         {
+            musicModeSocket.Close();
             InternalDevice.Disconnect();
             return Task.CompletedTask;
         }

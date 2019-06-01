@@ -26,10 +26,10 @@ namespace RazerChroma
             internalChromaProvider = await ColoreProvider.CreateNativeAsync();
         }
 
-        public override Task Unregister()
+        public async override Task Unregister()
         {
             internalChromaProvider.Unregister();
-            return Task.CompletedTask;
+            await internalChromaProvider.UninitializeAsync();
         }
     }
 }

@@ -1,19 +1,15 @@
 ﻿using Infrastructure;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Logitech
 {
-    public class LogitechAllPeripheralsDevice : Device
+    public class LogitechHeadsetDevice : Device
     {
-        public LogitechAllPeripheralsDevice()
-        {
-
-        }
-
         public override Task Connect()
         {
             throw new NotImplementedException();
@@ -29,7 +25,7 @@ namespace Logitech
             throw new NotImplementedException();
         }
 
-        public override Task<System.Drawing.Color> GetColor()
+        public override Task<Color> GetColor()
         {
             throw new NotImplementedException();
         }
@@ -39,7 +35,7 @@ namespace Logitech
             throw new NotImplementedException();
         }
 
-        public override Task SetColor(System.Drawing.Color color)
+        public override Task SetColor(Color color)
         {
             throw new NotImplementedException();
         }
