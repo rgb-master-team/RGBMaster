@@ -152,13 +152,11 @@ namespace chroma_yeelight
         private async Task OnNewSoundReceived(object sender, NAudio.Wave.WaveInEventArgs e, IEnumerable<Device> currDevices)
         {
             float max = 0;
-            float sample = 0;
-
             var buffer = new WaveBuffer(e.Buffer);
             // interpret as 32 bit floating point audio
             for (int index = 0; index < e.BytesRecorded / 4; index++)
             {
-                sample = buffer.FloatBuffer[index];
+                float sample = buffer.FloatBuffer[index];
 
                 // absolute value 
                 //if (sample < 0) sample = -sample;
@@ -170,32 +168,46 @@ namespace chroma_yeelight
             Color color = Color.Black;
             // ColorHelper.ComputeRGBColor(ColoreColor.Purple.R, ColoreColor.Purple.G, ColoreColor.Purple.B)
 
-            if (max > 0.1 && max <= 0.3)
+            if (max > 0.01 && max <= 0.1)
             {
                 max = 1;
                 count1++;
                 color = Color.Red;
             }
 
-            else if (max > 0.3 && max <= 0.50)
+            if (max > 0.1 && max <= 0.2)
             {
-                max = 30;
-                count2++;
+                max = 1;
+                count1++;
                 color = Color.Orange;
             }
 
-            else if (max > 0.50 && max <= 0.65)
+            else if (max > 0.2 && max <= 0.35)
+            {
+                max = 30;
+                count2++;
+                color = Color.Yellow;
+            }
+
+            else if (max > 0.35 && max <= 0.5)
+            {
+                max = 30;
+                count2++;
+                color = Color.Cyan;
+            }
+
+            else if (max > 0.5 && max <= 0.65)
             {
                 max = 60;
                 count3++;
-                color = Color.Yellow;
+                color = Color.Blue;
             }
 
             else if (max > 0.65)
             {
                 max = 100;
                 count4++;
-                color = Color.FromArgb(0, 255, 255);
+                color = Color.Violet;
             }
 
             byte brightnessPercentage = (byte)(max * 100);
