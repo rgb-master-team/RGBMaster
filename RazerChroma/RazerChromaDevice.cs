@@ -17,6 +17,17 @@ namespace RazerChroma
             this.internalChromaDriver = internalChromaDriver;
         }
 
+        public override Task Connect()
+        {
+            return Task.CompletedTask;
+        }
+
+        public override Task Disconnect()
+        {
+            internalChromaDriver.Unregister();
+            return Task.CompletedTask;
+        }
+
         public override Task<byte> GetBrightnessPercentage()
         {
             throw new NotImplementedException();

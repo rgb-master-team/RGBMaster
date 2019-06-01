@@ -15,7 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Colore.Effects.Keyboard;
 using YeelightAPI;
-using ColoreColor = Colore.Data.Color;
+using Color = System.Drawing.Color;
 using Colore.Data;
 using System.Timers;
 using System.Net;
@@ -85,7 +85,7 @@ namespace chroma_yeelight
             }
 
             // GetSelectedDevices from the user or something.. and then:
-            var selectedDevices = providerToDevices.Values.SelectMany(devices => devices);
+            var selectedDevices = providerToDevices.Values.SelectMany(devices => devices).ToList();
 
             foreach (var device in selectedDevices)
             {
@@ -94,7 +94,7 @@ namespace chroma_yeelight
 
             var captureInstance = SoundHelper.GetCaptureInstance();
 
-            captureInstance.DataAvailable += (ss, ee) => this.OnNewSoundReceived(ss, ee, currDevices, deviceToSocket, chroma);
+            captureInstance.DataAvailable += (ss, ee) => this.OnNewSoundReceived(ss, ee, selectedDevices);
             captureInstance.RecordingStopped += (ss, ee) => captureInstance.Dispose();
 
             try
@@ -164,7 +164,7 @@ namespace chroma_yeelight
             return new List<Provider>() { new YeelightProvider(), new RazerChromaProvider() };
         }
 
-        private async void OnNewSoundReceived(object sender, NAudio.Wave.WaveInEventArgs e, List<Device> currDevices, Dictionary<Device, Socket> deviceToSocketsMap, IChroma chroma)
+        private async void OnNewSoundReceived(object sender, NAudio.Wave.WaveInEventArgs e, List<Device> currDevices)
         {
             float max = 0;
             float sample = 0;
@@ -182,70 +182,48 @@ namespace chroma_yeelight
                 if (sample > max) max = sample;
             }
 
-            ColoreColor color = ColoreColor.Black;
+            Color color = Color.Black;
             // ColorHelper.ComputeRGBColor(ColoreColor.Purple.R, ColoreColor.Purple.G, ColoreColor.Purple.B)
 
             if (max > 0.1 && max <= 0.3)
             {
-                max = 0.01f;
+                max = 1;
                 count1++;
-                color = ColoreColor.Red;
+                color = Color.Red;
             }
 
             else if (max > 0.3 && max <= 0.50)
             {
-                max = 0.3f;
+                max = 30;
                 count2++;
-                color = ColoreColor.Orange;
+                color = Color.Orange;
             }
 
             else if (max > 0.50 && max <= 0.65)
             {
-                max = 0.6f;
+                max = 60;
                 count3++;
-                color = ColoreColor.Yellow;
+                color = Color.Yellow;
             }
 
             else if (max > 0.65)
             {
-                max = 1f;
+                max = 100;
                 count4++;
-                color = new ColoreColor(0, 255, 255);
+                color = Color.FromArgb(0, 255, 255);
             }
 
+            byte brightnessPercentage = (byte)(max * 100);
 
-            await chroma.SetAllAsync(color);
-            var colorValue = ColorHelper.ComputeRGBColor(color.R, color.G, color.B);
+            var tasks = new List<Task>();
 
-            var serverParams = new List<object>() { max > 0 ? 100 * max : 1 };
-
-            // We create 2 commands that opposite each other.
-            // When one is extremely bright, the other one is extremely dark.
-            Command brightnessCommand = new Command()
+            foreach (var device in currDevices)
             {
-                Id = 1,
-                Method = "set_bright",
-                Params = serverParams
-            };
-
-            string data = JsonConvert.SerializeObject(brightnessCommand, DeviceSerializerSettings);
-            byte[] sentData = Encoding.ASCII.GetBytes(data + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
-
-            Command colorCommand = new Command()
-            {
-                Id = 1,
-                Method = "set_rgb",
-                Params = new List<object>() { colorValue, "smooth", 100 }
-            };
-
-            string colorData = JsonConvert.SerializeObject(colorCommand, DeviceSerializerSettings);
-            byte[] colorSentData = Encoding.ASCII.GetBytes(colorData + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
-
-            for (int i = 0; i < currDevices.Count; i++)
-            {
-                deviceToSocketsMap[currDevices[i]].Send(sentData);
-                deviceToSocketsMap[currDevices[i]].Send(colorSentData);
+                tasks.Add(device.SetBrightnessPercentage(brightnessPercentage));
+                tasks.Add(device.SetColor(color));
             }
+
+            Task.WaitAll(tasks.ToArray());
         }
     }
 }

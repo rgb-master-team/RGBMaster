@@ -1,4 +1,6 @@
 ﻿using Infrastructure;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,11 +9,20 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using YeelightAPI.Models;
 
 namespace Yeelight
 {
     public class YeelightDevice : Device
     {
+        /// <summary>
+        /// Serializer settings
+        /// </summary>
+        public static readonly JsonSerializerSettings DeviceSerializerSettings = new JsonSerializerSettings()
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
+        };
+
         private readonly YeelightAPI.Device InternalDevice;
         private Socket musicModeSocket;
 
@@ -71,20 +82,47 @@ namespace Yeelight
         public async override Task<Color> GetColor()
         {
             var hexColor = (int)(await InternalDevice.GetProp(YeelightAPI.Models.PROPERTIES.rgb));
-            int r = ((byte)(hexColor >> 16)); // = 0
-            int g = ((byte)(hexColor >> 8)); // = 0
-            int b = ((byte)(hexColor >> 0)); // = 255
-            return Color.FromArgb(r, g, b);
+            return RGBColorHelper.ParseColor(hexColor);
         }
 
-        public async override Task SetBrightnessPercentage(byte brightness)
+        public override Task SetBrightnessPercentage(byte brightness)
         {
-            await InternalDevice.SetBrightness(brightness);
+            var serverParams = new List<object>() { brightness };
+
+            // We create 2 commands that opposite each other.
+            // When one is extremely bright, the other one is extremely dark.
+            Command brightnessCommand = new Command()
+            {
+                Id = 1,
+                Method = "set_bright",
+                Params = serverParams
+            };
+
+            string data = JsonConvert.SerializeObject(brightnessCommand, DeviceSerializerSettings);
+            byte[] sentData = Encoding.ASCII.GetBytes(data + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
+
+            musicModeSocket.Send(sentData);
+
+            return Task.CompletedTask;
         }
 
-        public async override Task SetColor(Color color)
+        public override Task SetColor(Color color)
         {
-            await InternalDevice.SetRGBColor(color.R, color.G, color.B);
+            var colorValue = RGBColorHelper.ComputeRGBColor(color.R, color.G, color.B);
+
+            Command colorCommand = new Command()
+            {
+                Id = 1,
+                Method = "set_rgb",
+                Params = new List<object>() { colorValue, "smooth", 100 }
+            };
+
+            string colorData = JsonConvert.SerializeObject(colorCommand, DeviceSerializerSettings);
+            byte[] colorSentData = Encoding.ASCII.GetBytes(colorData + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
+
+            musicModeSocket.Send(colorSentData);
+
+            return Task.CompletedTask;
         }
     }
 }
