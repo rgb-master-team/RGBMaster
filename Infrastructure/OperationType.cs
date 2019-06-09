@@ -12,6 +12,5 @@ namespace Infrastructure
         SetColor,
         GetBrightness,
         SetBrightness,
-        SetPower
     }
 }
