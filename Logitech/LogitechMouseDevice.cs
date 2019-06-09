@@ -10,6 +10,10 @@ namespace Logitech
 {
     public class LogitechMouseDevice : Device
     {
+        private readonly HashSet<OperationType> logitechSupportedOps = new HashSet<OperationType>() { OperationType.SetColor };
+
+        public override HashSet<OperationType> SupportedOperations => logitechSupportedOps;
+
         public override Task Connect()
         {
             return Task.CompletedTask;

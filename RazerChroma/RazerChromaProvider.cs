@@ -11,8 +11,6 @@ namespace RazerChroma
     public class RazerChromaProvider : Provider
     {
         private IChroma internalChromaProvider;
-        private readonly List<OperationType> chromaSupportedOps = new List<OperationType>() { OperationType.SetColor };
-        public override IEnumerable<OperationType> SupportedOperations => chromaSupportedOps;
 
         public override string ProviderName => "Razer Chroma";
 

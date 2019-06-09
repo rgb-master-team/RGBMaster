@@ -10,6 +10,10 @@ namespace Aura
 {
     public class AuraDevice : Device
     {
+        private readonly HashSet<OperationType> auraSupportedOps = new HashSet<OperationType>() { OperationType.SetColor };
+
+        public override HashSet<OperationType> SupportedOperations => auraSupportedOps;
+
         private readonly AuraSDKDotNet.AuraDevice internalAuraDevice;
 
         public AuraDevice(AuraSDKDotNet.AuraDevice internalAuraDevice)

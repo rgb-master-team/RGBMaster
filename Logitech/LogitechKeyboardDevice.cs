@@ -10,6 +10,10 @@ namespace Logitech
 {
     public class LogitechKeyboardDevice : Device
     {
+        private readonly HashSet<OperationType> logitechSupportedOps = new HashSet<OperationType>() { OperationType.SetColor, OperationType.SetBrightness };
+
+        public override HashSet<OperationType> SupportedOperations => logitechSupportedOps;
+
         public override Task Connect()
         {
             throw new NotImplementedException();

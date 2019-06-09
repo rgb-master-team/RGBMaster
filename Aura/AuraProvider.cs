@@ -10,10 +10,7 @@ namespace Aura
 {
     public class AuraProvider : Provider
     {
-        private readonly List<OperationType> auraSupportedOps = new List<OperationType>() { OperationType.SetColor };
         private AuraSDK internalSdk;
-
-        public override IEnumerable<OperationType> SupportedOperations => auraSupportedOps;
 
         public override string ProviderName => "Aura Sync";
 

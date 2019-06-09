@@ -15,6 +15,10 @@ namespace Yeelight
 {
     public class YeelightDevice : Device
     {
+        private readonly HashSet<OperationType> yeelightSupportedOps = new HashSet<OperationType>() { OperationType.GetBrightness, OperationType.SetBrightness, OperationType.GetColor, OperationType.SetColor, OperationType.SetPower };
+
+        public override HashSet<OperationType> SupportedOperations => yeelightSupportedOps;
+
         /// <summary>
         /// Serializer settings
         /// </summary>

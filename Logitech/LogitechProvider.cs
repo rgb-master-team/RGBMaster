@@ -9,11 +9,7 @@ namespace Logitech
 {
     public class LogitechProvider : Provider
     {
-        private readonly List<OperationType> logitechSupportedOps = new List<OperationType>() { OperationType.SetColor, OperationType.SetBrightness };
-        
         public override string ProviderName => "Logitech G Products Provider";
-
-        public override IEnumerable<OperationType> SupportedOperations => logitechSupportedOps;
 
         public override Task<IEnumerable<Device>> Discover()
         {

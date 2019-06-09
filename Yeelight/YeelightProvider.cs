@@ -11,10 +11,6 @@ namespace Yeelight
 {
     public class YeelightProvider : Provider
     {
-        private readonly List<OperationType> yeelightSupportedOps = new List<OperationType>() { OperationType.GetBrightness, OperationType.SetBrightness, OperationType.GetColor, OperationType.SetColor, OperationType.SetPower };
-
-        public override IEnumerable<OperationType> SupportedOperations => yeelightSupportedOps;
-
         public override string ProviderName => "Xiaomi Yeelight";
 
         public override async Task<IEnumerable<Device>> Discover()

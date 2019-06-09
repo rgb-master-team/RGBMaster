@@ -78,7 +78,7 @@ namespace chroma_yeelight
 
             this.captureInstance = SoundHelper.GetCaptureInstance();
 
-            captureInstance.DataAvailable += (ss, ee) => this.OnNewSoundReceived(ss, ee, selectedDevices);
+            captureInstance.DataAvailable += async (ss, ee) => await this.OnNewSoundReceived(ss, ee, selectedDevices);
             captureInstance.RecordingStopped += (ss, ee) => captureInstance.Dispose();
 
             try
@@ -221,8 +221,15 @@ namespace chroma_yeelight
 
             foreach (var device in currDevices)
             {
-                //tasks.Add(device.SetBrightnessPercentage(brightnessPercentage));
-                tasks.Add(device.SetColor(color));
+                if (device.SupportedOperations.Contains(OperationType.SetBrightness))
+                {
+                    tasks.Add(device.SetBrightnessPercentage((byte)(max * 100)));
+                }
+
+                if (device.SupportedOperations.Contains(OperationType.SetColor))
+                {
+                    tasks.Add(device.SetColor(color));
+                }
             }
 
             await Task.WhenAll(tasks.ToArray());
