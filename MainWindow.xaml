@@ -11,5 +11,7 @@
         <Controls:MetroProgressBar x:Name="musicProgressBar" HorizontalAlignment="Left" Margin="356,108,0,0" VerticalAlignment="Top" Width="142" Height="33" />
         <Button Style="{DynamicResource AccentedSquareButtonStyle}" x:Name="StartSyncBtn" Content="Start Syncing" HorizontalAlignment="Left" Margin="356,169,0,0" VerticalAlignment="Top" Width="142" Click="StartSyncBtn_Click"/>
         <Button Style="{DynamicResource AccentedSquareButtonStyle}" x:Name="StopSyncingBtn" Content="Stop Syncing" HorizontalAlignment="Left" Margin="356,228,0,0" VerticalAlignment="Top" Width="142" Click="StopSyncingBtn_Click"/>
+        <CheckBox x:Name="syncColorChkBox" Content="Sync color between devices" HorizontalAlignment="Left" Margin="85,169,0,0" VerticalAlignment="Top" IsChecked="True"/>
+        <CheckBox x:Name="syncBrightnessChkBox" Content="Sync brightness between devices" HorizontalAlignment="Left" Margin="85,199,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Controls:MetroWindow>

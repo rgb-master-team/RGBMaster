@@ -211,8 +211,14 @@ namespace chroma_yeelight
                 color = Color.Violet;
             }
 
+            bool shouldSyncBrightness = false;
+            bool shouldSyncColor = false;
+
             this.Dispatcher.Invoke(() =>
             {
+                shouldSyncBrightness = syncBrightnessChkBox.IsChecked.Value;
+                shouldSyncColor = syncColorChkBox.IsChecked.Value;
+
                 musicProgressBar.Value = max;
                 musicProgressBar.Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(color.R, color.G, color.B));
             });
@@ -221,12 +227,12 @@ namespace chroma_yeelight
 
             foreach (var device in currDevices)
             {
-                if (device.SupportedOperations.Contains(OperationType.SetBrightness))
+                if (shouldSyncBrightness && device.SupportedOperations.Contains(OperationType.SetBrightness))
                 {
                     tasks.Add(device.SetBrightnessPercentage((byte)(max * 100)));
                 }
 
-                if (device.SupportedOperations.Contains(OperationType.SetColor))
+                if (shouldSyncColor && device.SupportedOperations.Contains(OperationType.SetColor))
                 {
                     tasks.Add(device.SetColor(color));
                 }
