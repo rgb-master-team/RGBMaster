@@ -31,7 +31,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -174,6 +174,10 @@
     <ProjectReference Include="Logitech\Logitech.csproj">
       <Project>{2710A83D-1ED3-48EB-8E96-3B98E08AAAFE}</Project>
       <Name>Logitech</Name>
+    </ProjectReference>
+    <ProjectReference Include="Msi\Msi.csproj">
+      <Project>{75f18a25-3cb6-4d67-8bcb-29aae1517a0d}</Project>
+      <Name>Msi</Name>
     </ProjectReference>
     <ProjectReference Include="RazerChroma\RazerChroma.csproj">
       <Project>{35DDA3DC-117D-495F-92D4-73DB53D5DE06}</Project>
