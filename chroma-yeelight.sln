@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitech", "Logitech\Logite
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Msi", "Msi\Msi.csproj", "{75F18A25-3CB6-4D67-8BCB-29AAE1517A0D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Corsair", "Corsair\Corsair.csproj", "{9D06E65C-DD14-436F-A735-BF71ABF79BF1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,18 @@ Global
 		{75F18A25-3CB6-4D67-8BCB-29AAE1517A0D}.Release|x64.Build.0 = Release|Any CPU
 		{75F18A25-3CB6-4D67-8BCB-29AAE1517A0D}.Release|x86.ActiveCfg = Release|Any CPU
 		{75F18A25-3CB6-4D67-8BCB-29AAE1517A0D}.Release|x86.Build.0 = Release|Any CPU
+		{9D06E65C-DD14-436F-A735-BF71ABF79BF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D06E65C-DD14-436F-A735-BF71ABF79BF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D06E65C-DD14-436F-A735-BF71ABF79BF1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9D06E65C-DD14-436F-A735-BF71ABF79BF1}.Debug|x64.Build.0 = Debug|Any CPU
+		{9D06E65C-DD14-436F-A735-BF71ABF79BF1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9D06E65C-DD14-436F-A735-BF71ABF79BF1}.Debug|x86.Build.0 = Debug|Any CPU
+		{9D06E65C-DD14-436F-A735-BF71ABF79BF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D06E65C-DD14-436F-A735-BF71ABF79BF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D06E65C-DD14-436F-A735-BF71ABF79BF1}.Release|x64.ActiveCfg = Release|Any CPU
+		{9D06E65C-DD14-436F-A735-BF71ABF79BF1}.Release|x64.Build.0 = Release|Any CPU
+		{9D06E65C-DD14-436F-A735-BF71ABF79BF1}.Release|x86.ActiveCfg = Release|Any CPU
+		{9D06E65C-DD14-436F-A735-BF71ABF79BF1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

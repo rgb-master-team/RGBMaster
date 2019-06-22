@@ -1,4 +1,4 @@
-﻿using Colore;
+using Colore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +35,7 @@ using Device = Infrastructure.Device;
 using Aura;
 using Logitech;
 using MahApps.Metro.Controls;
+using Corsair.Provider;
 
 namespace chroma_yeelight
 {
@@ -147,8 +148,8 @@ namespace chroma_yeelight
 
         private IEnumerable<Provider> GetProviders()
         {
-            return new List<Provider>() { new YeelightProvider(), new RazerChromaProvider(), /*new AuraProvider(),*/ new LogitechProvider() };
-        }
+            return new List<Provider>() { new CorsairProvider()/*new YeelightProvider(), new RazerChromaProvider(), /*new AuraProvider(), new LogitechProvider(), new CorsairProvider()*/  };
+		}
 
         private async Task OnNewSoundReceived(object sender, NAudio.Wave.WaveInEventArgs e, IEnumerable<Device> currDevices)
         {

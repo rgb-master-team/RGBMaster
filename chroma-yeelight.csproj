@@ -167,6 +167,10 @@
       <Project>{B9F38984-C531-4D32-B0D7-C03B52EA5DB2}</Project>
       <Name>Aura</Name>
     </ProjectReference>
+    <ProjectReference Include="Corsair\Corsair.csproj">
+      <Project>{9d06e65c-dd14-436f-a735-bf71abf79bf1}</Project>
+      <Name>Corsair</Name>
+    </ProjectReference>
     <ProjectReference Include="Infrastructure\Infrastructure.csproj">
       <Project>{77781A75-00A9-421E-84B5-F21BCB6FF396}</Project>
       <Name>Infrastructure</Name>
