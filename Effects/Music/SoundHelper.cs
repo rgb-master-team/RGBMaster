@@ -1,7 +1,7 @@
 ﻿using System;
 using NAudio.Wave;
 
-namespace chroma_yeelight.Effects.Sound
+namespace chroma_yeelight.Effects.Music
 {
     public static class SoundHelper
     {
