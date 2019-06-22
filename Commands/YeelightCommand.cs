@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace chroma_yeelight
+namespace chroma_yeelight.Commands
 {
     [Serializable]
     internal class YeelightCommand

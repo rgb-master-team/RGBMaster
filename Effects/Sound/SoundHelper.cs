@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NAudio.Wave;
 
-namespace chroma_yeelight
+namespace chroma_yeelight.Effects.Sound
 {
     public static class SoundHelper
     {

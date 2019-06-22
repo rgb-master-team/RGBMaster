@@ -113,15 +113,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AudioCaptureAccessDeniedException.cs" />
-    <Compile Include="DeviceCommandFailedException.cs" />
-    <Compile Include="DiscoveryFailedException.cs" />
-    <Compile Include="DuplicateProvidersException.cs" />
-    <Compile Include="ProviderRegistrationFailedException.cs" />
-    <Compile Include="RGBColorHelper.cs" />
-    <Compile Include="SoundHelper.cs" />
-    <Compile Include="YeelightCommand.cs" />
-    <Compile Include="YeelightDeviceNotSupportedException.cs" />
+    <Compile Include="Effects\Common\EffectDirection.cs" />
+    <Compile Include="Effects\Common\EffectSpeed.cs" />
+    <Compile Include="Effects\Rainbow\RainbowEffect.cs" />
+    <Compile Include="Exceptions\AudioCaptureAccessDeniedException.cs" />
+    <Compile Include="Exceptions\DeviceCommandFailedException.cs" />
+    <Compile Include="Exceptions\DiscoveryFailedException.cs" />
+    <Compile Include="Exceptions\DuplicateProvidersException.cs" />
+    <Compile Include="Exceptions\ProviderRegistrationFailedException.cs" />
+    <Compile Include="Helpers\RGBColorHelper.cs" />
+    <Compile Include="Effects\Sound\SoundHelper.cs" />
+    <Compile Include="Commands\YeelightCommand.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -136,7 +138,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NoDevicesFoundException.cs" />
+    <Compile Include="Exceptions\NoDevicesFoundException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -218,5 +220,6 @@
       <Version>1.5.0</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

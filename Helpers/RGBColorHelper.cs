@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace chroma_yeelight
+﻿namespace chroma_yeelight.Helpers
 {
     /// <summary>
     /// Helper for colors

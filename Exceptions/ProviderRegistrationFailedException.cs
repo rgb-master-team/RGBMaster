@@ -1,8 +1,7 @@
-﻿using Infrastructure;
-using System;
-using System.Runtime.Serialization;
+﻿using System;
+using Infrastructure;
 
-namespace chroma_yeelight
+namespace chroma_yeelight.Exceptions
 {
     [Serializable]
     internal class ProviderRegistrationFailedException : Exception

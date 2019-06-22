@@ -33,6 +33,8 @@ using Yeelight;
 using RazerChroma;
 using Device = Infrastructure.Device;
 using Aura;
+using chroma_yeelight.Effects.Sound;
+using chroma_yeelight.Exceptions;
 using Logitech;
 using MahApps.Metro.Controls;
 using Corsair.Provider;

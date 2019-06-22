@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace chroma_yeelight
+namespace chroma_yeelight.Exceptions
 {
     [Serializable]
     internal class AudioCaptureAccessDeniedException : Exception
