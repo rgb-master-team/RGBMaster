@@ -5,9 +5,11 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Corsair.Channel;
+using Corsair.Effects;
 using Corsair.Layout;
 using Corsair.Led;
 using Infrastructure;
+using Infrastructure.Effects;
 
 namespace Corsair.Device
 {
@@ -63,7 +65,10 @@ namespace Corsair.Device
 
 		#region Device
 
+		public override int LedCount => LedPositions.LedPosition.Length;
+
 		public override HashSet<OperationType> SupportedOperations { get; }
+		public override IEnumerable<Effect> Effects { get; }
 
 		#endregion
 
@@ -80,6 +85,7 @@ namespace Corsair.Device
 			Channels = new CorsairChannels(Native.channels);
 
 			SupportedOperations = new HashSet<OperationType>() { OperationType.SetColor };
+			Effects = new List<Effect>() {new CorsairRainbowEffect(this)};
 	}
 
 		/// <summary>
@@ -119,20 +125,37 @@ namespace Corsair.Device
 			return Task.CompletedTask;
 		}
 
-		public override Task SetColor(Color color)
+		public override int GetLedCountByDirection(EffectDirection direction)
 		{
-			var ledsColor = LedPositions.LedPosition.Select(x => new CorsairLedColor
+			var b = direction != EffectDirection.Horizontal ? (Func<CorsairLedPosition, double>)(x => x.Top) : x => x.Left;
+			return GetLedPositionsOfDirection(direction).Max(x => x.Count());
+		}
+
+		private IEnumerable<IGrouping<double, CorsairLedPosition>> GetLedPositionsOfDirection(EffectDirection direction) 
+			=> LedPositions.LedPosition.GroupBy(GetDimensionSizeGetter(direction));
+
+		public Func<CorsairLedPosition, double> GetDimensionSizeGetter(EffectDirection direction) =>
+			direction != EffectDirection.Horizontal ? (Func<CorsairLedPosition, double>) (x => x.Top) : x => x.Left;
+
+		public override Task SetColors(Color[] colors)
+		{
+			var ledColor = LedPositions.LedPosition.Select((x, index) => new CorsairLedColor
 			{
 				LedId = x.LedId,
-				Blue = color.B,
-				Green = color.G,
-				Red = color.R
+				Blue = colors[index].B,
+				Green = colors[index].G,
+				Red = colors[index].R
 			}).ToArray();
 
-			CUESDK.CUESDK.SetLedsColorsBufferByDeviceIndex(Id, LedPositions.LedPosition.Length, ledsColor);
+			CUESDK.CUESDK.SetLedsColorsBufferByDeviceIndex(Id, LedPositions.LedPosition.Length, ledColor);
 			CUESDK.CUESDK.SetLedsColorsFlushBuffer();
 
 			return Task.CompletedTask;
+		}
+
+		public override Task SetColor(Color color)
+		{
+			return SetColors(Enumerable.Repeat(color, LedPositions.LedPosition.Length).ToArray());
 		}
 
 		#endregion

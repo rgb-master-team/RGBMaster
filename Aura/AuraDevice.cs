@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Infrastructure.Effects;
 
 namespace Aura
 {
@@ -12,9 +13,13 @@ namespace Aura
     {
         private readonly HashSet<OperationType> auraSupportedOps = new HashSet<OperationType>() { OperationType.SetColor };
 
-        public override HashSet<OperationType> SupportedOperations => auraSupportedOps;
+        public override int LedCount => internalAuraDevice.LedCount;
 
-        private readonly AuraSDKDotNet.AuraDevice internalAuraDevice;
+
+		public override HashSet<OperationType> SupportedOperations => auraSupportedOps;
+		public override IEnumerable<Effect> Effects { get; }
+
+		private readonly AuraSDKDotNet.AuraDevice internalAuraDevice;
 
         public AuraDevice(AuraSDKDotNet.AuraDevice internalAuraDevice)
         {
@@ -29,6 +34,16 @@ namespace Aura
         public override Task Disconnect()
         {
             return Task.CompletedTask;
+        }
+
+        public override int GetLedCountByDirection(EffectDirection direction)
+        {
+	        throw new NotImplementedException();
+        }
+
+        public override Task SetColors(System.Drawing.Color[] colors)
+        {
+	        throw new NotImplementedException();
         }
 
         public override Task<byte> GetBrightnessPercentage()

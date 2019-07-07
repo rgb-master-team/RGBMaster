@@ -1,15 +1,14 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
-using chroma_yeelight.Effects.Common;
 using chroma_yeelight.Exceptions;
 using Infrastructure;
 using NAudio.Wave;
 
 namespace chroma_yeelight.Effects.Music
 {
-	public class MusicEffect : Effect
+	public class MusicEffectController : EffectController
 	{
 		private readonly MainWindow _mainWindow;
 
@@ -21,7 +20,7 @@ namespace chroma_yeelight.Effects.Music
 
 		public override string Name => "Music";
 
-		public MusicEffect(MainWindow window, IEnumerable<Device> devices) : base(devices)
+		public MusicEffectController(MainWindow window, IEnumerable<Device> devices) : base(devices)
 		{
 			_mainWindow = window;
 		}
@@ -140,3 +139,4 @@ namespace chroma_yeelight.Effects.Music
 		}
 	}
 }
+*/

@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Infrastructure.Effects;
 using YeelightAPI.Models;
 
 namespace Yeelight
@@ -17,9 +18,12 @@ namespace Yeelight
     {
         private readonly HashSet<OperationType> yeelightSupportedOps = new HashSet<OperationType>() { OperationType.GetBrightness, OperationType.SetBrightness, OperationType.GetColor, OperationType.SetColor };
 
-        public override HashSet<OperationType> SupportedOperations => yeelightSupportedOps;
+		public override int LedCount => throw new NotImplementedException();
 
-        /// <summary>
+		public override HashSet<OperationType> SupportedOperations => yeelightSupportedOps;
+		public override IEnumerable<Effect> Effects { get; }
+
+		/// <summary>
         /// Serializer settings
         /// </summary>
         public static readonly JsonSerializerSettings DeviceSerializerSettings = new JsonSerializerSettings()
@@ -74,6 +78,16 @@ namespace Yeelight
             musicModeSocket.Close();
             InternalDevice.Disconnect();
             return Task.CompletedTask;
+        }
+
+        public override int GetLedCountByDirection(EffectDirection direction)
+        {
+	        throw new NotImplementedException();
+        }
+
+        public override Task SetColors(Color[] colors)
+        {
+	        throw new NotImplementedException();
         }
 
         public async override Task<byte> GetBrightnessPercentage()

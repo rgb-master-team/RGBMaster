@@ -1,44 +1,18 @@
-using Colore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Colore.Effects.Keyboard;
-using YeelightAPI;
-using Color = System.Drawing.Color;
-using Colore.Data;
-using System.Timers;
-using System.Net;
-using System.Net.Sockets;
-using System.Dynamic;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using YeelightAPI.Models;
-using System.Drawing;
-using NAudio.Wave;
 using Infrastructure;
-using Yeelight;
-using RazerChroma;
 using Device = Infrastructure.Device;
-using Aura;
-using chroma_yeelight.Effects.Common;
-using chroma_yeelight.Effects.Music;
+using chroma_yeelight.Effects;
+using chroma_yeelight.Effects.Rainbow;
 using chroma_yeelight.Exceptions;
-using Logitech;
 using MahApps.Metro.Controls;
 using Corsair.Provider;
+using Infrastructure.Effects;
 
 namespace chroma_yeelight
 {
@@ -47,7 +21,7 @@ namespace chroma_yeelight
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
-        private Effect _currentEffect;
+        private EffectController currentEffectController;
         private IEnumerable<Provider> providers;
         private IEnumerable<Device> selectedDevices;
 
@@ -75,8 +49,11 @@ namespace chroma_yeelight
             selectedDevices = GetSelectedDevices(providerToDevices);
             await ConnectToSelectedDevices();
 
-            _currentEffect = new MusicEffect(this, selectedDevices);
-			_currentEffect.Start();
+            currentEffectController = new RainbowEffectController(selectedDevices)
+            {
+				Direction = EffectDirection.Vertical
+            };
+			currentEffectController.Start();
         }
 
         private async Task ConnectToSelectedDevices()
@@ -140,7 +117,7 @@ namespace chroma_yeelight
 
         private async void StopSyncingBtn_Click(object sender, RoutedEventArgs e)
         {
-	        _currentEffect.Stop();
+	        currentEffectController.Stop();
             foreach (var device in selectedDevices)
             {
                 await device.Disconnect();

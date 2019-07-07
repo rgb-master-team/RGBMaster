@@ -113,17 +113,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Effects\Common\EffectDirection.cs" />
-    <Compile Include="Effects\Common\EffectSpeed.cs" />
-    <Compile Include="Effects\Common\IEffect.cs" />
-    <Compile Include="Effects\Rainbow\RainbowEffect.cs" />
-    <Compile Include="Effects\Music\MusicEffect.cs" />
+    <Compile Include="Effects\EffectController.cs" />
+    <Compile Include="Effects\Rainbow\RainbowEffectController.cs" />
+    <Compile Include="Effects\Music\MusicEffectController.cs" />
     <Compile Include="Exceptions\AudioCaptureAccessDeniedException.cs" />
     <Compile Include="Exceptions\DeviceCommandFailedException.cs" />
     <Compile Include="Exceptions\DiscoveryFailedException.cs" />
     <Compile Include="Exceptions\DuplicateProvidersException.cs" />
     <Compile Include="Exceptions\ProviderRegistrationFailedException.cs" />
-    <Compile Include="Helpers\RGBColorHelper.cs" />
     <Compile Include="Effects\Music\SoundHelper.cs" />
     <Compile Include="Commands\YeelightCommand.cs" />
     <Page Include="MainWindow.xaml">

@@ -61,6 +61,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Device.cs" />
+    <Compile Include="Effects\DirectionalEffect.cs" />
+    <Compile Include="Effects\Effect.cs" />
+    <Compile Include="Effects\EffectDirection.cs" />
+    <Compile Include="Effects\EffectSpeed.cs" />
+    <Compile Include="Effects\RainbowEffect.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Provider.cs" />
     <Compile Include="OperationType.cs" />

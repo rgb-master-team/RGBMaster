@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Infrastructure.Effects;
 
 namespace Logitech
 {
@@ -12,9 +13,12 @@ namespace Logitech
     {
         private readonly HashSet<OperationType> logitechSupportedOps = new HashSet<OperationType>() { OperationType.SetColor, OperationType.SetBrightness };
 
-        public override HashSet<OperationType> SupportedOperations => logitechSupportedOps;
+        public override int LedCount => throw new NotImplementedException();
 
-        public override Task Connect()
+		public override HashSet<OperationType> SupportedOperations => logitechSupportedOps;
+		public override IEnumerable<Effect> Effects { get; }
+
+		public override Task Connect()
         {
             throw new NotImplementedException();
         }
@@ -22,6 +26,16 @@ namespace Logitech
         public override Task Disconnect()
         {
             throw new NotImplementedException();
+        }
+
+        public override int GetLedCountByDirection(EffectDirection direction)
+        {
+	        throw new NotImplementedException();
+        }
+
+        public override Task SetColors(Color[] colors)
+        {
+	        throw new NotImplementedException();
         }
 
         public override Task<byte> GetBrightnessPercentage()

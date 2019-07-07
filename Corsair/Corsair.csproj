@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -57,6 +57,7 @@
     <Compile Include="Device\CorsairDevicePropertyId.cs" />
     <Compile Include="Device\CorsairDevicePropertyType.cs" />
     <Compile Include="Device\CorsairDeviceType.cs" />
+    <Compile Include="Effects\CorsairRainbowEffect.cs" />
     <Compile Include="Enums\CorsairAccessMode.cs" />
     <Compile Include="Enums\CorsairError.cs" />
     <Compile Include="Enums\CorsairKeyId.cs" />

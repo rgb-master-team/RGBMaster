@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Threading.Tasks;
 using Infrastructure;
+using Infrastructure.Effects;
 using Msi.Devices.Leds;
 using Msi.SDKs;
 
@@ -14,7 +15,9 @@ namespace Msi.Devices
 
 		#region Device Properties
 
+		public override int LedCount => Leds.Length;
 		public override HashSet<OperationType> SupportedOperations { get; }
+		public override IEnumerable<Effect> Effects { get; }
 
 		#endregion
 
@@ -73,7 +76,17 @@ namespace Msi.Devices
 		public override Task Disconnect()
 		{
 			return Task.CompletedTask;
-		} 
+		}
+
+		public override int GetLedCountByDirection(EffectDirection direction)
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public override Task SetColors(Color[] colors)
+		{
+			throw new System.NotImplementedException();
+		}
 
 		#endregion
 	}

@@ -2,18 +2,22 @@
 using Infrastructure;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Infrastructure.Effects;
 
 namespace RazerChroma
 {
     public class RazerChromaDevice : Device
     {
         private readonly HashSet<OperationType> chromaSupportedOps = new HashSet<OperationType>() { OperationType.SetColor };
-        public override HashSet<OperationType> SupportedOperations => chromaSupportedOps;
+		public override int LedCount => throw new NotImplementedException();
+		public override HashSet<OperationType> SupportedOperations => chromaSupportedOps;
+		public override IEnumerable<Effect> Effects { get; }
 
-        private readonly IChroma internalChromaDriver;
+		private readonly IChroma internalChromaDriver;
 
         public RazerChromaDevice(IChroma internalChromaDriver)
         {
@@ -29,6 +33,16 @@ namespace RazerChroma
         {
             internalChromaDriver.Unregister();
             return Task.CompletedTask;
+        }
+
+        public override int GetLedCountByDirection(EffectDirection direction)
+        {
+	        throw new NotImplementedException();
+        }
+
+        public override Task SetColors(Color[] colors)
+        {
+	        throw new NotImplementedException();
         }
 
         public override Task<byte> GetBrightnessPercentage()
