@@ -17,7 +17,6 @@ namespace Logitech
 
 
 		public override HashSet<OperationType> SupportedOperations => logitechSupportedOps;
-		public override IEnumerable<Effect> Effects { get; }
 
 		public override Task Connect()
         {

@@ -15,7 +15,6 @@ namespace RazerChroma
         private readonly HashSet<OperationType> chromaSupportedOps = new HashSet<OperationType>() { OperationType.SetColor };
 		public override int LedCount => throw new NotImplementedException();
 		public override HashSet<OperationType> SupportedOperations => chromaSupportedOps;
-		public override IEnumerable<Effect> Effects { get; }
 
 		private readonly IChroma internalChromaDriver;
 

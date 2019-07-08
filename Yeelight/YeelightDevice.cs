@@ -21,7 +21,6 @@ namespace Yeelight
 		public override int LedCount => throw new NotImplementedException();
 
 		public override HashSet<OperationType> SupportedOperations => yeelightSupportedOps;
-		public override IEnumerable<Effect> Effects { get; }
 
 		/// <summary>
         /// Serializer settings

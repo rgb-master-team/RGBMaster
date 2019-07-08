@@ -2,7 +2,9 @@
 {
 	public enum EffectDirection
 	{
-		Horizontal,
-		Vertical
+		Up = -1,
+		Down = 1,
+		Left = -2,
+		Right = 2
 	}
 }

@@ -51,7 +51,8 @@ namespace chroma_yeelight
 
             currentEffectController = new RainbowEffectController(selectedDevices)
             {
-				Direction = EffectDirection.Vertical
+				Direction = EffectDirection.Right,
+				Speed = EffectSpeed.Slow
             };
 			currentEffectController.Start();
         }

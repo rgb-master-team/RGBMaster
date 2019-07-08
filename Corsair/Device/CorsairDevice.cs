@@ -68,7 +68,6 @@ namespace Corsair.Device
 		public override int LedCount => LedPositions.LedPosition.Length;
 
 		public override HashSet<OperationType> SupportedOperations { get; }
-		public override IEnumerable<Effect> Effects { get; }
 
 		#endregion
 
@@ -85,7 +84,7 @@ namespace Corsair.Device
 			Channels = new CorsairChannels(Native.channels);
 
 			SupportedOperations = new HashSet<OperationType>() { OperationType.SetColor };
-			Effects = new List<Effect>() {new CorsairRainbowEffect(this)};
+			Effects.Add(new CorsairRainbowEffect(this));
 	}
 
 		/// <summary>
@@ -127,7 +126,6 @@ namespace Corsair.Device
 
 		public override int GetLedCountByDirection(EffectDirection direction)
 		{
-			var b = direction != EffectDirection.Horizontal ? (Func<CorsairLedPosition, double>)(x => x.Top) : x => x.Left;
 			return GetLedPositionsOfDirection(direction).Max(x => x.Count());
 		}
 
@@ -135,7 +133,7 @@ namespace Corsair.Device
 			=> LedPositions.LedPosition.GroupBy(GetDimensionSizeGetter(direction));
 
 		public Func<CorsairLedPosition, double> GetDimensionSizeGetter(EffectDirection direction) =>
-			direction != EffectDirection.Horizontal ? (Func<CorsairLedPosition, double>) (x => x.Top) : x => x.Left;
+			direction == EffectDirection.Up || direction == EffectDirection.Down ? x => x.Left : (Func<CorsairLedPosition, double>) (x => x.Top);
 
 		public override Task SetColors(Color[] colors)
 		{

@@ -16,7 +16,6 @@ namespace Logitech
 		public override int LedCount => throw new NotImplementedException();
 
 		public override HashSet<OperationType> SupportedOperations => logitechSupportedOps;
-		public override IEnumerable<Effect> Effects { get; }
 
 		public override Task Connect()
         {

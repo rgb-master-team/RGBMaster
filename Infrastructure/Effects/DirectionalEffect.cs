@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace Infrastructure.Effects
 {
@@ -7,7 +6,7 @@ namespace Infrastructure.Effects
 	{
 		public EffectDirection Direction { get; private set; }
 
-		public EffectDirection OppositeDirection => Direction == EffectDirection.Horizontal ? EffectDirection.Vertical : EffectDirection.Horizontal;
+		public EffectDirection OppositeDimension => Direction == EffectDirection.Up || Direction == EffectDirection.Down ? EffectDirection.Left : EffectDirection.Up;
 
 		protected DirectionalEffect(Device device) : base(device)
 		{
@@ -18,6 +17,6 @@ namespace Infrastructure.Effects
 			Direction = direction;
 		}
 
-		public abstract void SetColors(Color[] color);
+		public abstract void SetColors(Color[] colors);
 	}
 }

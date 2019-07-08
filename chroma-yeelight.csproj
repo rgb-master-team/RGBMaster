@@ -113,6 +113,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Effects\DirectionalEffectController.cs" />
     <Compile Include="Effects\EffectController.cs" />
     <Compile Include="Effects\Rainbow\RainbowEffectController.cs" />
     <Compile Include="Effects\Music\MusicEffectController.cs" />

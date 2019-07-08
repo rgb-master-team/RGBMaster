@@ -2,22 +2,18 @@
 using System.Linq;
 using System.Drawing;
 using System.Windows.Forms;
-using Corsair.Device;
 using Infrastructure;
 using Infrastructure.Effects;
 
 namespace chroma_yeelight.Effects.Rainbow
 {
-	public class RainbowEffectController : EffectController<RainbowEffect>
+	public class RainbowEffectController : DirectionalEffectController<RainbowEffect>
 	{
+		public override string Name => "Rainbow";
+
 		private readonly Timer rainbowTimer;
 
 		private Color currentColor;
-
-		public override string Name => "Rainbow";
-
-		public EffectDirection Direction { get; set; }
-		public EffectSpeed Speed { get; set; }
 
 		public RainbowEffectController(IEnumerable<Device> devices) : base(devices)
 		{

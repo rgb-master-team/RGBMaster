@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using Infrastructure.Effects;
 
@@ -9,7 +11,7 @@ namespace Infrastructure
     {
 		public abstract int LedCount { get; }
         public abstract HashSet<OperationType> SupportedOperations { get; }
-        public abstract IEnumerable<Effect> Effects { get; }
+        public List<Effect> Effects { get; }
         public abstract Task<Color> GetColor();
         public abstract Task SetColor(Color color);
         public abstract Task<byte> GetBrightnessPercentage();
@@ -20,5 +22,10 @@ namespace Infrastructure
 
 		// TODO - Exceptions or error messages or both? Hmmmst..
 		public abstract Task SetColors(Color[] colors);
+
+		protected Device()
+		{
+			Effects = GetType().Assembly.GetTypes().Where(x => x.IsSubclassOf(typeof(Effect))).Select(x => (Effect)Activator.CreateInstance(x, this)).ToList();
+		}
     }
 }
