@@ -148,7 +148,7 @@ namespace chroma_yeelight
 
         private IEnumerable<Provider> GetProviders()
         {
-            return new List<Provider>() { new CorsairProvider()/*new YeelightProvider(), new RazerChromaProvider(), /*new AuraProvider(), new LogitechProvider(), new CorsairProvider()*/  };
+            return new List<Provider>() { /*new CorsairProvider(), */new YeelightProvider(), new RazerChromaProvider(), /*new AuraProvider(), new LogitechProvider(), new CorsairProvider()*/  };
 		}
 
         private async Task OnNewSoundReceived(object sender, NAudio.Wave.WaveInEventArgs e, IEnumerable<Device> currDevices)

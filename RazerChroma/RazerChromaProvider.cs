@@ -14,9 +14,9 @@ namespace RazerChroma
 
         public override string ProviderName => "Razer Chroma";
 
-        public async override Task<IEnumerable<Device>> Discover()
+        public override Task<IEnumerable<Device>> Discover()
         {
-            return new List<Device>(1) { new RazerChromaDevice(internalChromaProvider) };
+            return Task.FromResult<IEnumerable<Device>>(new List<Device>(1) { new RazerChromaDevice(internalChromaProvider) });
         }
 
         public async override Task Register()
