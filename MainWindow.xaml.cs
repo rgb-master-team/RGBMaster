@@ -61,13 +61,22 @@ namespace chroma_yeelight
             ContractResolver = new CamelCasePropertyNamesContractResolver()
         };
 
-
         public MainWindow()
         {
             InitializeComponent();
+
+            if (Environment.GetCommandLineArgs().Any(x => x == "--start-immediate"))
+            {
+                Task.Run(() => StartSyncing());
+            }
         }
 
         private async void StartSyncBtn_Click(object sender, RoutedEventArgs e)
+        {
+            await StartSyncing();
+        }
+
+        private async Task StartSyncing()
         {
             this.providers = GetProviders();
             RegisterProviders();
