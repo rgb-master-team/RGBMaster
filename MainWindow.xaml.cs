@@ -159,5 +159,22 @@ namespace chroma_yeelight
                 await provider.Unregister();
             }
         }
+
+        private void EffectFlipView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var flipView = (FlipView)sender;
+
+            switch (flipView.SelectedIndex)
+            {
+                case 0:
+                    flipView.BannerText = "Music Mode that should be fucking binded by now";
+                    break;
+                case 1:
+                    flipView.BannerText = "Cursor mode which should be fucking renamed (or let its settings change) and also be fucking binded by now!";
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }
