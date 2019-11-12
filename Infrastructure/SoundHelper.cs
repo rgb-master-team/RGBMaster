@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NAudio.Wave;
 
-namespace chroma_yeelight
+namespace Infrastructure
 {
     public static class SoundHelper
     {

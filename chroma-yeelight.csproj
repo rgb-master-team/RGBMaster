@@ -119,7 +119,6 @@
     <Compile Include="DuplicateProvidersException.cs" />
     <Compile Include="ProviderRegistrationFailedException.cs" />
     <Compile Include="RGBColorHelper.cs" />
-    <Compile Include="SoundHelper.cs" />
     <Compile Include="YeelightCommand.cs" />
     <Compile Include="YeelightDeviceNotSupportedException.cs" />
     <Page Include="MainWindow.xaml">

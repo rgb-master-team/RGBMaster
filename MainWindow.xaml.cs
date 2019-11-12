@@ -44,22 +44,9 @@ namespace chroma_yeelight
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
-        private int count1 = 0;
-        private int count2 = 0;
-        private int count3 = 0;
-        private int count4 = 0;
-
-        private WasapiLoopbackCapture captureInstance = null;
         private IEnumerable<Provider> providers;
         private IEnumerable<Device> selectedDevices;
-
-        /// <summary>
-        /// Serializer settings
-        /// </summary>
-        public static readonly JsonSerializerSettings DeviceSerializerSettings = new JsonSerializerSettings()
-        {
-            ContractResolver = new CamelCasePropertyNamesContractResolver()
-        };
+        private IEffect selectedEffect;
 
         public MainWindow()
         {
@@ -86,14 +73,12 @@ namespace chroma_yeelight
             selectedDevices = GetSelectedDevices(providerToDevices);
             await ConnectToSelectedDevices();
 
-            this.captureInstance = SoundHelper.GetCaptureInstance();
-
-            captureInstance.DataAvailable += async (ss, ee) => await this.OnNewSoundReceived(ss, ee, selectedDevices);
-            captureInstance.RecordingStopped += (ss, ee) => captureInstance.Dispose();
+            //selectedEffect = new MusicEffect();
+            selectedEffect = new DominantDisplayColorEffect();
 
             try
             {
-                captureInstance.StartRecording();
+                await selectedEffect.Start(selectedDevices);
             }
             catch (Exception ex)
             {
@@ -160,100 +145,10 @@ namespace chroma_yeelight
             return new List<Provider>() { /*new CorsairProvider(), */new YeelightProvider(), new RazerChromaProvider(), /*new AuraProvider(), new LogitechProvider(), new CorsairProvider()*/  };
 		}
 
-        private async Task OnNewSoundReceived(object sender, NAudio.Wave.WaveInEventArgs e, IEnumerable<Device> currDevices)
-        {
-            float max = 0;
-            var buffer = new WaveBuffer(e.Buffer);
-            // interpret as 32 bit floating point audio
-            for (int index = 0; index < e.BytesRecorded / 4; index++)
-            {
-                float sample = buffer.FloatBuffer[index];
-
-                // absolute value 
-                //if (sample < 0) sample = -sample;
-                if (sample < 0) sample = -sample;
-                // is this the max value?
-                if (sample > max) max = sample;
-            }
-
-            Color color = Color.Black;
-            // ColorHelper.ComputeRGBColor(ColoreColor.Purple.R, ColoreColor.Purple.G, ColoreColor.Purple.B)
-
-            if (max > 0.01 && max <= 0.1)
-            {
-                max = 1;
-                count1++;
-                color = Color.Red;
-            }
-
-            if (max > 0.1 && max <= 0.2)
-            {
-                max = 1;
-                count1++;
-                color = Color.Orange;
-            }
-
-            else if (max > 0.2 && max <= 0.35)
-            {
-                max = 30;
-                count2++;
-                color = Color.Yellow;
-            }
-
-            else if (max > 0.35 && max <= 0.5)
-            {
-                max = 30;
-                count2++;
-                color = Color.Cyan;
-            }
-
-            else if (max > 0.5 && max <= 0.65)
-            {
-                max = 60;
-                count3++;
-                color = Color.Blue;
-            }
-
-            else if (max > 0.65)
-            {
-                max = 100;
-                count4++;
-                color = Color.Violet;
-            }
-
-            bool shouldSyncBrightness = false;
-            bool shouldSyncColor = false;
-
-            this.Dispatcher.Invoke(() =>
-            {
-                shouldSyncBrightness = syncBrightnessChkBox.IsChecked.Value;
-                shouldSyncColor = syncColorChkBox.IsChecked.Value;
-
-                musicProgressBar.Value = max;
-                musicProgressBar.Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(color.R, color.G, color.B));
-            });
-
-            var tasks = new List<Task>();
-
-            foreach (var device in currDevices)
-            {
-                if (shouldSyncBrightness && device.SupportedOperations.Contains(OperationType.SetBrightness))
-                {
-                    tasks.Add(device.SetBrightnessPercentage((byte)(max * 100)));
-                }
-
-                if (shouldSyncColor && device.SupportedOperations.Contains(OperationType.SetColor))
-                {
-                    tasks.Add(device.SetColor(color));
-                }
-            }
-
-            await Task.WhenAll(tasks.ToArray());
-        }
-
         private async void StopSyncingBtn_Click(object sender, RoutedEventArgs e)
         {
-            captureInstance.StopRecording();
+            await selectedEffect.Stop();
+
             foreach (var device in selectedDevices)
             {
                 await device.Disconnect();
