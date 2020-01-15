@@ -60,6 +60,18 @@ namespace chroma_yeelight
 
         private async void StartSyncBtn_Click(object sender, RoutedEventArgs e)
         {
+            switch (EffectFlipView.SelectedIndex)
+            {
+                case 0:
+                    selectedEffect = new MusicEffect();
+                        break;
+                case 1:
+                    selectedEffect = new DominantDisplayColorEffect();
+                    break;
+                default:
+                    break;
+            }
+
             await StartSyncing();
         }
 
@@ -74,7 +86,7 @@ namespace chroma_yeelight
             await ConnectToSelectedDevices();
 
             //selectedEffect = new MusicEffect();
-            selectedEffect = new DominantDisplayColorEffect();
+            //selectedEffect = new MusicEffect();
 
             try
             {
@@ -142,7 +154,7 @@ namespace chroma_yeelight
 
         private IEnumerable<Provider> GetProviders()
         {
-            return new List<Provider>() { /*new CorsairProvider(), */new YeelightProvider(), new RazerChromaProvider(), /*new AuraProvider(), new LogitechProvider(), new CorsairProvider()*/  };
+            return new List<Provider>() { /*new CorsairProvider(), */new YeelightProvider(), /*new RazerChromaProvider(), new AuraProvider(), new LogitechProvider(), new CorsairProvider()*/  };
 		}
 
         private async void StopSyncingBtn_Click(object sender, RoutedEventArgs e)
