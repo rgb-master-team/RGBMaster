@@ -154,7 +154,7 @@ namespace chroma_yeelight
 
         private IEnumerable<Provider> GetProviders()
         {
-            return new List<Provider>() { /*new CorsairProvider(), */new YeelightProvider(), /*new RazerChromaProvider(), new AuraProvider(), new LogitechProvider(), new CorsairProvider()*/  };
+            return new List<Provider>() { new YeelightProvider(), new LogitechProvider(), new RazerChromaProvider(), /*new AuraProvider(), new CorsairProvider()*/ };
 		}
 
         private async void StopSyncingBtn_Click(object sender, RoutedEventArgs e)
