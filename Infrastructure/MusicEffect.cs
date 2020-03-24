@@ -81,6 +81,10 @@ namespace Infrastructure
                 max = 100;
                 color = Color.Violet;
             }
+            else
+            {
+                return;
+            }
 
             var tasks = new List<Task>();
 

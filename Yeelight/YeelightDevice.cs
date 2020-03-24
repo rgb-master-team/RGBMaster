@@ -119,7 +119,7 @@ namespace Yeelight
             {
                 Id = 1,
                 Method = "set_rgb",
-                Params = new List<object>() { colorValue, "smooth", 100 }
+                Params = new List<object>() { colorValue, "smooth", 30 }
             };
 
             string colorData = JsonConvert.SerializeObject(colorCommand, DeviceSerializerSettings);
