@@ -40,7 +40,7 @@ namespace Infrastructure
             Task[] setColorTasks = new Task[devices.Count];
             for (int i = 0; i < devices.Count; i++)
             {
-                setColorTasks[i] = devices[i].SetColor(c);
+                setColorTasks[i] = Task.Run(() => devices[i].SetColor(c));
             }
 
             await Task.WhenAll(setColorTasks);

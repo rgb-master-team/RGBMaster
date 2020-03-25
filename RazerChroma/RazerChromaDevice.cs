@@ -31,22 +31,22 @@ namespace RazerChroma
             return Task.CompletedTask;
         }
 
-        public override Task<byte> GetBrightnessPercentage()
+        public override byte GetBrightnessPercentage()
         {
             throw new NotImplementedException();
         }
 
-        public override Task<System.Drawing.Color> GetColor()
+        public override System.Drawing.Color GetColor()
         {
             throw new NotImplementedException();
         }
 
-        public override Task SetBrightnessPercentage(byte brightness)
+        public override void SetBrightnessPercentage(byte brightness)
         {
             throw new NotImplementedException();
         }
 
-        public async override Task SetColor(System.Drawing.Color color)
+        public async override void SetColor(System.Drawing.Color color)
         {
             await internalChromaDriver.SetAllAsync(new Colore.Data.Color(color.R, color.G, color.B));
         }

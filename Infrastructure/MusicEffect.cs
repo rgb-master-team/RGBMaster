@@ -13,7 +13,7 @@ namespace Infrastructure
         {
             captureInstance = SoundHelper.GetCaptureInstance();
 
-            captureInstance.DataAvailable += async (ss, ee) => await OnNewSoundReceived(ss, ee, devices);
+            captureInstance.DataAvailable += (ss, ee) => OnNewSoundReceived(ss, ee, devices);
             captureInstance.RecordingStopped += (ss, ee) => captureInstance.Dispose();
 
             captureInstance.StartRecording();
@@ -28,7 +28,7 @@ namespace Infrastructure
             return Task.CompletedTask;
         }
 
-        private async Task OnNewSoundReceived(object sender, NAudio.Wave.WaveInEventArgs e, IEnumerable<Device> currDevices)
+        private void OnNewSoundReceived(object sender, NAudio.Wave.WaveInEventArgs e, IEnumerable<Device> currDevices)
         {
             float max = 0;
             var buffer = new WaveBuffer(e.Buffer);
@@ -92,16 +92,16 @@ namespace Infrastructure
             {
                 if (device.SupportedOperations.Contains(OperationType.SetBrightness))
                 {
-                    tasks.Add(device.SetBrightnessPercentage((byte)(max * 100)));
+                    tasks.Add(Task.Run(() => device.SetBrightnessPercentage((byte)(max * 100))));
                 }
 
                 if (device.SupportedOperations.Contains(OperationType.SetColor))
                 {
-                    tasks.Add(device.SetColor(color));
+                    tasks.Add(Task.Run(() => device.SetColor(color)));
                 }
             }
 
-            await Task.WhenAll(tasks.ToArray());
+            Task.WaitAll(tasks.ToArray());
         }
     }
 }

@@ -39,28 +39,26 @@ namespace Msi.Devices
 
 		#region Device Methods
 
-		public override Task<Color> GetColor()
+		public override Color GetColor()
 		{
 			throw new System.NotImplementedException();
 		}
 
-		public override Task SetColor(Color color)
+		public override void SetColor(Color color)
 		{
 			foreach (var led in Leds)
 			{
 				led.SetStyle("Steady");
 				led.SetColor(color);
 			}
-
-			return Task.CompletedTask;
 		}
 
-		public override Task<byte> GetBrightnessPercentage()
+		public override byte GetBrightnessPercentage()
 		{
 			throw new System.NotImplementedException();
 		}
 
-		public override Task SetBrightnessPercentage(byte brightness)
+		public override void SetBrightnessPercentage(byte brightness)
 		{
 			throw new System.NotImplementedException();
 		}

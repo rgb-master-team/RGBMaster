@@ -76,21 +76,23 @@ namespace Yeelight
             return Task.CompletedTask;
         }
 
-        public async override Task<byte> GetBrightnessPercentage()
+        public override byte GetBrightnessPercentage()
         {
             // TODO - Also implement background lighting???
             // TODO2 - Keep the last known brightness at all time in a private member? is it a sensible approach?            
-            var percentage = await InternalDevice.GetProp(YeelightAPI.Models.PROPERTIES.bright);
-            return (byte)percentage;
+            var task = InternalDevice.GetProp(YeelightAPI.Models.PROPERTIES.bright);
+            task.Wait();
+            return (byte)task.Result;
         }
 
-        public async override Task<Color> GetColor()
+        public override Color GetColor()
         {
-            var hexColor = (int)(await InternalDevice.GetProp(YeelightAPI.Models.PROPERTIES.rgb));
-            return RGBColorHelper.ParseColor(hexColor);
+            var task = InternalDevice.GetProp(YeelightAPI.Models.PROPERTIES.rgb);
+            task.Wait();
+            return RGBColorHelper.ParseColor((int)task.Result);
         }
 
-        public override Task SetBrightnessPercentage(byte brightness)
+        public override void SetBrightnessPercentage(byte brightness)
         {
             var serverParams = new List<object>() { brightness };
 
@@ -107,11 +109,9 @@ namespace Yeelight
             byte[] sentData = Encoding.ASCII.GetBytes(data + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
 
             musicModeSocket.Send(sentData);
-
-            return Task.CompletedTask;
         }
 
-        public override Task SetColor(Color color)
+        public override void SetColor(Color color)
         {
             var colorValue = RGBColorHelper.ComputeRGBColor(color.R, color.G, color.B);
 
@@ -126,8 +126,6 @@ namespace Yeelight
             byte[] colorSentData = Encoding.ASCII.GetBytes(colorData + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
 
             musicModeSocket.Send(colorSentData);
-
-            return Task.CompletedTask;
         }
     }
 }

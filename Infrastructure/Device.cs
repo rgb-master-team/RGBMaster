@@ -10,10 +10,10 @@ namespace Infrastructure
     public abstract class Device
     {
         public abstract HashSet<OperationType> SupportedOperations { get; }
-        public abstract Task<Color> GetColor();
-        public abstract Task SetColor(Color color);
-        public abstract Task<byte> GetBrightnessPercentage();
-        public abstract Task SetBrightnessPercentage(byte brightness);
+        public abstract Color GetColor();
+        public abstract void SetColor(Color color);
+        public abstract byte GetBrightnessPercentage();
+        public abstract void SetBrightnessPercentage(byte brightness);
         public abstract Task Connect();
         public abstract Task Disconnect();
 

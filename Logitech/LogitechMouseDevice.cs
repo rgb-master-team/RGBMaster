@@ -24,25 +24,24 @@ namespace Logitech
             return Task.CompletedTask;
         }
 
-        public override Task<byte> GetBrightnessPercentage()
+        public override byte GetBrightnessPercentage()
         {
             throw new NotImplementedException();
         }
 
-        public override Task<Color> GetColor()
+        public override Color GetColor()
         {
             throw new NotImplementedException();
         }
 
-        public override Task SetBrightnessPercentage(byte brightness)
+        public override void SetBrightnessPercentage(byte brightness)
         {
             throw new NotImplementedException();
         }
 
-        public override Task SetColor(Color color)
+        public override void SetColor(Color color)
         {
             LogitechGSDK.LogiLedSetLightingForTargetZone(DeviceType.Mouse, 1, 100 * (color.R / byte.MaxValue), 100 * (color.G / byte.MaxValue), 100 * (color.B / byte.MaxValue));
-            return Task.CompletedTask;
         }
     }
 }
