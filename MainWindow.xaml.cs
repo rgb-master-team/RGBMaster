@@ -36,6 +36,7 @@ using Aura;
 using Logitech;
 using MahApps.Metro.Controls;
 using Corsair.Provider;
+using MagicHome;
 
 namespace chroma_yeelight
 {
@@ -56,6 +57,8 @@ namespace chroma_yeelight
             {
                 Task.Run(() => StartSyncing());
             }
+
+            this.providers = GetProviders();
         }
 
         private async void StartSyncBtn_Click(object sender, RoutedEventArgs e)
@@ -77,7 +80,6 @@ namespace chroma_yeelight
 
         private async Task StartSyncing()
         {
-            this.providers = GetProviders();
             RegisterProviders();
             Dictionary<Provider, IEnumerable<Device>> providerToDevices = await DiscoverProvidersDevices();
 
@@ -154,7 +156,7 @@ namespace chroma_yeelight
 
         private IEnumerable<Provider> GetProviders()
         {
-            return new List<Provider>() { new YeelightProvider(), new LogitechProvider(), new RazerChromaProvider(), /*new AuraProvider(), new CorsairProvider()*/ };
+            return new List<Provider>() { new YeelightProvider(), new LogitechProvider(), new RazerChromaProvider(), new MagicHomeProvider() /*new AuraProvider(), new CorsairProvider()*/ };
 		}
 
         private async void StopSyncingBtn_Click(object sender, RoutedEventArgs e)

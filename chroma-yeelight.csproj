@@ -179,6 +179,10 @@
       <Project>{2710A83D-1ED3-48EB-8E96-3B98E08AAAFE}</Project>
       <Name>Logitech</Name>
     </ProjectReference>
+    <ProjectReference Include="MagicHome\MagicHome.csproj">
+      <Project>{50f2a4c1-c43a-45ef-98db-eda23102b10c}</Project>
+      <Name>MagicHome</Name>
+    </ProjectReference>
     <ProjectReference Include="Msi\Msi.csproj">
       <Project>{75f18a25-3cb6-4d67-8bcb-29aae1517a0d}</Project>
       <Name>Msi</Name>

@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Msi", "Msi\Msi.csproj", "{7
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Corsair", "Corsair\Corsair.csproj", "{9D06E65C-DD14-436F-A735-BF71ABF79BF1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagicHome", "MagicHome\MagicHome.csproj", "{50F2A4C1-C43A-45EF-98DB-EDA23102B10C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,6 +127,18 @@ Global
 		{9D06E65C-DD14-436F-A735-BF71ABF79BF1}.Release|x64.Build.0 = Release|Any CPU
 		{9D06E65C-DD14-436F-A735-BF71ABF79BF1}.Release|x86.ActiveCfg = Release|Any CPU
 		{9D06E65C-DD14-436F-A735-BF71ABF79BF1}.Release|x86.Build.0 = Release|Any CPU
+		{50F2A4C1-C43A-45EF-98DB-EDA23102B10C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50F2A4C1-C43A-45EF-98DB-EDA23102B10C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50F2A4C1-C43A-45EF-98DB-EDA23102B10C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{50F2A4C1-C43A-45EF-98DB-EDA23102B10C}.Debug|x64.Build.0 = Debug|Any CPU
+		{50F2A4C1-C43A-45EF-98DB-EDA23102B10C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{50F2A4C1-C43A-45EF-98DB-EDA23102B10C}.Debug|x86.Build.0 = Debug|Any CPU
+		{50F2A4C1-C43A-45EF-98DB-EDA23102B10C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50F2A4C1-C43A-45EF-98DB-EDA23102B10C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50F2A4C1-C43A-45EF-98DB-EDA23102B10C}.Release|x64.ActiveCfg = Release|Any CPU
+		{50F2A4C1-C43A-45EF-98DB-EDA23102B10C}.Release|x64.Build.0 = Release|Any CPU
+		{50F2A4C1-C43A-45EF-98DB-EDA23102B10C}.Release|x86.ActiveCfg = Release|Any CPU
+		{50F2A4C1-C43A-45EF-98DB-EDA23102B10C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
