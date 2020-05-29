@@ -1,4 +1,5 @@
-# RGBMaster
+# <img width="24px" src="./Logo/256.png" alt="RGBMaster"></img> RGBMaster 
+
 A .NET app that runs in the background and synchronises colours to different integratable devices. i.e Razer Chroma devices, Xiaomi Yeelight bulbs.
 
 The project attempts to use official libraries when possible and focuses on the synchronisation between the devices, rather than the way we integrate with the device and its API/SDK. It uses Razer's `Colore` library for syncing colours via Razer's SDK through .NET bindings, and YeelightAPI library for .NET for that matter.
