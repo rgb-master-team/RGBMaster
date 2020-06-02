@@ -32,7 +32,7 @@ namespace MagicHome
             return Task.FromResult<IEnumerable<Device>>(internalDevices.Select(internalDevice => new MagicHomeDevice(internalDevice)));
         }
 
-        public override Task Register()
+        protected override Task Register()
         {
             return Task.CompletedTask;
         }

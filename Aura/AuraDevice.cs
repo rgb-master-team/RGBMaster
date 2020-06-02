@@ -21,6 +21,10 @@ namespace Aura
             this.internalAuraDevice = internalAuraDevice;
         }
 
+        public AuraDevice()
+        {
+        }
+
         public override Task Connect()
         {
             return Task.CompletedTask;

@@ -92,7 +92,7 @@ namespace Infrastructure
             {
                 if (device.SupportedOperations.Contains(OperationType.SetBrightness))
                 {
-                    tasks.Add(Task.Run(() => device.SetBrightnessPercentage((byte)(max * 100))));
+                    tasks.Add(Task.Run(() => device.SetBrightnessPercentage((byte)(max))));
                 }
 
                 if (device.SupportedOperations.Contains(OperationType.SetColor))

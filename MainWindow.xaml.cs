@@ -37,6 +37,7 @@ using Logitech;
 using MahApps.Metro.Controls;
 using Corsair.Provider;
 using MagicHome;
+using System.Collections.ObjectModel;
 
 namespace chroma_yeelight
 {
@@ -45,10 +46,11 @@ namespace chroma_yeelight
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
-        public IEnumerable<Provider> providers;
-        private IEnumerable<Device> selectedDevices;
+        public ObservableCollection<Provider> providers;
+        public ObservableCollection<Provider> selectedProviders = new ObservableCollection<Provider>();
+        public ObservableCollection<Device> discoveredDevices = new ObservableCollection<Device>();
+        public ObservableCollection<Device> selectedDevices = new ObservableCollection<Device>();
         private IEffect selectedEffect;
-        private Dictionary<Provider, IEnumerable<Device>> providerToDevices = new Dictionary<Provider, IEnumerable<Device>>();
 
         public MainWindow()
         {
@@ -61,20 +63,68 @@ namespace chroma_yeelight
 
             this.providers = GetProviders();
 
-            DataContext = this.providers;
+            providersItemsControl.ItemsSource = providers;
+            devicesControl.ItemsSource = discoveredDevices;
         }
 
-        private async void DiscoverDevicesFromProvider_Clicked(object sender, RoutedEventArgs e)
+        private async void DiscoverDevices_Clicked(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Hhhh LoL XD");
+            discoveredDevices.Clear();
 
-            var button = (Button)sender;
-            var provider = (Provider)button.Tag;
+            foreach (var provider in selectedProviders)
+            {
+                try
+                {
+                    await provider.InitializeProvider();
 
-            await provider.Register();
-            var devices = await provider.Discover();
+                    var discoveredDevices = await provider.Discover();
 
-            providerToDevices[provider] = devices;
+                    foreach (var discoveredDevice in discoveredDevices)
+                    {
+                        this.discoveredDevices.Add(discoveredDevice);
+                    }
+                }
+                catch(Exception)
+                {
+
+                }
+                finally
+                {
+
+                }
+            }
+        }
+
+        private void CheckProviderForDiscovery_Clicked(object sender, RoutedEventArgs e)
+        {
+            var checkbox = (CheckBox)sender;
+            var provider = checkbox.Tag as Provider;
+
+            selectedProviders.Add(provider);
+        }
+
+        private void UncheckProviderForDiscovery_Clicked(object sender, RoutedEventArgs e)
+        {
+            var checkbox = (CheckBox)sender;
+            var provider = checkbox.Tag as Provider;
+
+            selectedProviders.Remove(provider);
+        }
+
+        private void CheckDevice_Clicked(object sender, RoutedEventArgs e)
+        {
+            var checkbox = (CheckBox)sender;
+            var device = checkbox.Tag as Device;
+
+            selectedDevices.Add(device);
+        }
+
+        private void UncheckDevice_Clicked(object sender, RoutedEventArgs e)
+        {
+            var checkbox = (CheckBox)sender;
+            var device = checkbox.Tag as Device;
+
+            selectedDevices.Remove(device);
         }
 
         private async void StartSyncBtn_Click(object sender, RoutedEventArgs e)
@@ -96,19 +146,11 @@ namespace chroma_yeelight
 
         private async Task StartSyncing()
         {
-            RegisterProviders();
-            Dictionary<Provider, IEnumerable<Device>> providerToDevices = await DiscoverProvidersDevices();
-
-            // GetSelectedDevices from the user or something.. and then:
-            selectedDevices = GetSelectedDevices(providerToDevices);
             await ConnectToSelectedDevices();
-
-            //selectedEffect = new MusicEffect();
-            //selectedEffect = new MusicEffect();
 
             try
             {
-                await selectedEffect.Start(selectedDevices);
+                await selectedEffect.Start(discoveredDevices);
             }
             catch (Exception ex)
             {
@@ -122,11 +164,6 @@ namespace chroma_yeelight
             {
                 await device.Connect();
             }
-        }
-
-        private IEnumerable<Device> GetSelectedDevices(Dictionary<Provider, IEnumerable<Device>> providerToDevices)
-        {
-            return providerToDevices.Values.SelectMany(devices => devices).ToList();
         }
 
         private async Task<Dictionary<Provider, IEnumerable<Device>>> DiscoverProvidersDevices()
@@ -155,31 +192,16 @@ namespace chroma_yeelight
             return providerToDevices;
         }
 
-        private async void RegisterProviders()
+        private ObservableCollection<Provider> GetProviders()
         {
-            foreach (var provider in providers)
-            {
-                try
-                {
-                    await provider.Register();
-                }
-                catch (Exception ex)
-                {
-                    throw new ProviderRegistrationFailedException(provider, ex);
-                }
-            }
-        }
-
-        private IEnumerable<Provider> GetProviders()
-        {
-            return new List<Provider>() { new YeelightProvider(), new LogitechProvider(), new RazerChromaProvider(), new MagicHomeProvider() /*new AuraProvider(), new CorsairProvider()*/ };
+            return new ObservableCollection<Provider>() { new YeelightProvider(), new LogitechProvider(), new RazerChromaProvider(), new MagicHomeProvider() /*new AuraProvider(), new CorsairProvider()*/ };
 		}
 
         private async void StopSyncingBtn_Click(object sender, RoutedEventArgs e)
         {
             await selectedEffect.Stop();
 
-            foreach (var device in selectedDevices)
+            foreach (var device in discoveredDevices)
             {
                 await device.Disconnect();
             }

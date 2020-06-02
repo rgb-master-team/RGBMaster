@@ -9,7 +9,7 @@ namespace Msi.Provider
 	{
 		public override string ProviderName => "MSI Sync";
 
-		public override Task Register()
+		protected override Task Register()
 		{
 			MysticLightSdk.Initialize();
 

@@ -18,7 +18,7 @@ namespace Yeelight
             return (await DeviceLocator.Discover()).Select(device => new YeelightDevice(device));
         }
 
-        public override Task Register()
+        protected override Task Register()
         {
             return Task.CompletedTask;
         }

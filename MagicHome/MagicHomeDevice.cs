@@ -10,7 +10,7 @@ namespace MagicHome
     public class MagicHomeDevice : Device
     {
         private Light InternalLight;
-        public override HashSet<OperationType> SupportedOperations => new HashSet<OperationType>() { OperationType.SetColor, OperationType.SetBrightness };
+        public override HashSet<OperationType> SupportedOperations => new HashSet<OperationType>() { OperationType.SetColor/*, OperationType.SetBrightness*/ };
 
         public MagicHomeDevice(Light InternalLight)
         {

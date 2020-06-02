@@ -7,7 +7,7 @@ namespace Corsair.Provider
 	public class CorsairProvider : Infrastructure.Provider
 	{
 		public override string ProviderName => "Corsair Sync";
-		public override Task Register()
+		protected override Task Register()
 		{
 			CUESDK.CUESDK.PerformProtocolHandshake();
 

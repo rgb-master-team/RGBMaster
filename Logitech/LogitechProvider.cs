@@ -44,7 +44,7 @@ namespace Logitech
            */
         }
 
-        public override Task Register()
+        protected override Task Register()
         {
             // Initialize the LED SDK
             bool LedInitialized = LogitechGSDK.LogiLedInit();

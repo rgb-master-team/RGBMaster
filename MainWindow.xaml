@@ -43,13 +43,30 @@
                         <ColumnDefinition Width="50*" />
                         <ColumnDefinition Width="50*" />
                     </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="80*" />
+                        <RowDefinition Height="20*" />
+                    </Grid.RowDefinitions>
 
-                    <ItemsControl Grid.Column="0" Grid.Row="0" ItemsSource="{Binding providers, Path=ProviderName}">
+                    <ItemsControl Grid.Column="0" Grid.Row="0" Name="providersItemsControl">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox Checked="CheckProviderForDiscovery_Clicked" Unchecked="UncheckProviderForDiscovery_Clicked" Tag="{Binding}"></CheckBox>
                                     <TextBlock Text="{Binding ProviderName}"></TextBlock>
-                                    <Button Click="DiscoverDevicesFromProvider_Clicked" Tag="{Binding}">Discover devices</Button>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Button Grid.Column="0" Grid.Row="1" Click="DiscoverDevices_Clicked">Discover devices</Button>
+
+                    <ItemsControl Grid.Column="1" Grid.Row="0" ItemsSource="{Binding}" Name="devicesControl">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox Checked="CheckDevice_Clicked" Unchecked="UncheckDevice_Clicked" Tag="{Binding}"></CheckBox>
+                                    <TextBlock>Test</TextBlock>
                                 </StackPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
