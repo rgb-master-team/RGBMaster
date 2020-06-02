@@ -45,9 +45,10 @@ namespace chroma_yeelight
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
-        private IEnumerable<Provider> providers;
+        public IEnumerable<Provider> providers;
         private IEnumerable<Device> selectedDevices;
         private IEffect selectedEffect;
+        private Dictionary<Provider, IEnumerable<Device>> providerToDevices = new Dictionary<Provider, IEnumerable<Device>>();
 
         public MainWindow()
         {
@@ -59,6 +60,21 @@ namespace chroma_yeelight
             }
 
             this.providers = GetProviders();
+
+            DataContext = this.providers;
+        }
+
+        private async void DiscoverDevicesFromProvider_Clicked(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Hhhh LoL XD");
+
+            var button = (Button)sender;
+            var provider = (Provider)button.Tag;
+
+            await provider.Register();
+            var devices = await provider.Discover();
+
+            providerToDevices[provider] = devices;
         }
 
         private async void StartSyncBtn_Click(object sender, RoutedEventArgs e)
