@@ -11,6 +11,9 @@ namespace RazerChroma
     public class RazerChromaDevice : Device
     {
         private readonly HashSet<OperationType> chromaSupportedOps = new HashSet<OperationType>() { OperationType.SetColor };
+
+        public override string DeviceName => "All Razer Chroma connected devices";
+
         public override HashSet<OperationType> SupportedOperations => chromaSupportedOps;
 
         private readonly IChroma internalChromaDriver;

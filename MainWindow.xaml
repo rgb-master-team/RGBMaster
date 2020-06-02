@@ -66,7 +66,7 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <CheckBox Checked="CheckDevice_Clicked" Unchecked="UncheckDevice_Clicked" Tag="{Binding}"></CheckBox>
-                                    <TextBlock>Test</TextBlock>
+                                    <TextBlock Text="{Binding DeviceName}"></TextBlock>
                                 </StackPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

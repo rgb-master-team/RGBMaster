@@ -17,6 +17,8 @@ namespace Yeelight
     {
         private readonly HashSet<OperationType> yeelightSupportedOps = new HashSet<OperationType>() { OperationType.GetBrightness, OperationType.SetBrightness, OperationType.GetColor, OperationType.SetColor };
 
+        public override string DeviceName => InternalDevice.Name;
+
         public override HashSet<OperationType> SupportedOperations => yeelightSupportedOps;
 
         /// <summary>
