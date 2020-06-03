@@ -16,6 +16,8 @@ namespace Corsair.Device
 	/// </summary>
 	public class CorsairDevice : Infrastructure.Device
 	{
+		public override string DeviceName => Native.model != null ? Marshal.PtrToStringAuto(Native.model): "Unknown";
+
 		#region Corsair Native
 
 		internal CorsairDeviceNative Native;

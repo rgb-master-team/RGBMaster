@@ -19,7 +19,7 @@ namespace Aura
             return Task.FromResult<IEnumerable<Device>>(internalSdk.Motherboards.Select(mb => new AuraDevice(mb)));
         }
 
-        public override Task Register()
+        protected override Task Register()
         {
             internalSdk = new AuraSDK();
             return Task.CompletedTask;

@@ -8,9 +8,35 @@ namespace Infrastructure
 {
     public abstract class Provider
     {
+        public bool IsRegistered { get; private set; }
+
         public abstract string ProviderName { get; }
-        public abstract Task Register();
         public abstract Task Unregister();
         public abstract Task<IEnumerable<Device>> Discover();
+
+        public async Task InitializeProvider()
+        {
+            try
+            {
+                if (IsRegistered)
+                {
+                    return;
+                }
+
+                await Register();
+
+                IsRegistered = true;
+            }
+            catch(Exception)
+            {
+
+            }
+            finally
+            {
+
+            }    
+        }
+
+        protected abstract Task Register();
     }
 }

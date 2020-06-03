@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
 using Infrastructure;
@@ -9,6 +10,8 @@ namespace Msi.Devices
 {
 	public class MLDevice : Device
 	{
+		public override string DeviceName => Type;
+
 		public string Type { get; set; }
 		public MLLed[] Leds { get; set; }
 

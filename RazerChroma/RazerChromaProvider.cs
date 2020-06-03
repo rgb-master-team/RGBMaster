@@ -19,7 +19,7 @@ namespace RazerChroma
             return Task.FromResult<IEnumerable<Device>>(new List<Device>(1) { new RazerChromaDevice(internalChromaProvider) });
         }
 
-        public async override Task Register()
+        protected async override Task Register()
         {
             internalChromaProvider = await ColoreProvider.CreateNativeAsync();
         }
