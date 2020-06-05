@@ -1,4 +1,5 @@
 ﻿using Infrastructure;
+using Logitech;
 using MagicHome;
 using RazerChroma;
 using RGBMaster.Pages;
@@ -39,7 +40,7 @@ namespace RGBMaster
 
         private readonly IEnumerable<Provider> SupportedProviders = new List<Provider>()
         {
-            new YeelightProvider(), new MagicHomeProvider()
+            new YeelightProvider(), new MagicHomeProvider(), new RazerChromaProvider(), new LogitechProvider()
         };
 
         public MainPage()

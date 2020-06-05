@@ -27,7 +27,7 @@ namespace Infrastructure
 
                 IsRegistered = true;
             }
-            catch(Exception)
+            catch(Exception ex)
             {
 
             }

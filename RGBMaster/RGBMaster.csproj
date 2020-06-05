@@ -175,6 +175,10 @@
       <Project>{320554fa-5a03-4cb0-ae58-7d339035139f}</Project>
       <Name>Infrastructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Logitech\Logitech.csproj">
+      <Project>{5B14F463-0537-4886-B2F2-F4119443CB23}</Project>
+      <Name>Logitech</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MagicHome\MagicHome.csproj">
       <Project>{8B38A933-1EC0-4295-9BF4-E9F8782DABA5}</Project>
       <Name>MagicHome</Name>
