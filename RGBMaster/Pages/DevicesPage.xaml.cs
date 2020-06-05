@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Infrastructure;
+using RGBMaster.State;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -22,6 +25,14 @@ namespace RGBMaster.Pages
     /// </summary>
     public sealed partial class DevicesPage : Page
     {
+        public ObservableCollection<RegisteredProvider> RegisteredProviders 
+        { 
+            get
+            {
+                return AppState.Instance.RegisteredProviders;
+            }
+        }
+
         public DevicesPage()
         {
             this.InitializeComponent();

@@ -129,6 +129,8 @@
       <DependentUpon>EffectsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="State\AppState.cs" />
+    <Compile Include="State\RegisteredProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -172,6 +174,18 @@
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj">
       <Project>{320554fa-5a03-4cb0-ae58-7d339035139f}</Project>
       <Name>Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MagicHome\MagicHome.csproj">
+      <Project>{8B38A933-1EC0-4295-9BF4-E9F8782DABA5}</Project>
+      <Name>MagicHome</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RazerChroma\RazerChroma.csproj">
+      <Project>{e1b21cde-5c8a-4f87-976f-06de423e3276}</Project>
+      <Name>RazerChroma</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Yeelight\Yeelight.csproj">
+      <Project>{1926c963-12da-4b52-8056-df5f36e5b672}</Project>
+      <Name>Yeelight</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

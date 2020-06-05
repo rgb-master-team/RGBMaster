@@ -13,7 +13,7 @@
             <NavigationView.MenuItems>
                 <NavigationViewItem Content="Devices" x:Name="Devices" Tag="DevicesPage">
                     <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xEA80;" FontFamily="Segoe MDL2 Assets" />
+                        <FontIcon Glyph="&#xEA80;" FontFamily="Segoe MDL2 Assets"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem Content="Effects" x:Name="Effects" Tag="EffectsPage">

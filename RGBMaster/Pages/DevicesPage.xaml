@@ -4,16 +4,27 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:RGBMaster.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:infrastructure="using:Infrastructure" xmlns:state="using:RGBMaster.State"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Pivot Title="Devices">
-        <PivotItem Header="Status">
-            <Grid/>
-        </PivotItem>
-        <PivotItem Header="Razer Chroma">
-            <Grid/>
-        </PivotItem>
+    <Pivot Title="Devices" ItemsSource="{x:Bind RegisteredProviders}">
+        <Pivot.HeaderTemplate>
+            <DataTemplate x:DataType="state:RegisteredProvider">
+                <TextBlock Text="{x:Bind Provider.ProviderName}" />
+            </DataTemplate>
+        </Pivot.HeaderTemplate>
+
+        <Pivot.ItemTemplate>
+            <DataTemplate x:DataType="state:RegisteredProvider">
+                <ListView ItemsSource="{x:Bind Devices}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="infrastructure:Device">
+                            <TextBlock Text="{x:Bind DeviceName}"></TextBlock>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </DataTemplate>
+        </Pivot.ItemTemplate>
     </Pivot>
 </Page>
