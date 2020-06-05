@@ -1,0 +1,31 @@
+﻿<Page
+    x:Class="RGBMaster.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:RGBMaster"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <NavigationView PaneDisplayMode="Auto" IsBackButtonVisible="Collapsed" SelectionChanged="NavigationView_SelectionChanged">
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="Devices" x:Name="Devices" Tag="DevicesPage">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xEA80;" FontFamily="Segoe MDL2 Assets" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Effects" x:Name="Effects" Tag="EffectsPage">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE790;" FontFamily="Segoe MDL2 Assets" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.MenuItems>
+            <ScrollViewer>
+                <Frame x:Name="MainAppContentFrame" Padding="12,0,12,24" IsTabStop="True"
+                   NavigationFailed="MainAppContentFrame_NavigationFailed"/>
+            </ScrollViewer>
+        </NavigationView>
+    </Grid>
+</Page>
