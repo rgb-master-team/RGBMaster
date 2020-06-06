@@ -5,18 +5,21 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Data;
 
 namespace RGBMaster.State
 {
     public class AppState
     {
-        private static readonly AppState instance = new AppState()
-        {
-            RegisteredProviders = new ObservableCollection<RegisteredProvider>()
-        };
+        private static readonly AppState instance;
 
         static AppState()
         {
+            instance = new AppState()
+            {
+                RegisteredProviders = new ObservableCollection<RegisteredProvider>()
+            };
+
         }
         private AppState()
         {

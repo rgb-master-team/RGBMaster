@@ -11,6 +11,6 @@ namespace RGBMaster.State
     public class RegisteredProvider
     {
         public Provider Provider { get; set; }
-        public ObservableCollection<Device> Devices { get; set; }
+        public ObservableCollection<DiscoveredDevice> Devices { get; set; }
     }
 }

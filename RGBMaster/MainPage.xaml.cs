@@ -4,15 +4,18 @@ using MagicHome;
 using RazerChroma;
 using RGBMaster.Pages;
 using RGBMaster.State;
+using RGBMaster.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -40,42 +43,58 @@ namespace RGBMaster
 
         private readonly IEnumerable<Provider> SupportedProviders = new List<Provider>()
         {
-            new YeelightProvider(), new MagicHomeProvider(), new RazerChromaProvider(), new LogitechProvider()
+            new YeelightProvider(), new MagicHomeProvider(), /*new RazerChromaProvider(),*/ new LogitechProvider()
         };
+
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            //await Dispatcher.RunAsync(CoreDispatcherPriority.Low, async () => { await SeekAndRediscoverDevices(); });
+            await SeekAndRediscoverDevices();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+        }
 
         public MainPage()
         {
             this.InitializeComponent();
-
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            SeekAndRediscoverDevices();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
-
 
         private async Task SeekAndRediscoverDevices()
         {
-            var availableRegisteredProviders = new List<RegisteredProvider>();
+            var registrationAndDiscoveryTasks = new List<Task<RegisteredProvider>>();
 
             foreach (var provider in SupportedProviders)
             {
-                await provider.InitializeProvider();
-
-                if (provider.IsRegistered)
+                registrationAndDiscoveryTasks.Add(provider.InitializeProvider().ContinueWith(async ct =>
                 {
-                    var discoveredDevices = await provider.Discover();
-
-                    availableRegisteredProviders.Add(new RegisteredProvider()
+                    if (provider.IsRegistered)
                     {
-                        Provider = provider,
-                        Devices = new ObservableCollection<Device>(discoveredDevices)
-                    });
-                }
+                        var discoveredDevices = await provider.Discover();
+
+                        return new RegisteredProvider()
+                        {
+                            Provider = provider,
+                            Devices = new ObservableCollection<DiscoveredDevice>(discoveredDevices.Select(discoveredDevice => new DiscoveredDevice() { Device = discoveredDevice, IsChecked = true }).ToList())
+                        };
+                    }
+
+                    return null;
+                }).Unwrap());
             }
+
+            await Task.WhenAll(registrationAndDiscoveryTasks);
 
             AppState.Instance.RegisteredProviders.Clear();
 
-            availableRegisteredProviders.ForEach(registeredProvider => AppState.Instance.RegisteredProviders.Add(registeredProvider));
+            foreach (var task in registrationAndDiscoveryTasks)
+            {
+                if (task.Result != null)
+                {
+                    AppState.Instance.RegisteredProviders.Add(task.Result);
+                }
+            }
         }
 
         private void NavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)

@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:RGBMaster.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:infrastructure="using:Infrastructure" xmlns:state="using:RGBMaster.State"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:infrastructure="using:Infrastructure" xmlns:state="using:RGBMaster.State" xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -17,13 +17,15 @@
 
         <Pivot.ItemTemplate>
             <DataTemplate x:DataType="state:RegisteredProvider">
-                <ListView ItemsSource="{x:Bind Devices}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="infrastructure:Device">
-                            <TextBlock Text="{x:Bind DeviceName}"></TextBlock>
+                <muxc:ItemsRepeater ItemsSource="{x:Bind Devices}">
+                    <muxc:ItemsRepeater.ItemTemplate>
+                        <DataTemplate x:DataType="state:DiscoveredDevice">
+                            <StackPanel Orientation="Horizontal">
+                                <CheckBox IsChecked="{x:Bind IsChecked}" Tag="{x:Bind}" Click="CheckBox_Click" Content="{x:Bind Device.DeviceName}" />
+                            </StackPanel>
                         </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                        </muxc:ItemsRepeater.ItemTemplate>
+                </muxc:ItemsRepeater>
             </DataTemplate>
         </Pivot.ItemTemplate>
     </Pivot>
