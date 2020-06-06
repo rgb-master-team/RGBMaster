@@ -48,6 +48,8 @@ namespace RGBMaster
             new YeelightProvider(), new MagicHomeProvider(), /*new RazerChromaProvider(),*/ new LogitechProvider()
         };
 
+        private SemaphoreSlim startAndStopSemaphore = new SemaphoreSlim(1, 1);
+
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
@@ -125,6 +127,8 @@ namespace RGBMaster
 
         private async void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
+            await startAndStopSemaphore.WaitAsync();
+
             var oldInnerButton = FindName("InnerButton") as FontIcon;
             var oldOuterButton = FindName("OuterButton") as FontIcon;
 
@@ -167,6 +171,8 @@ namespace RGBMaster
 
             AppBarStartStopGrid.Children.Add(innerButton);
             AppBarStartStopGrid.Children.Add(outerButton);
+
+            startAndStopSemaphore.Release();
         }
 
         private void NavigationView_Loaded(object sender, RoutedEventArgs e)
