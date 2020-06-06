@@ -8,6 +8,7 @@ using RGBMaster.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -15,6 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -43,7 +45,7 @@ namespace RGBMaster
 
         private readonly IEnumerable<Provider> SupportedProviders = new List<Provider>()
         {
-            new YeelightProvider(), new MagicHomeProvider(),/* new RazerChromaProvider(),*/ new LogitechProvider()
+            new YeelightProvider(), new MagicHomeProvider(), /*new RazerChromaProvider(),*/ new LogitechProvider()
         };
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
@@ -111,6 +113,15 @@ namespace RGBMaster
 
         private async void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
+            var oldInnerButton = FindName("InnerButton") as FontIcon;
+            var oldOuterButton = FindName("OuterButton") as FontIcon;
+
+            AppBarStartStopGrid.Children.Remove(oldInnerButton);
+            AppBarStartStopGrid.Children.Remove(oldOuterButton);
+
+            UIElement innerButton;
+            UIElement outerButton;
+
             if (!AppState.Instance.IsEffectRunning)
             {
                 var devicesToConnect = new List<Device>();
@@ -138,20 +149,30 @@ namespace RGBMaster
 
                 AppState.Instance.IsEffectRunning = true;
 
+                outerButton = new FontIcon() { Glyph = "\uE739", FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets"), Name = "OuterButton" };
+                innerButton = new FontIcon() { Glyph = "\uE73B", FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets"), Foreground = new SolidColorBrush(Colors.Red), Name = "InnerButton" };
+
                 AppBarButton button = (AppBarButton)sender;
-                button.Icon = new FontIcon() { Glyph = "\uE71A", FontFamily = new FontFamily("Segoe MDL2 Assets") };
+
+                button.Label = "Stop";
             }
             else
             {
                 await AppState.Instance.SelectedEffect?.Stop();
 
 
-
                 AppState.Instance.IsEffectRunning = false;
 
                 AppBarButton button = (AppBarButton)sender;
-                button.Icon = new FontIcon() { Glyph = "\uE102", FontFamily = new FontFamily("Segoe MDL2 Assets") };
+
+                outerButton = new FontIcon() { Glyph = "\uE768", FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets"), Name = "OuterButton" };
+                innerButton = new FontIcon() { Glyph = "\uF5B0", FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets"), Foreground = new SolidColorBrush(Colors.Green), Name = "InnerButton" };
+
+                button.Label = "Start";
             }
+
+            AppBarStartStopGrid.Children.Add(innerButton);
+            AppBarStartStopGrid.Children.Add(outerButton);
         }
     }
 }

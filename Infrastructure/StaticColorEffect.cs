@@ -31,7 +31,7 @@ namespace Infrastructure
 
         public Task Stop()
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
     }
 }
