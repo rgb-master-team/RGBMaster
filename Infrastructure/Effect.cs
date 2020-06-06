@@ -64,6 +64,8 @@ namespace Infrastructure
             }
 
             await StopInternal();
+
+            devices = Enumerable.Empty<Device>();
         }
 
         public abstract Task StopInternal();

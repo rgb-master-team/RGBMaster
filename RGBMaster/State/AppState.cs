@@ -18,7 +18,7 @@ namespace RGBMaster.State
             instance = new AppState()
             {
                 RegisteredProviders = new ObservableCollection<RegisteredProvider>(),
-                SelectedEffect = null,
+                SelectedEffect = new StaticColorEffect(),
                 IsEffectRunning = false,
                 SelectedDevices = new ObservableCollection<Device>()
             };

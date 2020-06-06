@@ -9,7 +9,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <NavigationView PaneTitle="RGB Master" PaneDisplayMode="Auto" IsBackButtonVisible="Collapsed" SelectionChanged="NavigationView_SelectionChanged">
+        <NavigationView x:Name="MainNavigationView" PaneTitle="RGB Master" PaneDisplayMode="Auto" IsBackButtonVisible="Collapsed" SelectionChanged="NavigationView_SelectionChanged" Loaded="NavigationView_Loaded">
             <NavigationView.PaneHeader>
                 <Image Source="Assets/128.png" Width="25" Height="25"/>
             </NavigationView.PaneHeader>

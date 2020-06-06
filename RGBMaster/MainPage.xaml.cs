@@ -168,5 +168,10 @@ namespace RGBMaster
             AppBarStartStopGrid.Children.Add(innerButton);
             AppBarStartStopGrid.Children.Add(outerButton);
         }
+
+        private void NavigationView_Loaded(object sender, RoutedEventArgs e)
+        {
+            MainNavigationView.SelectedItem = MainNavigationView.MenuItems[0];
+        }
     }
 }
