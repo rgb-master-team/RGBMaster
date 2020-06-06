@@ -14,7 +14,12 @@
                 <Image Source="Assets/128.png" Width="25" Height="25"/>
             </NavigationView.PaneHeader>
             <NavigationView.MenuItems>
-                <NavigationViewItem Content="Devices" x:Name="Devices" Tag="DevicesPage">
+                <NavigationViewItem Content="Control Panel" x:Name="StatusNavigationItem" Tag="ControlPanelPage">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE946;" FontFamily="Segoe MDL2 Assets"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Devices" x:Name="DevicesNavigationItem" Tag="DevicesPage">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xEA80;" FontFamily="Segoe MDL2 Assets"/>
                     </NavigationViewItem.Icon>

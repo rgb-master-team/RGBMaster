@@ -9,13 +9,35 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Pivot Title="Effects" SelectionChanged="Pivot_SelectionChanged">
-        <PivotItem Header="Color Picker" HorizontalAlignment="Left">
-            <ColorPicker x:Name="ColorPicker" ColorSpectrumShape="Ring" ColorChanged="ColorPicker_ColorChanged"  >
+        <!--Color Picker-->
+        <PivotItem HorizontalAlignment="Left">
+            <PivotItem.Header>
+                <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xEF3C;" FontFamily="Segoe MDL2 Assets" Margin="0 4 4 0"/>
+                    <TextBlock>Color Picker</TextBlock>
+                </StackPanel>
+            </PivotItem.Header>
+            <ColorPicker x:Name="ColorPicker" ColorSpectrumShape="Ring" ColorChanged="ColorPicker_ColorChanged" Margin="0 4 0 0" />
 
-            </ColorPicker>
         </PivotItem>
-        <PivotItem Header="Music Sync" />
-        <PivotItem Header="Pointer Sync" />
+        <!--Music Sync-->
+        <PivotItem>
+            <PivotItem.Header>
+                <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xF61F;" FontFamily="Segoe MDL2 Assets"  Margin="0 4 4 0"/>
+                    <TextBlock>Music Sync</TextBlock>
+                </StackPanel>
+            </PivotItem.Header>
+        </PivotItem>
+        <!--Pointer Sync-->
+        <PivotItem>
+            <PivotItem.Header>
+                <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE7C9;" FontFamily="Segoe MDL2 Assets"  Margin="0 4 4 0"/>
+                    <TextBlock>Pointer Sync</TextBlock>
+                </StackPanel>
+            </PivotItem.Header>
+        </PivotItem>
     </Pivot>
 
 </Page>

@@ -39,8 +39,10 @@ namespace RGBMaster
         // List of ValueTuple holding the Navigation Tag and the relative Navigation Page
         private readonly Dictionary<string, Type> pageToType = new Dictionary<string, Type>()
         {
-            { "DevicesPage", typeof(DevicesPage) },
-            { "EffectsPage", typeof(EffectsPage) }
+            { nameof(DevicesPage), typeof(DevicesPage) },
+            { nameof(EffectsPage), typeof(EffectsPage) },
+            { nameof(ControlPanelPage), typeof(ControlPanelPage) },
+            { nameof(SettingsPage), typeof(SettingsPage) }
         };
 
         private readonly IEnumerable<Provider> SupportedProviders = new List<Provider>()
@@ -115,7 +117,16 @@ namespace RGBMaster
 
         private void NavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
-            var selectionTag = (string)args.SelectedItemContainer.Tag;
+            string selectionTag;
+
+            if (args.IsSettingsSelected ==  true)
+            {
+                selectionTag = "SettingsPage";
+            }
+            else
+            {
+                selectionTag = (string)args.SelectedItemContainer.Tag;
+            }
 
             var navigationResult = MainAppContentFrame.Navigate(pageToType[selectionTag], null, args.RecommendedNavigationTransitionInfo);
         }
