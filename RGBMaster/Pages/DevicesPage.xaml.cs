@@ -38,11 +38,21 @@ namespace RGBMaster.Pages
             this.InitializeComponent();
         }
 
-        private void CheckBox_Click(object sender, RoutedEventArgs e)
+        private async void CheckBox_Click(object sender, RoutedEventArgs e)
         {
             var checkbox = sender as CheckBox;
             var discoveredDevice = (DiscoveredDevice)checkbox.Tag;
+
             discoveredDevice.IsChecked = !discoveredDevice.IsChecked;
+
+            if (discoveredDevice.IsChecked)
+            {
+                AppState.Instance.SelectedDevices.Add(discoveredDevice.Device);
+            }
+            else
+            {
+                AppState.Instance.SelectedDevices.Remove(discoveredDevice.Device);
+            }
         }
 
         private void ManualConnectionButton_Click(object sender, RoutedEventArgs e)

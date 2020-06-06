@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace Infrastructure
 {
-    public class MusicEffect : IEffect
+    public class MusicEffect : Effect
     {
         private WasapiLoopbackCapture captureInstance = null;
 
-        public Task Start(IEnumerable<Device> devices)
+        public override Task StartInternal()
         {
             captureInstance = SoundHelper.GetCaptureInstance();
 
@@ -21,7 +21,7 @@ namespace Infrastructure
             return Task.CompletedTask;
         }
 
-        public Task Stop()
+        public override Task StopInternal()
         {
             captureInstance.StopRecording();
 

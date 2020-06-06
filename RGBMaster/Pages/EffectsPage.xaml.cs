@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -42,26 +43,52 @@ namespace RGBMaster.Pages
             }
         }
 
-        private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async Task ChangeCurrentRunningEffect(Effect desiredEffect)
+        {
+            if (AppState.Instance.IsEffectRunning)
+            {
+                await AppState.Instance.SelectedEffect.Stop();
+            }
+
+            AppState.Instance.SelectedEffect = desiredEffect;
+            await AppState.Instance.SelectedEffect.ChangeConnectedDevices(AppState.Instance.SelectedDevices);
+
+            if (AppState.Instance.IsEffectRunning)
+            {
+                await AppState.Instance.SelectedEffect.Start();
+            }
+        }
+
+        private async void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var pivot = (Pivot)sender;
+            Effect effect;
 
             switch (pivot.SelectedIndex)
             {
                 case 0:
                     // Color picker Logic here
-                    AppState.Instance.SelectedEffect = new StaticColorEffect();
+                    effect = new StaticColorEffect();
                     break;
                 case 1:
                     // Music Logic Here
-                    AppState.Instance.SelectedEffect = new MusicEffect();
+                    effect = new MusicEffect();
                     break;
                 case 2:
                     // Pointer Logic here
-                    AppState.Instance.SelectedEffect = new DominantDisplayColorEffect();
+                    effect = new DominantDisplayColorEffect();
                     break;
                 default:
+                    effect = new StaticColorEffect();
                     break;
+            }
+
+            // This is obviously a lazy design. TODO - add types for all effects and take the time to
+            // reimplement the way we apply effects, instead of reinstantiating them all the time.
+            // perhaps a factory.
+            if (effect.GetType() != AppState.Instance.SelectedEffect?.GetType())
+            {
+                await ChangeCurrentRunningEffect(effect);
             }
         }
     }

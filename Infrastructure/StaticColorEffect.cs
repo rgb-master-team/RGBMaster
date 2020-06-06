@@ -5,16 +5,15 @@ using System.Threading.Tasks;
 
 namespace Infrastructure
 {
-    public class StaticColorEffect : IEffect
+    public class StaticColorEffect : Effect
     {
-        private IEnumerable<Device> currentDevices;
         private System.Drawing.Color currentColor;
 
         public async Task ChangeStaticColor(System.Drawing.Color newColor)
         {
             var tasksList = new List<Task>();
 
-            foreach (var device in currentDevices)
+            foreach (var device in devices)
             {
                 tasksList.Add(Task.Run(() => device.SetColor(newColor)));
             }
@@ -22,16 +21,14 @@ namespace Infrastructure
             await Task.WhenAll(tasksList);
         }
 
-        public async Task Start(IEnumerable<Device> devices)
+        public override async Task StartInternal()
         {
-            currentDevices = devices;
-
             await ChangeStaticColor(currentColor);
         }
 
-        public Task Stop()
+        public override Task StopInternal()
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
     }
 }

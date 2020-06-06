@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure
 {
-    public class DominantDisplayColorEffect : IEffect
+    public class DominantDisplayColorEffect : Effect
     {
         [DllImport("user32.dll")]
         static extern bool GetCursorPos(ref Point lpPoint);
@@ -21,7 +21,7 @@ namespace Infrastructure
         private Timer calculationTimer;
         private Bitmap screenPixel = new Bitmap(1, 1, PixelFormat.Format32bppArgb);
 
-        public Task Start(IEnumerable<Device> devices)
+        public override Task StartInternal()
         {
             var enumeratedDevices = devices.ToList();
 
@@ -63,7 +63,7 @@ namespace Infrastructure
             return screenPixel.GetPixel(0, 0);
         }
 
-        public Task Stop()
+        public override Task StopInternal()
         {
             calculationTimer.Dispose();
 

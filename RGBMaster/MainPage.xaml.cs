@@ -53,7 +53,19 @@ namespace RGBMaster
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             //await Dispatcher.RunAsync(CoreDispatcherPriority.Low, async () => { await SeekAndRediscoverDevices(); });
             await SeekAndRediscoverDevices();
+            RegisterToSelectionChangesInDevices();
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+        }
+
+        private void RegisterToSelectionChangesInDevices()
+        {
+            AppState.Instance.SelectedDevices.CollectionChanged += async (sender, e) =>
+            {
+                if (AppState.Instance.IsEffectRunning && AppState.Instance.SelectedEffect != null)
+                {
+                    await AppState.Instance.SelectedEffect?.ChangeConnectedDevices(AppState.Instance.SelectedDevices);
+                }
+            };
         }
 
         public MainPage()
@@ -76,7 +88,7 @@ namespace RGBMaster
                         return new RegisteredProvider()
                         {
                             Provider = provider,
-                            Devices = new ObservableCollection<DiscoveredDevice>(discoveredDevices.Select(discoveredDevice => new DiscoveredDevice() { Device = discoveredDevice, IsChecked = true }).ToList())
+                            Devices = new ObservableCollection<DiscoveredDevice>(discoveredDevices.Select(discoveredDevice => new DiscoveredDevice() { Device = discoveredDevice, IsChecked = false }).ToList())
                         };
                     }
 
@@ -111,46 +123,24 @@ namespace RGBMaster
 
         private async void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!AppState.Instance.IsEffectRunning)
-            {
-                var devicesToConnect = new List<Device>();
-                foreach (var registeredProvider in AppState.Instance.RegisteredProviders)
-                {
-                    foreach (var discoveredDevice in registeredProvider.Devices)
-                    {
-                        if (discoveredDevice.IsChecked)
-                        {
-                            devicesToConnect.Add(discoveredDevice.Device);
-                        }
-                    }
-                }
-
-                var connectionTasks = new List<Task>();
-
-                foreach (var device in devicesToConnect)
-                {
-                    connectionTasks.Add(device.Connect());
-                }
-
-                await Task.WhenAll(connectionTasks);
-
-                await AppState.Instance.SelectedEffect.Start(devicesToConnect);
-
-                AppState.Instance.IsEffectRunning = true;
-
-                AppBarButton button = (AppBarButton)sender;
-                button.Icon = new FontIcon() { Glyph = "\uE71A", FontFamily = new FontFamily("Segoe MDL2 Assets") };
-            }
-            else
+            if (AppState.Instance.IsEffectRunning)
             {
                 await AppState.Instance.SelectedEffect?.Stop();
-
-
 
                 AppState.Instance.IsEffectRunning = false;
 
                 AppBarButton button = (AppBarButton)sender;
                 button.Icon = new FontIcon() { Glyph = "\uE102", FontFamily = new FontFamily("Segoe MDL2 Assets") };
+            }
+            else
+            {
+                await AppState.Instance.SelectedEffect.ChangeConnectedDevices(AppState.Instance.SelectedDevices);
+                await AppState.Instance.SelectedEffect.Start();
+
+                AppState.Instance.IsEffectRunning = true;
+
+                AppBarButton button = (AppBarButton)sender;
+                button.Icon = new FontIcon() { Glyph = "\uE71A", FontFamily = new FontFamily("Segoe MDL2 Assets") };
             }
         }
     }
