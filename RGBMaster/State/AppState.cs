@@ -17,7 +17,9 @@ namespace RGBMaster.State
         {
             instance = new AppState()
             {
-                RegisteredProviders = new ObservableCollection<RegisteredProvider>()
+                RegisteredProviders = new ObservableCollection<RegisteredProvider>(),
+                SelectedEffect = null,
+                IsEffectRunning = false
             };
 
         }
@@ -32,6 +34,11 @@ namespace RGBMaster.State
             }
         }
 
+
         public ObservableCollection<RegisteredProvider> RegisteredProviders { get; set; }
+        public IEffect SelectedEffect { get; set; }
+        public bool IsEffectRunning { get; set; }
+
+        public System.Drawing.Color StaticColor { get; set; }
     }
 }

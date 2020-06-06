@@ -9,7 +9,10 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <NavigationView PaneDisplayMode="Auto" IsBackButtonVisible="Collapsed" SelectionChanged="NavigationView_SelectionChanged">
+        <NavigationView PaneTitle="RGB Master" PaneDisplayMode="Auto" IsBackButtonVisible="Collapsed" SelectionChanged="NavigationView_SelectionChanged">
+            <NavigationView.PaneHeader>
+                <Image Source="Assets/128.png" Width="25" Height="25"/>
+            </NavigationView.PaneHeader>
             <NavigationView.MenuItems>
                 <NavigationViewItem Content="Devices" x:Name="Devices" Tag="DevicesPage">
                     <NavigationViewItem.Icon>
@@ -23,8 +26,17 @@
                 </NavigationViewItem>
             </NavigationView.MenuItems>
             <ScrollViewer>
-                <Frame x:Name="MainAppContentFrame" Padding="12,0,12,24" IsTabStop="True"
+                <StackPanel>
+                    <CommandBar OverflowButtonVisibility="Collapsed">
+                        <AppBarButton Click="AppBarButton_Click">
+                            <AppBarButton.Icon>
+                                <FontIcon Glyph="&#xE102;" FontFamily="Segoe MDL2 Assets"/>
+                            </AppBarButton.Icon>
+                        </AppBarButton>
+                    </CommandBar>
+                    <Frame x:Name="MainAppContentFrame" Padding="12,0,12,24" IsTabStop="True"
                    NavigationFailed="MainAppContentFrame_NavigationFailed"/>
+                </StackPanel>
             </ScrollViewer>
         </NavigationView>
     </Grid>

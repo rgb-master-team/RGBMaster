@@ -9,6 +9,7 @@ namespace Infrastructure
 {
     public abstract class Device
     {
+        public bool IsConnected { get; }
         public abstract string DeviceName { get; }
         public abstract HashSet<OperationType> SupportedOperations { get; }
         public abstract Color GetColor();

@@ -8,7 +8,14 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <Pivot Title="Effects" SelectionChanged="Pivot_SelectionChanged">
+        <PivotItem Header="Color Picker" HorizontalAlignment="Left">
+            <ColorPicker x:Name="ColorPicker" ColorSpectrumShape="Ring" ColorChanged="ColorPicker_ColorChanged"  >
 
-    </Grid>
+            </ColorPicker>
+        </PivotItem>
+        <PivotItem Header="Music Sync" />
+        <PivotItem Header="Pointer Sync" />
+    </Pivot>
+
 </Page>

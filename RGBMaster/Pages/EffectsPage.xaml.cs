@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Infrastructure;
+using RGBMaster.State;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,6 +27,42 @@ namespace RGBMaster.Pages
         public EffectsPage()
         {
             this.InitializeComponent();
+        }
+
+        private async void ColorPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
+        {
+            var color = System.Drawing.Color.FromArgb(sender.Color.R, sender.Color.G, sender.Color.B);
+            AppState.Instance.StaticColor = color;
+
+            if (AppState.Instance.IsEffectRunning)
+            {
+                var staticColorEffect = AppState.Instance.SelectedEffect as StaticColorEffect;
+
+                await staticColorEffect.ChangeStaticColor(color);
+            }
+        }
+
+        private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var pivot = (Pivot)sender;
+
+            switch (pivot.SelectedIndex)
+            {
+                case 0:
+                    // Color picker Logic here
+                    AppState.Instance.SelectedEffect = new StaticColorEffect();
+                    break;
+                case 1:
+                    // Music Logic Here
+                    AppState.Instance.SelectedEffect = new MusicEffect();
+                    break;
+                case 2:
+                    // Pointer Logic here
+                    AppState.Instance.SelectedEffect = new DominantDisplayColorEffect();
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

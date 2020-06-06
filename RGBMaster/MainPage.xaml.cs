@@ -43,7 +43,7 @@ namespace RGBMaster
 
         private readonly IEnumerable<Provider> SupportedProviders = new List<Provider>()
         {
-            new YeelightProvider(), new MagicHomeProvider(), /*new RazerChromaProvider(),*/ new LogitechProvider()
+            new YeelightProvider(), new MagicHomeProvider(),/* new RazerChromaProvider(),*/ new LogitechProvider()
         };
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
@@ -107,6 +107,51 @@ namespace RGBMaster
         private void MainAppContentFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
 
+        }
+
+        private async void AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!AppState.Instance.IsEffectRunning)
+            {
+                var devicesToConnect = new List<Device>();
+                foreach (var registeredProvider in AppState.Instance.RegisteredProviders)
+                {
+                    foreach (var discoveredDevice in registeredProvider.Devices)
+                    {
+                        if (discoveredDevice.IsChecked)
+                        {
+                            devicesToConnect.Add(discoveredDevice.Device);
+                        }
+                    }
+                }
+
+                var connectionTasks = new List<Task>();
+
+                foreach (var device in devicesToConnect)
+                {
+                    connectionTasks.Add(device.Connect());
+                }
+
+                await Task.WhenAll(connectionTasks);
+
+                await AppState.Instance.SelectedEffect.Start(devicesToConnect);
+
+                AppState.Instance.IsEffectRunning = true;
+
+                AppBarButton button = (AppBarButton)sender;
+                button.Icon = new FontIcon() { Glyph = "\uE71A", FontFamily = new FontFamily("Segoe MDL2 Assets") };
+            }
+            else
+            {
+                await AppState.Instance.SelectedEffect?.Stop();
+
+
+
+                AppState.Instance.IsEffectRunning = false;
+
+                AppBarButton button = (AppBarButton)sender;
+                button.Icon = new FontIcon() { Glyph = "\uE102", FontFamily = new FontFamily("Segoe MDL2 Assets") };
+            }
         }
     }
 }
