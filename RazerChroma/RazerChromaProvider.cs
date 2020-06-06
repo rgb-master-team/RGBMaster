@@ -22,6 +22,7 @@ namespace RazerChroma
         protected async override Task Register()
         {
             internalChromaProvider = await ColoreProvider.CreateNativeAsync();
+            //internalChromaProvider = await ColoreProvider.CreateRestAsync(new Colore.Data.AppInfo("RGBMaster", "Apply effects to RGB peripherals", "RGBMaster", "RGBMaster", Colore.Data.Category.Application));
         }
 
         public async override Task Unregister()
