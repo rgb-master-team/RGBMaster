@@ -44,5 +44,10 @@ namespace RGBMaster.Pages
             var discoveredDevice = (DiscoveredDevice)checkbox.Tag;
             discoveredDevice.IsChecked = !discoveredDevice.IsChecked;
         }
+
+        private void ManualConnectionButton_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
     }
 }

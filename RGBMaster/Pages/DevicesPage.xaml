@@ -17,6 +17,9 @@
 
         <Pivot.ItemTemplate>
             <DataTemplate x:DataType="state:RegisteredProvider">
+                <StackPanel>
+                    <TextBox x:Name="ManualConnectionAddressTxtBx" PlaceholderText="Manually connect via IP address or unique ID"></TextBox>
+                    <Button Content="Connect" x:Name="ManualConnectionButton" Click="ManualConnectionButton_Click"></Button>
                 <muxc:ItemsRepeater ItemsSource="{x:Bind Devices}">
                     <muxc:ItemsRepeater.ItemTemplate>
                         <DataTemplate x:DataType="state:DiscoveredDevice">
@@ -26,6 +29,7 @@
                         </DataTemplate>
                         </muxc:ItemsRepeater.ItemTemplate>
                 </muxc:ItemsRepeater>
+                </StackPanel>
             </DataTemplate>
         </Pivot.ItemTemplate>
     </Pivot>
