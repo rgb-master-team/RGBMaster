@@ -27,11 +27,12 @@
             </NavigationView.MenuItems>
             <ScrollViewer>
                 <StackPanel>
-                    <CommandBar OverflowButtonVisibility="Collapsed">
-                        <AppBarButton Click="AppBarButton_Click">
-                            <AppBarButton.Icon>
-                                <FontIcon Glyph="&#xE102;" FontFamily="Segoe MDL2 Assets"/>
-                            </AppBarButton.Icon>
+                    <CommandBar OverflowButtonVisibility="Collapsed" DefaultLabelPosition="Right">
+                        <AppBarButton Click="AppBarButton_Click" Label="Start">
+                            <Grid x:Name="AppBarStartStopGrid">
+                                <FontIcon x:Name="InnerButton" Glyph="&#xF5B0;" FontFamily="Segoe MDL2 Assets" Foreground="Green"/>
+                                <FontIcon x:Name="OuterButton" Glyph="&#xE768;" FontFamily="Segoe MDL2 Assets"/>
+                            </Grid>
                         </AppBarButton>
                     </CommandBar>
                     <Frame x:Name="MainAppContentFrame" Padding="12,0,12,24" IsTabStop="True"
