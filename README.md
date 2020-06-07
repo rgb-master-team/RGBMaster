@@ -3,7 +3,7 @@
 # RGB Master
 > A .NET app that runs in the background and synchronises colours to different integratable devices. i.e Razer Chroma devices, Xiaomi Yeelight bulbs.
 
-[![Discord](https://img.shields.io/discord/717472380934422560.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/sAve7r)
+[![Discord](https://img.shields.io/discord/717472380934422560.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/zWbe3UV)
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/rgb-master-team/RGBMaster.svg)](http://isitmaintained.com/project/rgb-master-team/RGBMaster "Percentage of issues still open")
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/rgb-master-team/RGBMaster.svg)](http://isitmaintained.com/project/rgb-master-team/RGBMaster "Average time to resolve an issue")
 [![GitHub stars](https://img.shields.io/github/stars/rgb-master-team/RGBMaster.svg)](https://github.com/rgb-master-team/RGBMaster/stargazers)
