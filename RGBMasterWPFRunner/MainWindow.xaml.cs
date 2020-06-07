@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Windows.UI.Xaml.Controls;
+using Image = Windows.UI.Xaml.Controls.Image;
 
 namespace RGBMasterWPFRunner
 {
@@ -23,6 +25,13 @@ namespace RGBMasterWPFRunner
         public MainWindow()
         {
             InitializeComponent();
+
+            MainNavigationView.ChildChanged += MainNavigationView_ChildChanged;
+        }
+
+        private void MainNavigationView_ChildChanged(object sender, EventArgs e)
+        {
+            var navigationView = (NavigationView)sender;
         }
     }
 }
