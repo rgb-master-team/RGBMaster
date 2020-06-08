@@ -10,28 +10,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <xamlhost:WindowsXamlHost InitialTypeName="NavigationView" x:Name="MainNavigationView" PaneTitle="RGB Master" PaneDisplayMode="Auto" IsBackButtonVisible="Collapsed" SelectionChanged="NavigationView_SelectionChanged" Loaded="NavigationView_Loaded">
-            <NavigationView.PaneHeader>
-                <Image Source="Assets/128.png" Width="25" Height="25"/>
-            </NavigationView.PaneHeader>
-            <NavigationView.MenuItems>
-                <NavigationViewItem Content="Control Panel" x:Name="StatusNavigationItem" Tag="ControlPanelPage">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE946;" FontFamily="Segoe MDL2 Assets"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="Devices" x:Name="DevicesNavigationItem" Tag="DevicesPage">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xEA80;" FontFamily="Segoe MDL2 Assets"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="Effects" x:Name="Effects" Tag="EffectsPage">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE790;" FontFamily="Segoe MDL2 Assets" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-            </NavigationView.MenuItems>
-            <ScrollViewer>
+        <xamlhost:WindowsXamlHost InitialTypeName="Windows.UI.Xaml.Controls.NavigationView" x:Name="MainNavigationViewWrapper">
+            <!--<ScrollViewer>
                 <StackPanel>
                     <CommandBar OverflowButtonVisibility="Collapsed" DefaultLabelPosition="Right">
                         <AppBarButton Click="AppBarButton_Click" Label="Start">
@@ -44,7 +24,7 @@
                     <Frame x:Name="MainAppContentFrame" Padding="12,0,12,24" IsTabStop="True"
                    NavigationFailed="MainAppContentFrame_NavigationFailed"/>
                 </StackPanel>
-            </ScrollViewer>
+            </ScrollViewer>-->
         </xamlhost:WindowsXamlHost>
     </Grid>
 </Window>
