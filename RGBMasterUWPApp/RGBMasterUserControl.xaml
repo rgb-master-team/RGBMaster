@@ -1,5 +1,5 @@
 ﻿<UserControl
-    x:Class="RGBMasterUWPApp.RGBMasterUWPAppMainWindow"
+    x:Class="RGBMasterUWPApp.RGBMasterUserControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:RGBMasterUWPApp"
@@ -10,7 +10,7 @@
     d:DesignWidth="400">
 
     <Grid>
-        <!--<NavigationView x:Name="MainNavigationView" PaneTitle="RGB Master" PaneDisplayMode="Auto" IsBackButtonVisible="Collapsed" SelectionChanged="NavigationView_SelectionChanged" Loaded="NavigationView_Loaded">
+        <NavigationView x:Name="MainNavigationView" PaneTitle="RGB Master" PaneDisplayMode="Auto" IsBackButtonVisible="Collapsed" SelectionChanged="NavigationView_SelectionChanged" Loaded="NavigationView_Loaded">
             <NavigationView.PaneHeader>
                 <Image Source="Assets/128.png" Width="25" Height="25"/>
             </NavigationView.PaneHeader>
@@ -45,7 +45,6 @@
                    NavigationFailed="MainAppContentFrame_NavigationFailed"/>
                 </StackPanel>
             </ScrollViewer>
-        </NavigationView>-->
-        <TextBlock>shalom olam</TextBlock>
+        </NavigationView>
     </Grid>
 </UserControl>

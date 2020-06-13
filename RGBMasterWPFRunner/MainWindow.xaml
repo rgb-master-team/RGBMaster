@@ -12,7 +12,7 @@
     <Grid>
         <!--<xamlhost:WindowsXamlHost InitialTypeName="Windows.UI.Xaml.Controls.NavigationView" x:Name="MainNavigationViewWrapper">
         </xamlhost:WindowsXamlHost>-->
-        <xamlhost:WindowsXamlHost InitialTypeName="RGBMasterUWPApp.RGBMasterUWPAppMainWindow" x:Name="MainNavigationViewWrapper">
+        <xamlhost:WindowsXamlHost InitialTypeName="RGBMasterUWPApp.RGBMasterUserControl" x:Name="MainNavigationViewWrapper">
         </xamlhost:WindowsXamlHost>
 
         <!--<StackPanel>
