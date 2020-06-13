@@ -45,17 +45,6 @@ namespace RGBMasterUWPApp
 
         private SemaphoreSlim startAndStopSemaphore = new SemaphoreSlim(1, 1);
 
-        /*protected async override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            //await Dispatcher.RunAsync(CoreDispatcherPriority.Low, async () => { await SeekAndRediscoverDevices(); });
-            await SeekAndRediscoverDevices();
-            RegisterToSelectionChangesInDevices();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-        }*/
-
         private void RegisterToSelectionChangesInDevices()
         {
             AppState.Instance.SelectedDevices.CollectionChanged += async (sender, e) =>
@@ -101,22 +90,6 @@ namespace RGBMasterUWPApp
                     AppState.Instance.RegisteredProviders.Add(task.Result);
                 }
             }
-        }
-
-        private void NavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
-        {
-            string selectionTag;
-
-            if (args.IsSettingsSelected == true)
-            {
-                selectionTag = "SettingsPage";
-            }
-            else
-            {
-                selectionTag = (string)args.SelectedItemContainer.Tag;
-            }
-
-            var navigationResult = MainAppContentFrame.Navigate(pageToType[selectionTag], null, args.RecommendedNavigationTransitionInfo);
         }
 
         private void MainAppContentFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
@@ -182,6 +155,31 @@ namespace RGBMasterUWPApp
         public RGBMasterUserControl()
         {
             this.InitializeComponent();
+        }
+
+        private void MainNavigationView_SelectionChanged(Microsoft.UI.Xaml.Controls.NavigationView sender, Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs args)
+        {
+            string selectionTag;
+
+            if (args.IsSettingsSelected == true)
+            {
+                selectionTag = "SettingsPage";
+            }
+            else
+            {
+                selectionTag = (string)args.SelectedItemContainer.Tag;
+            }
+
+            var navigationResult = MainAppContentFrame.Navigate(pageToType[selectionTag], null, args.RecommendedNavigationTransitionInfo);
+        }
+
+        private async void RGBMasterUserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            //await Dispatcher.RunAsync(CoreDispatcherPriority.Low, async () => { await SeekAndRediscoverDevices(); });
+            await SeekAndRediscoverDevices();
+            RegisterToSelectionChangesInDevices();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
     }
 }

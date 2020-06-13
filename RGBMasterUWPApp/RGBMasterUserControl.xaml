@@ -5,33 +5,35 @@
     xmlns:local="using:RGBMasterUWPApp"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:winui="using:Microsoft.UI.Xaml.Controls"
+    Loaded="RGBMasterUserControl_Loaded"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
 
     <Grid>
-        <NavigationView x:Name="MainNavigationView" PaneTitle="RGB Master" PaneDisplayMode="Auto" IsBackButtonVisible="Collapsed" SelectionChanged="NavigationView_SelectionChanged" Loaded="NavigationView_Loaded">
-            <NavigationView.PaneHeader>
+        <winui:NavigationView x:Name="MainNavigationView" PaneTitle="RGB Master" PaneDisplayMode="Auto" IsBackButtonVisible="Collapsed" SelectionChanged="MainNavigationView_SelectionChanged" Loaded="NavigationView_Loaded">
+            <winui:NavigationView.PaneHeader>
                 <Image Source="Assets/128.png" Width="25" Height="25"/>
-            </NavigationView.PaneHeader>
-            <NavigationView.MenuItems>
-                <NavigationViewItem Content="Control Panel" x:Name="StatusNavigationItem" Tag="ControlPanelPage">
-                    <NavigationViewItem.Icon>
+            </winui:NavigationView.PaneHeader>
+            <winui:NavigationView.MenuItems>
+                <winui:NavigationViewItem Content="Control Panel" x:Name="StatusNavigationItem" Tag="ControlPanelPage">
+                    <winui:NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE946;" FontFamily="Segoe MDL2 Assets"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="Devices" x:Name="DevicesNavigationItem" Tag="DevicesPage">
-                    <NavigationViewItem.Icon>
+                    </winui:NavigationViewItem.Icon>
+                </winui:NavigationViewItem>
+                <winui:NavigationViewItem Content="Devices" x:Name="DevicesNavigationItem" Tag="DevicesPage">
+                    <winui:NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xEA80;" FontFamily="Segoe MDL2 Assets"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="Effects" x:Name="Effects" Tag="EffectsPage">
-                    <NavigationViewItem.Icon>
+                    </winui:NavigationViewItem.Icon>
+                </winui:NavigationViewItem>
+                <winui:NavigationViewItem Content="Effects" x:Name="Effects" Tag="EffectsPage">
+                    <winui:NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE790;" FontFamily="Segoe MDL2 Assets" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-            </NavigationView.MenuItems>
-            <ScrollViewer>
+                    </winui:NavigationViewItem.Icon>
+                </winui:NavigationViewItem>
+            </winui:NavigationView.MenuItems>
+            <winui:ScrollViewer>
                 <StackPanel>
                     <CommandBar OverflowButtonVisibility="Collapsed" DefaultLabelPosition="Right">
                         <AppBarButton Click="AppBarButton_Click" Label="Start">
@@ -44,7 +46,14 @@
                     <Frame x:Name="MainAppContentFrame" Padding="12,0,12,24" IsTabStop="True"
                    NavigationFailed="MainAppContentFrame_NavigationFailed"/>
                 </StackPanel>
-            </ScrollViewer>
-        </NavigationView>
+            </winui:ScrollViewer>
+        </winui:NavigationView>
+        <!--<StackPanel Background="LightCoral">
+            <TextBlock>This is a simple custom UWP control</TextBlock>
+            <Rectangle Fill="Blue" Height="100" Width="100"/>
+            <TextBlock Text="Oyy M8" FontSize="50"></TextBlock>
+            --><!--<winui:RatingControl />--><!--
+        </StackPanel>-->
+
     </Grid>
 </UserControl>
