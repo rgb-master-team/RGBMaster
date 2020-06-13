@@ -120,14 +120,75 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Pages\ControlPanelPage.xaml.cs">
+      <DependentUpon>ControlPanelPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\DevicesPage.xaml.cs">
+      <DependentUpon>DevicesPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\EffectsPage.xaml.cs">
+      <DependentUpon>EffectsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RGBMasterUWPAppMainWindow.xaml.cs">
+      <DependentUpon>RGBMasterUWPAppMainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="State\AppState.cs" />
+    <Compile Include="State\DiscoveredDevice.cs" />
+    <Compile Include="State\RegisteredProvider.cs" />
+    <Compile Include="Utils\ExtensionMethods.cs" />
     <EmbeddedResource Include="Properties\RGBMasterUWPApp.rd.xml" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.10</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.UI.Xaml">
+      <Version>2.4.2</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Pages\ControlPanelPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\DevicesPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\EffectsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\SettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="RGBMasterUWPAppMainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj">
+      <Project>{320554FA-5A03-4CB0-AE58-7D339035139F}</Project>
+      <Name>Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Logitech\Logitech.csproj">
+      <Project>{5B14F463-0537-4886-B2F2-F4119443CB23}</Project>
+      <Name>Logitech</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MagicHome\MagicHome.csproj">
+      <Project>{8B38A933-1EC0-4295-9BF4-E9F8782DABA5}</Project>
+      <Name>MagicHome</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Yeelight\Yeelight.csproj">
+      <Project>{1926C963-12DA-4B52-8056-DF5F36E5B672}</Project>
+      <Name>Yeelight</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
@@ -140,4 +201,8 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <EnableTypeInfoReflection>false</EnableTypeInfoReflection>
+    <EnableXBindDiagnostics>false</EnableXBindDiagnostics>
+  </PropertyGroup>
 </Project>

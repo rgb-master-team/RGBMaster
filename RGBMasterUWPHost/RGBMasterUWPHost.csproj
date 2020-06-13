@@ -150,6 +150,12 @@
       <Version>6.0.1</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RGBMasterUWPApp\RGBMasterUWPApp.csproj">
+      <Project>{d3956872-64cf-490d-ae0d-8fc84a93a15e}</Project>
+      <Name>RGBMasterUWPApp</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

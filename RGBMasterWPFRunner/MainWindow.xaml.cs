@@ -42,7 +42,7 @@ namespace RGBMasterWPFRunner
         {
             InitializeComponent();
 
-            MainNavigationViewWrapper.ChildChanged += MainNavigationViewWrapper_ChildChanged;
+            //MainNavigationViewWrapper.ChildChanged += MainNavigationViewWrapper_ChildChanged;
         }
 
         private Windows.UI.Xaml.Controls.CommandBar GenerateMainCommandBar()

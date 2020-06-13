@@ -10,10 +10,12 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <xamlhost:WindowsXamlHost InitialTypeName="Windows.UI.Xaml.Controls.NavigationView" x:Name="MainNavigationViewWrapper">
+        <!--<xamlhost:WindowsXamlHost InitialTypeName="Windows.UI.Xaml.Controls.NavigationView" x:Name="MainNavigationViewWrapper">
+        </xamlhost:WindowsXamlHost>-->
+        <xamlhost:WindowsXamlHost InitialTypeName="RGBMasterUWPApp.RGBMasterUWPAppMainWindow" x:Name="MainNavigationViewWrapper">
         </xamlhost:WindowsXamlHost>
 
-            <!--<StackPanel>
+        <!--<StackPanel>
                 <CommandBar OverflowButtonVisibility="Collapsed" DefaultLabelPosition="Right">
                     <AppBarButton Click="AppBarButton_Click" Label="Start">
                         <Grid x:Name="AppBarStartStopGrid">
