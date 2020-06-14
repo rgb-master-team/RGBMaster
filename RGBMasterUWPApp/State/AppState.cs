@@ -20,7 +20,8 @@ namespace RGBMasterUWPApp.State
                 RegisteredProviders = new ObservableCollection<RegisteredProvider>(),
                 SelectedEffect = new StaticColorEffect(),
                 IsEffectRunning = false,
-                SelectedDevices = new ObservableCollection<Device>()
+                SelectedDevices = new ObservableCollection<Device>(),
+                AreAllLightsOn = false
             };
 
         }
@@ -40,5 +41,6 @@ namespace RGBMasterUWPApp.State
         public Effect SelectedEffect { get; set; }
         public bool IsEffectRunning { get; set; }
         public System.Drawing.Color StaticColor { get; set; }
+        public bool AreAllLightsOn { get; set; }
     }
 }

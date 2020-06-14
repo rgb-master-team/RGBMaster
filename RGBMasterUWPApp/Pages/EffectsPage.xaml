@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    >
 
     <Pivot Title="Effects" SelectionChanged="Pivot_SelectionChanged">
         <!--Color Picker-->
@@ -17,8 +17,25 @@
                     <TextBlock>Color Picker</TextBlock>
                 </StackPanel>
             </PivotItem.Header>
-            <ColorPicker x:Name="ColorPicker" ColorSpectrumShape="Ring" ColorChanged="ColorPicker_ColorChanged" Margin="0 4 0 0" />
-
+            <StackPanel Orientation="Vertical">
+                <ColorPicker x:Name="ColorPicker" 
+                             ColorSpectrumShape="Ring" 
+                             ColorChanged="ColorPicker_ColorChanged" 
+                             IsColorSliderVisible="False" 
+                             IsAlphaEnabled="True" 
+                             IsAlphaSliderVisible="True" 
+                             IsAlphaTextInputVisible="True" 
+                             Margin="0 4 0 0" />
+            </StackPanel>
+        </PivotItem>
+        <!--Flow Sync-->
+        <PivotItem>
+            <PivotItem.Header>
+                <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xEDA8;" FontFamily="Segoe MDL2 Assets"  Margin="0 4 4 0"/>
+                    <TextBlock>Flow Sync</TextBlock>
+                </StackPanel>
+            </PivotItem.Header>
         </PivotItem>
         <!--Music Sync-->
         <PivotItem>

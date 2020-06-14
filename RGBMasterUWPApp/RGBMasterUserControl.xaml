@@ -9,10 +9,9 @@
     Loaded="RGBMasterUserControl_Loaded"
     mc:Ignorable="d"
     d:DesignHeight="300"
-    d:DesignWidth="400">
-
+    d:DesignWidth="400" >
     <Grid>
-        <winui:NavigationView x:Name="MainNavigationView" PaneTitle="RGB Master" PaneDisplayMode="Auto" IsBackButtonVisible="Collapsed" SelectionChanged="MainNavigationView_SelectionChanged" Loaded="NavigationView_Loaded">
+        <winui:NavigationView x:Name="MainNavigationView" PaneTitle="RGB Master" PaneDisplayMode="Left" IsBackButtonVisible="Collapsed" SelectionChanged="MainNavigationView_SelectionChanged" Loaded="NavigationView_Loaded" Background="{StaticResource NavigationMenuBrush}">
             <winui:NavigationView.PaneHeader>
                 <Image Source="Assets/128.png" Width="25" Height="25"/>
             </winui:NavigationView.PaneHeader>
@@ -34,8 +33,8 @@
                 </winui:NavigationViewItem>
             </winui:NavigationView.MenuItems>
             <winui:ScrollViewer>
-                <StackPanel>
-                    <CommandBar OverflowButtonVisibility="Collapsed" DefaultLabelPosition="Right">
+                <StackPanel Background="{StaticResource FrameBrush}">
+                    <CommandBar OverflowButtonVisibility="Collapsed" DefaultLabelPosition="Right" Background="{StaticResource FrameBrush}">
                         <AppBarButton Click="AppBarButton_Click" Label="Start">
                             <Grid x:Name="AppBarStartStopGrid">
                                 <FontIcon x:Name="InnerButton" Glyph="&#xF5B0;" FontFamily="Segoe MDL2 Assets" Foreground="Green"/>
@@ -44,16 +43,9 @@
                         </AppBarButton>
                     </CommandBar>
                     <Frame x:Name="MainAppContentFrame" Padding="12,0,12,24" IsTabStop="True"
-                   NavigationFailed="MainAppContentFrame_NavigationFailed"/>
+                   NavigationFailed="MainAppContentFrame_NavigationFailed" Background="{StaticResource FrameBrush}"/>
                 </StackPanel>
             </winui:ScrollViewer>
         </winui:NavigationView>
-        <!--<StackPanel Background="LightCoral">
-            <TextBlock>This is a simple custom UWP control</TextBlock>
-            <Rectangle Fill="Blue" Height="100" Width="100"/>
-            <TextBlock Text="Oyy M8" FontSize="50"></TextBlock>
-            --><!--<winui:RatingControl />--><!--
-        </StackPanel>-->
-
     </Grid>
 </UserControl>

@@ -40,7 +40,7 @@ namespace RGBMasterUWPApp
 
         private readonly IEnumerable<Provider> SupportedProviders = new List<Provider>()
                 {
-                    new YeelightProvider(), new MagicHomeProvider(), /*new RazerChromaProvider(),*/ new LogitechProvider()
+                    new YeelightProvider(), new MagicHomeProvider(),/* new RazerChromaProvider(),  new LogitechProvider() */
                 };
 
         private SemaphoreSlim startAndStopSemaphore = new SemaphoreSlim(1, 1);

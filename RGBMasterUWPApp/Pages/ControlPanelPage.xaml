@@ -4,11 +4,42 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:RGBMasterUWPApp.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d">
 
     <Grid>
+        <StackPanel>
+            <StackPanel Margin="0 0 0 8">
+                <TextBlock Text="Control Panel" FontSize="30" />
+            </StackPanel>
+            <StackPanel Margin="0 0 0 16">
+                <TextBlock Text="Light Control" FontSize="20" />
+            </StackPanel>
+            <StackPanel>
+                <!--Change button text by light status: Turn on all lights / Turn off all lights--> 
+                <Button x:Name="TurnOnButton" Content="Turn on all lights" Click="Button_Click" Width="140" />
+                <muxc:ProgressBar x:Name="LightsOnProgressBar" Width="140" IsIndeterminate="False" ShowPaused="False" ShowError="False" HorizontalAlignment="Left" Margin="0 4 0 0"/>
+            </StackPanel>
+        </StackPanel>
+        
+        
+        <muxc:TeachingTip x:Name="ToggleTip_LightsOn"                   
+            	Target="{x:Bind TurnOnButton}"
+	                Title="Lights are On!"                                        
+	                Subtitle="All lights that we found has been turned on.">
+            <muxc:TeachingTip.IconSource>
+                <muxc:SymbolIconSource Symbol="Accept"/>
+            </muxc:TeachingTip.IconSource>
+        </muxc:TeachingTip>
+
+        <muxc:TeachingTip x:Name="ToggleTip_LightsOff"                   
+            	Target="{x:Bind TurnOnButton}"
+	                Title="Lights are Off!"                                        
+	                Subtitle="All lights that we found has been turned off.">
+            <muxc:TeachingTip.IconSource>
+                <muxc:SymbolIconSource Symbol="Cancel"/>
+            </muxc:TeachingTip.IconSource>
+        </muxc:TeachingTip>
 
     </Grid>
 </Page>
