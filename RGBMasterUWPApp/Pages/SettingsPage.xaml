@@ -19,20 +19,19 @@
             <StackPanel>
                 <StackPanel HorizontalAlignment="Center" Margin="0 0 0 32">
                     <Image Source="/Assets/128.png" Width="50px" Height="50px" />
-                    <TextBlock Text="RGB Master" FontFamily="Tahoma" FontSize="32" HorizontalAlignment="Center" FontWeight="Bold" />
-                    <TextBlock Text="{x:Bind VersionNumber}" />
+                    <TextBlock Text="RGB Master" FontFamily="Tahoma" FontSize="24" HorizontalAlignment="Center" FontWeight="Bold" />
+                    <!-- TODO - Bind version number -->
+                    <!--TextBlock Text="{Binding Version}"-->
+
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Center">
-                    <RichTextBlock>
-                        <Paragraph>A .NET app that runs in the background and synchronises colours to different integratable devices. i.e Razer Chroma devices, Xiaomi Yeelight bulbs.</Paragraph>
-                        <Paragraph>The project attempts to use official libraries when possible and focuses on the synchronisation between the devices, rather than the way we integrate with the device and its API/SDK. It uses Razer's Colore library for syncing colours via Razer's SDK through .NET bindings, and YeelightAPI library for .NET for that matter.</Paragraph>
-                    </RichTextBlock>
-                    <StackPanel>
-                        <Button>
-                            <StackPanel Orientation="Horizontal">
-                                <FontIcon Glyph="&#xF1AD;" FontFamily="Segoe MDL2 Assets" Margin="0 0 4 0"/>
-                                <TextBlock Text="GitHub" />
-                            </StackPanel>
+                    <TextBlock Text="Check us out!" Style="{StaticResource TitleTextBlockStyle}" FontSize="16" Margin="0 0 0 4"/>
+                    <StackPanel HorizontalAlignment="Center">
+                        <Button Click="GitHub_Button_Click" Height="30px" Width="80px" Margin="0 0 0 8">
+                            <Image Source="/Assets/GitHubLogo.png" Height="20px" Width="60px" />
+                        </Button>
+                        <Button Click="Discord_Button_Click" Height="30px" Width="80px">
+                            <Image Source="/Assets/DiscordLogo.png" Height="30px" Width="60px" Margin="0 0 4 0" />
                         </Button>
                     </StackPanel>
                 </StackPanel>

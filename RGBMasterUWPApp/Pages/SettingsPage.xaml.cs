@@ -31,25 +31,15 @@ namespace RGBMasterUWPApp.Pages
             this.InitializeComponent();
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private async void GitHub_Button_Click(object sender, RoutedEventArgs e)
         {
             await Windows.System.Launcher.LaunchUriAsync(new Uri("https://github.com/rgb-master-team/RGBMaster"));
         }
 
-        public string VersionNumber { get; set; }
-
-        private void appVer()
+        private async void Discord_Button_Click(object sender, RoutedEventArgs e)
         {
-
-            string appVersion = string.Format("Version: {0}.{1}.{2}.{3}",
-                        Package.Current.Id.Version.Major,
-                        Package.Current.Id.Version.Minor,
-                        Package.Current.Id.Version.Build,
-                        Package.Current.Id.Version.Revision);
-
-            this.VersionNumber = appVersion;
+            await Windows.System.Launcher.LaunchUriAsync(new Uri("https://discord.gg/zWbe3UV"));
         }
-
 
     }
 }
