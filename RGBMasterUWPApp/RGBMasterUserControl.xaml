@@ -11,9 +11,12 @@
     d:DesignHeight="300"
     d:DesignWidth="400" >
     <Grid>
-        <winui:NavigationView x:Name="MainNavigationView" PaneTitle="RGB Master" PaneDisplayMode="Left" IsBackButtonVisible="Collapsed" SelectionChanged="MainNavigationView_SelectionChanged" Loaded="NavigationView_Loaded" Background="{StaticResource NavigationMenuBrush}">
-            <winui:NavigationView.PaneHeader>
-                <Image Source="Assets/128.png" Width="25" Height="25"/>
+        <winui:NavigationView x:Name="MainNavigationView" PaneDisplayMode="Left" IsBackButtonVisible="Collapsed" SelectionChanged="MainNavigationView_SelectionChanged" Loaded="NavigationView_Loaded" Background="{StaticResource NavigationMenuBrush}">
+                <winui:NavigationView.PaneHeader>
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="Assets/128.png" Width="23" Height="23" Margin="4 0 4 0" />
+                    <TextBlock VerticalAlignment="Center" Text="RGB Master" FontWeight="Bold" FontSize="18" />
+                </StackPanel>
             </winui:NavigationView.PaneHeader>
             <winui:NavigationView.MenuItems>
                 <winui:NavigationViewItem Content="Control Panel" x:Name="StatusNavigationItem" Tag="ControlPanelPage">

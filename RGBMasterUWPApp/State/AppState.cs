@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel;
 using Windows.UI.Xaml.Data;
 
 namespace RGBMasterUWPApp.State
@@ -42,5 +43,6 @@ namespace RGBMasterUWPApp.State
         public bool IsEffectRunning { get; set; }
         public System.Drawing.Color StaticColor { get; set; }
         public bool AreAllLightsOn { get; set; }
+        public PackageVersion AppVersion { get; set; }
     }
 }

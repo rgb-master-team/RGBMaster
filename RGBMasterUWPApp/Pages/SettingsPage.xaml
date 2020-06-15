@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="White"
+
     >
     <Pivot Title="Settings">
         <PivotItem Header="General" >
@@ -20,9 +20,10 @@
                 <StackPanel HorizontalAlignment="Center" Margin="0 0 0 32">
                     <Image Source="/Assets/128.png" Width="50px" Height="50px" />
                     <TextBlock Text="RGB Master" FontFamily="Tahoma" FontSize="24" HorizontalAlignment="Center" FontWeight="Bold" />
-                    <!-- TODO - Bind version number -->
-                    <!--TextBlock Text="{Binding Version}"-->
-
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Style="{StaticResource CaptionTextBlockStyle}" HorizontalAlignment="Center" Text="Version: " />
+                        <TextBlock Style="{StaticResource CaptionTextBlockStyle}" HorizontalAlignment="Center" Text="{x:Bind AppVersion}" />
+                    </StackPanel>
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Center">
                     <TextBlock Text="Check us out!" Style="{StaticResource TitleTextBlockStyle}" FontSize="16" Margin="0 0 0 4"/>

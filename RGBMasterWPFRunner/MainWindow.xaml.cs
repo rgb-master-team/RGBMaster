@@ -1,4 +1,6 @@
 ﻿using NAudio.Wave;
+using RGBMasterUWPApp.State;
+using Windows.ApplicationModel;
 
 namespace RGBMasterWPFRunner
 {
@@ -10,6 +12,13 @@ namespace RGBMasterWPFRunner
         public MainWindow()
         {
             InitializeComponent();
+
+            Package package = Package.Current;
+            PackageId packageId = package.Id;
+            PackageVersion version = packageId.Version;
+
+
+            AppState.Instance.AppVersion = version;
         }
     }
 }

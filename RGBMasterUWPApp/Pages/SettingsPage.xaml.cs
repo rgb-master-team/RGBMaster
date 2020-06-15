@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RGBMasterUWPApp.State;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -26,6 +27,14 @@ namespace RGBMasterUWPApp.Pages
     /// </summary>
     public sealed partial class SettingsPage : Page
     {
+        public string AppVersion
+        {
+            get
+            {
+                return string.Format("{0}.{1}.{2}.{3}", AppState.Instance.AppVersion.Major, AppState.Instance.AppVersion.Minor, AppState.Instance.AppVersion.Build, AppState.Instance.AppVersion.Revision);
+            }
+        }
+
         public SettingsPage()
         {
             this.InitializeComponent();
