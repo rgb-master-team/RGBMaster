@@ -1,4 +1,6 @@
-﻿using Infrastructure;
+﻿using Common;
+using Infrastructure;
+using Provider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,15 +12,20 @@ namespace EffectsExecution
 {
     public abstract class EffectExecutor<ExecutedEffect> where ExecutedEffect : EffectMetadata
     {
-        public ExecutedEffect executedEffectMetadata;
+        public readonly ExecutedEffect executedEffectMetadata;
 
-        protected IEnumerable<Device> devices { get; private set; } = new List<Device>();
+        public EffectExecutor(ExecutedEffect executedEffectMetadata)
+        {
+            this.executedEffectMetadata = executedEffectMetadata;
+        }
+
+        protected IEnumerable<Device> Devices { get; private set; } = new List<Device>();
         private SemaphoreSlim changeConnectedDevicesSemaphore = new SemaphoreSlim(1, 1);
 
         public async Task ChangeConnectedDevices(IEnumerable<Device> devices)
         {
-            var addedDevices = devices.Except(this.devices);
-            var removedDevices = this.devices.Except(devices);
+            var addedDevices = devices.Except(this.Devices);
+            var removedDevices = this.Devices.Except(devices);
 
             await changeConnectedDevicesSemaphore.WaitAsync();
 
@@ -27,7 +34,7 @@ namespace EffectsExecution
 
             changeConnectedDevicesSemaphore.Release();
 
-            this.devices = new List<Device>(devices);
+            this.Devices = new List<Device>(devices);
         }
 
         private async Task DisconnectDevices(IEnumerable<Device> devicesToDisconnect)
@@ -61,14 +68,14 @@ namespace EffectsExecution
 
         public async Task Stop()
         {
-            foreach (var device in devices)
+            foreach (var device in Devices)
             {
                 await device.Disconnect();
             }
 
             await StopInternal();
 
-            devices = Enumerable.Empty<Device>();
+            Devices = Enumerable.Empty<Device>();
         }
 
         public abstract Task StopInternal();

@@ -1,4 +1,4 @@
-﻿using Infrastructure;
+﻿using Provider;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,22 +8,21 @@ using System.Threading.Tasks;
 
 namespace Logitech
 {
-    public class LogitechKeyboardDevice : Device
+    public class LogitechDevice : Device<LogitechDeviceMetadata>
     {
-        private readonly HashSet<OperationType> logitechSupportedOps = new HashSet<OperationType>() { OperationType.SetColor, OperationType.SetBrightness };
+        public LogitechDevice() : base(new LogitechDeviceMetadata())
+        {
 
-        public override string DeviceName => throw new NotImplementedException();
-
-        public override HashSet<OperationType> SupportedOperations => logitechSupportedOps;
+        }
 
         public override Task Connect()
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
         public override Task Disconnect()
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
         public override byte GetBrightnessPercentage()
@@ -43,7 +42,7 @@ namespace Logitech
 
         public override void SetColor(Color color)
         {
-            throw new NotImplementedException();
+            LogitechGSDK.LogiLedSetLightingForTargetZone(DeviceType.Mouse, 1, 100 * (color.R / byte.MaxValue), 100 * (color.G / byte.MaxValue), 100 * (color.B / byte.MaxValue));
         }
     }
 }

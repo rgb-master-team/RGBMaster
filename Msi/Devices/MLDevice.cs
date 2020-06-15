@@ -4,38 +4,28 @@ using System.Drawing;
 using System.Threading.Tasks;
 using Infrastructure;
 using Msi.Devices.Leds;
+using Msi.Provider;
 using Msi.SDKs;
+using Provider;
 
 namespace Msi.Devices
 {
-	public class MLDevice : Device
+	public class MLDevice : Device<MLDeviceMetadata>
 	{
-		public override string DeviceName => Type;
-
-		public string Type { get; set; }
 		public MLLed[] Leds { get; set; }
 
-		#region Device Properties
-
-		public override HashSet<OperationType> SupportedOperations { get; }
-
-		#endregion
-
-		public MLDevice(string deviceType, int ledsCount)
+		public MLDevice(string deviceType, int ledsCount) : base(new MLDeviceMetadata(deviceType))
 		{
-			Type = deviceType;
 			Leds = new MLLed[ledsCount];
-
-			SupportedOperations = new HashSet<OperationType>() { OperationType.SetColor };
 		}
 
 		internal void Load()
 		{
 			for (var ledIndex = 0; ledIndex < Leds.Length; ledIndex++)
 			{
-				MysticLightSdk.GetLedInfo(Type, ledIndex, out var ledName, out var ledStyles);
+				MysticLightSdk.GetLedInfo(DeviceMetadata.deviceType, ledIndex, out var ledName, out var ledStyles);
 
-				Leds[ledIndex] = new MLLed(ledName, ledStyles, ledIndex, Type);
+				Leds[ledIndex] = new MLLed(ledName, ledStyles, ledIndex, DeviceMetadata.deviceType);
 				Leds[ledIndex].Load();
 			}
 		}

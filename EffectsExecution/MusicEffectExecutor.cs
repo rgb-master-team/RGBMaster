@@ -1,5 +1,4 @@
-﻿//using NAudio.Wave;
-using Infrastructure;
+﻿using Common;
 using NAudio.Wave;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,6 +10,11 @@ namespace EffectsExecution
     public class MusicEffectExecutor : EffectExecutor<MusicEffectMetadata>
     {
         private AsioOut captureInstance = null;
+
+        public MusicEffectExecutor() : base(new MusicEffectMetadata())
+        {
+
+        }
 
         public override Task StartInternal()
         {
@@ -95,14 +99,14 @@ namespace EffectsExecution
 
             var tasks = new List<Task>();
 
-            foreach (var device in devices)
+            foreach (var device in Devices)
             {
-                if (device.SupportedOperations.Contains(OperationType.SetBrightness))
+                if (device.DeviceMetadata.SupportedOperations.Contains(OperationType.SetBrightness))
                 {
                     tasks.Add(Task.Run(() => device.SetBrightnessPercentage((byte)max)));
                 }
 
-                if (device.SupportedOperations.Contains(OperationType.SetColor))
+                if (device.DeviceMetadata.SupportedOperations.Contains(OperationType.SetColor))
                 {
                     tasks.Add(Task.Run(() => device.SetColor(color)));
                 }

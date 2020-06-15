@@ -1,4 +1,4 @@
-﻿using Infrastructure;
+﻿using Common;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,7 +10,7 @@ namespace AppExecutionManager.EventManagement
         private static readonly EventManager instance;
 
         private event EventHandler<EffectMetadata> EffectChanged;
-        private event EventHandler<List<Device>> SelectedDevicesChanged;
+        private event EventHandler<List<DeviceMetadata>> SelectedDevicesChanged;
         private event EventHandler StartSyncingRequested;
         private event EventHandler StopSyncingRequested;
 
@@ -39,12 +39,12 @@ namespace AppExecutionManager.EventManagement
             EffectChanged -= callback;
         }
 
-        public void SubscribeToSelectedDevicesChanged(EventHandler<List<Device>> callback)
+        public void SubscribeToSelectedDevicesChanged(EventHandler<List<DeviceMetadata>> callback)
         {
             SelectedDevicesChanged += callback;
         }
 
-        public void UnsubscribeFromSelectedDevicesChanged(EventHandler<List<Device>> callback)
+        public void UnsubscribeFromSelectedDevicesChanged(EventHandler<List<DeviceMetadata>> callback)
         {
             SelectedDevicesChanged -= callback;
         }
@@ -64,7 +64,7 @@ namespace AppExecutionManager.EventManagement
             EffectChanged?.Invoke(this, newEffect);
         }
 
-        public void UpdateSelectedDevices(List<Device> newSelectedDevices)
+        public void UpdateSelectedDevices(List<DeviceMetadata> newSelectedDevices)
         {
             SelectedDevicesChanged?.Invoke(this, newSelectedDevices);
         }

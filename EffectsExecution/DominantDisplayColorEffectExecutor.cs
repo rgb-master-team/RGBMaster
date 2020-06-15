@@ -1,4 +1,6 @@
-﻿using Infrastructure;
+﻿using Common;
+using Infrastructure;
+using Provider;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace EffectsExecution
 {
-    public class DominantDisplayColorEffectExecutor : EffectExecutor<DominantDisplayColorEffect>
+    public class DominantDisplayColorEffectExecutor : EffectExecutor<DominantDisplayColorEffectMetadata>
     {
         [DllImport("user32.dll")]
         static extern bool GetCursorPos(ref Point lpPoint);
@@ -22,9 +24,13 @@ namespace EffectsExecution
         private Timer calculationTimer;
         private Bitmap screenPixel = new Bitmap(1, 1, PixelFormat.Format32bppArgb);
 
+        public DominantDisplayColorEffectExecutor() : base(new DominantDisplayColorEffectMetadata())
+        {
+        }
+
         public override Task StartInternal()
         {
-            var enumeratedDevices = devices.ToList();
+            var enumeratedDevices = Devices.ToList();
 
             calculationTimer = new Timer((state) => OnTimerFired(state, enumeratedDevices), null, 0, 200);
 

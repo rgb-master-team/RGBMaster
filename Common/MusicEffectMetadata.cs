@@ -1,11 +1,9 @@
-﻿//using NAudio.Wave;
-using NAudio.Wave;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Infrastructure
+namespace Common
 {
     public class MusicEffectMetadata : EffectMetadata
     {
@@ -13,7 +11,7 @@ namespace Infrastructure
 
         public override string ShortDescription => "Sync the color of the max frequency of the played music/sound.";
 
-        public override string FullDescription => "TODO: Longer.";
+        public override string FullDescription => ShortDescription;
 
         public override Bitmap Icon => null;
     }

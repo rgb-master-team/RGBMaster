@@ -1,5 +1,6 @@
 ﻿using AuraSDKDotNet;
-using Infrastructure;
+using Common;
+using Provider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,23 +9,13 @@ using System.Threading.Tasks;
 
 namespace Aura
 {
-    public class AuraDevice : Device
+    public class AuraDevice : Device<AuraDeviceMetadata>
     {
-        private readonly HashSet<OperationType> auraSupportedOps = new HashSet<OperationType>() { OperationType.SetColor };
-
-        public override string DeviceName => "Unknown Aura Device";
-
-        public override HashSet<OperationType> SupportedOperations => auraSupportedOps;
-
         private readonly AuraSDKDotNet.AuraDevice internalAuraDevice;
 
-        public AuraDevice(AuraSDKDotNet.AuraDevice internalAuraDevice)
+        public AuraDevice(AuraSDKDotNet.AuraDevice internalAuraDevice) : base(new AuraDeviceMetadata())
         {
             this.internalAuraDevice = internalAuraDevice;
-        }
-
-        public AuraDevice()
-        {
         }
 
         public override Task Connect()

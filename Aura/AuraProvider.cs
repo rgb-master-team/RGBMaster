@@ -1,5 +1,5 @@
 ﻿using AuraSDKDotNet;
-using Infrastructure;
+using Provider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,15 +8,17 @@ using System.Threading.Tasks;
 
 namespace Aura
 {
-    public class AuraProvider : Provider
+    public class AuraProvider : Provider<AuraProviderMetadata, AuraDeviceMetadata>
     {
         private AuraSDK internalSdk;
 
-        public override string ProviderName => "Aura Sync";
-
-        public override Task<IEnumerable<Device>> Discover()
+        public AuraProvider() : base(new AuraProviderMetadata())
         {
-            return Task.FromResult<IEnumerable<Device>>(internalSdk.Motherboards.Select(mb => new AuraDevice(mb)));
+        }
+
+        public override Task<IEnumerable<Device<AuraDeviceMetadata>>> Discover()
+        {
+            return Task.FromResult<IEnumerable<Device<AuraDeviceMetadata>>>(internalSdk.Motherboards.Select(mb => new AuraDevice(mb)));
         }
 
         protected override Task Register()

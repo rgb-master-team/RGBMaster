@@ -4,11 +4,11 @@ using System.Drawing;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure
+namespace Common
 {
     public class StaticColorEffectProps
     {
-        public System.Drawing.Color SelectedColor { get; set; }
+        public Color SelectedColor { get; set; }
     }
 
     public class StaticColorEffectMetadata : EffectMetadata<StaticColorEffectProps>

@@ -5,15 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure
+namespace Provider
 {
-    public abstract class Provider<ProviderMd> where ProviderMd : ProviderMetadata
+    public abstract class Provider<ProviderMd, DeviceMd> where ProviderMd : ProviderMetadata, new() where DeviceMd : DeviceMetadata
     {
-        public ProviderMd ProviderMetadata { get; set; }
+        public readonly ProviderMd ProviderMetadata;
         public bool IsRegistered { get; private set; }
-        public abstract string ProviderName { get; }
         public abstract Task Unregister();
-        public abstract Task<IEnumerable<Device>> Discover();
+        public abstract Task<IEnumerable<Device<DeviceMd>>> Discover();
 
         public async Task InitializeProvider()
         {
@@ -28,14 +27,19 @@ namespace Infrastructure
 
                 IsRegistered = true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
             finally
             {
 
-            }    
+            }
+        }
+
+        public Provider(ProviderMd providerMetadata)
+        {
+            this.ProviderMetadata = providerMetadata;
         }
 
         protected abstract Task Register();

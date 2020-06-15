@@ -8,4 +8,10 @@
     <PackageReference Include="YeelightAPI" Version="1.7.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\Provider\Provider.csproj" />
+    <ProjectReference Include="..\Utils\Utils.csproj" />
+  </ItemGroup>
+
 </Project>

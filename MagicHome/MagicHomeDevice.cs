@@ -1,4 +1,5 @@
-﻿using Infrastructure;
+﻿using Common;
+using Provider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,15 +8,11 @@ using System.Threading.Tasks;
 
 namespace MagicHome
 {
-    public class MagicHomeDevice : Device
+    public class MagicHomeDevice : Device<MagicHomeDeviceMetadata>
     {
         private Light InternalLight;
 
-        public override string DeviceName => "Magic Home Device";
-
-        public override HashSet<OperationType> SupportedOperations => new HashSet<OperationType>() { OperationType.SetColor/*, OperationType.SetBrightness*/ };
-
-        public MagicHomeDevice(Light InternalLight)
+        public MagicHomeDevice(Light InternalLight) : base(new MagicHomeDeviceMetadata())
         {
             this.InternalLight = InternalLight;
             this.InternalLight.Logger.Enabled = false;

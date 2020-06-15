@@ -14,4 +14,8 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Provider\Provider.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,5 +1,5 @@
 ﻿using Colore;
-using Infrastructure;
+using Provider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,14 +8,8 @@ using System.Threading.Tasks;
 
 namespace RazerChroma
 {
-    public class RazerChromaDevice : Device
+    public class RazerChromaDevice : Device<RazerChromaDeviceMetadata>
     {
-        private readonly HashSet<OperationType> chromaSupportedOps = new HashSet<OperationType>() { OperationType.SetColor };
-
-        public override string DeviceName => "All Razer Chroma connected devices";
-
-        public override HashSet<OperationType> SupportedOperations => chromaSupportedOps;
-
         private readonly IChroma internalChromaDriver;
 
         public RazerChromaDevice(IChroma internalChromaDriver)

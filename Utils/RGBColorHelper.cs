@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace Infrastructure
+namespace Utils
 {
     /// <summary>
     /// Helper for colors
@@ -19,14 +19,14 @@ namespace Infrastructure
         /// <returns></returns>
         public static int ComputeRGBColor(int r, int g, int b)
         {
-            return ((r) << 16) | ((g) << 8) | (b);
+            return r << 16 | g << 8 | b;
         }
 
         public static Color ParseColor(int computedColor)
         {
-            int r = ((byte)(computedColor >> 16)); // = 0
-            int g = ((byte)(computedColor >> 8)); // = 0
-            int b = ((byte)(computedColor >> 0)); // = 255
+            int r = (byte)(computedColor >> 16); // = 0
+            int g = (byte)(computedColor >> 8); // = 0
+            int b = (byte)(computedColor >> 0); // = 255
             return Color.FromArgb(r, g, b);
         }
 

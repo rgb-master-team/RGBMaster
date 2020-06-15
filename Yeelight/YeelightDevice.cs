@@ -1,6 +1,6 @@
-﻿using Infrastructure;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Provider;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -9,18 +9,13 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Utils;
 using YeelightAPI.Models;
 
 namespace Yeelight
 {
-    public class YeelightDevice : Device
+    public class YeelightDevice : Device<YeelightDeviceMetadata>
     {
-        private readonly HashSet<OperationType> yeelightSupportedOps = new HashSet<OperationType>() { OperationType.GetBrightness, OperationType.SetBrightness, OperationType.GetColor, OperationType.SetColor };
-
-        public override string DeviceName => !string.IsNullOrEmpty(InternalDevice.Name) ? InternalDevice.Name : InternalDevice.Hostname;
-
-        public override HashSet<OperationType> SupportedOperations => yeelightSupportedOps;
-
         /// <summary>
         /// Serializer settings
         /// </summary>
@@ -35,6 +30,10 @@ namespace Yeelight
         public YeelightDevice(YeelightAPI.Device internalDevice)
         {
             InternalDevice = internalDevice;
+        }
+
+        public YeelightDevice()
+        {
         }
 
         public async override Task Connect()

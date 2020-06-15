@@ -174,18 +174,6 @@
       <Project>{C1B98913-67D7-455F-A837-5E312FCE773C}</Project>
       <Name>AppExecutionManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Logitech\Logitech.csproj">
-      <Project>{5B14F463-0537-4886-B2F2-F4119443CB23}</Project>
-      <Name>Logitech</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MagicHome\MagicHome.csproj">
-      <Project>{8B38A933-1EC0-4295-9BF4-E9F8782DABA5}</Project>
-      <Name>MagicHome</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Yeelight\Yeelight.csproj">
-      <Project>{1926C963-12DA-4B52-8056-DF5F36E5B672}</Project>
-      <Name>Yeelight</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\128.png" />

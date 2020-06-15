@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Infrastructure
+namespace Common
 {
     public class DominantDisplayColorEffectMetadata : EffectMetadata
     {

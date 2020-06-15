@@ -9,7 +9,7 @@ namespace Corsair.Device
     /// Contains information about device.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    internal class CorsairDeviceNative
+    public class CorsairDeviceNative
     {
         /// <summary>
         /// Enum describing device type

@@ -4,20 +4,20 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Common;
 using Corsair.Channel;
 using Corsair.Layout;
 using Corsair.Led;
-using Infrastructure;
+using Corsair.Provider;
+using Provider;
 
 namespace Corsair.Device
 {
-	/// <summary>
-	/// Contains information about device.
-	/// </summary>
-	public class CorsairDevice : Infrastructure.Device
-	{
-		public override string DeviceName => Native.model != null ? Marshal.PtrToStringAuto(Native.model): "Unknown";
-
+    /// <summary>
+    /// Contains information about device.
+    /// </summary>
+    public class CorsairDevice : Device<CorsairDeviceMetadata>
+    {
 		#region Corsair Native
 
 		internal CorsairDeviceNative Native;
@@ -63,25 +63,17 @@ namespace Corsair.Device
 		public CorsairLedPositions LedPositions { get; private set; } 
 		#endregion
 
-		#region Device
-
-		public override HashSet<OperationType> SupportedOperations { get; }
-
-		#endregion
-
 		/// <summary>
 		/// Creates a instance of CorsairDevice
 		/// </summary>
 		/// <param name="deviceNative">The native device info</param>
-		internal CorsairDevice(CorsairDeviceNative deviceNative, int id)
+		public CorsairDevice(CorsairDeviceNative deviceNative, int id): base(new CorsairDeviceMetadata(deviceNative.model != null ? Marshal.PtrToStringAuto(deviceNative.model) : "Unknown"))
 		{
 			Native = deviceNative;
 			Id = id;
 
 			Model = Marshal.PtrToStringAnsi(Native.model);
 			Channels = new CorsairChannels(Native.channels);
-
-			SupportedOperations = new HashSet<OperationType>() { OperationType.SetColor };
 	}
 
 		/// <summary>

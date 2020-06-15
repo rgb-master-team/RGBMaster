@@ -1,19 +1,16 @@
-﻿using Infrastructure;
+﻿using Provider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YeelightAPI;
-using Device = Infrastructure.Device;
 
 namespace Yeelight
 {
-    public class YeelightProvider : Provider
+    public class YeelightProvider : Provider<YeelightProviderMetadata, YeelightDeviceMetadata>
     {
-        public override string ProviderName => "Xiaomi Yeelight";
-
-        public override async Task<IEnumerable<Device>> Discover()
+        public override async Task<IEnumerable<Device<YeelightDeviceMetadata>>> Discover()
         {
             return (await DeviceLocator.Discover()).Select(device => new YeelightDevice(device));
         }
