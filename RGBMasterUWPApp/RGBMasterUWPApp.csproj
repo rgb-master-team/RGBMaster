@@ -136,9 +136,6 @@
     <Compile Include="RGBMasterUserControl.xaml.cs">
       <DependentUpon>RGBMasterUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="State\AppState.cs" />
-    <Compile Include="State\DiscoveredDevice.cs" />
-    <Compile Include="State\RegisteredProvider.cs" />
     <Compile Include="Utils\ExtensionMethods.cs" />
     <EmbeddedResource Include="Properties\RGBMasterUWPApp.rd.xml" />
   </ItemGroup>
@@ -173,9 +170,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj">
-      <Project>{320554FA-5A03-4CB0-AE58-7D339035139F}</Project>
-      <Name>Infrastructure</Name>
+    <ProjectReference Include="..\AppExecutionManager\AppExecutionManager.csproj">
+      <Project>{C1B98913-67D7-455F-A837-5E312FCE773C}</Project>
+      <Name>AppExecutionManager</Name>
     </ProjectReference>
     <ProjectReference Include="..\Logitech\Logitech.csproj">
       <Project>{5B14F463-0537-4886-B2F2-F4119443CB23}</Project>

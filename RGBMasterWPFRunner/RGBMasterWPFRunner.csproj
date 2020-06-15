@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\AppExecutionManager\AppExecutionManager.csproj" />
     <ProjectReference Include="..\RGBMasterUWPApp\RGBMasterUWPApp.csproj" />
     <ProjectReference Include="..\RGBMasterUWPHost\RGBMasterUWPHost.csproj" />
   </ItemGroup>

@@ -31,7 +31,7 @@ namespace RGBMasterUWPApp.Pages
         {
             get
             {
-                return string.Format("{0}.{1}.{2}.{3}", AppState.Instance.AppVersion.Major, AppState.Instance.AppVersion.Minor, AppState.Instance.AppVersion.Build, AppState.Instance.AppVersion.Revision);
+                return AppState.Instance.AppVersion;
             }
         }
 

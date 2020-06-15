@@ -1,15 +1,14 @@
-﻿using System;
+﻿using Infrastructure;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure
+namespace EffectsExecution
 {
-    public class StaticColorEffect : Effect
+    public class StaticColorEffectExecutor : EffectExecutor<StaticColorEffectMetadata>
     {
-        private System.Drawing.Color currentColor;
-
-        public async Task ChangeStaticColor(System.Drawing.Color newColor)
+        private async Task ChangeStaticColor(System.Drawing.Color newColor)
         {
             var tasksList = new List<Task>();
 
@@ -23,7 +22,7 @@ namespace Infrastructure
 
         public override async Task StartInternal()
         {
-            await ChangeStaticColor(currentColor);
+            await ChangeStaticColor(executedEffectMetadata.EffectProperties.SelectedColor);
         }
 
         public override Task StopInternal()

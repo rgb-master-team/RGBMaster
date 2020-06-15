@@ -1,5 +1,8 @@
-﻿using NAudio.Wave;
+﻿using AppExecutionManager.EventManagement;
+using Infrastructure;
+using NAudio.Wave;
 using RGBMasterUWPApp.State;
+using System.Collections.Generic;
 using Windows.ApplicationModel;
 
 namespace RGBMasterWPFRunner
@@ -18,7 +21,20 @@ namespace RGBMasterWPFRunner
             PackageVersion version = packageId.Version;
 
 
-            AppState.Instance.AppVersion = version;
+            AppState.Instance.AppVersion = string.Format($"{version.Major}.{version.Minor}.{version.Build}.{version.Revision}");
+
+            EventManager.Instance.SubscribeToEffectChanged(Instance_EffectChanged);
+            EventManager.Instance.SubscribeToSelectedDevicesChanged(Instance_SelectedDevicesChanged);
+        }
+
+        private void Instance_EffectChanged(object sender, Infrastructure.EffectMetadata e)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private void Instance_SelectedDevicesChanged(object sender, List<Device> e)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

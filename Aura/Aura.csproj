@@ -8,8 +8,4 @@
     <PackageReference Include="AuraSDK" Version="1.0.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
-  </ItemGroup>
-
 </Project>

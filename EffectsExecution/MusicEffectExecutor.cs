@@ -1,13 +1,14 @@
 ﻿//using NAudio.Wave;
+using Infrastructure;
 using NAudio.Wave;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Infrastructure
+namespace EffectsExecution
 {
-    public class MusicEffect : Effect
+    public class MusicEffectExecutor : EffectExecutor<MusicEffectMetadata>
     {
         private AsioOut captureInstance = null;
 
@@ -98,7 +99,7 @@ namespace Infrastructure
             {
                 if (device.SupportedOperations.Contains(OperationType.SetBrightness))
                 {
-                    tasks.Add(Task.Run(() => device.SetBrightnessPercentage((byte)(max))));
+                    tasks.Add(Task.Run(() => device.SetBrightnessPercentage((byte)max)));
                 }
 
                 if (device.SupportedOperations.Contains(OperationType.SetColor))

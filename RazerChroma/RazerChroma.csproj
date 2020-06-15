@@ -8,8 +8,4 @@
     <PackageReference Include="Colore" Version="6.0.0-rc0005" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
-  </ItemGroup>
-
 </Project>

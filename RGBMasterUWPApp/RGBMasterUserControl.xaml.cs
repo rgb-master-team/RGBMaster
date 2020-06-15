@@ -1,10 +1,12 @@
-﻿using Infrastructure;
+﻿using AppExecutionManager.EventManagement;
+using Infrastructure;
 using Logitech;
 using MagicHome;
 using RGBMasterUWPApp.Pages;
 using RGBMasterUWPApp.State;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -51,7 +53,7 @@ namespace RGBMasterUWPApp
             {
                 if (AppState.Instance.IsEffectRunning && AppState.Instance.SelectedEffect != null)
                 {
-                    await AppState.Instance.SelectedEffect?.ChangeConnectedDevices(AppState.Instance.SelectedDevices);
+                    EventManager.Instance.UpdateSelectedDevices(AppState.Instance.SelectedDevices.ToImmutableList().ToList());
                 }
             };
         }
@@ -112,7 +114,7 @@ namespace RGBMasterUWPApp
 
             if (AppState.Instance.IsEffectRunning)
             {
-                await AppState.Instance.SelectedEffect?.Stop();
+                EventManager.Instance.StopSyncing();
 
                 AppState.Instance.IsEffectRunning = false;
 
@@ -128,8 +130,8 @@ namespace RGBMasterUWPApp
             }
             else
             {
-                await AppState.Instance.SelectedEffect.ChangeConnectedDevices(AppState.Instance.SelectedDevices);
-                await AppState.Instance.SelectedEffect.Start();
+                EventManager.Instance.UpdateSelectedDevices(AppState.Instance.SelectedDevices.ToImmutableList().ToList());
+                EventManager.Instance.StartSyncing();
 
                 AppState.Instance.IsEffectRunning = true;
 

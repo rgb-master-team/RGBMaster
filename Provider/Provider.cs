@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Infrastructure
 {
-    public abstract class Provider
+    public abstract class Provider<ProviderMd> where ProviderMd : ProviderMetadata
     {
+        public ProviderMd ProviderMetadata { get; set; }
         public bool IsRegistered { get; private set; }
-
         public abstract string ProviderName { get; }
         public abstract Task Unregister();
         public abstract Task<IEnumerable<Device>> Discover();

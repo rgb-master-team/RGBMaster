@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Infrastructure;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -8,9 +9,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Infrastructure
+namespace EffectsExecution
 {
-    public class DominantDisplayColorEffect : Effect
+    public class DominantDisplayColorEffectExecutor : EffectExecutor<DominantDisplayColorEffect>
     {
         [DllImport("user32.dll")]
         static extern bool GetCursorPos(ref Point lpPoint);

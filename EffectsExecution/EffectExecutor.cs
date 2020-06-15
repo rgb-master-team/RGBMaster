@@ -1,14 +1,17 @@
-﻿using System;
+﻿using Infrastructure;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Infrastructure
+namespace EffectsExecution
 {
-    public abstract class Effect
+    public abstract class EffectExecutor<ExecutedEffect> where ExecutedEffect : EffectMetadata
     {
+        public ExecutedEffect executedEffectMetadata;
+
         protected IEnumerable<Device> devices { get; private set; } = new List<Device>();
         private SemaphoreSlim changeConnectedDevicesSemaphore = new SemaphoreSlim(1, 1);
 
@@ -18,7 +21,7 @@ namespace Infrastructure
             var removedDevices = this.devices.Except(devices);
 
             await changeConnectedDevicesSemaphore.WaitAsync();
-            
+
             await DisconnectDevices(removedDevices);
             await ConnectDevices(addedDevices);
 

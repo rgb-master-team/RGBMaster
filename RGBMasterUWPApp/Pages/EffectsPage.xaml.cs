@@ -1,4 +1,5 @@
-﻿using Infrastructure;
+﻿using AppExecutionManager.EventManagement;
+using Infrastructure;
 using RGBMasterUWPApp.State;
 using System;
 using System.Collections.Generic;
@@ -30,56 +31,48 @@ namespace RGBMasterUWPApp.Pages
             this.InitializeComponent();
         }
 
-        private async void ColorPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
+        private void ColorPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
         {
             var color = System.Drawing.Color.FromArgb(sender.Color.R, sender.Color.G, sender.Color.B);
             AppState.Instance.StaticColor = color;
 
             if (AppState.Instance.IsEffectRunning)
             {
-                var staticColorEffect = AppState.Instance.SelectedEffect as StaticColorEffect;
+                var staticColorEffect = AppState.Instance.SelectedEffect as StaticColorEffectMetadata;
+                staticColorEffect.UpdateProps(new StaticColorEffectProps() { SelectedColor = color });
 
-                await staticColorEffect.ChangeStaticColor(color);
+                EventManager.Instance.UpdateEffect(staticColorEffect);
             }
         }
 
-        private async Task ChangeCurrentRunningEffect(Effect desiredEffect)
+        private void ChangeCurrentRunningEffect(EffectMetadata desiredEffect)
         {
-            if (AppState.Instance.IsEffectRunning)
-            {
-                await AppState.Instance.SelectedEffect.Stop();
-            }
-
             AppState.Instance.SelectedEffect = desiredEffect;
-            await AppState.Instance.SelectedEffect.ChangeConnectedDevices(AppState.Instance.SelectedDevices);
 
-            if (AppState.Instance.IsEffectRunning)
-            {
-                await AppState.Instance.SelectedEffect.Start();
-            }
+            EventManager.Instance.UpdateEffect(desiredEffect);
         }
 
-        private async void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var pivot = (Pivot)sender;
-            Effect effect;
+            EffectMetadata effect;
 
             switch (pivot.SelectedIndex)
             {
                 case 0:
                     // Color picker Logic here
-                    effect = new StaticColorEffect();
+                    effect = new StaticColorEffectMetadata();
                     break;
                 case 1:
                     // Music Logic Here
-                    effect = new MusicEffect();
+                    effect = new MusicEffectMetadata();
                     break;
                 case 2:
                     // Pointer Logic here
                     effect = new DominantDisplayColorEffect();
                     break;
                 default:
-                    effect = new StaticColorEffect();
+                    effect = new StaticColorEffectMetadata();
                     break;
             }
 
@@ -88,7 +81,7 @@ namespace RGBMasterUWPApp.Pages
             // perhaps a factory.
             if (effect.GetType() != AppState.Instance.SelectedEffect?.GetType())
             {
-                await ChangeCurrentRunningEffect(effect);
+                ChangeCurrentRunningEffect(effect);
             }
         }
     }
