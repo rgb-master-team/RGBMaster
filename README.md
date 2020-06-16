@@ -15,10 +15,10 @@ The project attempts to use official libraries when possible and focuses on the 
 ## Table of Contents
 
 - [Supported integrations](#integrations)
+- [Prerequisites](#prerequisites)
 - [Supported "Effects"](#effects)
 - [Supported "Flows"](#flows)
 - [Contribution](#contrib)
-- [TODOs](#todos)
 
 <a name="integrations"></a>
 ## Supported integrations
@@ -30,6 +30,15 @@ The project attempts to use official libraries when possible and focuses on the 
 - [ ] Asus Aura - WIP
 - [ ] SteelSeries - WIP
 - [ ] ShellyRGB - WIP
+
+<a name="prerequisites"></a>
+## Prerequisites 
+
+**Razer**
+- Make sure that Razer Synapse with **Studio** is installed.
+
+**Yeelight**
+- Make sure that LAN Control is enabled by setting it in the Xiaomi Yeelight app.
 
 <a name="effects"></a>
 ## Supported "Effects"
