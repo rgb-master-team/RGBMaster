@@ -27,7 +27,7 @@
                     </StackPanel>
                     
                     <!--SplitView - Configure static names for devices-->
-                    <StackPanel>
+                    <!--<StackPanel>
                         <SplitView x:Name="splitView" PaneBackground="Transparent" IsPaneOpen="True" DisplayMode="CompactInline">
                             <SplitView.Pane>
                                 <Grid Width="200">
@@ -41,7 +41,7 @@
                                               ItemClick="NavLinksList_ItemClick" IsItemClickEnabled="True"
                                               ItemsSource="{x:Bind NavLinks}" ItemTemplate="{StaticResource NavLinkItemTemplate}"/>
                                     <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="14,24,0,24" >
-                                        <!--Providers names-->
+                                        --><!--Providers names--><!--
                                     </StackPanel>
                                 </Grid>
                             </SplitView.Pane>
@@ -52,10 +52,10 @@
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
                                 <TextBlock Text="Devices" Margin="12,12,0,0" Style="{StaticResource BaseTextBlockStyle}"/>
-                                <!--Devices names by selected provider-->
+                                --><!--Devices names by selected provider--><!--
                             </Grid>
                         </SplitView>
-                    </StackPanel>
+                    </StackPanel>-->
                     
                     
                     <!--Smoothness - Should be used in effects instead of here-->
