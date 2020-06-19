@@ -84,7 +84,7 @@ namespace RGBMasterUWPApp
 
                 button.Label = "Stop";
 
-                syncStatusToolTip.Content = AppState.Instance.SelectedEffect.ToString();
+                syncStatusToolTip.Content = AppState.Instance.SelectedEffect.EffectName;
                 ToolTipService.SetToolTip(Sync_Button, syncStatusToolTip);
             }
 

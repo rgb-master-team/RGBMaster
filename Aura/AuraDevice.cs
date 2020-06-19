@@ -47,5 +47,15 @@ namespace Aura
         {
             this.internalAuraDevice.SetColors(new Color[] { new Color(color.R, color.G, color.B) });
         }
+
+        public override void TurnOffInternal()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void TurnOnInternal()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

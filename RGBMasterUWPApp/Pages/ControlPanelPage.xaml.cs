@@ -1,4 +1,5 @@
-﻿using AppExecutionManager.State;
+﻿using AppExecutionManager.EventManagement;
+using AppExecutionManager.State;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
@@ -31,30 +32,5 @@ namespace RGBMasterUWPApp.Pages
             this.InitializeComponent();
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Button button = (Button)sender;
-
-            TeachingTip tipToToggle;
-
-            if (AppState.Instance.AreAllLightsOn)
-            {
-                // Turn off all lights logic goes here...
-                button.Content = "Turn on all lights";
-                tipToToggle = ToggleTip_LightsOff;
-            }
-            else
-            {
-                // Turn on all lights logic goes here...
-                button.Content = "Turn off all lights";
-                tipToToggle = ToggleTip_LightsOn;
-            }
-
-            AppState.Instance.AreAllLightsOn = !AppState.Instance.AreAllLightsOn;
-
-            tipToToggle.IsOpen = true;
-            await Task.Delay(3000);
-            tipToToggle.IsOpen = false;
-        }
     }
 }

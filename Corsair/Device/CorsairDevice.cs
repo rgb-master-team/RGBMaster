@@ -127,6 +127,16 @@ namespace Corsair.Device
 			CUESDK.CUESDK.SetLedsColorsFlushBuffer();
 		}
 
+		public override void TurnOnInternal()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void TurnOffInternal()
+		{
+			throw new NotImplementedException();
+		}
+
 		#endregion
 	}
 }

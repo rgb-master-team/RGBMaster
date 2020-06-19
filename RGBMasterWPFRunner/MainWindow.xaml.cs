@@ -24,6 +24,7 @@ namespace RGBMasterWPFRunner
     public partial class MainWindow : System.Windows.Window
     {
         private SemaphoreSlim changeConnectedDevicesSemaphore = new SemaphoreSlim(1, 1);
+        private SemaphoreSlim initializeProvidersSemaphore = new SemaphoreSlim(1, 1);
 
         private readonly Dictionary<Guid, Provider.BaseProvider> supportedProviders = new Dictionary<Guid, Provider.BaseProvider>();
         private readonly Dictionary<Guid, EffectExecutor> supportedEffectsExecutors = new Dictionary<Guid, EffectExecutor>();
@@ -50,6 +51,27 @@ namespace RGBMasterWPFRunner
             EventManager.Instance.SubscribeToStartSyncingRequested(StartSyncing);
             EventManager.Instance.SubscribeToStopSyncingRequested(StopSyncing);
             EventManager.Instance.SubscribeToStaticColorChanges(ChangeStaticColor);
+            EventManager.Instance.SubscribeToTurnOnAllLightsRequests(TurnOnAllLights);
+        }
+
+        private async void TurnOnAllLights(object sender, EventArgs e)
+        {
+            var tasks = new List<Task>();
+
+            foreach (var provider in AppState.Instance.RegisteredProviders)
+            {
+                foreach (var device in provider.Devices)
+                {
+                    if (device.IsChecked)
+                    {
+                        var deviceGuid = device.Device.DeviceGuid;
+                        tasks.Add(Task.Run(() => concreteDevices[deviceGuid].TurnOn()));
+                    }
+                }
+            }
+
+            await Task.WhenAll(tasks);
+
         }
 
         private async void StopSyncing(object sender, EventArgs e)
@@ -113,6 +135,7 @@ namespace RGBMasterWPFRunner
 
         private async void InitializeProviders(object sender, EventArgs e)
         {
+            await initializeProvidersSemaphore.WaitAsync();
             concreteDevices.Clear();
             AppState.Instance.RegisteredProviders.Clear();
             //AppState.Instance.SelectedDevices.Clear();
@@ -149,7 +172,10 @@ namespace RGBMasterWPFRunner
             {
                 concreteDevices.Add(device.DeviceMetadata.DeviceGuid, device);
             }
+
+            initializeProvidersSemaphore.Release();
         }
+
 
         private async void Instance_EffectChanged(object sender, EffectMetadata e)
         {
@@ -185,11 +211,13 @@ namespace RGBMasterWPFRunner
 
                 if (!item.IsChecked && concreteDevice.IsConnected)
                 {
+                    concreteDevice.TurnOff();
                     await concreteDevice.Disconnect();
                 }
                 else if (item.IsChecked && !concreteDevice.IsConnected)
                 {
                     await concreteDevice.Connect();
+                    concreteDevice.TurnOn();
                 }
             }
 

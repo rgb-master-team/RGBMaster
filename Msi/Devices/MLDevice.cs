@@ -62,7 +62,17 @@ namespace Msi.Devices
 		public override Task DisconnectInternal()
 		{
 			return Task.CompletedTask;
-		} 
+		}
+
+		public override void TurnOnInternal()
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public override void TurnOffInternal()
+		{
+			throw new System.NotImplementedException();
+		}
 
 		#endregion
 	}
