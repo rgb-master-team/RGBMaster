@@ -123,16 +123,20 @@ namespace RGBMasterWPFRunner
 
             foreach (var provider in supportedProviders.Values)
             {
-                await provider.InitializeProvider();
-                var devices = await provider.Discover();
+                var didInitialize = await provider.InitializeProvider();
 
-                discoveredDevices.AddRange(devices);
-
-                AppState.Instance.RegisteredProviders.Add(new RegisteredProvider()
+                if (didInitialize)
                 {
-                    Provider = provider.ProviderMetadata,
-                    Devices = new System.Collections.ObjectModel.ObservableCollection<DiscoveredDevice>(devices.Select(device => new DiscoveredDevice() { Device = device.DeviceMetadata, IsChecked = false }))
-                });
+                    var devices = await provider.Discover();
+
+                    discoveredDevices.AddRange(devices);
+
+                    AppState.Instance.RegisteredProviders.Add(new RegisteredProvider()
+                    {
+                        Provider = provider.ProviderMetadata,
+                        Devices = new System.Collections.ObjectModel.ObservableCollection<DiscoveredDevice>(devices.Select(device => new DiscoveredDevice() { Device = device.DeviceMetadata, IsChecked = false }))
+                    });
+                }
             }
 
             /*AppState.Instance.SelectedDevices = new System.Collections.ObjectModel.ObservableCollection<DiscoveredDevice>(discoveredDevices.Select(originalDevice => new DiscoveredDevice()
