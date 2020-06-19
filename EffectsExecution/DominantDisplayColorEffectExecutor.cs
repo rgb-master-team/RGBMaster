@@ -31,7 +31,7 @@ namespace EffectsExecution
         {
             var enumeratedDevices = Devices.ToList();
 
-            calculationTimer = new Timer((state) => OnTimerFired(state, enumeratedDevices), null, 0, 200);
+            calculationTimer = new Timer((state) => OnTimerFired(state, enumeratedDevices), null, 0, Timeout.Infinite);
 
             return Task.CompletedTask;
         }
@@ -43,13 +43,16 @@ namespace EffectsExecution
 
             var c = GetColorAt(cursor);
 
-            Task[] setColorTasks = new Task[devices.Count];
-            for (int i = 0; i < devices.Count; i++)
+            List<Task> setColorTasks = new List<Task>();
+
+            foreach (var device in devices)
             {
-                setColorTasks[i] = Task.Run(() => devices[i].SetColor(c));
+                setColorTasks.Add(Task.Run(() => device.SetColor(c)));
             }
 
             await Task.WhenAll(setColorTasks);
+
+            calculationTimer.Change(50, Timeout.Infinite);
         }
 
         public Color GetColorAt(Point location)
