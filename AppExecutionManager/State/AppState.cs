@@ -19,7 +19,6 @@ namespace AppExecutionManager.State
                 RegisteredProviders = new ObservableCollection<RegisteredProvider>(),
                 IsEffectRunning = false,
                 //SelectedDevices = new ObservableCollection<DiscoveredDevice>(),
-                AreAllLightsOn = false,
                 Effects = new ObservableCollection<EffectMetadata>()
             };
 
@@ -41,7 +40,6 @@ namespace AppExecutionManager.State
         public ObservableCollection<EffectMetadata> Effects { get; set; }
         public bool IsEffectRunning { get; set; }
         public System.Drawing.Color StaticColor { get; set; }
-        public bool AreAllLightsOn { get; set; }
         public string AppVersion { get; set; }
     }
 }

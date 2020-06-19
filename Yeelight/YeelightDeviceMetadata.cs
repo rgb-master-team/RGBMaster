@@ -16,7 +16,7 @@ namespace Yeelight
             }
         }
 
-        private readonly HashSet<OperationType> yeelightSupportedOps = new HashSet<OperationType>() { OperationType.GetBrightness, OperationType.SetBrightness, OperationType.GetColor, OperationType.SetColor };
+        private readonly HashSet<OperationType> yeelightSupportedOps = new HashSet<OperationType>() { OperationType.GetBrightness, OperationType.SetBrightness, OperationType.GetColor, OperationType.SetColor, OperationType.TurnOn, OperationType.TurnOff };
 
         public YeelightDeviceMetadata(string deviceName)
         {

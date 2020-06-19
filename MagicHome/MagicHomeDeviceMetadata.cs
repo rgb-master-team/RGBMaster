@@ -8,7 +8,7 @@ namespace MagicHome
     {
         public override string DeviceName => "Magic Home Device";
 
-        public override HashSet<OperationType> SupportedOperations => new HashSet<OperationType>() { OperationType.SetColor/*, OperationType.SetBrightness*/ };
+        public override HashSet<OperationType> SupportedOperations => new HashSet<OperationType>() { OperationType.SetColor, OperationType.TurnOn, OperationType.TurnOff /*, OperationType.SetBrightness*/ };
 
         public override Bitmap DeviceIcon => throw new System.NotImplementedException();
     }

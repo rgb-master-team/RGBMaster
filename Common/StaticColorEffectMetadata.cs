@@ -13,7 +13,7 @@ namespace Common
 
     public class StaticColorEffectMetadata : EffectMetadata<StaticColorEffectProps>
     {
-        public override string EffectName => "Static Color";
+        public override string EffectName => "Color Picker Sync";
 
         public override string ShortDescription => "Syncs the chosen static color to all selected devices.";
 

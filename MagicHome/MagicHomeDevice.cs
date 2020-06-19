@@ -46,5 +46,15 @@ namespace MagicHome
         {
             InternalLight.SetColor(color.R, color.G, color.B);
         }
+
+        public override void TurnOffInternal()
+        {
+            InternalLight.TurnOff();
+        }
+
+        public override void TurnOnInternal()
+        {
+            InternalLight.TurnOn();
+        }
     }
 }

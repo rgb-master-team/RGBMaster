@@ -38,7 +38,7 @@
             <winui:ScrollViewer>
                 <StackPanel Background="{StaticResource FrameBrush}">
                     <CommandBar OverflowButtonVisibility="Collapsed" DefaultLabelPosition="Right" Background="{StaticResource FrameBrush}">
-                        <AppBarButton Click="AppBarButton_Click" Label="Start">
+                        <AppBarButton Click="AppBarButton_Click" Label="Start" x:Name="Sync_Button">
                             <Grid x:Name="AppBarStartStopGrid">
                                 <FontIcon x:Name="InnerButton" Glyph="&#xF5B0;" FontFamily="Segoe MDL2 Assets" Foreground="Green"/>
                                 <FontIcon x:Name="OuterButton" Glyph="&#xE768;" FontFamily="Segoe MDL2 Assets"/>

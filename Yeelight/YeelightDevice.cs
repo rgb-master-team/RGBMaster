@@ -124,5 +124,35 @@ namespace Yeelight
 
             musicModeSocket.Send(colorSentData);
         }
+
+        public override void TurnOffInternal()
+        {
+            Command turnOffCommand = new Command()
+            {
+                Id = 1,
+                Method = "set_power",
+                Params = new List<object>() { "off", "smooth", 500 }
+            };
+
+            string turnOffJSON = JsonConvert.SerializeObject(turnOffCommand, DeviceSerializerSettings);
+            byte[] turnOffSentData = Encoding.ASCII.GetBytes(turnOffJSON + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
+
+            musicModeSocket.Send(turnOffSentData);
+        }
+
+        public override void TurnOnInternal()
+        {
+            Command turnOnCommand = new Command()
+            {
+                Id = 1,
+                Method = "set_power",
+                Params = new List<object>() { "on", "smooth", 500 }
+            };
+
+            string turnOnJSON = JsonConvert.SerializeObject(turnOnCommand, DeviceSerializerSettings);
+            byte[] turnOnSentData = Encoding.ASCII.GetBytes(turnOnJSON + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
+
+            musicModeSocket.Send(turnOnSentData);
+        }
     }
 }

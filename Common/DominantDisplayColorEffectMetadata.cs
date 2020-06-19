@@ -12,7 +12,7 @@ namespace Common
 {
     public class DominantDisplayColorEffectMetadata : EffectMetadata
     {
-        public override string EffectName => "Dominant Display Color";
+        public override string EffectName => "Pointer Sync";
 
         public override string ShortDescription => "Syncs lights with the most dominant color of a selected monitor.";
 

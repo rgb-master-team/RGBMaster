@@ -17,6 +17,7 @@ namespace AppExecutionManager.EventManagement
         private event EventHandler StartSyncingRequested;
         private event EventHandler StopSyncingRequested;
         private event EventHandler InitializeProvidersRequested;
+        private event EventHandler TurnOnAllLightsRequested;
 
         static EventManager()
         {
@@ -121,6 +122,20 @@ namespace AppExecutionManager.EventManagement
         public void ChangeStaticColor(Color color)
         {
             StaticColorChanged?.Invoke(this, color);
+        }
+
+        public void SubscribeToTurnOnAllLightsRequests(EventHandler callback)
+        {
+            TurnOnAllLightsRequested += callback;
+        }
+
+        public void UnsubscribeFromTurnOnAllLightsRequests(EventHandler callback)
+        {
+            TurnOnAllLightsRequested -= callback;
+        }
+        public void TurnOnAllLights()
+        {
+            TurnOnAllLightsRequested?.Invoke(this, null);
         }
     }
 }
