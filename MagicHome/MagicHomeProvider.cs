@@ -17,7 +17,7 @@ namespace MagicHome
 
         }
 
-        public override Task<IEnumerable<Device>> Discover()
+        public override Task<List<Device>> Discover()
         {
             List<Light> internalDevices;
 
@@ -32,7 +32,7 @@ namespace MagicHome
                 internalDevices = internalDiscoveredDevices;
             }
 
-            return Task.FromResult<IEnumerable<Device>>(internalDevices.Select(internalDevice => new MagicHomeDevice(internalDevice)));
+            return Task.FromResult(internalDevices.Select(internalDevice => new MagicHomeDevice(internalDevice)).ToList<Device>());
         }
 
         protected override Task Register()

@@ -21,6 +21,7 @@
     <ProjectReference Include="..\AppExecutionManager\AppExecutionManager.csproj" />
     <ProjectReference Include="..\EffectsExecution\EffectsExecution.csproj" />
     <ProjectReference Include="..\Logitech\Logitech.csproj" />
+    <ProjectReference Include="..\MagicHome\MagicHome.csproj" />
     <ProjectReference Include="..\Provider\Provider.csproj" />
     <ProjectReference Include="..\RazerChroma\RazerChroma.csproj" />
     <ProjectReference Include="..\RGBMasterUWPApp\RGBMasterUWPApp.csproj" />

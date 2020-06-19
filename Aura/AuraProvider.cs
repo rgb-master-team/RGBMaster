@@ -16,9 +16,9 @@ namespace Aura
         {
         }
 
-        public override Task<IEnumerable<Device>> Discover()
+        public override Task<List<Device>> Discover()
         {
-            return Task.FromResult<IEnumerable<Device>>(internalSdk.Motherboards.Select(mb => new AuraDevice(mb)));
+            return Task.FromResult(internalSdk.Motherboards.Select(mb => new AuraDevice(mb)).ToList<Device>());
         }
 
         protected override Task Register()

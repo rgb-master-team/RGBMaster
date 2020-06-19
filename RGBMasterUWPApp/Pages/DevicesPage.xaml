@@ -19,15 +19,15 @@
                 <StackPanel>
                     <TextBox x:Name="ManualConnectionAddressTxtBx" PlaceholderText="Manually connect via IP address or unique ID"></TextBox>
                     <Button Content="Connect" x:Name="ManualConnectionButton" Click="ManualConnectionButton_Click"></Button>
-                    <muxc:ItemsRepeater ItemsSource="{x:Bind Devices}">
-                        <muxc:ItemsRepeater.ItemTemplate>
+                    <ListView ItemsSource="{x:Bind Devices}">
+                        <ListView.ItemTemplate>
                             <DataTemplate x:DataType="state:DiscoveredDevice">
                                 <StackPanel Orientation="Vertical">
                                     <CheckBox IsChecked="{x:Bind IsChecked}" Tag="{x:Bind}" Click="CheckBox_Click" Content="{x:Bind Device.DeviceName}" />
                                 </StackPanel>
                             </DataTemplate>
-                        </muxc:ItemsRepeater.ItemTemplate>
-                    </muxc:ItemsRepeater>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </StackPanel>
             </DataTemplate>
         </Pivot.ItemTemplate>

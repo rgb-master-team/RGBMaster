@@ -14,9 +14,9 @@ namespace Logitech
 
         }
 
-        public override Task<IEnumerable<Device>> Discover()
+        public override Task<List<Device>> Discover()
         {
-            return Task.FromResult<IEnumerable<Device>>(new List<LogitechDevice>() { new LogitechDevice() });
+            return Task.FromResult(new List<Device>() { new LogitechDevice() });
             
 
             /*

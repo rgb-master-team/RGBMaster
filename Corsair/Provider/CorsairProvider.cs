@@ -1,6 +1,7 @@
 ﻿using Corsair.Provider;
 using Provider;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CorsairProvider
@@ -23,10 +24,10 @@ namespace CorsairProvider
 			return Task.CompletedTask;
 		}
 
-        public override Task<IEnumerable<Device>> Discover()
+        public override Task<List<Device>> Discover()
         {
 			var devices = Corsair.CUESDK.CUESDK.GetAllDevices();
-			return Task.FromResult<IEnumerable<Device>>(devices);
+			return Task.FromResult(devices.ToList<Device>());
 		}
 	}
 }

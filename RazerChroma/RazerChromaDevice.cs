@@ -24,7 +24,6 @@ namespace RazerChroma
 
         public override Task DisconnectInternal()
         {
-            internalChromaDriver.Unregister();
             return Task.CompletedTask;
         }
 

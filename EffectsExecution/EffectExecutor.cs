@@ -67,14 +67,7 @@ namespace EffectsExecution
 
         public async Task Stop()
         {
-            foreach (var device in Devices)
-            {
-                await device.Disconnect();
-            }
-
             await StopInternal();
-
-            Devices = Enumerable.Empty<Device>();
         }
 
         public abstract Task StopInternal();

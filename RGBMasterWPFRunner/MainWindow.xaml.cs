@@ -3,6 +3,7 @@ using AppExecutionManager.State;
 using Common;
 using EffectsExecution;
 using Logitech;
+using MagicHome;
 using NAudio.Wave;
 using Provider;
 using RazerChroma;
@@ -10,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Yeelight;
@@ -21,6 +23,8 @@ namespace RGBMasterWPFRunner
     /// </summary>
     public partial class MainWindow : System.Windows.Window
     {
+        private SemaphoreSlim changeConnectedDevicesSemaphore = new SemaphoreSlim(1, 1);
+
         private readonly Dictionary<Guid, Provider.BaseProvider> supportedProviders = new Dictionary<Guid, Provider.BaseProvider>();
         private readonly Dictionary<Guid, EffectExecutor> supportedEffectsExecutors = new Dictionary<Guid, EffectExecutor>();
         private readonly Dictionary<Guid, Device> concreteDevices = new Dictionary<Guid, Device>();
@@ -33,7 +37,7 @@ namespace RGBMasterWPFRunner
             PackageId packageId = package.Id;
             PackageVersion version = packageId.Version;
 
-            CreateAndSetSupportedProviders(new List<BaseProvider>() { new YeelightProvider(), new RazerChromaProvider(), new LogitechProvider() });
+            CreateAndSetSupportedProviders(new List<BaseProvider>() { new YeelightProvider(), new MagicHomeProvider(), new RazerChromaProvider(), new LogitechProvider() });
 
             CreateAndSetSupportedEffectsExecutors(new List<EffectExecutor>() { new MusicEffectExecutor(), new DominantDisplayColorEffectExecutor(), new StaticColorEffectExecutor() });
             SetUIStateEffects();
@@ -162,12 +166,16 @@ namespace RGBMasterWPFRunner
 
         private async void Instance_SelectedDevicesChanged(object sender, List<DiscoveredDevice> devices)
         {
-            if (devices == null)
+            var newSelectedDevices = devices;
+
+            await changeConnectedDevicesSemaphore.WaitAsync();
+
+            if (newSelectedDevices == null)
             {
                 return;
             }
 
-            foreach (var item in devices)
+            foreach (var item in newSelectedDevices)
             {
                 var concreteDevice = concreteDevices[item.Device.DeviceGuid];
 
@@ -181,7 +189,9 @@ namespace RGBMasterWPFRunner
                 }
             }
 
-            supportedEffectsExecutors[AppState.Instance.SelectedEffect.EffectMetadataGuid].ChangeConnectedDevices(devices.Where(device => device.IsChecked).Select(dev => this.concreteDevices[dev.Device.DeviceGuid]));
+            supportedEffectsExecutors[AppState.Instance.SelectedEffect.EffectMetadataGuid].ChangeConnectedDevices(newSelectedDevices.Where(device => device.IsChecked).Select(dev => this.concreteDevices[dev.Device.DeviceGuid]));
+
+            changeConnectedDevicesSemaphore.Release();
         }
     }
 }

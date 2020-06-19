@@ -12,7 +12,7 @@ namespace Provider
         public readonly ProviderMetadata ProviderMetadata;
         public bool IsRegistered { get; private set; }
         public abstract Task Unregister();
-        public abstract Task<IEnumerable<Device>> Discover();
+        public abstract Task<List<Device>> Discover();
 
         public async Task InitializeProvider()
         {
