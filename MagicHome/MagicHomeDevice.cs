@@ -17,42 +17,42 @@ namespace MagicHome
             this.InternalLight = InternalLight;
             this.InternalLight.Logger.Enabled = false;
         }
-        public override Task ConnectInternal()
+        protected override Task ConnectInternal()
         {
             return Task.CompletedTask;
         }
 
-        public override Task DisconnectInternal()
+        protected override Task DisconnectInternal()
         {
             return Task.CompletedTask;
         }
 
-        public override byte GetBrightnessPercentage()
+        protected override byte GetBrightnessPercentageInternal()
         {
             throw new NotImplementedException();
         }
 
-        public override System.Drawing.Color GetColor()
+        protected override System.Drawing.Color GetColorInternal()
         {
             throw new NotImplementedException();
         }
 
-        public override void SetBrightnessPercentage(byte brightness)
+        protected override void SetBrightnessPercentageInternal(byte brightness)
         {
             InternalLight.SetBrightness(brightness);
         }
 
-        public override void SetColor(System.Drawing.Color color)
+        protected override void SetColorInternal(System.Drawing.Color color)
         {
             InternalLight.SetColor(color.R, color.G, color.B);
         }
 
-        public override void TurnOffInternal()
+        protected override void TurnOffInternal()
         {
             InternalLight.TurnOff();
         }
 
-        public override void TurnOnInternal()
+        protected override void TurnOnInternal()
         {
             InternalLight.TurnOn();
         }

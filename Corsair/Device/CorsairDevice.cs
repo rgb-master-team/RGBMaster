@@ -88,32 +88,32 @@ namespace Corsair.Device
 
 		#region Device
 
-		public override Color GetColor()
+		protected override Color GetColorInternal()
 		{
 			throw new NotImplementedException();
 		}
 
-		public override byte GetBrightnessPercentage()
+		protected override byte GetBrightnessPercentageInternal()
 		{
 			throw new NotImplementedException();
 		}
 
-		public override void SetBrightnessPercentage(byte brightness)
+		protected override void SetBrightnessPercentageInternal(byte brightness)
 		{
 			throw new NotImplementedException();
 		}
 
-		public override Task ConnectInternal()
+		protected override Task ConnectInternal()
 		{
 			return Task.CompletedTask;
 		}
 
-		public override Task DisconnectInternal()
+		protected override Task DisconnectInternal()
 		{
 			return Task.CompletedTask;
 		}
 
-		public override void SetColor(Color color)
+		protected override void SetColorInternal(Color color)
 		{
 			var ledsColor = LedPositions.LedPosition.Select(x => new CorsairLedColor
 			{
@@ -127,12 +127,12 @@ namespace Corsair.Device
 			CUESDK.CUESDK.SetLedsColorsFlushBuffer();
 		}
 
-		public override void TurnOnInternal()
+		protected override void TurnOnInternal()
 		{
 			throw new NotImplementedException();
 		}
 
-		public override void TurnOffInternal()
+		protected override void TurnOffInternal()
 		{
 			throw new NotImplementedException();
 		}
