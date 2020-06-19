@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Threading.Tasks;
-using Infrastructure;
-using Msi.Devices.Leds;
+﻿using Msi.Devices.Leds;
 using Msi.Provider;
 using Msi.SDKs;
 using Provider;
+using System.Drawing;
+using System.Threading.Tasks;
 
 namespace Msi.Devices
 {
-	public class MLDevice : Device<MLDeviceMetadata>
+    public class MLDevice : Device
 	{
 		public MLLed[] Leds { get; set; }
 
@@ -23,9 +20,10 @@ namespace Msi.Devices
 		{
 			for (var ledIndex = 0; ledIndex < Leds.Length; ledIndex++)
 			{
-				MysticLightSdk.GetLedInfo(DeviceMetadata.deviceType, ledIndex, out var ledName, out var ledStyles);
+				var mlDeviceMd = (MLDeviceMetadata)DeviceMetadata;
+				MysticLightSdk.GetLedInfo(mlDeviceMd.deviceType, ledIndex, out var ledName, out var ledStyles);
 
-				Leds[ledIndex] = new MLLed(ledName, ledStyles, ledIndex, DeviceMetadata.deviceType);
+				Leds[ledIndex] = new MLLed(ledName, ledStyles, ledIndex, mlDeviceMd.deviceType);
 				Leds[ledIndex].Load();
 			}
 		}
@@ -56,12 +54,12 @@ namespace Msi.Devices
 			throw new System.NotImplementedException();
 		}
 
-		public override Task Connect()
+		public override Task ConnectInternal()
 		{
 			return Task.CompletedTask;
 		}
 
-		public override Task Disconnect()
+		public override Task DisconnectInternal()
 		{
 			return Task.CompletedTask;
 		} 

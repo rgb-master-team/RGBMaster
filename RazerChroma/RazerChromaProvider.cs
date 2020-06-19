@@ -8,13 +8,18 @@ using System.Threading.Tasks;
 
 namespace RazerChroma
 {
-    public class RazerChromaProvider : Provider<RazerChromaProviderMetadata, RazerChromaDeviceMetadata>
+    public class RazerChromaProvider : BaseProvider
     {
         private IChroma internalChromaProvider;
 
-        public override Task<IEnumerable<Device<RazerChromaDeviceMetadata>>> Discover()
+        public RazerChromaProvider(): base(new RazerChromaProviderMetadata())
         {
-            return Task.FromResult<IEnumerable<Device<RazerChromaDeviceMetadata>>>(new List<RazerChromaDevice>(1) { new RazerChromaDevice(internalChromaProvider) });
+
+        }
+
+        public override Task<IEnumerable<Device>> Discover()
+        {
+            return Task.FromResult<IEnumerable<Device>>(new List<RazerChromaDevice>(1) { new RazerChromaDevice(internalChromaProvider) });
         }
 
         protected async override Task Register()

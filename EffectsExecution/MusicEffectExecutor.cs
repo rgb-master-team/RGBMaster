@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EffectsExecution
 {
-    public class MusicEffectExecutor : EffectExecutor<MusicEffectMetadata>
+    public class MusicEffectExecutor : EffectExecutor
     {
         private AsioOut captureInstance = null;
 
@@ -24,10 +24,8 @@ namespace EffectsExecution
 
             var inputChannels = asioOut.DriverInputChannelCount;
 
-            asioOut.InputChannelOffset = 4;
-            var recordChannelCount = 2;
-            var sampleRate = 44100;
-            asioOut.InitRecordAndPlayback(null, recordChannelCount, sampleRate);
+            var sampleRate = 48000;
+            asioOut.InitRecordAndPlayback(null, 1, sampleRate);
 
             asioOut.AudioAvailable += AsioOut_AudioAvailable;
 

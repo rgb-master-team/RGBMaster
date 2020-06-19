@@ -8,28 +8,44 @@ using System.Threading.Tasks;
 
 namespace Provider
 {
-    public abstract class Device : Device<DeviceMetadata>
+    public abstract class Device
     {
-        public Device() : base(new DeviceMetadata())
-        {
-        }
-    }
+        public readonly DeviceMetadata DeviceMetadata;
 
-    public abstract class Device<DeviceMd> where DeviceMd : DeviceMetadata
-    {
-        public readonly DeviceMd DeviceMetadata;
-
-        public Device(DeviceMd deviceMetadata)
+        public Device(DeviceMetadata deviceMetadata)
         {
             this.DeviceMetadata = deviceMetadata;
         }
 
-        public bool IsConnected { get; }
+        public bool IsConnected { get; private set; }
         public abstract Color GetColor();
         public abstract void SetColor(Color color);
         public abstract byte GetBrightnessPercentage();
         public abstract void SetBrightnessPercentage(byte brightness);
-        public abstract Task Connect();
-        public abstract Task Disconnect();
+
+        public async Task Connect()
+        {
+            if (IsConnected)
+            {
+                return;
+            }
+
+            await ConnectInternal();
+            IsConnected = true;
+        }
+
+        public async Task Disconnect()
+        {
+            if (!IsConnected)
+            {
+                return;
+            }
+
+            await DisconnectInternal();
+            IsConnected = false;
+        }
+
+        public abstract Task ConnectInternal();
+        public abstract Task DisconnectInternal();
     }
 }

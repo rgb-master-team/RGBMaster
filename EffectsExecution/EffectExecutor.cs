@@ -1,5 +1,4 @@
 ﻿using Common;
-using Infrastructure;
 using Provider;
 using System;
 using System.Collections.Generic;
@@ -10,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace EffectsExecution
 {
-    public abstract class EffectExecutor<ExecutedEffect> where ExecutedEffect : EffectMetadata
+    public abstract class EffectExecutor
     {
-        public readonly ExecutedEffect executedEffectMetadata;
+        public readonly EffectMetadata executedEffectMetadata;
 
-        public EffectExecutor(ExecutedEffect executedEffectMetadata)
+        public EffectExecutor(EffectMetadata executedEffectMetadata)
         {
             this.executedEffectMetadata = executedEffectMetadata;
         }
@@ -22,44 +21,44 @@ namespace EffectsExecution
         protected IEnumerable<Device> Devices { get; private set; } = new List<Device>();
         private SemaphoreSlim changeConnectedDevicesSemaphore = new SemaphoreSlim(1, 1);
 
-        public async Task ChangeConnectedDevices(IEnumerable<Device> devices)
+        public void ChangeConnectedDevices(IEnumerable<Device> devices)
         {
-            var addedDevices = devices.Except(this.Devices);
-            var removedDevices = this.Devices.Except(devices);
+            //var addedDevices = devices.Except(this.Devices);
+            //var removedDevices = this.Devices.Except(devices);
 
-            await changeConnectedDevicesSemaphore.WaitAsync();
+            //await changeConnectedDevicesSemaphore.WaitAsync();
 
-            await DisconnectDevices(removedDevices);
-            await ConnectDevices(addedDevices);
+            //await DisconnectDevices(removedDevices);
+            //await ConnectDevices(addedDevices);
 
-            changeConnectedDevicesSemaphore.Release();
+            //changeConnectedDevicesSemaphore.Release();
 
             this.Devices = new List<Device>(devices);
         }
 
-        private async Task DisconnectDevices(IEnumerable<Device> devicesToDisconnect)
-        {
-            var connectionTasks = new List<Task>();
+        //private async Task DisconnectDevices(IEnumerable<Device> devicesToDisconnect)
+        //{
+        //    var connectionTasks = new List<Task>();
 
-            foreach (var removedDevice in devicesToDisconnect)
-            {
-                connectionTasks.Add(removedDevice.Disconnect());
-            }
+        //    foreach (var removedDevice in devicesToDisconnect)
+        //    {
+        //        connectionTasks.Add(removedDevice.Disconnect());
+        //    }
 
-            await Task.WhenAll(connectionTasks);
-        }
+        //    await Task.WhenAll(connectionTasks);
+        //}
 
-        private async Task ConnectDevices(IEnumerable<Device> devicesConnect)
-        {
-            var connectionTasks = new List<Task>();
+        //private async Task ConnectDevices(IEnumerable<Device> devicesConnect)
+        //{
+        //    var connectionTasks = new List<Task>();
 
-            foreach (var removedDevice in devicesConnect)
-            {
-                connectionTasks.Add(removedDevice.Connect());
-            }
+        //    foreach (var removedDevice in devicesConnect)
+        //    {
+        //        connectionTasks.Add(removedDevice.Connect());
+        //    }
 
-            await Task.WhenAll(connectionTasks);
-        }
+        //    await Task.WhenAll(connectionTasks);
+        //}
 
         public async Task Start()
         {

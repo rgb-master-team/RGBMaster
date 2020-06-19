@@ -1,4 +1,5 @@
 ﻿using Common;
+using RGBMasterUWPApp.State;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EffectsExecution
 {
-    public class StaticColorEffectExecutor : EffectExecutor<StaticColorEffectMetadata>
+    public class StaticColorEffectExecutor : EffectExecutor
     {
         public StaticColorEffectExecutor() : base(new StaticColorEffectMetadata())
         {
@@ -26,7 +27,7 @@ namespace EffectsExecution
 
         public override async Task StartInternal()
         {
-            await ChangeStaticColor(executedEffectMetadata.EffectProperties.SelectedColor);
+            await ChangeStaticColor(AppState.Instance.StaticColor);
         }
 
         public override Task StopInternal()

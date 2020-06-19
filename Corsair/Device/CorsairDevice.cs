@@ -9,15 +9,15 @@ using Corsair.Channel;
 using Corsair.Layout;
 using Corsair.Led;
 using Corsair.Provider;
-using Provider;
+using RGBDevice = Provider.Device;
 
 namespace Corsair.Device
 {
     /// <summary>
     /// Contains information about device.
     /// </summary>
-    public class CorsairDevice : Device<CorsairDeviceMetadata>
-    {
+    public class CorsairDevice : RGBDevice
+	{
 		#region Corsair Native
 
 		internal CorsairDeviceNative Native;
@@ -103,12 +103,12 @@ namespace Corsair.Device
 			throw new NotImplementedException();
 		}
 
-		public override Task Connect()
+		public override Task ConnectInternal()
 		{
 			return Task.CompletedTask;
 		}
 
-		public override Task Disconnect()
+		public override Task DisconnectInternal()
 		{
 			return Task.CompletedTask;
 		}

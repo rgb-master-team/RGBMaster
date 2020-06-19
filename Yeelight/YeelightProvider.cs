@@ -1,4 +1,5 @@
-﻿using Provider;
+﻿using Common;
+using Provider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,11 +9,17 @@ using YeelightAPI;
 
 namespace Yeelight
 {
-    public class YeelightProvider : Provider<YeelightProviderMetadata, YeelightDeviceMetadata>
+    public class YeelightProvider : BaseProvider
     {
-        public override async Task<IEnumerable<Device<YeelightDeviceMetadata>>> Discover()
+        public YeelightProvider(): base(new YeelightProviderMetadata())
         {
-            return (await DeviceLocator.Discover()).Select(device => new YeelightDevice(device));
+
+        }
+
+        public override async Task<IEnumerable<Provider.Device>> Discover()
+        {
+            var yeelightInternalDevices = await DeviceLocator.Discover();
+            return yeelightInternalDevices.Select(device => new YeelightDevice(device)).ToList();
         }
 
         protected override Task Register()

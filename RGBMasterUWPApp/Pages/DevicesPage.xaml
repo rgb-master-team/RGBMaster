@@ -4,10 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:RGBMasterUWPApp.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:infrastructure="using:Infrastructure" xmlns:state="using:RGBMasterUWPApp.State" xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:state="using:RGBMasterUWPApp.State" xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
 
-    <Pivot Title="Devices" ItemsSource="{x:Bind RegisteredProviders}">
+    <Pivot Title="Devices" ItemsSource="{x:Bind RegisteredProviders}" x:Name="ProvidersPivot">
         <Pivot.HeaderTemplate>
             <DataTemplate x:DataType="state:RegisteredProvider">
                 <TextBlock Text="{x:Bind Provider.ProviderName}" />

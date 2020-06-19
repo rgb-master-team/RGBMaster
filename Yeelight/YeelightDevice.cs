@@ -14,7 +14,7 @@ using YeelightAPI.Models;
 
 namespace Yeelight
 {
-    public class YeelightDevice : Device<YeelightDeviceMetadata>
+    public class YeelightDevice : Device
     {
         /// <summary>
         /// Serializer settings
@@ -27,16 +27,12 @@ namespace Yeelight
         private readonly YeelightAPI.Device InternalDevice;
         private Socket musicModeSocket;
 
-        public YeelightDevice(YeelightAPI.Device internalDevice)
+        public YeelightDevice(YeelightAPI.Device internalDevice): base(new YeelightDeviceMetadata(!String.IsNullOrWhiteSpace(internalDevice.Name) ? internalDevice.Name: internalDevice.Hostname))
         {
             InternalDevice = internalDevice;
         }
 
-        public YeelightDevice()
-        {
-        }
-
-        public async override Task Connect()
+        public async override Task ConnectInternal()
         {
             await InternalDevice.Connect();
             var supportedOps = InternalDevice.SupportedOperations;
@@ -70,7 +66,7 @@ namespace Yeelight
             }
         }
 
-        public override Task Disconnect()
+        public override Task DisconnectInternal()
         {
             musicModeSocket?.Close();
             InternalDevice?.Disconnect();

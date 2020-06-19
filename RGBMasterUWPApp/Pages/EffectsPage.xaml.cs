@@ -1,5 +1,5 @@
 ﻿using AppExecutionManager.EventManagement;
-using Infrastructure;
+using Common;
 using RGBMasterUWPApp.State;
 using System;
 using System.Collections.Generic;
@@ -34,7 +34,8 @@ namespace RGBMasterUWPApp.Pages
         private void ColorPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
         {
             var color = System.Drawing.Color.FromArgb(sender.Color.R, sender.Color.G, sender.Color.B);
-            AppState.Instance.StaticColor = color;
+            EventManager.Instance.ChangeStaticColor(color);
+            /*AppState.Instance.StaticColor = color;
 
             if (AppState.Instance.IsEffectRunning)
             {
@@ -42,46 +43,41 @@ namespace RGBMasterUWPApp.Pages
                 staticColorEffect.UpdateProps(new StaticColorEffectProps() { SelectedColor = color });
 
                 EventManager.Instance.UpdateEffect(staticColorEffect);
-            }
+            }*/
         }
 
         private void ChangeCurrentRunningEffect(EffectMetadata desiredEffect)
         {
-            AppState.Instance.SelectedEffect = desiredEffect;
-
             EventManager.Instance.UpdateEffect(desiredEffect);
         }
 
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var pivot = (Pivot)sender;
-            EffectMetadata effect;
+            EffectMetadata effectMd;
 
+            // TODO - REFACTOR THE WHOLE UI TO TAKE ITS SHIT FROM THE FUCKING STATE AND NOT HARD CODED!#@#@!!@#!@#
             switch (pivot.SelectedIndex)
             {
                 case 0:
-                    // Color picker Logic here
-                    effect = new StaticColorEffectMetadata();
-                    break;
-                case 1:
-                    // Music Logic Here
-                    effect = new MusicEffectMetadata();
+                    effectMd = AppState.Instance.Effects.First(effect => effect.GetType() == typeof(StaticColorEffectMetadata));
                     break;
                 case 2:
-                    // Pointer Logic here
-                    effect = new DominantDisplayColorEffect();
+                    effectMd = AppState.Instance.Effects.First(effect => effect.GetType() == typeof(MusicEffectMetadata));
+                    break;
+                case 3:
+                    effectMd = AppState.Instance.Effects.First(effect => effect.GetType() == typeof(DominantDisplayColorEffectMetadata));
                     break;
                 default:
-                    effect = new StaticColorEffectMetadata();
-                    break;
+                    throw new NotImplementedException("This effect is not implemented!");
             }
 
             // This is obviously a lazy design. TODO - add types for all effects and take the time to
             // reimplement the way we apply effects, instead of reinstantiating them all the time.
             // perhaps a factory.
-            if (effect.GetType() != AppState.Instance.SelectedEffect?.GetType())
+            if (effectMd.GetType() != AppState.Instance.SelectedEffect?.GetType())
             {
-                ChangeCurrentRunningEffect(effect);
+                ChangeCurrentRunningEffect(effectMd);
             }
         }
     }

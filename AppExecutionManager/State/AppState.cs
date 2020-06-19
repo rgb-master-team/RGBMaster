@@ -1,4 +1,4 @@
-﻿using Infrastructure;
+﻿using Common;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,17 +10,17 @@ namespace RGBMasterUWPApp.State
 {
     public class AppState
     {
-        private static readonly AppState instance;
+        private static readonly AppState instance = new AppState();
 
         static AppState()
         {
             instance = new AppState()
             {
                 RegisteredProviders = new ObservableCollection<RegisteredProvider>(),
-                SelectedEffect = new StaticColorEffectMetadata(),
                 IsEffectRunning = false,
-                SelectedDevices = new ObservableCollection<Device>(),
-                AreAllLightsOn = false
+                //SelectedDevices = new ObservableCollection<DiscoveredDevice>(),
+                AreAllLightsOn = false,
+                Effects = new ObservableCollection<EffectMetadata>()
             };
 
         }
@@ -36,8 +36,9 @@ namespace RGBMasterUWPApp.State
         }
 
         public ObservableCollection<RegisteredProvider> RegisteredProviders { get; set; }
-        public ObservableCollection<Device> SelectedDevices { get; set; }
+        //public ObservableCollection<DiscoveredDevice> SelectedDevices { get; set; }
         public EffectMetadata SelectedEffect { get; set; }
+        public ObservableCollection<EffectMetadata> Effects { get; set; }
         public bool IsEffectRunning { get; set; }
         public System.Drawing.Color StaticColor { get; set; }
         public bool AreAllLightsOn { get; set; }

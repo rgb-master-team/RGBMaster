@@ -1,18 +1,22 @@
 ﻿using Common;
+using RGBMasterUWPApp.State;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 
 namespace AppExecutionManager.EventManagement
 {
     public class EventManager
     {
-        private static readonly EventManager instance;
+        private static readonly EventManager instance = new EventManager();
 
+        private event EventHandler<Color> StaticColorChanged;
         private event EventHandler<EffectMetadata> EffectChanged;
-        private event EventHandler<List<DeviceMetadata>> SelectedDevicesChanged;
+        private event EventHandler<List<DiscoveredDevice>> SelectedDevicesChanged;
         private event EventHandler StartSyncingRequested;
         private event EventHandler StopSyncingRequested;
+        private event EventHandler InitializeProvidersRequested;
 
         static EventManager()
         {
@@ -39,12 +43,12 @@ namespace AppExecutionManager.EventManagement
             EffectChanged -= callback;
         }
 
-        public void SubscribeToSelectedDevicesChanged(EventHandler<List<DeviceMetadata>> callback)
+        public void SubscribeToSelectedDevicesChanged(EventHandler<List<DiscoveredDevice>> callback)
         {
             SelectedDevicesChanged += callback;
         }
 
-        public void UnsubscribeFromSelectedDevicesChanged(EventHandler<List<DeviceMetadata>> callback)
+        public void UnsubscribeFromSelectedDevicesChanged(EventHandler<List<DiscoveredDevice>> callback)
         {
             SelectedDevicesChanged -= callback;
         }
@@ -59,12 +63,22 @@ namespace AppExecutionManager.EventManagement
             StartSyncingRequested -= callback;
         }
 
+        public void SubscribeToStopSyncingRequested(EventHandler callback)
+        {
+            StopSyncingRequested += callback;
+        }
+
+        public void UnsubscribeFromStopSyncingRequested(EventHandler callback)
+        {
+            StopSyncingRequested -= callback;
+        }
+
         public void UpdateEffect(EffectMetadata newEffect)
         {
             EffectChanged?.Invoke(this, newEffect);
         }
 
-        public void UpdateSelectedDevices(List<DeviceMetadata> newSelectedDevices)
+        public void UpdateSelectedDevices(List<DiscoveredDevice> newSelectedDevices)
         {
             SelectedDevicesChanged?.Invoke(this, newSelectedDevices);
         }
@@ -77,6 +91,36 @@ namespace AppExecutionManager.EventManagement
         public void StopSyncing()
         {
             StopSyncingRequested?.Invoke(this, null);
+        }
+
+        public void SubscribeToInitializeProvidersRequests(EventHandler callback)
+        {
+            InitializeProvidersRequested += callback;
+        }
+
+        public void UnsubscribeFromInitializeProvidersRequests(EventHandler callback)
+        {
+            InitializeProvidersRequested -= callback;
+        }
+
+        public void InitializeProviders()
+        {
+            InitializeProvidersRequested?.Invoke(this, null);
+        }
+
+        public void SubscribeToStaticColorChanges(EventHandler<Color> callback)
+        {
+            StaticColorChanged += callback;
+        }
+
+        public void UnsubscribeFromStaticColorChanges(EventHandler<Color> callback)
+        {
+            StaticColorChanged -= callback;
+        }
+
+        public void ChangeStaticColor(Color color)
+        {
+            StaticColorChanged?.Invoke(this, color);
         }
     }
 }

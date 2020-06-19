@@ -5,8 +5,13 @@ using RGBProvider = Provider;
 
 namespace Msi.Provider
 {
-    public class MLProvider : RGBProvider.Provider<MLProviderMetadata, MLDeviceMetadata>
+    public class MLProvider : RGBProvider.BaseProvider
 	{
+        public MLProvider(): base(new MLProviderMetadata())
+        {
+
+        }
+
 		protected override Task Register()
 		{
 			MysticLightSdk.Initialize();
@@ -19,9 +24,9 @@ namespace Msi.Provider
 			return Task.CompletedTask;
 		}
 
-		public override Task<IEnumerable<RGBProvider.Device<MLDeviceMetadata>>> Discover()
+		public override Task<IEnumerable<RGBProvider.Device>> Discover()
 		{
-			return Task.FromResult<IEnumerable<RGBProvider.Device<MLDeviceMetadata>>>(MysticLightSdk.GetAllDevices());
+			return Task.FromResult<IEnumerable<RGBProvider.Device>>(MysticLightSdk.GetAllDevices());
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿using Infrastructure;
+﻿using Common;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,7 +10,7 @@ namespace RGBMasterUWPApp.State
 {
     public class RegisteredProvider
     {
-        public Provider Provider { get; set; }
+        public ProviderMetadata Provider { get; set; }
         public ObservableCollection<DiscoveredDevice> Devices { get; set; }
     }
 }

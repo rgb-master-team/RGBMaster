@@ -7,11 +7,16 @@ using System.Threading.Tasks;
 
 namespace Logitech
 {
-    public class LogitechProvider : Provider<LogitechProviderMetadata, LogitechDeviceMetadata>
+    public class LogitechProvider : BaseProvider
     {
-        public override Task<IEnumerable<Device<LogitechDeviceMetadata>>> Discover()
+        public LogitechProvider(): base(new LogitechProviderMetadata())
         {
-            return Task.FromResult<IEnumerable<Device<LogitechDeviceMetadata>>>(new List<LogitechDevice>() { new LogitechDevice() });
+
+        }
+
+        public override Task<IEnumerable<Device>> Discover()
+        {
+            return Task.FromResult<IEnumerable<Device>>(new List<LogitechDevice>() { new LogitechDevice() });
             
 
             /*

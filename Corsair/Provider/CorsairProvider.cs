@@ -1,12 +1,11 @@
-﻿using Corsair.CUESDK;
-using Corsair.Device;
+﻿using Corsair.Provider;
 using Provider;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Corsair.Provider
+namespace CorsairProvider
 {
-    public class CorsairProvider : Provider<CorsairProviderMetadata, CorsairDeviceMetadata>
+    public class CorsairProvider : BaseProvider
     {
         public CorsairProvider() : base(new CorsairProviderMetadata())
         {
@@ -14,7 +13,7 @@ namespace Corsair.Provider
 
         protected override Task Register()
 		{
-			CUESDK.CUESDK.PerformProtocolHandshake();
+			Corsair.CUESDK.CUESDK.PerformProtocolHandshake();
 
 			return Task.CompletedTask;
 		}
@@ -24,10 +23,10 @@ namespace Corsair.Provider
 			return Task.CompletedTask;
 		}
 
-        public override Task<IEnumerable<Device<CorsairDeviceMetadata>>> Discover()
+        public override Task<IEnumerable<Device>> Discover()
         {
-			var devices = CUESDK.CUESDK.GetAllDevices();
-			return Task.FromResult<IEnumerable<Device<CorsairDeviceMetadata>>>(devices);
+			var devices = Corsair.CUESDK.CUESDK.GetAllDevices();
+			return Task.FromResult<IEnumerable<Device>>(devices);
 		}
 	}
 }

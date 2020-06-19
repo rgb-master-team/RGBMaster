@@ -1,4 +1,4 @@
-﻿using Infrastructure;
+﻿using Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ namespace RGBMasterUWPApp.State
 {
     public class DiscoveredDevice
     {
-        public Device Device { get; set; }
+        public DeviceMetadata Device { get; set; }
         public bool IsChecked { get; set; }
 
     }

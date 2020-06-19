@@ -8,19 +8,19 @@ using System.Threading.Tasks;
 
 namespace Logitech
 {
-    public class LogitechDevice : Device<LogitechDeviceMetadata>
+    public class LogitechDevice : Device
     {
         public LogitechDevice() : base(new LogitechDeviceMetadata())
         {
 
         }
 
-        public override Task Connect()
+        public override Task ConnectInternal()
         {
             return Task.CompletedTask;
         }
 
-        public override Task Disconnect()
+        public override Task DisconnectInternal()
         {
             return Task.CompletedTask;
         }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Aura
 {
-    public class AuraProvider : Provider<AuraProviderMetadata, AuraDeviceMetadata>
+    public class AuraProvider : BaseProvider
     {
         private AuraSDK internalSdk;
 
@@ -16,9 +16,9 @@ namespace Aura
         {
         }
 
-        public override Task<IEnumerable<Device<AuraDeviceMetadata>>> Discover()
+        public override Task<IEnumerable<Device>> Discover()
         {
-            return Task.FromResult<IEnumerable<Device<AuraDeviceMetadata>>>(internalSdk.Motherboards.Select(mb => new AuraDevice(mb)));
+            return Task.FromResult<IEnumerable<Device>>(internalSdk.Motherboards.Select(mb => new AuraDevice(mb)));
         }
 
         protected override Task Register()

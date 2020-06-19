@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Aura
 {
-    public class AuraDevice : Device<AuraDeviceMetadata>
+    public class AuraDevice : Device
     {
         private readonly AuraSDKDotNet.AuraDevice internalAuraDevice;
 
@@ -18,12 +18,12 @@ namespace Aura
             this.internalAuraDevice = internalAuraDevice;
         }
 
-        public override Task Connect()
+        public override Task ConnectInternal()
         {
             return Task.CompletedTask;
         }
 
-        public override Task Disconnect()
+        public override Task DisconnectInternal()
         {
             return Task.CompletedTask;
         }

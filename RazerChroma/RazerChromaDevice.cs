@@ -8,21 +8,21 @@ using System.Threading.Tasks;
 
 namespace RazerChroma
 {
-    public class RazerChromaDevice : Device<RazerChromaDeviceMetadata>
+    public class RazerChromaDevice : Device
     {
         private readonly IChroma internalChromaDriver;
 
-        public RazerChromaDevice(IChroma internalChromaDriver)
+        public RazerChromaDevice(IChroma internalChromaDriver): base(new RazerChromaDeviceMetadata())
         {
             this.internalChromaDriver = internalChromaDriver;
         }
 
-        public override Task Connect()
+        public override Task ConnectInternal()
         {
             return Task.CompletedTask;
         }
 
-        public override Task Disconnect()
+        public override Task DisconnectInternal()
         {
             internalChromaDriver.Unregister();
             return Task.CompletedTask;

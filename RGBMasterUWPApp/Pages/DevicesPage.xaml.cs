@@ -1,7 +1,8 @@
-﻿using Infrastructure;
+﻿using AppExecutionManager.EventManagement;
 using RGBMasterUWPApp.State;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -45,14 +46,7 @@ namespace RGBMasterUWPApp.Pages
 
             discoveredDevice.IsChecked = !discoveredDevice.IsChecked;
 
-            if (discoveredDevice.IsChecked)
-            {
-                AppState.Instance.SelectedDevices.Add(discoveredDevice.Device);
-            }
-            else
-            {
-                AppState.Instance.SelectedDevices.Remove(discoveredDevice.Device);
-            }
+            EventManager.Instance.UpdateSelectedDevices(AppState.Instance.RegisteredProviders.Select(prov => prov.Devices).SelectMany(devices => devices).ToImmutableList().ToList());
         }
 
         private void ManualConnectionButton_Click(object sender, RoutedEventArgs e)

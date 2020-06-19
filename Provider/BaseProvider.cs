@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Provider
 {
-    public abstract class Provider<ProviderMd, DeviceMd> where ProviderMd : ProviderMetadata, new() where DeviceMd : DeviceMetadata
+    public abstract class BaseProvider
     {
-        public readonly ProviderMd ProviderMetadata;
+        public readonly ProviderMetadata ProviderMetadata;
         public bool IsRegistered { get; private set; }
         public abstract Task Unregister();
-        public abstract Task<IEnumerable<Device<DeviceMd>>> Discover();
+        public abstract Task<IEnumerable<Device>> Discover();
 
         public async Task InitializeProvider()
         {
@@ -37,7 +37,7 @@ namespace Provider
             }
         }
 
-        public Provider(ProviderMd providerMetadata)
+        public BaseProvider(ProviderMetadata providerMetadata)
         {
             this.ProviderMetadata = providerMetadata;
         }

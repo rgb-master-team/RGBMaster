@@ -1,5 +1,4 @@
 ﻿using Common;
-using Infrastructure;
 using Provider;
 using System;
 using System.Collections.Generic;
@@ -13,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace EffectsExecution
 {
-    public class DominantDisplayColorEffectExecutor : EffectExecutor<DominantDisplayColorEffectMetadata>
+    public class DominantDisplayColorEffectExecutor : EffectExecutor
     {
         [DllImport("user32.dll")]
         static extern bool GetCursorPos(ref Point lpPoint);

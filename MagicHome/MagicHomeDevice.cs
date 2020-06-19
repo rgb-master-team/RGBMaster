@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MagicHome
 {
-    public class MagicHomeDevice : Device<MagicHomeDeviceMetadata>
+    public class MagicHomeDevice : Device
     {
         private Light InternalLight;
 
@@ -17,12 +17,12 @@ namespace MagicHome
             this.InternalLight = InternalLight;
             this.InternalLight.Logger.Enabled = false;
         }
-        public override Task Connect()
+        public override Task ConnectInternal()
         {
             return Task.CompletedTask;
         }
 
-        public override Task Disconnect()
+        public override Task DisconnectInternal()
         {
             return Task.CompletedTask;
         }

@@ -10,10 +10,17 @@ namespace Common
 {
     public abstract class EffectMetadata
     {
+        public Guid EffectMetadataGuid { get; private set; }
+
         public abstract string EffectName { get; }
         public abstract string ShortDescription { get; }
         public abstract string FullDescription { get; }
         public abstract Bitmap Icon { get; }
+
+        public EffectMetadata()
+        {
+            EffectMetadataGuid = Guid.NewGuid();
+        }
     }
 
     public abstract class EffectMetadata<Props> : EffectMetadata

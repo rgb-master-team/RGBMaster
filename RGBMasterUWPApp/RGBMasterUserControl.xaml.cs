@@ -1,7 +1,4 @@
 ﻿using AppExecutionManager.EventManagement;
-using Infrastructure;
-using Logitech;
-using MagicHome;
 using RGBMasterUWPApp.Pages;
 using RGBMasterUWPApp.State;
 using System;
@@ -23,7 +20,6 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Yeelight;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -40,59 +36,7 @@ namespace RGBMasterUWPApp
                     { nameof(SettingsPage), typeof(SettingsPage) }
                 };
 
-        private readonly IEnumerable<Provider> SupportedProviders = new List<Provider>()
-                {
-                    new YeelightProvider(), new MagicHomeProvider(),/* new RazerChromaProvider(),  new LogitechProvider() */
-                };
-
         private SemaphoreSlim startAndStopSemaphore = new SemaphoreSlim(1, 1);
-
-        private void RegisterToSelectionChangesInDevices()
-        {
-            AppState.Instance.SelectedDevices.CollectionChanged += async (sender, e) =>
-            {
-                if (AppState.Instance.IsEffectRunning && AppState.Instance.SelectedEffect != null)
-                {
-                    EventManager.Instance.UpdateSelectedDevices(AppState.Instance.SelectedDevices.ToImmutableList().ToList());
-                }
-            };
-        }
-
-        private async Task SeekAndRediscoverDevices()
-        {
-            var registrationAndDiscoveryTasks = new List<Task<RegisteredProvider>>();
-
-            foreach (var provider in SupportedProviders)
-            {
-                registrationAndDiscoveryTasks.Add(provider.InitializeProvider().ContinueWith(async ct =>
-                {
-                    if (provider.IsRegistered)
-                    {
-                        var discoveredDevices = await provider.Discover();
-
-                        return new RegisteredProvider()
-                        {
-                            Provider = provider,
-                            Devices = new ObservableCollection<DiscoveredDevice>(discoveredDevices.Select(discoveredDevice => new DiscoveredDevice() { Device = discoveredDevice, IsChecked = false }).ToList())
-                        };
-                    }
-
-                    return null;
-                }).Unwrap());
-            }
-
-            await Task.WhenAll(registrationAndDiscoveryTasks);
-
-            AppState.Instance.RegisteredProviders.Clear();
-
-            foreach (var task in registrationAndDiscoveryTasks)
-            {
-                if (task.Result != null)
-                {
-                    AppState.Instance.RegisteredProviders.Add(task.Result);
-                }
-            }
-        }
 
         private void MainAppContentFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
@@ -116,8 +60,6 @@ namespace RGBMasterUWPApp
             {
                 EventManager.Instance.StopSyncing();
 
-                AppState.Instance.IsEffectRunning = false;
-
                 outerButton = new FontIcon() { Glyph = "\uE739", FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets"), Name = "OuterButton" };
                 innerButton = new FontIcon() { Glyph = "\uE73B", FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets"), Foreground = new SolidColorBrush(Colors.Red), Name = "InnerButton" };
 
@@ -130,10 +72,7 @@ namespace RGBMasterUWPApp
             }
             else
             {
-                EventManager.Instance.UpdateSelectedDevices(AppState.Instance.SelectedDevices.ToImmutableList().ToList());
                 EventManager.Instance.StartSyncing();
-
-                AppState.Instance.IsEffectRunning = true;
 
                 AppBarButton button = (AppBarButton)sender;
 
@@ -175,12 +114,10 @@ namespace RGBMasterUWPApp
             var navigationResult = MainAppContentFrame.Navigate(pageToType[selectionTag], null, args.RecommendedNavigationTransitionInfo);
         }
 
-        private async void RGBMasterUserControl_Loaded(object sender, RoutedEventArgs e)
+        private void RGBMasterUserControl_Loaded(object sender, RoutedEventArgs e)
         {
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            //await Dispatcher.RunAsync(CoreDispatcherPriority.Low, async () => { await SeekAndRediscoverDevices(); });
-            await SeekAndRediscoverDevices();
-            RegisterToSelectionChangesInDevices();
+            EventManager.Instance.InitializeProviders();
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
     }
