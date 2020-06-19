@@ -56,6 +56,8 @@ namespace RGBMasterUWPApp
             UIElement innerButton;
             UIElement outerButton;
 
+            var syncStatusToolTip = new ToolTip();
+
             if (AppState.Instance.IsEffectRunning)
             {
                 EventManager.Instance.StopSyncing();
@@ -69,6 +71,7 @@ namespace RGBMasterUWPApp
                 innerButton = new FontIcon() { Glyph = "\uF5B0", FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets"), Foreground = new SolidColorBrush(Colors.Green), Name = "InnerButton" };
 
                 button.Label = "Start";
+                ToolTipService.SetToolTip(Sync_Button, null);
             }
             else
             {
@@ -80,6 +83,9 @@ namespace RGBMasterUWPApp
                 innerButton = new FontIcon() { Glyph = "\uE73B", FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets"), Foreground = new SolidColorBrush(Colors.Red), Name = "InnerButton" };
 
                 button.Label = "Stop";
+
+                syncStatusToolTip.Content = AppState.Instance.SelectedEffect.ToString();
+                ToolTipService.SetToolTip(Sync_Button, syncStatusToolTip);
             }
 
             AppBarStartStopGrid.Children.Add(innerButton);

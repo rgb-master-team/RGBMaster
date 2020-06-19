@@ -9,27 +9,65 @@
     >
 
     <Grid> 
-        <StackPanel>
+        <StackPanel Margin="16 0 0 0">
             <StackPanel Margin="0 0 0 8">
                 <TextBlock Text="Control Panel" FontSize="30" />
             </StackPanel>
+            <StackPanel Margin="0 0 0 32">
+                <TextBlock Text="Control devices status all together." Foreground="Gray" />
+            </StackPanel>
             <StackPanel HorizontalAlignment="Left">
-                <StackPanel Margin="0 0 0 16" Orientation="Horizontal" HorizontalAlignment="Center">
+                <StackPanel Margin="0 0 0 8" Orientation="Horizontal" >
                     <TextBlock Text="Light Control" FontSize="16" Margin="0 0 4 0"/>
                     <FontIcon Glyph="&#xEA80;" FontFamily="Segoe MDL2 Assets"/>
                 </StackPanel>
                 <StackPanel>
-                    <StackPanel HorizontalAlignment="Center">
+                    <StackPanel Margin="0 0 0 16">
                         <Button x:Name="TurnOnButton" Content="Turn on all lights" Click="Button_Click" />
-                        <!--<muxc:ProgressBar x:Name="LightsOnProgressBar" Width="140" IsIndeterminate="False" ShowPaused="False" ShowError="False" HorizontalAlignment="Left" Margin="0 4 0 0"/>-->
                     </StackPanel>
-                    <StackPanel Margin="0 32 0 0">
-                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                    
+                    <!--SplitView - Configure static names for devices-->
+                    <!--<StackPanel>
+                        <SplitView x:Name="splitView" PaneBackground="Transparent" IsPaneOpen="True" DisplayMode="CompactInline">
+                            <SplitView.Pane>
+                                <Grid Width="200">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="Provider" x:Name="PaneHeader" Margin="60,12,0,0" Style="{StaticResource BaseTextBlockStyle}"/>
+                                    <ListView x:Name="NavLinksList" Margin="0,12,0,0" SelectionMode="None" Grid.Row="1" VerticalAlignment="Stretch"
+                                              ItemClick="NavLinksList_ItemClick" IsItemClickEnabled="True"
+                                              ItemsSource="{x:Bind NavLinks}" ItemTemplate="{StaticResource NavLinkItemTemplate}"/>
+                                    <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="14,24,0,24" >
+                                        --><!--Providers names--><!--
+                                    </StackPanel>
+                                </Grid>
+                            </SplitView.Pane>
+
+                            <Grid Width="200"> 
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Devices" Margin="12,12,0,0" Style="{StaticResource BaseTextBlockStyle}"/>
+                                --><!--Devices names by selected provider--><!--
+                            </Grid>
+                        </SplitView>
+                    </StackPanel>-->
+                    
+                    
+                    <!--Smoothness - Should be used in effects instead of here-->
+                    
+                    <!--<StackPanel Margin="0 32 0 0">
+                        <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Smoothness" FontSize="16" Margin="0 0 4 0" />
                             <FontIcon Glyph="&#xEC87;" FontFamily="Segoe MDL2 Assets"/>
                         </StackPanel>
-                        <Slider AutomationProperties.Name="SmoothnessSlider" HorizontalAlignment="Left" Width="140" Minimum="0" Maximum="100" StepFrequency="10" TickFrequency="10" TickPlacement="Outside" />
-                    </StackPanel>
+                        <Slider AutomationProperties.Name="SmoothnessSlider" Width="140" Minimum="0" Maximum="100" StepFrequency="10" TickFrequency="10" TickPlacement="Outside" />
+                    </StackPanel>-->
+                    
                 </StackPanel>
             </StackPanel>
         </StackPanel>
