@@ -1,6 +1,6 @@
 ﻿using AppExecutionManager.EventManagement;
+using AppExecutionManager.State;
 using RGBMasterUWPApp.Pages;
-using RGBMasterUWPApp.State;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;

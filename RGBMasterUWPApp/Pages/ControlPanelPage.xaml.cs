@@ -1,5 +1,5 @@
-﻿using Microsoft.UI.Xaml.Controls;
-using RGBMasterUWPApp.State;
+﻿using AppExecutionManager.State;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.IO;

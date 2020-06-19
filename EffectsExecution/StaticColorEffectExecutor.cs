@@ -1,5 +1,5 @@
-﻿using Common;
-using RGBMasterUWPApp.State;
+﻿using AppExecutionManager.State;
+using Common;
 using System;
 using System.Collections.Generic;
 using System.Text;

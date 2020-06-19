@@ -1,4 +1,4 @@
-﻿using RGBMasterUWPApp.State;
+﻿using AppExecutionManager.State;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

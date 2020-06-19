@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:RGBMasterUWPApp.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:state="using:RGBMasterUWPApp.State" xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:muxc="using:Microsoft.UI.Xaml.Controls" xmlns:state="using:AppExecutionManager.State"
     mc:Ignorable="d">
 
     <Pivot Title="Devices" ItemsSource="{x:Bind RegisteredProviders}" x:Name="ProvidersPivot">
@@ -19,15 +19,15 @@
                 <StackPanel>
                     <TextBox x:Name="ManualConnectionAddressTxtBx" PlaceholderText="Manually connect via IP address or unique ID"></TextBox>
                     <Button Content="Connect" x:Name="ManualConnectionButton" Click="ManualConnectionButton_Click"></Button>
-                <muxc:ItemsRepeater ItemsSource="{x:Bind Devices}">
-                    <muxc:ItemsRepeater.ItemTemplate>
-                        <DataTemplate x:DataType="state:DiscoveredDevice">
-                            <StackPanel Orientation="Horizontal">
-                                <CheckBox IsChecked="{x:Bind IsChecked}" Tag="{x:Bind}" Click="CheckBox_Click" Content="{x:Bind Device.DeviceName}" />
-                            </StackPanel>
-                        </DataTemplate>
+                    <muxc:ItemsRepeater ItemsSource="{x:Bind Devices}">
+                        <muxc:ItemsRepeater.ItemTemplate>
+                            <DataTemplate x:DataType="state:DiscoveredDevice">
+                                <StackPanel Orientation="Vertical">
+                                    <CheckBox IsChecked="{x:Bind IsChecked}" Tag="{x:Bind}" Click="CheckBox_Click" Content="{x:Bind Device.DeviceName}" />
+                                </StackPanel>
+                            </DataTemplate>
                         </muxc:ItemsRepeater.ItemTemplate>
-                </muxc:ItemsRepeater>
+                    </muxc:ItemsRepeater>
                 </StackPanel>
             </DataTemplate>
         </Pivot.ItemTemplate>

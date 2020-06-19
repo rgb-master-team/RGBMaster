@@ -1,11 +1,11 @@
 ﻿using AppExecutionManager.EventManagement;
+using AppExecutionManager.State;
 using Common;
 using EffectsExecution;
 using Logitech;
 using NAudio.Wave;
 using Provider;
 using RazerChroma;
-using RGBMasterUWPApp.State;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

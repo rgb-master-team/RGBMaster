@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RGBMasterUWPApp.State
+namespace AppExecutionManager.State
 {
     public class DiscoveredDevice
     {

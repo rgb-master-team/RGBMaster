@@ -1,5 +1,5 @@
 ﻿using AppExecutionManager.EventManagement;
-using RGBMasterUWPApp.State;
+using AppExecutionManager.State;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -39,7 +39,7 @@ namespace RGBMasterUWPApp.Pages
             this.InitializeComponent();
         }
 
-        private async void CheckBox_Click(object sender, RoutedEventArgs e)
+        private void CheckBox_Click(object sender, RoutedEventArgs e)
         {
             var checkbox = sender as CheckBox;
             var discoveredDevice = (DiscoveredDevice)checkbox.Tag;

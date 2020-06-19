@@ -1,6 +1,6 @@
 ﻿using AppExecutionManager.EventManagement;
+using AppExecutionManager.State;
 using Common;
-using RGBMasterUWPApp.State;
 using System;
 using System.Collections.Generic;
 using System.IO;
