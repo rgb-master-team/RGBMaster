@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     >
 
-    <Grid> 
+    <Grid>
         <StackPanel Margin="16 0 0 0">
             <StackPanel Margin="0 0 0 8">
                 <TextBlock Text="Control Panel" FontSize="30" />
@@ -22,44 +22,9 @@
                     <FontIcon Glyph="&#xEA80;" FontFamily="Segoe MDL2 Assets"/>
                 </StackPanel>
                 <StackPanel>
-                    <StackPanel Margin="0 0 0 16">
-                        <Button x:Name="TurnOnButton" Content="Turn on all lights" Click="Button_Click" />
-                    </StackPanel>
-                    
-                    <!--SplitView - Configure static names for devices-->
-                    <!--<StackPanel>
-                        <SplitView x:Name="splitView" PaneBackground="Transparent" IsPaneOpen="True" DisplayMode="CompactInline">
-                            <SplitView.Pane>
-                                <Grid Width="200">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    <TextBlock Text="Provider" x:Name="PaneHeader" Margin="60,12,0,0" Style="{StaticResource BaseTextBlockStyle}"/>
-                                    <ListView x:Name="NavLinksList" Margin="0,12,0,0" SelectionMode="None" Grid.Row="1" VerticalAlignment="Stretch"
-                                              ItemClick="NavLinksList_ItemClick" IsItemClickEnabled="True"
-                                              ItemsSource="{x:Bind NavLinks}" ItemTemplate="{StaticResource NavLinkItemTemplate}"/>
-                                    <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="14,24,0,24" >
-                                        --><!--Providers names--><!--
-                                    </StackPanel>
-                                </Grid>
-                            </SplitView.Pane>
 
-                            <Grid Width="200"> 
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-                                <TextBlock Text="Devices" Margin="12,12,0,0" Style="{StaticResource BaseTextBlockStyle}"/>
-                                --><!--Devices names by selected provider--><!--
-                            </Grid>
-                        </SplitView>
-                    </StackPanel>-->
-                    
-                    
                     <!--Smoothness - Should be used in effects instead of here-->
-                    
+
                     <!--<StackPanel Margin="0 32 0 0">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Smoothness" FontSize="16" Margin="0 0 4 0" />
@@ -67,29 +32,9 @@
                         </StackPanel>
                         <Slider AutomationProperties.Name="SmoothnessSlider" Width="140" Minimum="0" Maximum="100" StepFrequency="10" TickFrequency="10" TickPlacement="Outside" />
                     </StackPanel>-->
-                    
+
                 </StackPanel>
             </StackPanel>
         </StackPanel>
-
-
-        <muxc:TeachingTip x:Name="ToggleTip_LightsOn"                   
-            	Target="{x:Bind TurnOnButton}"
-	                Title="Lights are On!"                                        
-	                Subtitle="All lights that we found has been turned on.">
-            <muxc:TeachingTip.IconSource>
-                <muxc:SymbolIconSource Symbol="Accept"/>
-            </muxc:TeachingTip.IconSource>
-        </muxc:TeachingTip>
-
-        <muxc:TeachingTip x:Name="ToggleTip_LightsOff"                   
-            	Target="{x:Bind TurnOnButton}"
-	                Title="Lights are Off!"                                        
-	                Subtitle="All lights that we found has been turned off.">
-            <muxc:TeachingTip.IconSource>
-                <muxc:SymbolIconSource Symbol="Cancel"/>
-            </muxc:TeachingTip.IconSource>
-        </muxc:TeachingTip>
-
     </Grid>
 </Page>

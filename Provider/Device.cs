@@ -18,10 +18,26 @@ namespace Provider
         }
 
         public bool IsConnected { get; private set; }
+        public bool IsTurnedOn { get; private set; }
         public abstract Color GetColor();
         public abstract void SetColor(Color color);
         public abstract byte GetBrightnessPercentage();
         public abstract void SetBrightnessPercentage(byte brightness);
+
+        public void TurnOn()
+        {
+            TurnOnInternal();
+            IsTurnedOn = true;
+        }
+
+        public void TurnOff()
+        {
+            TurnOffInternal();
+            IsTurnedOn = false;
+        }
+
+        public abstract void TurnOnInternal();
+        public abstract void TurnOffInternal();
 
         public async Task Connect()
         {

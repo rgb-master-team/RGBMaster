@@ -14,26 +14,22 @@ namespace Provider
         public abstract Task Unregister();
         public abstract Task<List<Device>> Discover();
 
-        public async Task InitializeProvider()
+        public async Task<bool> InitializeProvider()
         {
             try
             {
-                if (IsRegistered)
+                if (!IsRegistered)
                 {
-                    return;
+                    await Register();
+
+                    IsRegistered = true;
                 }
 
-                await Register();
-
-                IsRegistered = true;
+                return IsRegistered;
             }
             catch (Exception ex)
             {
-
-            }
-            finally
-            {
-
+                return false;
             }
         }
 

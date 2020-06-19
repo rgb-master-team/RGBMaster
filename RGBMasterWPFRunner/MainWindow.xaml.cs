@@ -24,6 +24,7 @@ namespace RGBMasterWPFRunner
     public partial class MainWindow : System.Windows.Window
     {
         private SemaphoreSlim changeConnectedDevicesSemaphore = new SemaphoreSlim(1, 1);
+        private SemaphoreSlim initializeProvidersSemaphore = new SemaphoreSlim(1, 1);
 
         private readonly Dictionary<Guid, Provider.BaseProvider> supportedProviders = new Dictionary<Guid, Provider.BaseProvider>();
         private readonly Dictionary<Guid, EffectExecutor> supportedEffectsExecutors = new Dictionary<Guid, EffectExecutor>();
@@ -50,6 +51,27 @@ namespace RGBMasterWPFRunner
             EventManager.Instance.SubscribeToStartSyncingRequested(StartSyncing);
             EventManager.Instance.SubscribeToStopSyncingRequested(StopSyncing);
             EventManager.Instance.SubscribeToStaticColorChanges(ChangeStaticColor);
+            EventManager.Instance.SubscribeToTurnOnAllLightsRequests(TurnOnAllLights);
+        }
+
+        private async void TurnOnAllLights(object sender, EventArgs e)
+        {
+            var tasks = new List<Task>();
+
+            foreach (var provider in AppState.Instance.RegisteredProviders)
+            {
+                foreach (var device in provider.Devices)
+                {
+                    if (device.IsChecked)
+                    {
+                        var deviceGuid = device.Device.DeviceGuid;
+                        tasks.Add(Task.Run(() => concreteDevices[deviceGuid].TurnOn()));
+                    }
+                }
+            }
+
+            await Task.WhenAll(tasks);
+
         }
 
         private async void StopSyncing(object sender, EventArgs e)
@@ -59,18 +81,15 @@ namespace RGBMasterWPFRunner
             await supportedEffectsExecutors[AppState.Instance.SelectedEffect.EffectMetadataGuid].Stop();
         }
 
-        private async void ChangeStaticColor(object sender, Color newColor)
+        private async void ChangeStaticColor(object sender, StaticColorEffectProps staticColorEffectProps)
         {
-            AppState.Instance.StaticColor = newColor;
+            AppState.Instance.StaticColorEffectProperties = staticColorEffectProps;
 
             var selectedEffectExecutor = supportedEffectsExecutors[AppState.Instance.SelectedEffect.EffectMetadataGuid];
 
             if (AppState.Instance.IsEffectRunning && selectedEffectExecutor.GetType() == typeof(StaticColorEffectExecutor))
             {
-                ((StaticColorEffectMetadata)selectedEffectExecutor.executedEffectMetadata).UpdateProps(new StaticColorEffectProps()
-                {
-                    SelectedColor = newColor
-                });
+                ((StaticColorEffectMetadata)selectedEffectExecutor.executedEffectMetadata).UpdateProps(staticColorEffectProps);
 
                 await selectedEffectExecutor.Start();
             }
@@ -113,6 +132,7 @@ namespace RGBMasterWPFRunner
 
         private async void InitializeProviders(object sender, EventArgs e)
         {
+            await initializeProvidersSemaphore.WaitAsync();
             concreteDevices.Clear();
             AppState.Instance.RegisteredProviders.Clear();
             //AppState.Instance.SelectedDevices.Clear();
@@ -123,16 +143,20 @@ namespace RGBMasterWPFRunner
 
             foreach (var provider in supportedProviders.Values)
             {
-                await provider.InitializeProvider();
-                var devices = await provider.Discover();
+                var didInitialize = await provider.InitializeProvider();
 
-                discoveredDevices.AddRange(devices);
-
-                AppState.Instance.RegisteredProviders.Add(new RegisteredProvider()
+                if (didInitialize)
                 {
-                    Provider = provider.ProviderMetadata,
-                    Devices = new System.Collections.ObjectModel.ObservableCollection<DiscoveredDevice>(devices.Select(device => new DiscoveredDevice() { Device = device.DeviceMetadata, IsChecked = false }))
-                });
+                    var devices = await provider.Discover();
+
+                    discoveredDevices.AddRange(devices);
+
+                    AppState.Instance.RegisteredProviders.Add(new RegisteredProvider()
+                    {
+                        Provider = provider.ProviderMetadata,
+                        Devices = new System.Collections.ObjectModel.ObservableCollection<DiscoveredDevice>(devices.Select(device => new DiscoveredDevice() { Device = device.DeviceMetadata, IsChecked = false }))
+                    });
+                }
             }
 
             /*AppState.Instance.SelectedDevices = new System.Collections.ObjectModel.ObservableCollection<DiscoveredDevice>(discoveredDevices.Select(originalDevice => new DiscoveredDevice()
@@ -145,7 +169,10 @@ namespace RGBMasterWPFRunner
             {
                 concreteDevices.Add(device.DeviceMetadata.DeviceGuid, device);
             }
+
+            initializeProvidersSemaphore.Release();
         }
+
 
         private async void Instance_EffectChanged(object sender, EffectMetadata e)
         {
@@ -181,11 +208,13 @@ namespace RGBMasterWPFRunner
 
                 if (!item.IsChecked && concreteDevice.IsConnected)
                 {
+                    concreteDevice.TurnOff();
                     await concreteDevice.Disconnect();
                 }
                 else if (item.IsChecked && !concreteDevice.IsConnected)
                 {
                     await concreteDevice.Connect();
+                    concreteDevice.TurnOn();
                 }
             }
 

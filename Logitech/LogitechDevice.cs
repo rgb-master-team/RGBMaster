@@ -44,5 +44,15 @@ namespace Logitech
         {
             LogitechGSDK.LogiLedSetLightingForTargetZone(DeviceType.Mouse, 1, 100 * (color.R / byte.MaxValue), 100 * (color.G / byte.MaxValue), 100 * (color.B / byte.MaxValue));
         }
+
+        public override void TurnOffInternal()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void TurnOnInternal()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -18,14 +18,17 @@
                 </StackPanel>
             </PivotItem.Header>
             <StackPanel Orientation="Vertical">
+                <StackPanel>
                 <ColorPicker x:Name="ColorPicker" 
                              ColorSpectrumShape="Ring" 
                              ColorChanged="ColorPicker_ColorChanged" 
                              IsColorSliderVisible="False" 
-                             IsAlphaEnabled="True" 
-                             IsAlphaSliderVisible="True" 
-                             IsAlphaTextInputVisible="True" 
                              Margin="0 4 0 0" />
+            </StackPanel>
+                <StackPanel Orientation="Vertical" Margin="0 12 0 0">
+                    <TextBlock Text="Brightness" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"/>
+                    <Slider x:Name="Brighness_Slider" Minimum="0" Maximum="100" ValueChanged="Brightness_Value_Changed"/>
+                </StackPanel>
             </StackPanel>
         </PivotItem>
         <!--Flow Sync-->

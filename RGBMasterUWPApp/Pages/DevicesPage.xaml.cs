@@ -53,5 +53,10 @@ namespace RGBMasterUWPApp.Pages
         {
             
         }
+
+        private void Refresh_Button_Clicked(object sender, RoutedEventArgs e)
+        {
+            EventManager.Instance.InitializeProviders();
+        }
     }
 }

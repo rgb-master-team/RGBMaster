@@ -7,7 +7,7 @@ namespace Common
 {
     public class MusicEffectMetadata : EffectMetadata
     {
-        public override string EffectName => "Music";
+        public override string EffectName => "Music Sync";
 
         public override string ShortDescription => "Sync the color of the max frequency of the played music/sound.";
 

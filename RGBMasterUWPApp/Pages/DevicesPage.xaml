@@ -5,9 +5,18 @@
     xmlns:local="using:RGBMasterUWPApp.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:muxc="using:Microsoft.UI.Xaml.Controls" xmlns:state="using:AppExecutionManager.State"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+   >
 
-    <Pivot Title="Devices" ItemsSource="{x:Bind RegisteredProviders}" x:Name="ProvidersPivot">
+        <Pivot ItemsSource="{x:Bind RegisteredProviders}" x:Name="ProvidersPivot">
+        <Pivot.Title>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="Devices" />
+                <Button Click="Refresh_Button_Clicked" ToolTipService.ToolTip="Refresh Devices" Background="Transparent">
+                    <FontIcon x:Name="OuterButton" Glyph="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="Orange"/>
+                </Button>
+            </StackPanel>
+        </Pivot.Title>
         <Pivot.HeaderTemplate>
             <DataTemplate x:DataType="state:RegisteredProvider">
                 <TextBlock Text="{x:Bind Provider.ProviderName}" />

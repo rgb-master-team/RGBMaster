@@ -34,7 +34,8 @@ namespace RGBMasterUWPApp.Pages
         private void ColorPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
         {
             var color = System.Drawing.Color.FromArgb(sender.Color.R, sender.Color.G, sender.Color.B);
-            EventManager.Instance.ChangeStaticColor(color);
+            EventManager.Instance.ChangeStaticColor(new StaticColorEffectProps() { SelectedColor = color, SelectedBrightness = AppState.Instance.StaticColorEffectProperties.SelectedBrightness });
+          
             /*AppState.Instance.StaticColor = color;
 
             if (AppState.Instance.IsEffectRunning)
@@ -80,5 +81,12 @@ namespace RGBMasterUWPApp.Pages
                 ChangeCurrentRunningEffect(effectMd);
             }
         }
+
+        private void Brightness_Value_Changed(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            EventManager.Instance.ChangeStaticColor(new StaticColorEffectProps() { SelectedColor = AppState.Instance.StaticColorEffectProperties.SelectedColor, SelectedBrightness = (byte)Brighness_Slider.Value });
+
+        }
+
     }
 }

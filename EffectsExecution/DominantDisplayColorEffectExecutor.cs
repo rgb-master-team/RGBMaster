@@ -1,4 +1,5 @@
 ﻿using Common;
+using EffectsExecution.Win32Api;
 using Provider;
 using System;
 using System.Collections.Generic;
@@ -15,10 +16,18 @@ namespace EffectsExecution
     public class DominantDisplayColorEffectExecutor : EffectExecutor
     {
         [DllImport("user32.dll")]
-        static extern bool GetCursorPos(ref Point lpPoint);
+        private static extern bool GetCursorPos(ref Point lpPoint);
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr GetDesktopWindow();
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr GetWindowDC(IntPtr window);
 
         [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
-        public static extern int BitBlt(IntPtr hDC, int x, int y, int nWidth, int nHeight, IntPtr hSrcDC, int xSrc, int ySrc, int dwRop);
+        private static extern int BitBlt(IntPtr hDC, int x, int y, int nWidth, int nHeight, IntPtr hSrcDC, int xSrc, int ySrc, int dwRop);
+        [DllImport("gdi32.dll", SetLastError = true)]
+        private static extern uint GetPixel(IntPtr dc, int x, int y);
+        [DllImport("user32.dll")]
+        private static extern bool EnumDisplaySettings(string deviceName, int modeNum, ref DEVMODE devMode);
 
         private Timer calculationTimer;
         private Bitmap screenPixel = new Bitmap(1, 1, PixelFormat.Format32bppArgb);

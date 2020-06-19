@@ -12,5 +12,7 @@ namespace Common
         SetColor,
         GetBrightness,
         SetBrightness,
+        TurnOn,
+        TurnOff,
     }
 }
