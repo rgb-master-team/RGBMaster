@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,8 @@ namespace AppExecutionManager.State
                 RegisteredProviders = new ObservableCollection<RegisteredProvider>(),
                 IsEffectRunning = false,
                 //SelectedDevices = new ObservableCollection<DiscoveredDevice>(),
-                Effects = new ObservableCollection<EffectMetadata>()
+                Effects = new ObservableCollection<EffectMetadata>(),
+                StaticColorEffectProperties=new StaticColorEffectProps() { SelectedColor = Color.White, SelectedBrightness = 100 }
             };
 
         }
@@ -39,7 +41,7 @@ namespace AppExecutionManager.State
         public EffectMetadata SelectedEffect { get; set; }
         public ObservableCollection<EffectMetadata> Effects { get; set; }
         public bool IsEffectRunning { get; set; }
-        public System.Drawing.Color StaticColor { get; set; }
+        public StaticColorEffectProps StaticColorEffectProperties { get; set; }
         public string AppVersion { get; set; }
     }
 }

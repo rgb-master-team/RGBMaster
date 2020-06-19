@@ -81,18 +81,15 @@ namespace RGBMasterWPFRunner
             await supportedEffectsExecutors[AppState.Instance.SelectedEffect.EffectMetadataGuid].Stop();
         }
 
-        private async void ChangeStaticColor(object sender, Color newColor)
+        private async void ChangeStaticColor(object sender, StaticColorEffectProps staticColorEffectProps)
         {
-            AppState.Instance.StaticColor = newColor;
+            AppState.Instance.StaticColorEffectProperties = staticColorEffectProps;
 
             var selectedEffectExecutor = supportedEffectsExecutors[AppState.Instance.SelectedEffect.EffectMetadataGuid];
 
             if (AppState.Instance.IsEffectRunning && selectedEffectExecutor.GetType() == typeof(StaticColorEffectExecutor))
             {
-                ((StaticColorEffectMetadata)selectedEffectExecutor.executedEffectMetadata).UpdateProps(new StaticColorEffectProps()
-                {
-                    SelectedColor = newColor
-                });
+                ((StaticColorEffectMetadata)selectedEffectExecutor.executedEffectMetadata).UpdateProps(staticColorEffectProps);
 
                 await selectedEffectExecutor.Start();
             }

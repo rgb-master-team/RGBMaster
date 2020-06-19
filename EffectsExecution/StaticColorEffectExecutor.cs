@@ -13,13 +13,17 @@ namespace EffectsExecution
         {
         }
 
-        private async Task ChangeStaticColor(System.Drawing.Color newColor)
+        private async Task ChangeStaticColor(StaticColorEffectProps newStaticColorEffectProps)
         {
             var tasksList = new List<Task>();
 
             foreach (var device in Devices)
             {
-                tasksList.Add(Task.Run(() => device.SetColor(newColor)));
+                tasksList.Add(Task.Run(() =>
+                {
+                    device.SetColor(newStaticColorEffectProps.SelectedColor);
+                    device.SetBrightnessPercentage(newStaticColorEffectProps.SelectedBrightness);
+                }));
             }
 
             await Task.WhenAll(tasksList);
@@ -27,7 +31,7 @@ namespace EffectsExecution
 
         public override async Task StartInternal()
         {
-            await ChangeStaticColor(AppState.Instance.StaticColor);
+            await ChangeStaticColor(AppState.Instance.StaticColorEffectProperties);
         }
 
         public override Task StopInternal()

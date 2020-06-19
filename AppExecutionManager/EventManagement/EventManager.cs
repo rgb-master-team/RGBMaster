@@ -11,7 +11,7 @@ namespace AppExecutionManager.EventManagement
     {
         private static readonly EventManager instance = new EventManager();
 
-        private event EventHandler<Color> StaticColorChanged;
+        private event EventHandler<StaticColorEffectProps> StaticColorChanged;
         private event EventHandler<EffectMetadata> EffectChanged;
         private event EventHandler<List<DiscoveredDevice>> SelectedDevicesChanged;
         private event EventHandler StartSyncingRequested;
@@ -109,17 +109,17 @@ namespace AppExecutionManager.EventManagement
             InitializeProvidersRequested?.Invoke(this, null);
         }
 
-        public void SubscribeToStaticColorChanges(EventHandler<Color> callback)
+        public void SubscribeToStaticColorChanges(EventHandler<StaticColorEffectProps> callback)
         {
             StaticColorChanged += callback;
         }
 
-        public void UnsubscribeFromStaticColorChanges(EventHandler<Color> callback)
+        public void UnsubscribeFromStaticColorChanges(EventHandler<StaticColorEffectProps> callback)
         {
             StaticColorChanged -= callback;
         }
 
-        public void ChangeStaticColor(Color color)
+        public void ChangeStaticColor(StaticColorEffectProps color)
         {
             StaticColorChanged?.Invoke(this, color);
         }

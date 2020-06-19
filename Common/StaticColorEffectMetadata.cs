@@ -9,6 +9,7 @@ namespace Common
     public class StaticColorEffectProps
     {
         public Color SelectedColor { get; set; }
+        public byte SelectedBrightness { get; set; }
     }
 
     public class StaticColorEffectMetadata : EffectMetadata<StaticColorEffectProps>

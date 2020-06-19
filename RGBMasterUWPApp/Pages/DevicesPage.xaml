@@ -9,19 +9,15 @@
    >
 
         <Pivot ItemsSource="{x:Bind RegisteredProviders}" x:Name="ProvidersPivot">
-            <Pivot.Title>
-                <StackPanel Orientation="Horizontal">
-                    <StackPanel>
-                        <TextBlock Text="Devices" />
-                    </StackPanel>
-                <StackPanel>
-                    <Button Click="Refresh_Button_Clicked" ToolTipService.ToolTip="Refresh Devices" Background="Transparent">
-                        <FontIcon x:Name="OuterButton" Glyph="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="Orange"/>
-                    </Button>
-                    </StackPanel>
-                </StackPanel>
-            </Pivot.Title>
-            <Pivot.HeaderTemplate>
+        <Pivot.Title>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="Devices" />
+                <Button Click="Refresh_Button_Clicked" ToolTipService.ToolTip="Refresh Devices" Background="Transparent">
+                    <FontIcon x:Name="OuterButton" Glyph="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="Orange"/>
+                </Button>
+            </StackPanel>
+        </Pivot.Title>
+        <Pivot.HeaderTemplate>
             <DataTemplate x:DataType="state:RegisteredProvider">
                 <TextBlock Text="{x:Bind Provider.ProviderName}" />
             </DataTemplate>
