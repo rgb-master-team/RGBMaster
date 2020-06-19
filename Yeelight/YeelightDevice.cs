@@ -32,7 +32,7 @@ namespace Yeelight
             InternalDevice = internalDevice;
         }
 
-        public async override Task ConnectInternal()
+        protected async override Task ConnectInternal()
         {
             await InternalDevice.Connect();
             var supportedOps = InternalDevice.SupportedOperations;
@@ -66,14 +66,14 @@ namespace Yeelight
             }
         }
 
-        public override Task DisconnectInternal()
+        protected override Task DisconnectInternal()
         {
             musicModeSocket?.Close();
             InternalDevice?.Disconnect();
             return Task.CompletedTask;
         }
 
-        public override byte GetBrightnessPercentage()
+        protected override byte GetBrightnessPercentageInternal()
         {
             // TODO - Also implement background lighting???
             // TODO2 - Keep the last known brightness at all time in a private member? is it a sensible approach?            
@@ -82,14 +82,14 @@ namespace Yeelight
             return (byte)task.Result;
         }
 
-        public override Color GetColor()
+        protected override Color GetColorInternal()
         {
             var task = InternalDevice.GetProp(YeelightAPI.Models.PROPERTIES.rgb);
             task.Wait();
             return RGBColorHelper.ParseColor((int)task.Result);
         }
 
-        public override void SetBrightnessPercentage(byte brightness)
+        protected override void SetBrightnessPercentageInternal(byte brightness)
         {
             var serverParams = new List<object>() { brightness };
 
@@ -108,7 +108,7 @@ namespace Yeelight
             musicModeSocket.Send(sentData);
         }
 
-        public override void SetColor(Color color)
+        protected override void SetColorInternal(Color color)
         {
             var colorValue = RGBColorHelper.ComputeRGBColor(color.R, color.G, color.B);
 
@@ -125,7 +125,7 @@ namespace Yeelight
             musicModeSocket.Send(colorSentData);
         }
 
-        public override void TurnOffInternal()
+        protected override void TurnOffInternal()
         {
             Command turnOffCommand = new Command()
             {
@@ -140,7 +140,7 @@ namespace Yeelight
             musicModeSocket.Send(turnOffSentData);
         }
 
-        public override void TurnOnInternal()
+        protected override void TurnOnInternal()
         {
             Command turnOnCommand = new Command()
             {

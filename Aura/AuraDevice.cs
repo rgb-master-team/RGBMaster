@@ -18,42 +18,42 @@ namespace Aura
             this.internalAuraDevice = internalAuraDevice;
         }
 
-        public override Task ConnectInternal()
+        protected override Task ConnectInternal()
         {
             return Task.CompletedTask;
         }
 
-        public override Task DisconnectInternal()
+        protected override Task DisconnectInternal()
         {
             return Task.CompletedTask;
         }
 
-        public override byte GetBrightnessPercentage()
+        protected override byte GetBrightnessPercentageInternal()
         {
             throw new NotImplementedException();
         }
 
-        public override System.Drawing.Color GetColor()
+        protected override System.Drawing.Color GetColorInternal()
         {
             throw new NotImplementedException();
         }
 
-        public override void SetBrightnessPercentage(byte brightness)
+        protected override void SetBrightnessPercentageInternal(byte brightness)
         {
             throw new NotImplementedException();
         }
 
-        public override void SetColor(System.Drawing.Color color)
+        protected override void SetColorInternal(System.Drawing.Color color)
         {
             this.internalAuraDevice.SetColors(new Color[] { new Color(color.R, color.G, color.B) });
         }
 
-        public override void TurnOffInternal()
+        protected override void TurnOffInternal()
         {
             throw new NotImplementedException();
         }
 
-        public override void TurnOnInternal()
+        protected override void TurnOnInternal()
         {
             throw new NotImplementedException();
         }

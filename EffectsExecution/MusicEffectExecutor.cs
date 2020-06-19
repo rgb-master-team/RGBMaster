@@ -1,5 +1,7 @@
 ﻿using Common;
 using NAudio.Wave;
+using NAudio.Wave.SampleProviders;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text.RegularExpressions;
@@ -17,15 +19,16 @@ namespace EffectsExecution
         }
 
         public override Task StartInternal()
-        {   
+        {
             var driverNames = AsioOut.GetDriverNames();
 
             var asioOut = new AsioOut(driverNames[0]);
 
-            var inputChannels = asioOut.DriverInputChannelCount;
+            asioOut.ShowControlPanel();
 
-            var sampleRate = 48000;
-            asioOut.InitRecordAndPlayback(null, 1, sampleRate);
+            int inputChannels = asioOut.DriverInputChannelCount; // that's all my soundcard has :(
+
+            asioOut.InitRecordAndPlayback(null, inputChannels, 0);
 
             asioOut.AudioAvailable += AsioOut_AudioAvailable;
 

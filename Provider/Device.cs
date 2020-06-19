@@ -19,25 +19,71 @@ namespace Provider
 
         public bool IsConnected { get; private set; }
         public bool IsTurnedOn { get; private set; }
-        public abstract Color GetColor();
-        public abstract void SetColor(Color color);
-        public abstract byte GetBrightnessPercentage();
-        public abstract void SetBrightnessPercentage(byte brightness);
+
+        public Color GetColor()
+        {
+            if (DeviceMetadata.SupportedOperations.Contains(OperationType.GetColor))
+            {
+                return GetColorInternal();
+            }
+
+            return Color.Empty;
+        }
+
+        protected abstract Color GetColorInternal();
+
+        public void SetColor(Color color)
+        {
+            if (DeviceMetadata.SupportedOperations.Contains(OperationType.SetColor))
+            {
+                SetColorInternal(color);
+            }
+        }
+
+        protected abstract void SetColorInternal(Color color);
+
+        public byte GetBrightnessPercentage()
+        {
+            if (DeviceMetadata.SupportedOperations.Contains(OperationType.GetBrightness))
+            {
+               return GetBrightnessPercentageInternal();
+            }
+
+            return 0;
+        }
+
+        protected abstract byte GetBrightnessPercentageInternal();
+
+        public void SetBrightnessPercentage(byte brightness)
+        {
+            if (DeviceMetadata.SupportedOperations.Contains(OperationType.SetBrightness))
+            {
+                SetBrightnessPercentageInternal(brightness);
+            }
+        }
+
+        protected abstract void SetBrightnessPercentageInternal(byte brightness);
 
         public void TurnOn()
         {
-            TurnOnInternal();
-            IsTurnedOn = true;
+            if (DeviceMetadata.SupportedOperations.Contains(OperationType.TurnOn))
+            {
+                TurnOnInternal();
+                IsTurnedOn = true;
+            }
         }
 
         public void TurnOff()
         {
-            TurnOffInternal();
-            IsTurnedOn = false;
+            if (DeviceMetadata.SupportedOperations.Contains(OperationType.TurnOff))
+            {
+                TurnOffInternal();
+                IsTurnedOn = false;
+            }
         }
 
-        public abstract void TurnOnInternal();
-        public abstract void TurnOffInternal();
+        protected abstract void TurnOnInternal();
+        protected abstract void TurnOffInternal();
 
         public async Task Connect()
         {
@@ -61,7 +107,7 @@ namespace Provider
             IsConnected = false;
         }
 
-        public abstract Task ConnectInternal();
-        public abstract Task DisconnectInternal();
+        protected abstract Task ConnectInternal();
+        protected abstract Task DisconnectInternal();
     }
 }
