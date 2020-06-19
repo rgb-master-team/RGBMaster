@@ -50,5 +50,10 @@ namespace RGBMasterUWPApp.Pages
             await Windows.System.Launcher.LaunchUriAsync(new Uri("https://discord.gg/zWbe3UV"));
         }
 
+        private void Check_Turn_On_Device_When_Checked()
+        {
+            if (TurnOnDeviceEnabler.IsOn)
+            { }
+        }
     }
 }

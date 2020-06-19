@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
+using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -102,6 +103,10 @@ namespace RGBMasterUWPApp
         public RGBMasterUserControl()
         {
             this.InitializeComponent();
+            RefreshDeviceCounter();
+            AppState.Instance.RegisteredProviders.CollectionChanged += (sender, eventArgs) => RefreshDeviceCounter();
+
+            // TODO - REMOVE LISTEN TO COLLECTION CHANGED WHEN PAGE GETS TEARED DOWN
         }
 
         private void MainNavigationView_SelectionChanged(Microsoft.UI.Xaml.Controls.NavigationView sender, Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs args)
@@ -119,6 +124,38 @@ namespace RGBMasterUWPApp
 
             var navigationResult = MainAppContentFrame.Navigate(pageToType[selectionTag], null, args.RecommendedNavigationTransitionInfo);
         }
+
+        private void RefreshDeviceCounter()
+        {
+            int foundedDevices = 0;
+            foreach (var provider in AppState.Instance.RegisteredProviders)
+            {
+                foreach (var device in provider.Devices)
+                {
+                    foundedDevices += 1;
+                }
+            }
+
+            if (foundedDevices == 1)
+            {
+                DevicesAmountTxtBlk.Text = foundedDevices.ToString() + " Device found.";
+                DevicesAmountTxtBlk.Foreground = new SolidColorBrush(Windows.UI.Colors.Green);
+                DevicesAmountTxtBlk.FontWeight = Windows.UI.Text.FontWeights.Bold;
+            }
+            else if (foundedDevices > 1)
+            {
+                DevicesAmountTxtBlk.Text = foundedDevices.ToString() + " Devices found";
+                DevicesAmountTxtBlk.Foreground = new SolidColorBrush(Windows.UI.Colors.Green);
+                DevicesAmountTxtBlk.FontWeight = Windows.UI.Text.FontWeights.Bold;
+            }
+            else
+            {
+                DevicesAmountTxtBlk.Text = "No devices found";
+                DevicesAmountTxtBlk.Foreground = new SolidColorBrush(Windows.UI.Colors.Red);
+                DevicesAmountTxtBlk.FontWeight = Windows.UI.Text.FontWeights.Bold;
+            }
+        }
+
 
         private void RGBMasterUserControl_Loaded(object sender, RoutedEventArgs e)
         {

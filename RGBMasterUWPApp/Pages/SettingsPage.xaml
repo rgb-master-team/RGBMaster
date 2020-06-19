@@ -11,8 +11,10 @@
     <Pivot Title="Settings">
         <PivotItem Header="General" >
             <StackPanel>
-                <ToggleSwitch OffContent="Dark Mode" HorizontalAlignment="Left" />
-                <ToggleSwitch OffContent="Desktop Notification sync" HorizontalAlignment="Left" />
+                <StackPanel>
+                    <TextBlock Text="Turn device on/off when they are checked." />
+                    <ToggleSwitch x:Name="TurnOnDeviceEnabler" IsOn="True" />
+                </StackPanel>
             </StackPanel>
         </PivotItem>
         <PivotItem Header="About">
