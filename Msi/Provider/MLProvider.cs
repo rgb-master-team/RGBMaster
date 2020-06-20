@@ -1,13 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Infrastructure;
 using Msi.SDKs;
+using RGBProvider = Provider;
 
 namespace Msi.Provider
 {
-	public class MLProvider : Infrastructure.Provider
+    public class MLProvider : RGBProvider.BaseProvider
 	{
-		public override string ProviderName => "MSI Sync";
+        public MLProvider(): base(new MLProviderMetadata())
+        {
+
+        }
 
 		protected override Task Register()
 		{
@@ -21,9 +25,9 @@ namespace Msi.Provider
 			return Task.CompletedTask;
 		}
 
-		public override Task<IEnumerable<Device>> Discover()
+		public override Task<List<RGBProvider.Device>> Discover()
 		{
-			return Task.FromResult<IEnumerable<Device>>(MysticLightSdk.GetAllDevices());
+			return Task.FromResult(MysticLightSdk.GetAllDevices().ToList<RGBProvider.Device>());
 		}
 	}
 }

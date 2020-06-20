@@ -1,53 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Msi.Devices.Leds;
+using Msi.Provider;
+using Msi.SDKs;
+using Provider;
 using System.Drawing;
 using System.Threading.Tasks;
-using Infrastructure;
-using Msi.Devices.Leds;
-using Msi.SDKs;
 
 namespace Msi.Devices
 {
-	public class MLDevice : Device
+    public class MLDevice : Device
 	{
-		public override string DeviceName => Type;
-
-		public string Type { get; set; }
 		public MLLed[] Leds { get; set; }
 
-		#region Device Properties
-
-		public override HashSet<OperationType> SupportedOperations { get; }
-
-		#endregion
-
-		public MLDevice(string deviceType, int ledsCount)
+		public MLDevice(string deviceType, int ledsCount) : base(new MLDeviceMetadata(deviceType))
 		{
-			Type = deviceType;
 			Leds = new MLLed[ledsCount];
-
-			SupportedOperations = new HashSet<OperationType>() { OperationType.SetColor };
 		}
 
 		internal void Load()
 		{
 			for (var ledIndex = 0; ledIndex < Leds.Length; ledIndex++)
 			{
-				MysticLightSdk.GetLedInfo(Type, ledIndex, out var ledName, out var ledStyles);
+				var mlDeviceMd = (MLDeviceMetadata)DeviceMetadata;
+				MysticLightSdk.GetLedInfo(mlDeviceMd.deviceType, ledIndex, out var ledName, out var ledStyles);
 
-				Leds[ledIndex] = new MLLed(ledName, ledStyles, ledIndex, Type);
+				Leds[ledIndex] = new MLLed(ledName, ledStyles, ledIndex, mlDeviceMd.deviceType);
 				Leds[ledIndex].Load();
 			}
 		}
 
 		#region Device Methods
 
-		public override Color GetColor()
+		protected override Color GetColorInternal()
 		{
 			throw new System.NotImplementedException();
 		}
 
-		public override void SetColor(Color color)
+		protected override void SetColorInternal(Color color)
 		{
 			foreach (var led in Leds)
 			{
@@ -56,25 +44,35 @@ namespace Msi.Devices
 			}
 		}
 
-		public override byte GetBrightnessPercentage()
+		protected override byte GetBrightnessPercentageInternal()
 		{
 			throw new System.NotImplementedException();
 		}
 
-		public override void SetBrightnessPercentage(byte brightness)
+		protected override void SetBrightnessPercentageInternal(byte brightness)
 		{
 			throw new System.NotImplementedException();
 		}
 
-		public override Task Connect()
+		protected override Task ConnectInternal()
 		{
 			return Task.CompletedTask;
 		}
 
-		public override Task Disconnect()
+		protected override Task DisconnectInternal()
 		{
 			return Task.CompletedTask;
-		} 
+		}
+
+		protected override void TurnOnInternal()
+		{
+			throw new System.NotImplementedException();
+		}
+
+		protected override void TurnOffInternal()
+		{
+			throw new System.NotImplementedException();
+		}
 
 		#endregion
 	}

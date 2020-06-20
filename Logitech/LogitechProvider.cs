@@ -1,4 +1,4 @@
-﻿using Infrastructure;
+﻿using Provider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,13 +7,16 @@ using System.Threading.Tasks;
 
 namespace Logitech
 {
-    public class LogitechProvider : Provider
+    public class LogitechProvider : BaseProvider
     {
-        public override string ProviderName => "Logitech G Products Provider";
-
-        public override Task<IEnumerable<Device>> Discover()
+        public LogitechProvider(): base(new LogitechProviderMetadata())
         {
-            return Task.FromResult<IEnumerable<Device>>(new List<Device>() { new LogitechMouseDevice() });
+
+        }
+
+        public override Task<List<Device>> Discover()
+        {
+            return Task.FromResult(new List<Device>() { new LogitechDevice() });
             
 
             /*

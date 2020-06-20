@@ -1,0 +1,44 @@
+﻿<Page
+    x:Class="RGBMasterUWPApp.Pages.DevicesPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:RGBMasterUWPApp.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:muxc="using:Microsoft.UI.Xaml.Controls" xmlns:state="using:AppExecutionManager.State"
+    mc:Ignorable="d"
+   >
+
+        <Pivot ItemsSource="{x:Bind RegisteredProviders}" x:Name="ProvidersPivot">
+        <Pivot.Title>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="Devices" />
+                <Button Click="Refresh_Button_Clicked" ToolTipService.ToolTip="Refresh Devices" Background="Transparent">
+                    <FontIcon x:Name="OuterButton" Glyph="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="Orange"/>
+                </Button>
+            </StackPanel>
+        </Pivot.Title>
+        <Pivot.HeaderTemplate>
+            <DataTemplate x:DataType="state:RegisteredProvider">
+                <TextBlock Text="{x:Bind Provider.ProviderName}" />
+            </DataTemplate>
+        </Pivot.HeaderTemplate>
+
+        <Pivot.ItemTemplate>
+            <DataTemplate x:DataType="state:RegisteredProvider">
+                <StackPanel>
+                    <TextBox x:Name="ManualConnectionAddressTxtBx" PlaceholderText="Manually connect via IP address or unique ID"></TextBox>
+                    <Button Content="Connect" x:Name="ManualConnectionButton" Click="ManualConnectionButton_Click"></Button>
+                    <ListView ItemsSource="{x:Bind Devices}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="state:DiscoveredDevice">
+                                <StackPanel Orientation="Vertical">
+                                    <CheckBox IsChecked="{x:Bind IsChecked}" Tag="{x:Bind}" Click="CheckBox_Click" Content="{x:Bind Device.DeviceName}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackPanel>
+            </DataTemplate>
+        </Pivot.ItemTemplate>
+    </Pivot>
+</Page>

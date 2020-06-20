@@ -4,20 +4,20 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Common;
 using Corsair.Channel;
 using Corsair.Layout;
 using Corsair.Led;
-using Infrastructure;
+using Corsair.Provider;
+using RGBDevice = Provider.Device;
 
 namespace Corsair.Device
 {
-	/// <summary>
-	/// Contains information about device.
-	/// </summary>
-	public class CorsairDevice : Infrastructure.Device
+    /// <summary>
+    /// Contains information about device.
+    /// </summary>
+    public class CorsairDevice : RGBDevice
 	{
-		public override string DeviceName => Native.model != null ? Marshal.PtrToStringAuto(Native.model): "Unknown";
-
 		#region Corsair Native
 
 		internal CorsairDeviceNative Native;
@@ -63,25 +63,17 @@ namespace Corsair.Device
 		public CorsairLedPositions LedPositions { get; private set; } 
 		#endregion
 
-		#region Device
-
-		public override HashSet<OperationType> SupportedOperations { get; }
-
-		#endregion
-
 		/// <summary>
 		/// Creates a instance of CorsairDevice
 		/// </summary>
 		/// <param name="deviceNative">The native device info</param>
-		internal CorsairDevice(CorsairDeviceNative deviceNative, int id)
+		public CorsairDevice(CorsairDeviceNative deviceNative, int id): base(new CorsairDeviceMetadata(deviceNative.model != null ? Marshal.PtrToStringAuto(deviceNative.model) : "Unknown"))
 		{
 			Native = deviceNative;
 			Id = id;
 
 			Model = Marshal.PtrToStringAnsi(Native.model);
 			Channels = new CorsairChannels(Native.channels);
-
-			SupportedOperations = new HashSet<OperationType>() { OperationType.SetColor };
 	}
 
 		/// <summary>
@@ -96,32 +88,32 @@ namespace Corsair.Device
 
 		#region Device
 
-		public override Color GetColor()
+		protected override Color GetColorInternal()
 		{
 			throw new NotImplementedException();
 		}
 
-		public override byte GetBrightnessPercentage()
+		protected override byte GetBrightnessPercentageInternal()
 		{
 			throw new NotImplementedException();
 		}
 
-		public override void SetBrightnessPercentage(byte brightness)
+		protected override void SetBrightnessPercentageInternal(byte brightness)
 		{
 			throw new NotImplementedException();
 		}
 
-		public override Task Connect()
+		protected override Task ConnectInternal()
 		{
 			return Task.CompletedTask;
 		}
 
-		public override Task Disconnect()
+		protected override Task DisconnectInternal()
 		{
 			return Task.CompletedTask;
 		}
 
-		public override void SetColor(Color color)
+		protected override void SetColorInternal(Color color)
 		{
 			var ledsColor = LedPositions.LedPosition.Select(x => new CorsairLedColor
 			{
@@ -133,6 +125,16 @@ namespace Corsair.Device
 
 			CUESDK.CUESDK.SetLedsColorsBufferByDeviceIndex(Id, LedPositions.LedPosition.Length, ledsColor);
 			CUESDK.CUESDK.SetLedsColorsFlushBuffer();
+		}
+
+		protected override void TurnOnInternal()
+		{
+			throw new NotImplementedException();
+		}
+
+		protected override void TurnOffInternal()
+		{
+			throw new NotImplementedException();
 		}
 
 		#endregion

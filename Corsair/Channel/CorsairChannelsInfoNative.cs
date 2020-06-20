@@ -7,7 +7,7 @@ namespace Corsair.Channel
     /// Contains information about channels of the DIY-devices or cooler.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    internal class CorsairChannelsInfoNative
+    public class CorsairChannelsInfoNative
     {
         /// <summary>
         /// Number of channels controlled by the device

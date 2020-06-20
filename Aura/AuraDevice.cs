@@ -1,5 +1,6 @@
 ﻿using AuraSDKDotNet;
-using Infrastructure;
+using Common;
+using Provider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,51 +11,51 @@ namespace Aura
 {
     public class AuraDevice : Device
     {
-        private readonly HashSet<OperationType> auraSupportedOps = new HashSet<OperationType>() { OperationType.SetColor };
-
-        public override string DeviceName => "Unknown Aura Device";
-
-        public override HashSet<OperationType> SupportedOperations => auraSupportedOps;
-
         private readonly AuraSDKDotNet.AuraDevice internalAuraDevice;
 
-        public AuraDevice(AuraSDKDotNet.AuraDevice internalAuraDevice)
+        public AuraDevice(AuraSDKDotNet.AuraDevice internalAuraDevice) : base(new AuraDeviceMetadata())
         {
             this.internalAuraDevice = internalAuraDevice;
         }
 
-        public AuraDevice()
-        {
-        }
-
-        public override Task Connect()
+        protected override Task ConnectInternal()
         {
             return Task.CompletedTask;
         }
 
-        public override Task Disconnect()
+        protected override Task DisconnectInternal()
         {
             return Task.CompletedTask;
         }
 
-        public override byte GetBrightnessPercentage()
+        protected override byte GetBrightnessPercentageInternal()
         {
             throw new NotImplementedException();
         }
 
-        public override System.Drawing.Color GetColor()
+        protected override System.Drawing.Color GetColorInternal()
         {
             throw new NotImplementedException();
         }
 
-        public override void SetBrightnessPercentage(byte brightness)
+        protected override void SetBrightnessPercentageInternal(byte brightness)
         {
             throw new NotImplementedException();
         }
 
-        public override void SetColor(System.Drawing.Color color)
+        protected override void SetColorInternal(System.Drawing.Color color)
         {
             this.internalAuraDevice.SetColors(new Color[] { new Color(color.R, color.G, color.B) });
+        }
+
+        protected override void TurnOffInternal()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void TurnOnInternal()
+        {
+            throw new NotImplementedException();
         }
     }
 }

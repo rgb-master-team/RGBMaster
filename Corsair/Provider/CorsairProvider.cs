@@ -1,15 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using Corsair.Provider;
+using Provider;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Infrastructure;
 
-namespace Corsair.Provider
+namespace CorsairProvider
 {
-	public class CorsairProvider : Infrastructure.Provider
-	{
-		public override string ProviderName => "Corsair Sync";
-		protected override Task Register()
+    public class CorsairProvider : BaseProvider
+    {
+        public CorsairProvider() : base(new CorsairProviderMetadata())
+        {
+        }
+
+        protected override Task Register()
 		{
-			CUESDK.CUESDK.PerformProtocolHandshake();
+			Corsair.CUESDK.CUESDK.PerformProtocolHandshake();
 
 			return Task.CompletedTask;
 		}
@@ -19,9 +24,10 @@ namespace Corsair.Provider
 			return Task.CompletedTask;
 		}
 
-		public override Task<IEnumerable<Infrastructure.Device>> Discover()
-		{
-			return Task.FromResult<IEnumerable<Infrastructure.Device>>(CUESDK.CUESDK.GetAllDevices());
+        public override Task<List<Device>> Discover()
+        {
+			var devices = Corsair.CUESDK.CUESDK.GetAllDevices();
+			return Task.FromResult(devices.ToList<Device>());
 		}
 	}
 }

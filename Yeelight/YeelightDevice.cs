@@ -1,6 +1,6 @@
-﻿using Infrastructure;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Provider;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -9,18 +9,13 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Utils;
 using YeelightAPI.Models;
 
 namespace Yeelight
 {
     public class YeelightDevice : Device
     {
-        private readonly HashSet<OperationType> yeelightSupportedOps = new HashSet<OperationType>() { OperationType.GetBrightness, OperationType.SetBrightness, OperationType.GetColor, OperationType.SetColor };
-
-        public override string DeviceName => InternalDevice.Name;
-
-        public override HashSet<OperationType> SupportedOperations => yeelightSupportedOps;
-
         /// <summary>
         /// Serializer settings
         /// </summary>
@@ -32,12 +27,12 @@ namespace Yeelight
         private readonly YeelightAPI.Device InternalDevice;
         private Socket musicModeSocket;
 
-        public YeelightDevice(YeelightAPI.Device internalDevice)
+        public YeelightDevice(YeelightAPI.Device internalDevice): base(new YeelightDeviceMetadata(!String.IsNullOrWhiteSpace(internalDevice.Name) ? internalDevice.Name: internalDevice.Hostname))
         {
             InternalDevice = internalDevice;
         }
 
-        public async override Task Connect()
+        protected async override Task ConnectInternal()
         {
             await InternalDevice.Connect();
             var supportedOps = InternalDevice.SupportedOperations;
@@ -71,14 +66,14 @@ namespace Yeelight
             }
         }
 
-        public override Task Disconnect()
+        protected override Task DisconnectInternal()
         {
-            musicModeSocket.Close();
-            InternalDevice.Disconnect();
+            musicModeSocket?.Close();
+            InternalDevice?.Disconnect();
             return Task.CompletedTask;
         }
 
-        public override byte GetBrightnessPercentage()
+        protected override byte GetBrightnessPercentageInternal()
         {
             // TODO - Also implement background lighting???
             // TODO2 - Keep the last known brightness at all time in a private member? is it a sensible approach?            
@@ -87,14 +82,14 @@ namespace Yeelight
             return (byte)task.Result;
         }
 
-        public override Color GetColor()
+        protected override Color GetColorInternal()
         {
             var task = InternalDevice.GetProp(YeelightAPI.Models.PROPERTIES.rgb);
             task.Wait();
             return RGBColorHelper.ParseColor((int)task.Result);
         }
 
-        public override void SetBrightnessPercentage(byte brightness)
+        protected override void SetBrightnessPercentageInternal(byte brightness)
         {
             var serverParams = new List<object>() { brightness };
 
@@ -113,7 +108,7 @@ namespace Yeelight
             musicModeSocket.Send(sentData);
         }
 
-        public override void SetColor(Color color)
+        protected override void SetColorInternal(Color color)
         {
             var colorValue = RGBColorHelper.ComputeRGBColor(color.R, color.G, color.B);
 
@@ -128,6 +123,36 @@ namespace Yeelight
             byte[] colorSentData = Encoding.ASCII.GetBytes(colorData + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
 
             musicModeSocket.Send(colorSentData);
+        }
+
+        protected override void TurnOffInternal()
+        {
+            Command turnOffCommand = new Command()
+            {
+                Id = 1,
+                Method = "set_power",
+                Params = new List<object>() { "off", "smooth", 500 }
+            };
+
+            string turnOffJSON = JsonConvert.SerializeObject(turnOffCommand, DeviceSerializerSettings);
+            byte[] turnOffSentData = Encoding.ASCII.GetBytes(turnOffJSON + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
+
+            musicModeSocket.Send(turnOffSentData);
+        }
+
+        protected override void TurnOnInternal()
+        {
+            Command turnOnCommand = new Command()
+            {
+                Id = 1,
+                Method = "set_power",
+                Params = new List<object>() { "on", "smooth", 500 }
+            };
+
+            string turnOnJSON = JsonConvert.SerializeObject(turnOnCommand, DeviceSerializerSettings);
+            byte[] turnOnSentData = Encoding.ASCII.GetBytes(turnOnJSON + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
+
+            musicModeSocket.Send(turnOnSentData);
         }
     }
 }
