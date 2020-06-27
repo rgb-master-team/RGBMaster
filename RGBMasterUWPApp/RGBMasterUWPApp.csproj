@@ -126,6 +126,15 @@
     <Compile Include="Pages\DevicesPage.xaml.cs">
       <DependentUpon>DevicesPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\EffectsControls\DominantDisplayColorEffectControl.xaml.cs">
+      <DependentUpon>DominantDisplayColorEffectControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\EffectsControls\MusicEffectControl.xaml.cs">
+      <DependentUpon>MusicEffectControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\EffectsControls\StaticColorEffectControl.xaml.cs">
+      <DependentUpon>StaticColorEffectControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\EffectsPage.xaml.cs">
       <DependentUpon>EffectsPage.xaml</DependentUpon>
     </Compile>
@@ -155,6 +164,18 @@
     <Page Include="Pages\DevicesPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\EffectsControls\DominantDisplayColorEffectControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\EffectsControls\MusicEffectControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\EffectsControls\StaticColorEffectControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\EffectsPage.xaml">
       <Generator>MSBuild:Compile</Generator>

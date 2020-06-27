@@ -20,6 +20,11 @@ namespace EffectsExecution
 
         public override Task StartInternal()
         {
+            if (!AsioOut.isSupported())
+            {
+                return Task.CompletedTask;
+            }
+
             var driverNames = AsioOut.GetDriverNames();
 
             var asioOut = new AsioOut(driverNames[0]);

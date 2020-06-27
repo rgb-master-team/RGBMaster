@@ -20,6 +20,8 @@ namespace Common
 
         public override string FullDescription => ShortDescription;
 
-        public override Bitmap Icon => null;
+        public override string IconGlyph => "\uEF3C";
+
+        public override EffectType Type => EffectType.StaticColor;
     }
 }

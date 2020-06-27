@@ -1,8 +1,10 @@
 ﻿using AppExecutionManager.EventManagement;
 using AppExecutionManager.State;
 using Common;
+using RGBMasterUWPApp.Pages.EffectsControls;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -26,6 +28,21 @@ namespace RGBMasterUWPApp.Pages
     /// </summary>
     public sealed partial class EffectsPage : Page
     {
+        public readonly Dictionary<EffectType, Type> contentByEffectType = new Dictionary<EffectType, Type>()
+        {
+            { EffectType.Music, typeof(MusicEffectControl) },
+            { EffectType.StaticColor, typeof(StaticColorEffectControl) },
+            { EffectType.DominantColor, typeof(DominantDisplayColorEffectControl) }
+        };
+
+        public ObservableCollection<EffectMetadata> SupportedEffects
+        {
+            get
+            {
+                return AppState.Instance.Effects;
+            }
+        }
+
         public EffectsPage()
         {
             this.InitializeComponent();
@@ -55,38 +72,25 @@ namespace RGBMasterUWPApp.Pages
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var pivot = (Pivot)sender;
-            EffectMetadata effectMd;
 
-            // TODO - REFACTOR THE WHOLE UI TO TAKE ITS SHIT FROM THE FUCKING STATE AND NOT HARD CODED!#@#@!!@#!@#
-            switch (pivot.SelectedIndex)
-            {
-                case 0:
-                    effectMd = AppState.Instance.Effects.First(effect => effect.GetType() == typeof(StaticColorEffectMetadata));
-                    break;
-                case 2:
-                    effectMd = AppState.Instance.Effects.First(effect => effect.GetType() == typeof(MusicEffectMetadata));
-                    break;
-                case 3:
-                    effectMd = AppState.Instance.Effects.First(effect => effect.GetType() == typeof(DominantDisplayColorEffectMetadata));
-                    break;
-                default:
-                    throw new NotImplementedException("This effect is not implemented!");
-            }
+            var selectedPivotItem = (PivotItem)pivot.ItemsPanelRoot.Children.ElementAt(pivot.SelectedIndex);
+
+            var newEffectMetadata = (EffectMetadata)selectedPivotItem.DataContext;
 
             // This is obviously a lazy design. TODO - add types for all effects and take the time to
             // reimplement the way we apply effects, instead of reinstantiating them all the time.
             // perhaps a factory.
-            if (effectMd.GetType() != AppState.Instance.SelectedEffect?.GetType())
+            if (newEffectMetadata.EffectMetadataGuid != AppState.Instance.SelectedEffect?.EffectMetadataGuid)
             {
-                ChangeCurrentRunningEffect(effectMd);
+                ChangeCurrentRunningEffect(newEffectMetadata);
             }
+
+            if (effectControlFrame == null)
+            {
+                return;
+            }
+
+            effectControlFrame.Navigate(contentByEffectType[newEffectMetadata.Type]);
         }
-
-        private void Brightness_Value_Changed(object sender, RangeBaseValueChangedEventArgs e)
-        {
-            EventManager.Instance.ChangeStaticColor(new StaticColorEffectProps() { SelectedColor = AppState.Instance.StaticColorEffectProperties.SelectedColor, SelectedBrightness = (byte)Brighness_Slider.Value });
-
-        }
-
     }
 }
