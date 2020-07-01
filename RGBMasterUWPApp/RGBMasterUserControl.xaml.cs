@@ -9,6 +9,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -29,6 +30,14 @@ namespace RGBMasterUWPApp
 {
     public sealed partial class RGBMasterUserControl : UserControl
     {
+        public string CurrentEffectName
+        {
+            get
+            {
+                return AppState.Instance.SelectedEffect?.EffectName;
+            }
+        }
+
         // List of ValueTuple holding the Navigation Tag and the relative Navigation Page
         private readonly Dictionary<string, Type> pageToType = new Dictionary<string, Type>()
                 {
@@ -73,6 +82,8 @@ namespace RGBMasterUWPApp
                 innerButton = new FontIcon() { Glyph = "\uF5B0", FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets"), Foreground = new SolidColorBrush(Colors.Green), Name = "InnerButton" };
 
                 button.Label = "Start";
+                DisplayCurrentSyncMode.Visibility = Visibility.Collapsed;
+
                 ToolTipService.SetToolTip(Sync_Button, null);
             }
             else
@@ -85,6 +96,7 @@ namespace RGBMasterUWPApp
                 innerButton = new FontIcon() { Glyph = "\uE73B", FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets"), Foreground = new SolidColorBrush(Colors.Red), Name = "InnerButton" };
 
                 button.Label = "Stop";
+                DisplayCurrentSyncMode.Visibility = Visibility.Visible;
 
                 syncStatusToolTip.Content = AppState.Instance.SelectedEffect.EffectName;
                 ToolTipService.SetToolTip(Sync_Button, syncStatusToolTip);
@@ -156,7 +168,6 @@ namespace RGBMasterUWPApp
                 DevicesAmountTxtBlk.FontWeight = Windows.UI.Text.FontWeights.Bold;
             }
         }
-
 
         private void RGBMasterUserControl_Loaded(object sender, RoutedEventArgs e)
         {
