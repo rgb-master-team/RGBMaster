@@ -130,6 +130,7 @@
     <Content Include="Assets\128.png" />
     <Content Include="Assets\DiscordLogo.png" />
     <Content Include="Assets\GitHubLogo.png" />
+    <Content Include="Assets\SplashScreen.png" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
   <ItemGroup>
