@@ -14,7 +14,7 @@
     <PackageReference Include="Microsoft.Toolkit.Wpf.UI.Controls" Version="6.0.1" />
     <PackageReference Include="Microsoft.Toolkit.Wpf.UI.XamlHost" Version="6.0.1" />
     <PackageReference Include="NAudio" Version="1.10.0" />
-    <PackageReference Include="YeelightAPI" Version="1.7.0" />
+    <PackageReference Include="YeelightAPI" Version="1.8.0" />
   </ItemGroup>
 
   <ItemGroup>
