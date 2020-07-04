@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -37,6 +38,14 @@ namespace RGBMasterUWPApp.Pages
         public DevicesPage()
         {
             this.InitializeComponent();
+            RefreshDeviceCounter();
+            AppState.Instance.RegisteredProviders.CollectionChanged += RefreshDeviceCounter;
+        }
+
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            base.OnNavigatingFrom(e);
+            AppState.Instance.RegisteredProviders.CollectionChanged -= RefreshDeviceCounter;
         }
 
         private void CheckBox_Click(object sender, RoutedEventArgs e)
@@ -57,6 +66,42 @@ namespace RGBMasterUWPApp.Pages
         private void Refresh_Button_Clicked(object sender, RoutedEventArgs e)
         {
             EventManager.Instance.InitializeProviders();
+        }
+
+        private void RefreshDeviceCounter(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            RefreshDeviceCounter();
+        }
+
+        private void RefreshDeviceCounter()
+        {
+            int foundedDevices = 0;
+            foreach (var provider in AppState.Instance.RegisteredProviders)
+            {
+                foreach (var device in provider.Devices)
+                {
+                    foundedDevices += 1;
+                }
+            }
+
+            if (foundedDevices == 1)
+            {
+                DevicesAmountTxtBlk.Text = foundedDevices.ToString() + " Device found.";
+                DevicesAmountTxtBlk.Foreground = new SolidColorBrush(Windows.UI.Colors.Green);
+                DevicesAmountTxtBlk.FontWeight = Windows.UI.Text.FontWeights.Bold;
+            }
+            else if (foundedDevices > 1)
+            {
+                DevicesAmountTxtBlk.Text = foundedDevices.ToString() + " Devices found";
+                DevicesAmountTxtBlk.Foreground = new SolidColorBrush(Windows.UI.Colors.Green);
+                DevicesAmountTxtBlk.FontWeight = Windows.UI.Text.FontWeights.Bold;
+            }
+            else
+            {
+                DevicesAmountTxtBlk.Text = "No devices found";
+                DevicesAmountTxtBlk.Foreground = new SolidColorBrush(Windows.UI.Colors.Red);
+                DevicesAmountTxtBlk.FontWeight = Windows.UI.Text.FontWeights.Bold;
+            }
         }
     }
 }

@@ -38,9 +38,6 @@
             <winui:ScrollViewer>
                 <StackPanel Background="{StaticResource FrameBrush}">
                     <CommandBar OverflowButtonVisibility="Collapsed" DefaultLabelPosition="Right" Background="{StaticResource FrameBrush}">
-                        <CommandBar.Content>
-                            <TextBlock x:Name="DevicesAmountTxtBlk" Padding="8 10 0 0" />
-                        </CommandBar.Content>
                         <CommandBar.PrimaryCommands>
                             <AppBarButton Label="{x:Bind CurrentEffectName}" x:Name="DisplayCurrentSyncMode" Visibility="Collapsed" />
                             <AppBarButton Click="AppBarButton_Click" Label="Start" x:Name="Sync_Button">
