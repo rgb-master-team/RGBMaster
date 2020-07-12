@@ -11,6 +11,6 @@ namespace Corsair.Provider
 
         public override string ProviderFullDescription => ProviderShortDescription;
 
-        public override Bitmap ProviderIcon => null;
+        public override string ProviderIconAssetPath => @"/Assets/Logos/CorsairiCueLogo.png";
     }
 }

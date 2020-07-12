@@ -18,13 +18,11 @@ namespace Yeelight
 
         private readonly HashSet<OperationType> yeelightSupportedOps = new HashSet<OperationType>() { OperationType.GetBrightness, OperationType.SetBrightness, OperationType.GetColor, OperationType.SetColor, OperationType.TurnOn, OperationType.TurnOff };
 
-        public YeelightDeviceMetadata(string deviceName)
+        public YeelightDeviceMetadata(string deviceName, DeviceType deviceType) : base(deviceType)
         {
             this.deviceName = deviceName;
         }
 
         public override HashSet<OperationType> SupportedOperations => yeelightSupportedOps;
-
-        public override Bitmap DeviceIcon => null;
     }
 }

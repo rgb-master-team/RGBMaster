@@ -83,25 +83,11 @@ namespace RGBMasterUWPApp.Pages
                     foundedDevices += 1;
                 }
             }
+        }
 
-            if (foundedDevices == 1)
-            {
-                DevicesAmountTxtBlk.Text = foundedDevices.ToString() + " Device found.";
-                DevicesAmountTxtBlk.Foreground = new SolidColorBrush(Windows.UI.Colors.Green);
-                DevicesAmountTxtBlk.FontWeight = Windows.UI.Text.FontWeights.Bold;
-            }
-            else if (foundedDevices > 1)
-            {
-                DevicesAmountTxtBlk.Text = foundedDevices.ToString() + " Devices found";
-                DevicesAmountTxtBlk.Foreground = new SolidColorBrush(Windows.UI.Colors.Green);
-                DevicesAmountTxtBlk.FontWeight = Windows.UI.Text.FontWeights.Bold;
-            }
-            else
-            {
-                DevicesAmountTxtBlk.Text = "No devices found";
-                DevicesAmountTxtBlk.Foreground = new SolidColorBrush(Windows.UI.Colors.Red);
-                DevicesAmountTxtBlk.FontWeight = Windows.UI.Text.FontWeights.Bold;
-            }
+        private void ListView_Loaded(object sender, RoutedEventArgs e)
+        {
+         //   this.ChosenDevicesListView.ItemsSource = AppState.Instance.RegisteredProviders.Select(provider=> new RegisteredProvider() { Provider = provider.Provider, Devices = provider.Devices.Where(device => device.IsChecked)})
         }
     }
 }

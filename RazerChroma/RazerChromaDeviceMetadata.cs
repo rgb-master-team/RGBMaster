@@ -11,7 +11,5 @@ namespace RazerChroma
         public override string DeviceName => "All Razer Chroma connected devices";
 
         public override HashSet<OperationType> SupportedOperations => chromaSupportedOps;
-
-        public override Bitmap DeviceIcon => null;
     }
 }

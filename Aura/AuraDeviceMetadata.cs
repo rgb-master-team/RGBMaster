@@ -8,8 +8,6 @@ namespace Aura
     {
         public override string DeviceName => "Unknown Aura Device";
 
-        public override Bitmap DeviceIcon => null;
-
         public override HashSet<OperationType> SupportedOperations => new HashSet<OperationType>() { OperationType.SetColor };
     }
 }

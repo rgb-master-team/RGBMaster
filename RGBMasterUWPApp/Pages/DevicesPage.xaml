@@ -20,6 +20,7 @@
                 <Pivot.HeaderTemplate>
                     <DataTemplate x:DataType="state:RegisteredProvider">
                         <StackPanel Orientation="Horizontal">
+                            <Image Source="{x:Bind Provider.ProviderIconAssetPath}" Width="30px" Height="30px" Margin="0 0 4 0"/>
                             <TextBlock Text="{x:Bind Provider.ProviderName}" Margin="0 0 4 0" />
                             <TextBlock Text="(" />
                             <TextBlock Text="{x:Bind Devices.Count}" />
@@ -36,8 +37,16 @@
                             <ListView ItemsSource="{x:Bind Devices}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate x:DataType="state:DiscoveredDevice">
-                                        <StackPanel Orientation="Vertical">
-                                            <CheckBox IsChecked="{x:Bind IsChecked}" Tag="{x:Bind}" Click="CheckBox_Click" Content="{x:Bind Device.DeviceName}" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="{x:Bind Device.DeviceIconAssetPath}" Width="24px" Height="24px" />
+                                            <CheckBox IsChecked="{x:Bind IsChecked}" Tag="{x:Bind}" Click="CheckBox_Click">
+                                                <CheckBox.Content>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Image Source="{x:Bind Device.DeviceIconAssetPath}" Width="24px" Height="24px" Margin="0 0 4 0"/>
+                                                        <TextBlock Text="{x:Bind Device.DeviceName}" />
+                                                    </StackPanel>
+                                                </CheckBox.Content>
+                                            </CheckBox>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
@@ -67,7 +76,7 @@
             </StackPanel>
             <StackPanel>
                 <TextBlock Text="Connected Devices" FontWeight="Bold" />
-                <ListView ItemsSource="{x:Bind RegisteredProviders}" SelectionMode="None" IsItemClickEnabled="False">
+                <ListView x:Name="ChosenDevicesListView" Loaded="ListView_Loaded" ItemsSource="{x:Bind RegisteredProviders}" SelectionMode="None" IsItemClickEnabled="False">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="state:RegisteredProvider">
                             <StackPanel Orientation="Horizontal">
@@ -78,7 +87,6 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <TextBlock x:Name="DevicesAmountTxtBlk" />
             </StackPanel>
         </StackPanel>
     </Grid>
