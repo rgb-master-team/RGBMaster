@@ -19,7 +19,7 @@ namespace Common
                 switch (DeviceType)
                 {
                     case DeviceType.Unknown:
-                        return @"/Assets/Icons/Unknown.jpg";
+                        return @"/Assets/Icons/Unknown.png";
                     case DeviceType.Lightbulb:
                         return @"/Assets/Icons/Lightbulb.png";
                     case DeviceType.LedStrip:
