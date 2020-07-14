@@ -35,7 +35,7 @@
                     </winui:NavigationViewItem.Icon>
                 </winui:NavigationViewItem>
             </winui:NavigationView.MenuItems>
-            <winui:ScrollViewer>
+            <ScrollViewer>
                 <StackPanel Background="{StaticResource FrameBrush}">
                     <CommandBar OverflowButtonVisibility="Collapsed" DefaultLabelPosition="Right" Background="{StaticResource FrameBrush}">
                         <CommandBar.PrimaryCommands>
@@ -51,7 +51,7 @@
                     <Frame x:Name="MainAppContentFrame" Padding="12,0,12,24" IsTabStop="True"
                    NavigationFailed="MainAppContentFrame_NavigationFailed" Background="{StaticResource FrameBrush}"/>
                 </StackPanel>
-            </winui:ScrollViewer>
+            </ScrollViewer>
         </winui:NavigationView>
     </Grid>
 </UserControl>
