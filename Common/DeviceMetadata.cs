@@ -11,7 +11,7 @@ namespace Common
         public Guid DeviceGuid { get; }
         public virtual string DeviceName { get; }
         public virtual HashSet<OperationType> SupportedOperations { get; }
-        public virtual DeviceType DeviceType { get; private set; }
+        public DeviceType DeviceType { get; private set; }
         public virtual string DeviceIconAssetPath
         {
             get

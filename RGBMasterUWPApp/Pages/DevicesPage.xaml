@@ -19,7 +19,7 @@
                 </Pivot.Title>
                 <Pivot.HeaderTemplate>
                     <DataTemplate x:DataType="state:RegisteredProvider">
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal" ToolTipService.ToolTip="{x:Bind Provider.ProviderFullDescription}">
                             <Image Source="{x:Bind Provider.ProviderIconAssetPath}" Width="30px" Height="30px" Margin="0 0 4 0"/>
                             <TextBlock Text="{x:Bind Provider.ProviderName}" Margin="0 0 4 0" />
                             <TextBlock Text="(" />
