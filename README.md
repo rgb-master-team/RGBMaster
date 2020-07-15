@@ -16,6 +16,7 @@ The project attempts to use official libraries when possible and focuses on the 
 
 - [Supported integrations](#integrations)
 - [Prerequisites](#prerequisites)
+- [Installation Instructions](#installation)
 - [Supported "Effects"](#effects)
 - [Supported "Flows"](#flows)
 - [Contribution](#contrib)
@@ -39,6 +40,14 @@ The project attempts to use official libraries when possible and focuses on the 
 
 **Yeelight**
 - Make sure that LAN Control is enabled by setting it in the Xiaomi Yeelight app.
+
+<a name="installation"></a>
+## Installation Instructions
+
+1. Download the latest [release](https://github.com/rgb-master-team/RGBMaster/releases).
+2. Extract the files to a folder.
+3. Run `SignAndInstallApp.bat` as **Administrator** (This script will install the application and it's certification).
+4. Launch the **RGBMasterWap** application.
 
 <a name="effects"></a>
 ## Supported "Effects"
