@@ -5,9 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -28,6 +30,14 @@ namespace RGBMasterUWPApp
 {
     public sealed partial class RGBMasterUserControl : UserControl
     {
+        public string CurrentEffectName
+        {
+            get
+            {
+                return AppState.Instance.SelectedEffect?.EffectName;
+            }
+        }
+
         // List of ValueTuple holding the Navigation Tag and the relative Navigation Page
         private readonly Dictionary<string, Type> pageToType = new Dictionary<string, Type>()
                 {
@@ -72,6 +82,8 @@ namespace RGBMasterUWPApp
                 innerButton = new FontIcon() { Glyph = "\uF5B0", FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets"), Foreground = new SolidColorBrush(Colors.Green), Name = "InnerButton" };
 
                 button.Label = "Start";
+                DisplayCurrentSyncMode.Visibility = Visibility.Collapsed;
+
                 ToolTipService.SetToolTip(Sync_Button, null);
             }
             else
@@ -84,6 +96,7 @@ namespace RGBMasterUWPApp
                 innerButton = new FontIcon() { Glyph = "\uE73B", FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets"), Foreground = new SolidColorBrush(Colors.Red), Name = "InnerButton" };
 
                 button.Label = "Stop";
+                DisplayCurrentSyncMode.Visibility = Visibility.Visible;
 
                 syncStatusToolTip.Content = AppState.Instance.SelectedEffect.EffectName;
                 ToolTipService.SetToolTip(Sync_Button, syncStatusToolTip);
@@ -103,10 +116,6 @@ namespace RGBMasterUWPApp
         public RGBMasterUserControl()
         {
             this.InitializeComponent();
-            RefreshDeviceCounter();
-            AppState.Instance.RegisteredProviders.CollectionChanged += (sender, eventArgs) => RefreshDeviceCounter();
-
-            // TODO - REMOVE LISTEN TO COLLECTION CHANGED WHEN PAGE GETS TEARED DOWN
         }
 
         private void MainNavigationView_SelectionChanged(Microsoft.UI.Xaml.Controls.NavigationView sender, Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs args)
@@ -123,37 +132,6 @@ namespace RGBMasterUWPApp
             }
 
             var navigationResult = MainAppContentFrame.Navigate(pageToType[selectionTag], null, args.RecommendedNavigationTransitionInfo);
-        }
-
-        private void RefreshDeviceCounter()
-        {
-            int foundedDevices = 0;
-            foreach (var provider in AppState.Instance.RegisteredProviders)
-            {
-                foreach (var device in provider.Devices)
-                {
-                    foundedDevices += 1;
-                }
-            }
-
-            if (foundedDevices == 1)
-            {
-                DevicesAmountTxtBlk.Text = foundedDevices.ToString() + " Device found.";
-                DevicesAmountTxtBlk.Foreground = new SolidColorBrush(Windows.UI.Colors.Green);
-                DevicesAmountTxtBlk.FontWeight = Windows.UI.Text.FontWeights.Bold;
-            }
-            else if (foundedDevices > 1)
-            {
-                DevicesAmountTxtBlk.Text = foundedDevices.ToString() + " Devices found";
-                DevicesAmountTxtBlk.Foreground = new SolidColorBrush(Windows.UI.Colors.Green);
-                DevicesAmountTxtBlk.FontWeight = Windows.UI.Text.FontWeights.Bold;
-            }
-            else
-            {
-                DevicesAmountTxtBlk.Text = "No devices found";
-                DevicesAmountTxtBlk.Foreground = new SolidColorBrush(Windows.UI.Colors.Red);
-                DevicesAmountTxtBlk.FontWeight = Windows.UI.Text.FontWeights.Bold;
-            }
         }
 
 

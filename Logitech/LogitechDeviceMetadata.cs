@@ -12,6 +12,5 @@ namespace Logitech
 
         public override HashSet<OperationType> SupportedOperations => logitechSupportedOps;
 
-        public override Bitmap DeviceIcon => null;
     }
 }

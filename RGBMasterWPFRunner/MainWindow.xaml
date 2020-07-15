@@ -9,7 +9,7 @@
         xmlns:xamlhost="clr-namespace:Microsoft.Toolkit.Wpf.UI.XamlHost;assembly=Microsoft.Toolkit.Wpf.UI.XamlHost"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
-        MinHeight="450" MinWidth="700"
+        MinHeight="1100" MinWidth="1100"
         >
     <Grid>
         <xamlhost:WindowsXamlHost InitialTypeName="RGBMasterUWPApp.RGBMasterUserControl" x:Name="MainNavigationViewWrapper" />

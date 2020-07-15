@@ -10,6 +10,9 @@ namespace MagicHome
 
         public override HashSet<OperationType> SupportedOperations => new HashSet<OperationType>() { OperationType.SetColor, OperationType.TurnOn, OperationType.TurnOff /*, OperationType.SetBrightness*/ };
 
-        public override Bitmap DeviceIcon => throw new System.NotImplementedException();
+        public MagicHomeDeviceMetadata(DeviceType deviceType) : base(deviceType)
+        {
+
+        }
     }
 }

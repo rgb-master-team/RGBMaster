@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Common;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Provider;
 using System;
@@ -14,7 +15,7 @@ using YeelightAPI.Models;
 
 namespace Yeelight
 {
-    public class YeelightDevice : Device
+    public class YeelightDevice : Provider.Device
     {
         /// <summary>
         /// Serializer settings
@@ -27,9 +28,29 @@ namespace Yeelight
         private readonly YeelightAPI.Device InternalDevice;
         private Socket musicModeSocket;
 
-        public YeelightDevice(YeelightAPI.Device internalDevice): base(new YeelightDeviceMetadata(!String.IsNullOrWhiteSpace(internalDevice.Name) ? internalDevice.Name: internalDevice.Hostname))
+        public YeelightDevice(YeelightAPI.Device internalDevice): base(new YeelightDeviceMetadata(!String.IsNullOrWhiteSpace(internalDevice.Name) ? internalDevice.Name: internalDevice.Hostname, GetDeviceTypeForYeelight(internalDevice)))
         {
             InternalDevice = internalDevice;
+        }
+
+        private static DeviceType GetDeviceTypeForYeelight(YeelightAPI.Device internalDevice)
+        {
+            switch (internalDevice.Model)
+            {
+                case MODEL.Unknown:
+                    return DeviceType.Unknown;
+                case MODEL.Mono:
+                case MODEL.Color:
+                case MODEL.Ceiling:
+                case MODEL.BedsideLamp:
+                case MODEL.DeskLamp:
+                case MODEL.TunableWhiteBulb:
+                    return DeviceType.Lightbulb;
+                case MODEL.Stripe:
+                    return DeviceType.LedStrip;
+                default:
+                    return DeviceType.Unknown;
+            }
         }
 
         protected async override Task ConnectInternal()

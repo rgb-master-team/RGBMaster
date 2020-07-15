@@ -31,10 +31,10 @@
                     <TextBlock Text="Check us out!" Style="{StaticResource TitleTextBlockStyle}" FontSize="16" Margin="0 0 0 4"/>
                     <StackPanel HorizontalAlignment="Center">
                         <Button Click="GitHub_Button_Click" Height="30px" Width="80px" Margin="0 0 0 8">
-                            <Image Source="/Assets/GitHubLogo.png" Height="20px" Width="60px" />
+                            <Image Source="/Assets/Logos/GitHubLogo.png" Height="20px" Width="60px" />
                         </Button>
                         <Button Click="Discord_Button_Click" Height="30px" Width="80px">
-                            <Image Source="/Assets/DiscordLogo.png" Height="30px" Width="60px" Margin="0 0 4 0" />
+                            <Image Source="/Assets/Logos/DiscordLogo.png" Height="30px" Width="60px" Margin="0 0 4 0" />
                         </Button>
                     </StackPanel>
                 </StackPanel>

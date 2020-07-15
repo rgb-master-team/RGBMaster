@@ -17,6 +17,5 @@ namespace Corsair.Provider
 
         public override HashSet<OperationType> SupportedOperations => new HashSet<OperationType>() { OperationType.SetColor };
 
-        public override Bitmap DeviceIcon => null;
     }
 }

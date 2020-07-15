@@ -11,6 +11,6 @@ namespace RazerChroma
 
         public override string ProviderFullDescription => "Razer Chroma devices provider, providing every Razer device that supports Chroma or any other non-Razer device that integrates with Razer Chroma technology.";
 
-        public override Bitmap ProviderIcon => null;
+        public override string ProviderIconAssetPath => "/Assets/Logos/SynapseLogo.png";
     }
 }

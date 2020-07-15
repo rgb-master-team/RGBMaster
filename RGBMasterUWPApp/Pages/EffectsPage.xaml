@@ -4,60 +4,26 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:RGBMasterUWPApp.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:common="using:Common"
     mc:Ignorable="d"
     >
 
-    <Pivot Title="Effects" SelectionChanged="Pivot_SelectionChanged">
-        <!--Color Picker-->
-        <PivotItem HorizontalAlignment="Left">
-            <PivotItem.Header>
-                <StackPanel Orientation="Horizontal">
-                    <FontIcon Glyph="&#xEF3C;" FontFamily="Segoe MDL2 Assets" Margin="0 4 4 0"/>
-                    <TextBlock>Color Picker</TextBlock>
-                </StackPanel>
-            </PivotItem.Header>
-            <StackPanel Orientation="Vertical">
-                <StackPanel>
-                <ColorPicker x:Name="ColorPicker" 
-                             ColorSpectrumShape="Ring" 
-                             ColorChanged="ColorPicker_ColorChanged" 
-                             IsColorSliderVisible="False" 
-                             Margin="0 4 0 0" />
-            </StackPanel>
-                <StackPanel Orientation="Vertical" Margin="0 12 0 0">
-                    <TextBlock Text="Brightness" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"/>
-                    <Slider x:Name="Brighness_Slider" Minimum="0" Maximum="100" ValueChanged="Brightness_Value_Changed"/>
-                </StackPanel>
-            </StackPanel>
-        </PivotItem>
-        <!--Flow Sync-->
-        <PivotItem>
-            <PivotItem.Header>
-                <StackPanel Orientation="Horizontal">
-                    <FontIcon Glyph="&#xEDA8;" FontFamily="Segoe MDL2 Assets"  Margin="0 4 4 0"/>
-                    <TextBlock>Flow Sync</TextBlock>
-                </StackPanel>
-            </PivotItem.Header>
-        </PivotItem>
-        <!--Music Sync-->
-        <PivotItem>
-            <PivotItem.Header>
-                <StackPanel Orientation="Horizontal">
-                    <FontIcon Glyph="&#xF61F;" FontFamily="Segoe MDL2 Assets"  Margin="0 4 4 0"/>
-                    <TextBlock>Music Sync</TextBlock>
-                </StackPanel>
-            </PivotItem.Header>
-        </PivotItem>
-        <!--Pointer Sync-->
-        <PivotItem>
-            <PivotItem.Header>
-                <StackPanel Orientation="Horizontal">
-                    <FontIcon Glyph="&#xE7C9;" FontFamily="Segoe MDL2 Assets"  Margin="0 4 4 0"/>
-                    <TextBlock>Pointer Sync</TextBlock>
-                </StackPanel>
-            </PivotItem.Header>
-        </PivotItem>
-    </Pivot>
-
+    <StackPanel Orientation="Vertical">
+        <Pivot Title="Effects" SelectionChanged="Pivot_SelectionChanged" ItemsSource="{x:Bind SupportedEffects}">
+            <Pivot.HeaderTemplate>
+                <DataTemplate x:DataType="common:EffectMetadata">
+                    <StackPanel Orientation="Horizontal">
+                        <FontIcon Glyph="{x:Bind IconGlyph}" FontFamily="Segoe MDL2 Assets"  Margin="0 4 4 0"/>
+                        <TextBlock Text="{x:Bind EffectName}" />
+                    </StackPanel>
+                </DataTemplate>
+            </Pivot.HeaderTemplate>
+            <Pivot.ItemTemplate>
+                <DataTemplate x:DataType="common:EffectMetadata">
+                    <StackPanel />
+                </DataTemplate>
+            </Pivot.ItemTemplate>
+        </Pivot>
+        <Frame x:Name="effectControlFrame" Margin="0 4 0 0"/>
+    </StackPanel>
 </Page>

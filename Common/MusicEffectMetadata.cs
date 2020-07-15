@@ -13,6 +13,8 @@ namespace Common
 
         public override string FullDescription => ShortDescription;
 
-        public override Bitmap Icon => null;
+        public override string IconGlyph => "\uF61F";
+
+        public override EffectType Type => EffectType.Music;
     }
 }

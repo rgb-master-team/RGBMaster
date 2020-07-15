@@ -11,6 +11,6 @@ namespace MagicHome
 
         public override string ProviderFullDescription => "Magic Home devices provider, that provides devices that are connected to the platform, usually via controllers or app integration.";
 
-        public override Bitmap ProviderIcon => null;
+        public override string ProviderIconAssetPath => @"/Assets/Logos/MagicHomeLogo.png";
     }
 }

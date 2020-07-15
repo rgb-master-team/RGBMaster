@@ -128,8 +128,28 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\128.png" />
-    <Content Include="Assets\DiscordLogo.png" />
-    <Content Include="Assets\GitHubLogo.png" />
+    <Content Include="Assets\Icons\Chair.png" />
+    <Content Include="Assets\Icons\Fan.png" />
+    <Content Include="Assets\Icons\GPU.png" />
+    <Content Include="Assets\Icons\Headset.png" />
+    <Content Include="Assets\Icons\Keyboard.png" />
+    <Content Include="Assets\Icons\Keypad.png" />
+    <Content Include="Assets\Icons\LedStrip.png" />
+    <Content Include="Assets\Icons\Lightbulb.png" />
+    <Content Include="Assets\Icons\Memory.png" />
+    <Content Include="Assets\Icons\Motherboard.png" />
+    <Content Include="Assets\Icons\Mouse.png" />
+    <Content Include="Assets\Icons\Speaker.png" />
+    <Content Include="Assets\Icons\Unknown.png" />
+    <Content Include="Assets\Logos\CorsairiCueLogo.png" />
+    <Content Include="Assets\Logos\DiscordLogo.png" />
+    <Content Include="Assets\Logos\GitHubLogo.png" />
+    <Content Include="Assets\Logos\LogitechGHubLogo.png" />
+    <Content Include="Assets\Logos\MagicHomeLogo.png" />
+    <Content Include="Assets\Logos\MsiMysticLightLogo.png" />
+    <Content Include="Assets\Logos\YeelightLogo.png" />
+    <Content Include="Assets\SplashScreen.png" />
+    <Content Include="Assets\Logos\SynapseLogo.png" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -143,10 +163,10 @@
       <Version>6.2.10</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Win32.UI.XamlApplication">
-      <Version>6.0.1</Version>
+      <Version>6.1.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
-      <Version>2.5.0-prerelease.200609001</Version>
+      <Version>2.5.0-prerelease.200708003</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

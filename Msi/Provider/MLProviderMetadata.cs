@@ -11,6 +11,6 @@ namespace Msi.Provider
 
         public override string ProviderFullDescription => ProviderShortDescription;
 
-        public override Bitmap ProviderIcon => null;
+        public override string ProviderIconAssetPath => @"/Assets/Logos/MSIMysticLightLogo.png";
     }
 }
