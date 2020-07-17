@@ -4,12 +4,12 @@ using Common;
 using EffectsExecution;
 using Logitech;
 using MagicHome;
-using NAudio.Wave;
 using Provider;
 using RazerChroma;
+using Serilog;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,13 +37,38 @@ namespace RGBMasterWPFRunner
             Package package = Package.Current;
             PackageId packageId = package.Id;
             PackageVersion version = packageId.Version;
+            AppState.Instance.AppVersion = string.Format($"{version.Major}.{version.Minor}.{version.Build}.{version.Revision}");
+
+            // TODO - For fuck sake, check why the fuck it is impossible to write to AppData via Serilog when the user's name contains spaces?!
+            // var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"{AppState.Instance.AppVersion}.txt");
+
+            var path = Path.Combine(
+                    Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System)),
+                    @$"RGBMaster\Logs\{AppState.Instance.AppVersion}.txt"
+                );
+
+            var globalLog = new LoggerConfiguration()
+                .MinimumLevel
+                .Is(Serilog.Events.LogEventLevel.Debug)
+                .WriteTo
+                .File(
+                    path,
+                    fileSizeLimitBytes: 2 * 1024 * 1024,
+                    rollOnFileSizeLimit: true,
+                    retainedFileCountLimit: 5
+                ).CreateLogger();
+
+            // Note - this line makes our "global log" the root log of the app.
+            // meaning - when a library writes to log via microsoft's diagnostic it is sinked to this globalLog object.
+            // We may want to change this behaviour in the subject as we grow. :)
+            Log.Logger = globalLog;
+
+            globalLog.Information("Initializing RGBMaster.....");
 
             CreateAndSetSupportedProviders(new List<BaseProvider>() { new YeelightProvider(), new MagicHomeProvider(), new RazerChromaProvider(), new LogitechProvider() });
 
             CreateAndSetSupportedEffectsExecutors(new List<EffectExecutor>() { new MusicEffectExecutor(), new DominantDisplayColorEffectExecutor(), new StaticColorEffectExecutor() });
             SetUIStateEffects();
-
-            AppState.Instance.AppVersion = string.Format($"{version.Major}.{version.Minor}.{version.Build}.{version.Revision}");
 
             EventManager.Instance.SubscribeToEffectChanged(Instance_EffectChanged);
             EventManager.Instance.SubscribeToSelectedDevicesChanged(Instance_SelectedDevicesChanged);
