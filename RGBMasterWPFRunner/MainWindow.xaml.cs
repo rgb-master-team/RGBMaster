@@ -1,5 +1,6 @@
 ﻿using AppExecutionManager.EventManagement;
 using AppExecutionManager.State;
+using Colore.Logging;
 using Common;
 using EffectsExecution;
 using Logitech;
@@ -7,6 +8,7 @@ using MagicHome;
 using Provider;
 using RazerChroma;
 using Serilog;
+using Serilog.Events;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -160,13 +162,14 @@ namespace RGBMasterWPFRunner
         private async void InitializeProviders(object sender, EventArgs e)
         {
             await initializeProvidersSemaphore.WaitAsync();
+            Log.Logger.Information("Initializing providers.....");
             concreteDevices.Clear();
             AppState.Instance.RegisteredProviders.Clear();
             //AppState.Instance.SelectedDevices.Clear();
 
             var tasks = new List<Task>();
 
-            var discoveredDevices = new List<Device>();
+            var aggregatedDiscoveredDevices = new List<Device>();
 
             foreach (var provider in supportedProviders.Values)
             {
@@ -174,24 +177,30 @@ namespace RGBMasterWPFRunner
 
                 if (!didInitialize)
                 {
+                    Log.Logger.Warning("Provider {A} failed to initialize!", provider.ProviderMetadata.ProviderName);
                     continue;
                 }
 
-                var devices = await provider.Discover();
+                Log.Logger.Information("Provider {A} initialized.", provider.ProviderMetadata.ProviderName);
 
-                discoveredDevices.AddRange(devices);
+                var discoveredDevices = await provider.Discover();
 
-                if ((devices?.Count).GetValueOrDefault() > 0)
+                if ((discoveredDevices?.Count).GetValueOrDefault() > 0)
                 {
+                    aggregatedDiscoveredDevices.AddRange(discoveredDevices);
+
+                    Log.Logger.Information("Listing discovered devices for provider {A}:", provider.ProviderMetadata.ProviderName);
+                    Log.Logger.Information(string.Join("\n", discoveredDevices.Select(discoveredDevice => $"name: {discoveredDevice.DeviceMetadata.DeviceName}, guid: {discoveredDevice.DeviceMetadata.DeviceGuid}")));
+
                     AppState.Instance.RegisteredProviders.Add(new RegisteredProvider()
                     {
                         Provider = provider.ProviderMetadata,
-                        Devices = new System.Collections.ObjectModel.ObservableCollection<DiscoveredDevice>(devices.Select(device => new DiscoveredDevice() { Device = device.DeviceMetadata, IsChecked = false }))
+                        Devices = new System.Collections.ObjectModel.ObservableCollection<DiscoveredDevice>(discoveredDevices.Select(device => new DiscoveredDevice() { Device = device.DeviceMetadata, IsChecked = false }))
                     });
                 }
             }
 
-            foreach (var device in discoveredDevices)
+            foreach (var device in aggregatedDiscoveredDevices)
             {
                 concreteDevices.Add(device.DeviceMetadata.DeviceGuid, device);
             }
@@ -199,10 +208,12 @@ namespace RGBMasterWPFRunner
             initializeProvidersSemaphore.Release();
         }
 
-
         private async void Instance_EffectChanged(object sender, EffectMetadata e)
         {
             var newEffectExecutor = supportedEffectsExecutors[e.EffectMetadataGuid];
+
+            Log.Logger.Information("Effect changed to {A}.", newEffectExecutor.executedEffectMetadata.EffectName);
+
             newEffectExecutor.ChangeConnectedDevices(AppState.Instance.RegisteredProviders.Select(provider => provider.Devices).SelectMany(devices => devices).Where(device => device.IsChecked).Select(dev => this.concreteDevices[dev.Device.DeviceGuid]));
 
             if (AppState.Instance.IsEffectRunning)
@@ -234,12 +245,18 @@ namespace RGBMasterWPFRunner
 
                 if (!item.IsChecked && concreteDevice.IsConnected)
                 {
+                    Log.Logger.Warning("Turning off device with GUID {A}.", concreteDevice.DeviceMetadata.DeviceGuid);
                     concreteDevice.TurnOff();
+
+                    Log.Logger.Warning("Disconnecting from device with GUID {A}.", concreteDevice.DeviceMetadata.DeviceGuid);
                     await concreteDevice.Disconnect();
                 }
                 else if (item.IsChecked && !concreteDevice.IsConnected)
                 {
+                    Log.Logger.Warning("Connecting to device with GUID {A}.", concreteDevice.DeviceMetadata.DeviceGuid);
                     await concreteDevice.Connect();
+
+                    Log.Logger.Warning("Turning on device with GUID {A}.", concreteDevice.DeviceMetadata.DeviceGuid);
                     concreteDevice.TurnOn();
                 }
             }
