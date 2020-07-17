@@ -12,6 +12,7 @@ namespace Common
         public abstract string ProviderShortDescription { get; }
         public abstract string ProviderFullDescription { get; }
         public abstract string ProviderIconAssetPath { get; }
+        public abstract string ProviderUrl { get; }
 
         public ProviderMetadata()
         {

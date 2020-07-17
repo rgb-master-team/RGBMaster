@@ -120,9 +120,6 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Pages\ControlPanelPage.xaml.cs">
-      <DependentUpon>ControlPanelPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\DevicesPage.xaml.cs">
       <DependentUpon>DevicesPage.xaml</DependentUpon>
     </Compile>
@@ -157,10 +154,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Pages\ControlPanelPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Pages\DevicesPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

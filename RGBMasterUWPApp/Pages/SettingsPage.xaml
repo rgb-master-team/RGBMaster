@@ -4,22 +4,25 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:RGBMasterUWPApp.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:state="using:AppExecutionManager.State" xmlns:common="using:Common" 
+    mc:Ignorable="d">
 
-    >
     <Pivot Title="Settings">
         <PivotItem Header="General" >
-            <StackPanel>
-                <StackPanel>
+            <StackPanel Spacing="30">
+                <StackPanel ToolTipService.ToolTip="When enabled, the devices will turn on when they are checked.">
                     <TextBlock Text="Turn device on/off when they are checked." />
                     <ToggleSwitch x:Name="TurnOnDeviceEnabler" IsOn="True" />
+                </StackPanel>
+                <StackPanel ToolTipService.ToolTip="Always dispaly all providers even when they are not existing." >
+                    <TextBlock Text="Always display all providers" />
+                    <ToggleSwitch x:Name="AlwaysDisplayProviders" IsOn="False"/>
                 </StackPanel>
             </StackPanel>
         </PivotItem>
         <PivotItem Header="About">
-            <StackPanel>
-                <StackPanel HorizontalAlignment="Center" Margin="0 0 0 32">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Spacing="20">
+                <StackPanel HorizontalAlignment="Center">
                     <Image Source="/Assets/128.png" Width="50px" Height="50px" />
                     <TextBlock Text="RGB Master" FontFamily="Tahoma" FontSize="24" HorizontalAlignment="Center" FontWeight="Bold" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -28,7 +31,7 @@
                     </StackPanel>
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Center">
-                    <TextBlock Text="Check us out!" Style="{StaticResource TitleTextBlockStyle}" FontSize="16" Margin="0 0 0 4"/>
+                    <TextBlock Text="Check us out!" Style="{StaticResource TitleTextBlockStyle}" FontSize="16" Margin="0 0 0 4" HorizontalAlignment="Center"/>
                     <StackPanel HorizontalAlignment="Center">
                         <Button Click="GitHub_Button_Click" Height="30px" Width="80px" Margin="0 0 0 8">
                             <Image Source="/Assets/Logos/GitHubLogo.png" Height="20px" Width="60px" />
@@ -37,11 +40,22 @@
                             <Image Source="/Assets/Logos/DiscordLogo.png" Height="30px" Width="60px" Margin="0 0 4 0" />
                         </Button>
                     </StackPanel>
+                    <StackPanel HorizontalAlignment="Center" Orientation="Vertical" VerticalAlignment="Bottom" Margin="0 40 0 0">
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="Works With" FontWeight="Bold"/>
+                        </StackPanel>
+                        <GridView ItemsSource="{x:Bind SupportedProviders}" SelectionMode="None" IsItemClickEnabled="True" ItemClick="GridView_ItemClick">
+                            <GridView.ItemTemplate>
+                                <DataTemplate x:DataType="common:ProviderMetadata">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="{x:Bind ProviderIconAssetPath}" Width="35px" Height="35px" ToolTipService.ToolTip="{x:Bind ProviderName}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridView.ItemTemplate>
+                        </GridView>
+                    </StackPanel>
                 </StackPanel>
             </StackPanel>
         </PivotItem>
-
     </Pivot>
-
 </Page>
-    

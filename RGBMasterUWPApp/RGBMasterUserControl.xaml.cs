@@ -43,7 +43,6 @@ namespace RGBMasterUWPApp
                 {
                     { nameof(DevicesPage), typeof(DevicesPage) },
                     { nameof(EffectsPage), typeof(EffectsPage) },
-                    { nameof(ControlPanelPage), typeof(ControlPanelPage) },
                     { nameof(SettingsPage), typeof(SettingsPage) }
                 };
 

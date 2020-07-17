@@ -152,6 +152,8 @@ namespace RGBMasterWPFRunner
             foreach (var provider in providers)
             {
                 supportedProviders[provider.ProviderMetadata.ProviderGuid] = provider;
+
+                AppState.Instance.SupportedProviders.Add(provider.ProviderMetadata);
             }
         }
 
@@ -170,12 +172,17 @@ namespace RGBMasterWPFRunner
             {
                 var didInitialize = await provider.InitializeProvider();
 
-                if (didInitialize)
+                if (!didInitialize)
                 {
-                    var devices = await provider.Discover();
+                    continue;
+                }
 
-                    discoveredDevices.AddRange(devices);
+                var devices = await provider.Discover();
 
+                discoveredDevices.AddRange(devices);
+
+                if ((devices?.Count).GetValueOrDefault() > 0)
+                {
                     AppState.Instance.RegisteredProviders.Add(new RegisteredProvider()
                     {
                         Provider = provider.ProviderMetadata,
@@ -183,12 +190,6 @@ namespace RGBMasterWPFRunner
                     });
                 }
             }
-
-            /*AppState.Instance.SelectedDevices = new System.Collections.ObjectModel.ObservableCollection<DiscoveredDevice>(discoveredDevices.Select(originalDevice => new DiscoveredDevice()
-            {
-                Device = originalDevice.DeviceMetadata,
-                IsChecked = false
-            }));*/
 
             foreach (var device in discoveredDevices)
             {

@@ -12,5 +12,6 @@ namespace Yeelight
         public override string ProviderFullDescription => "A provider for Xiaomi Yeelight, providing bulbs and led strips.";
 
         public override string ProviderIconAssetPath => "/Assets/Logos/YeelightLogo.png";
+        public override string ProviderUrl => "https://www.yeelight.com/";
     }
 }
