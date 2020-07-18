@@ -21,7 +21,8 @@ namespace AppExecutionManager.State
                 IsEffectRunning = false,
                 //SelectedDevices = new ObservableCollection<DiscoveredDevice>(),
                 Effects = new ObservableCollection<EffectMetadata>(),
-                StaticColorEffectProperties=new StaticColorEffectProps() { SelectedColor = Color.White, SelectedBrightness = 100 }
+                StaticColorEffectProperties=new StaticColorEffectProps() { SelectedColor = Color.White, SelectedBrightness = 100 },
+                SupportedProviders = new ObservableCollection<ProviderMetadata>()
             };
 
         }
@@ -43,5 +44,6 @@ namespace AppExecutionManager.State
         public bool IsEffectRunning { get; set; }
         public StaticColorEffectProps StaticColorEffectProperties { get; set; }
         public string AppVersion { get; set; }
+        public ObservableCollection<ProviderMetadata> SupportedProviders { get; set; }
     }
 }

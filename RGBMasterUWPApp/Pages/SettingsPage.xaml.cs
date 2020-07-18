@@ -1,6 +1,8 @@
 ﻿using AppExecutionManager.State;
+using Common;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -27,6 +29,14 @@ namespace RGBMasterUWPApp.Pages
     /// </summary>
     public sealed partial class SettingsPage : Page
     {
+        public ObservableCollection<ProviderMetadata> SupportedProviders
+        {
+            get
+            {
+                return AppState.Instance.SupportedProviders;
+            }
+        }
+
         public string AppVersion
         {
             get
@@ -54,6 +64,18 @@ namespace RGBMasterUWPApp.Pages
         {
             if (TurnOnDeviceEnabler.IsOn)
             { }
+        }
+
+        private async void GridView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            var clickedProvider = (ProviderMetadata)e.ClickedItem;
+
+            if (clickedProvider.ProviderUrl == null)
+            {
+                return;
+            }
+
+            await Windows.System.Launcher.LaunchUriAsync(new Uri(clickedProvider.ProviderUrl));
         }
     }
 }

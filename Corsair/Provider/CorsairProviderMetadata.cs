@@ -12,5 +12,6 @@ namespace Corsair.Provider
         public override string ProviderFullDescription => ProviderShortDescription;
 
         public override string ProviderIconAssetPath => @"/Assets/Logos/CorsairiCueLogo.png";
+        public override string ProviderUrl => "https://www.corsair.com/ww/en/icue";
     }
 }
