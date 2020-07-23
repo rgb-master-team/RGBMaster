@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Colore" Version="6.0.0-rc0005" />
+    <PackageReference Include="Colore" Version="6.0.0-rc0014" />
   </ItemGroup>
 
   <ItemGroup>
