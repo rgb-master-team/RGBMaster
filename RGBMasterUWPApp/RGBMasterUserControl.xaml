@@ -7,10 +7,33 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:winui="using:Microsoft.UI.Xaml.Controls"
     Loaded="RGBMasterUserControl_Loaded"
-    mc:Ignorable="d"
-    d:DesignHeight="1000"
-    d:DesignWidth="1000" >
+    mc:Ignorable="d">
     <Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="None">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainNavigationView.IsPaneOpen" Value="False" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState x:Name="Compact">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="940" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainNavigationView.IsPaneOpen" Value="True" />
+                    </VisualState.Setters>
+                </VisualState>
+                
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        
+        
+        
         <winui:NavigationView x:Name="MainNavigationView" PaneDisplayMode="Left" IsBackButtonVisible="Collapsed" SelectionChanged="MainNavigationView_SelectionChanged" Loaded="NavigationView_Loaded" Background="{StaticResource NavigationMenuBrush}">
                 <winui:NavigationView.PaneHeader>
                 <StackPanel Orientation="Horizontal">
@@ -19,11 +42,6 @@
                 </StackPanel>
             </winui:NavigationView.PaneHeader>
             <winui:NavigationView.MenuItems>
-                <!--<winui:NavigationViewItem Content="Control Panel" x:Name="StatusNavigationItem" Tag="ControlPanelPage">
-                    <winui:NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE946;" FontFamily="Segoe MDL2 Assets"/>
-                    </winui:NavigationViewItem.Icon>
-                </winui:NavigationViewItem>-->
                 <winui:NavigationViewItem Content="Devices" x:Name="DevicesNavigationItem" Tag="DevicesPage">
                     <winui:NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xEA80;" FontFamily="Segoe MDL2 Assets"/>
