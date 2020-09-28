@@ -1,4 +1,5 @@
-﻿using Common;
+﻿using ColorThiefDotNet;
+using Common;
 using EffectsExecution.Win32Api;
 using Provider;
 using System;
@@ -10,6 +11,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Color = System.Drawing.Color;
+using Timer = System.Timers.Timer;
 
 namespace EffectsExecution
 {
@@ -29,8 +32,13 @@ namespace EffectsExecution
         [DllImport("user32.dll")]
         private static extern bool EnumDisplaySettings(string deviceName, int modeNum, ref DEVMODE devMode);
 
-        private Timer calculationTimer;
+        private const int ENUM_CURRENT_SETTINGS = -1;
+
+        //private Timer calculationTimer;
         private Bitmap screenPixel = new Bitmap(1, 1, PixelFormat.Format32bppArgb);
+        private ColorThief colorThief = new ColorThief();
+
+        private CancellationTokenSource backgroundWorkCancellationTokenSource;
 
         public DominantDisplayColorEffectExecutor() : base(new DominantDisplayColorEffectMetadata())
         {
@@ -40,28 +48,32 @@ namespace EffectsExecution
         {
             var enumeratedDevices = Devices.ToList();
 
-            calculationTimer = new Timer((state) => OnTimerFired(state, enumeratedDevices), null, 0, Timeout.Infinite);
+            /*calculationTimer = new Timer(100);
+
+            calculationTimer.Elapsed += (sender, e) => OnTimerFired(enumeratedDevices);
+            calculationTimer.Start();*/
+
+            backgroundWorkCancellationTokenSource = new CancellationTokenSource();
+            Task.Run(() => DoWork(enumeratedDevices), backgroundWorkCancellationTokenSource.Token);
 
             return Task.CompletedTask;
         }
 
-        private async void OnTimerFired(object state, List<Device> devices)
+        private async void DoWork(List<Device> devices)
         {
-            Point cursor = new Point();
-            GetCursorPos(ref cursor);
-
-            var c = GetColorAt(cursor);
-
-            List<Task> setColorTasks = new List<Task>();
-
-            foreach (var device in devices)
+            while (true)
             {
-                setColorTasks.Add(Task.Run(() => device.SetColor(c)));
+                var c = GetDominantColorFromThief();
+
+                List<Task> setColorTasks = new List<Task>();
+
+                foreach (var device in devices)
+                {
+                    setColorTasks.Add(Task.Run(() => device.SetColor(c)));
+                }
+
+                await Task.WhenAll(setColorTasks);
             }
-
-            await Task.WhenAll(setColorTasks);
-
-            calculationTimer.Change(50, Timeout.Infinite); //bug
         }
 
         public Color GetColorAt(Point location)
@@ -81,10 +93,38 @@ namespace EffectsExecution
             return screenPixel.GetPixel(0, 0);
         }
 
+        private Size GetHeightAndWidth()
+        {
+            DEVMODE devMode = default;
+            devMode.dmSize = (short)Marshal.SizeOf(devMode);
+            EnumDisplaySettings(null, ENUM_CURRENT_SETTINGS, ref devMode);
+
+            var height = devMode.dmPelsHeight;
+            var width = devMode.dmPelsWidth;
+
+            return new Size(width, height);
+        }
+
+        public Color GetDominantColorFromThief()
+        {
+            var dimensions = GetHeightAndWidth();
+
+            var height = dimensions.Height;
+            var width = dimensions.Width;
+
+            var captureBmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+            using var captureGraphic = Graphics.FromImage(captureBmp);
+            captureGraphic.CopyFromScreen(0, 0, 0, 0, captureBmp.Size);
+            var thiefColor = colorThief.GetColor(captureBmp, 1000, true);
+            return Color.FromArgb(thiefColor.Color.R, thiefColor.Color.G, thiefColor.Color.B);
+        }
+
         public override Task StopInternal()
         {
-            calculationTimer.Dispose();
+            //calculationTimer.Stop();
+            //calculationTimer.Dispose();
 
+            backgroundWorkCancellationTokenSource.Cancel();
             return Task.CompletedTask;
         }
     }
