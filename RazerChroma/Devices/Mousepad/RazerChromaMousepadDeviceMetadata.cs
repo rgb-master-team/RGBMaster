@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RazerChroma.Devices
+namespace RazerChroma.Devices.Mousepad
 {
     public class RazerChromaMousepadDeviceMetadata : DeviceMetadata
     {

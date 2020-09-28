@@ -6,14 +6,15 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using System.Threading.Tasks;
+using ColoreColor = Colore.Data.Color;
 
-namespace RazerChroma.Devices
+namespace RazerChroma.Devices.Keyboard
 {
-    public class RazerChromaMousepadDevice : Device
+    public class RazerChromaKeyboardDevice : Device
     {
         private readonly IChroma internalChromaDriver;
 
-        public RazerChromaMousepadDevice(IChroma chroma) : base(new RazerChromaMousepadDeviceMetadata())
+        public RazerChromaKeyboardDevice(IChroma chroma) : base(new RazerChromaKeyboardDeviceMetadata())
         {
             internalChromaDriver = chroma;
         }
@@ -45,8 +46,7 @@ namespace RazerChroma.Devices
 
         protected async override void SetColorInternal(Color color)
         {
-            //await internalChromaDriver.Mousepad.SetAllAsync(new Colore.Data.Color(color.R, color.G, color.B));
-            await internalChromaDriver.SetAllAsync(new Colore.Data.Color(color.R, color.G, color.B));
+            await internalChromaDriver.Keyboard.SetStaticAsync(new Colore.Effects.Keyboard.StaticKeyboardEffect(new ColoreColor(color.R, color.G, color.B)));
         }
 
         protected override void TurnOffInternal()

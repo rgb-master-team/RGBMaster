@@ -2,17 +2,16 @@
 using Provider;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RazerChroma
+namespace RazerChroma.Devices.AllDevices
 {
-    public class RazerChromaDevice : Device
+    public class RazerChromaAllDevicesDevice : Device
     {
         private readonly IChroma internalChromaDriver;
 
-        public RazerChromaDevice(IChroma internalChromaDriver): base(new RazerChromaDeviceMetadata())
+        public RazerChromaAllDevicesDevice(IChroma internalChromaDriver) : base(new RazerChromaAllDevicesDeviceMetadata())
         {
             this.internalChromaDriver = internalChromaDriver;
         }
