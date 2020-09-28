@@ -8,6 +8,35 @@
     mc:Ignorable="d"
    >
     <Grid>
+        
+        
+        
+      
+        
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="None">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="DevicesOverview.Visibility" Value="Collapsed" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState x:Name="Compact">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="600" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="DevicesOverview.Visibility" Value="Visible" />
+                    </VisualState.Setters>
+                </VisualState>
+
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*" />
             <ColumnDefinition Width="1*" />
@@ -34,28 +63,46 @@
                         <StackPanel HorizontalAlignment="Left" Orientation="Vertical">
                             <TextBox x:Name="ManualConnectionAddressTxtBx" PlaceholderText="Manually connect via IP address or unique ID" MaxWidth="360"/>
                             <Button Content="Connect" x:Name="ManualConnectionButton" Click="ManualConnectionButton_Click" Margin="4 0 0 0" />
-                            <ListView ItemsSource="{x:Bind Devices}">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate x:DataType="state:DiscoveredDevice">
-                                        <StackPanel Orientation="Horizontal">
-                                            <CheckBox IsChecked="{x:Bind IsChecked}" Tag="{x:Bind}" Click="CheckBox_Click">
-                                                <CheckBox.Content>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <Image Source="{x:Bind Device.DeviceIconAssetPath}" Width="24px" Height="24px" Margin="0 0 4 0"/>
-                                                        <TextBlock Text="{x:Bind Device.DeviceName}" />
-                                                    </StackPanel>
-                                                </CheckBox.Content>
-                                            </CheckBox>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
+                            <StackPanel Orientation="Horizontal">
+                                <ListView ItemsSource="{x:Bind Devices}" x:Name="listviewname">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate x:DataType="state:DiscoveredDevice">
+                                            <StackPanel Orientation="Horizontal">
+                                                <CheckBox IsChecked="{x:Bind IsChecked}" Tag="{x:Bind}" Click="CheckBox_Click">
+                                                    <CheckBox.Content>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Image Source="{x:Bind Device.DeviceIconAssetPath}" Width="24px" Height="24px" Margin="0 0 4 0"/>
+                                                            <TextBlock Text="{x:Bind Device.DeviceName}" />
+                                                        </StackPanel>
+                                                    </CheckBox.Content>
+                                                </CheckBox>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                
+                                <Button x:Name="Change_Device_Name_Button" Click="Change_Device_Name_Button_Click">
+                                    <Button.Content>
+                                        <SymbolIcon Symbol="Edit" />
+                                    </Button.Content>
+                                    <Button.Resources>
+                                        <muxc:TeachingTip x:Name="TeachingTip_SetName" Title="Set Custom Name" Subtitle="Set a custom name for this device" ActionButtonContent="Save" CloseButtonContent="Cancel" Target="{Binding Change_Device_Name_Button}">
+                                            <muxc:TeachingTip.IconSource>
+                                                <muxc:SymbolIconSource Symbol="Edit" />
+                                            </muxc:TeachingTip.IconSource>
+                                            <TextBox PlaceholderText="Enter custom name" x:Name="Custom_Name_TextBox"/>
+                                        </muxc:TeachingTip>
+                                    </Button.Resources>
+                                </Button>
+
+                            </StackPanel>
                         </StackPanel>
                     </DataTemplate>
+                    
                 </Pivot.ItemTemplate>
             </Pivot>
         </StackPanel>
-        <StackPanel Grid.Column="1" Margin="0 64 0 0" Orientation="Vertical">
+        <StackPanel Grid.Column="1" Margin="0 64 0 0" Orientation="Vertical" x:Name="DevicesOverview" >
             <StackPanel Margin="0 0 0 16">
                 <TextBlock FontWeight="Bold" FontSize="18" Text="Devices Overview" HorizontalAlignment="Center"/>
                 <RichTextBlockOverflow x:Name="DevicesOverviewDescription" />

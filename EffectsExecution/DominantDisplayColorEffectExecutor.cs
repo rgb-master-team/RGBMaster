@@ -61,7 +61,7 @@ namespace EffectsExecution
 
             await Task.WhenAll(setColorTasks);
 
-            calculationTimer.Change(50, Timeout.Infinite);
+            calculationTimer.Change(50, Timeout.Infinite); //bug
         }
 
         public Color GetColorAt(Point location)

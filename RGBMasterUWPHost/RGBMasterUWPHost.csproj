@@ -163,10 +163,10 @@
       <Version>6.2.10</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Win32.UI.XamlApplication">
-      <Version>6.1.1</Version>
+      <Version>6.1.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
-      <Version>2.5.0-prerelease.200708003</Version>
+      <Version>2.5.0-prerelease.200923002</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

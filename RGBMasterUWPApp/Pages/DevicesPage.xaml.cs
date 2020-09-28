@@ -1,5 +1,6 @@
 ﻿using AppExecutionManager.EventManagement;
 using AppExecutionManager.State;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -89,5 +90,26 @@ namespace RGBMasterUWPApp.Pages
         {
          //   this.ChosenDevicesListView.ItemsSource = AppState.Instance.RegisteredProviders.Select(provider=> new RegisteredProvider() { Provider = provider.Provider, Devices = provider.Devices.Where(device => device.IsChecked)})
         }
+
+        private void Change_Device_Name_Button_Click(object sender, RoutedEventArgs e)
+        {
+            var button = (Button)sender;
+
+            var teachingTip = button.Resources["TeachingTip_SetName"] as Microsoft.UI.Xaml.Controls.TeachingTip;
+            teachingTip.Target = button;
+            teachingTip.PreferredPlacement = TeachingTipPlacementMode.Right;
+            teachingTip.IsOpen = true;
+        }
+
+
+        //private void Change_Device_Name_Button_Click(object sender, RoutedEventArgs e)
+        //{
+        //    TeachingTip_SetName.IsOpen = true;
+        //}
+
+        //private void TeachingTip_SetName_ActionButtonClick(TeachingTip sender, object args)
+        //{
+        //    TeachingTip_SetName.IsOpen = false;
+        //}
     }
 }
