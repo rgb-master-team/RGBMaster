@@ -1,5 +1,6 @@
 ﻿using AppExecutionManager.EventManagement;
 using AppExecutionManager.State;
+using Common;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
@@ -101,6 +102,72 @@ namespace RGBMasterUWPApp.Pages
             teachingTip.IsOpen = true;
         }
 
+        private async void Device_Info_Button_Click(object sender, RoutedEventArgs e)
+        {
+            var button = (Button)sender;
+            var discoveredDevice = (DiscoveredDevice)button.DataContext;
+            var deviceInfoContentDialog = GenerateDeviceInfoContentDialog(discoveredDevice.Device, button.XamlRoot); // lmfaooo
+            await deviceInfoContentDialog.ShowAsync();
+        }
+
+        private ContentDialog GenerateDeviceInfoContentDialog(DeviceMetadata deviceMetadata, XamlRoot elementRoot)
+        {
+            var contentDialogInnerContent = new StackPanel()
+            {
+                Orientation = Orientation.Vertical
+            };
+
+            contentDialogInnerContent.Children.Add(new TextBlock() { Text = $"Device name: {deviceMetadata.DeviceName}" });
+            contentDialogInnerContent.Children.Add(new TextBlock() { Text = $"Device ID: {deviceMetadata.DeviceGuid}" });
+
+            var supportedOperationsList = new StackPanel() { Orientation = Orientation.Vertical };
+            foreach (var supportedOp in deviceMetadata.SupportedOperations)
+            {
+                supportedOperationsList.Children.Add(new TextBlock() { Text = OperationTypeToText(supportedOp) });
+            }
+
+            contentDialogInnerContent.Children.Add(supportedOperationsList);
+
+            return new ContentDialog()
+            {
+                Title = deviceMetadata.DeviceName,
+                CloseButtonText = "Close",
+                Content = contentDialogInnerContent,
+                XamlRoot = elementRoot // lmao
+            };
+        }
+
+        private string OperationTypeToText(OperationType opType)
+        {
+            string operation = null;
+
+            switch (opType)
+            {
+                case OperationType.GetColor:
+                    operation = "Obtain current color";
+                    break;
+                case OperationType.SetColor:
+                    operation = "Modify color";
+                    break;
+                case OperationType.GetBrightness:
+                    operation = "Obtain current brightness";
+                    break;
+                case OperationType.SetBrightness:
+                    operation = "Modify brightness";
+                    break;
+                case OperationType.TurnOn:
+                    operation = "Turn on";
+                    break;
+                case OperationType.TurnOff:
+                    operation = "Turn off";
+                    break;
+                default:
+                    operation = "Unknown operation";
+                    break;
+            }
+
+            return operation;
+        }
 
         //private void Change_Device_Name_Button_Click(object sender, RoutedEventArgs e)
         //{

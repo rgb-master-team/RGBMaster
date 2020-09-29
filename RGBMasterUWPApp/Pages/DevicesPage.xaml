@@ -8,11 +8,6 @@
     mc:Ignorable="d"
    >
     <Grid>
-        
-        
-        
-      
-        
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState x:Name="None">
@@ -76,25 +71,34 @@
                                                         </StackPanel>
                                                     </CheckBox.Content>
                                                 </CheckBox>
+                                                <Button x:Name="Change_Device_Name_Button" Click="Change_Device_Name_Button_Click" Margin="4 0 0 0" ToolTipService.ToolTip="Set a custom name to the device">
+                                                    <Button.Background>
+                                                        <SolidColorBrush Opacity="0" />
+                                                    </Button.Background>
+                                                    <Button.Content>
+                                                        <SymbolIcon Symbol="Edit" />
+                                                    </Button.Content>
+                                                    <Button.Resources>
+                                                        <muxc:TeachingTip x:Name="TeachingTip_SetName" Title="Set Custom Name" Subtitle="Set a custom name for this device" ActionButtonContent="Save" CloseButtonContent="Cancel" Target="{Binding Change_Device_Name_Button}">
+                                                            <muxc:TeachingTip.IconSource>
+                                                                <muxc:SymbolIconSource Symbol="Edit" />
+                                                            </muxc:TeachingTip.IconSource>
+                                                            <TextBox PlaceholderText="Enter custom name" x:Name="Custom_Name_TextBox"/>
+                                                        </muxc:TeachingTip>
+                                                    </Button.Resources>
+                                                </Button>
+                                                <Button x:Name="Device_Info_Button" Click="Device_Info_Button_Click" Margin="4 0 0 0" ToolTipService.ToolTip="Show device info">
+                                                    <Button.Background>
+                                                        <SolidColorBrush Opacity="0" />
+                                                    </Button.Background>
+                                                    <Button.Content>
+                                                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE946;"/>
+                                                    </Button.Content>
+                                                </Button>
                                             </StackPanel>
                                         </DataTemplate>
                                     </ListView.ItemTemplate>
                                 </ListView>
-                                
-                                <Button x:Name="Change_Device_Name_Button" Click="Change_Device_Name_Button_Click">
-                                    <Button.Content>
-                                        <SymbolIcon Symbol="Edit" />
-                                    </Button.Content>
-                                    <Button.Resources>
-                                        <muxc:TeachingTip x:Name="TeachingTip_SetName" Title="Set Custom Name" Subtitle="Set a custom name for this device" ActionButtonContent="Save" CloseButtonContent="Cancel" Target="{Binding Change_Device_Name_Button}">
-                                            <muxc:TeachingTip.IconSource>
-                                                <muxc:SymbolIconSource Symbol="Edit" />
-                                            </muxc:TeachingTip.IconSource>
-                                            <TextBox PlaceholderText="Enter custom name" x:Name="Custom_Name_TextBox"/>
-                                        </muxc:TeachingTip>
-                                    </Button.Resources>
-                                </Button>
-
                             </StackPanel>
                         </StackPanel>
                     </DataTemplate>
