@@ -34,9 +34,7 @@ namespace EffectsExecution
 
         private const int ENUM_CURRENT_SETTINGS = -1;
 
-        //private Timer calculationTimer;
-        private Bitmap screenPixel = new Bitmap(1, 1, PixelFormat.Format32bppArgb);
-        private ColorThief colorThief = new ColorThief();
+        private readonly ColorThief colorThief = new ColorThief();
 
         private CancellationTokenSource backgroundWorkCancellationTokenSource;
 
@@ -48,11 +46,6 @@ namespace EffectsExecution
         {
             var enumeratedDevices = Devices.ToList();
 
-            /*calculationTimer = new Timer(100);
-
-            calculationTimer.Elapsed += (sender, e) => OnTimerFired(enumeratedDevices);
-            calculationTimer.Start();*/
-
             backgroundWorkCancellationTokenSource = new CancellationTokenSource();
             Task.Run(() => DoWork(enumeratedDevices), backgroundWorkCancellationTokenSource.Token);
 
@@ -61,7 +54,7 @@ namespace EffectsExecution
 
         private async void DoWork(List<Device> devices)
         {
-            while (true)
+            while (!backgroundWorkCancellationTokenSource.IsCancellationRequested)
             {
                 var c = GetDominantColorFromThief();
 
@@ -69,22 +62,23 @@ namespace EffectsExecution
 
                 foreach (var device in devices)
                 {
-                    setColorTasks.Add(Task.Run(() => device.SetColor(c)));
+                    setColorTasks.Add(Task.Run(() => device.SetColor(c), backgroundWorkCancellationTokenSource.Token));
                 }
 
                 await Task.WhenAll(setColorTasks);
             }
         }
 
-        public Color GetColorAt(Point location)
+        public Color GetColorAt(int x, int y)
         {
+            var screenPixel = new Bitmap(1, 1, PixelFormat.Format32bppArgb);
             using (Graphics gdest = Graphics.FromImage(screenPixel))
             {
                 using (Graphics gsrc = Graphics.FromHwnd(IntPtr.Zero))
                 {
                     IntPtr hSrcDC = gsrc.GetHdc();
                     IntPtr hDC = gdest.GetHdc();
-                    int retval = BitBlt(hDC, 0, 0, 1, 1, hSrcDC, location.X, location.Y, (int)CopyPixelOperation.SourceCopy);
+                    int retval = BitBlt(hDC, 0, 0, 1, 1, hSrcDC, x, y, (int)CopyPixelOperation.SourceCopy);
                     gdest.ReleaseHdc();
                     gsrc.ReleaseHdc();
                 }
@@ -107,23 +101,38 @@ namespace EffectsExecution
 
         public Color GetDominantColorFromThief()
         {
-            var dimensions = GetHeightAndWidth();
-
+            /*var dimensions = GetHeightAndWidth();
             var height = dimensions.Height;
-            var width = dimensions.Width;
+            var width = dimensions.Width;*/
+
+            var height = 720;
+            var width = 1280;
 
             var captureBmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             using var captureGraphic = Graphics.FromImage(captureBmp);
-            captureGraphic.CopyFromScreen(0, 0, 0, 0, captureBmp.Size);
-            var thiefColor = colorThief.GetColor(captureBmp, 1000, true);
+            captureGraphic.CopyFromScreen(0, 0, 0, 0, captureBmp.Size, CopyPixelOperation.SourceCopy);
+
+            using (Graphics gdest = Graphics.FromImage(captureBmp))
+            {
+                using (Graphics gsrc = Graphics.FromHwnd(IntPtr.Zero))
+                {
+                    IntPtr hSrcDC = gsrc.GetHdc();
+                    IntPtr hDC = gdest.GetHdc();
+
+                    int retval = BitBlt(hDC, 0, 0, width, height, hSrcDC, 0, 0, (int)CopyPixelOperation.SourceCopy);
+
+                    gdest.ReleaseHdc();
+                    gsrc.ReleaseHdc();
+                }
+            }
+
+            var thiefColor = colorThief.GetColor(captureBmp, 100, false);
+
             return Color.FromArgb(thiefColor.Color.R, thiefColor.Color.G, thiefColor.Color.B);
         }
 
         public override Task StopInternal()
         {
-            //calculationTimer.Stop();
-            //calculationTimer.Dispose();
-
             backgroundWorkCancellationTokenSource.Cancel();
             return Task.CompletedTask;
         }
