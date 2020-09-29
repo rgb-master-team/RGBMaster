@@ -72,11 +72,9 @@ namespace RGBMasterWPFRunner
             CreateAndSetSupportedEffectsExecutors(new List<EffectExecutor>() { new MusicEffectExecutor(), new DominantDisplayColorEffectExecutor(), new CursorColorEffectExecutor(), new StaticColorEffectExecutor() });
             SetUIStateEffects();
 
-            EventManager.Instance.SubscribeToEffectChanged(Instance_EffectChanged);
+            EventManager.Instance.SubscribeToEffectActivationRequests(Instance_EffectChanged);
             EventManager.Instance.SubscribeToSelectedDevicesChanged(Instance_SelectedDevicesChanged);
             EventManager.Instance.SubscribeToInitializeProvidersRequests(InitializeProviders);
-            EventManager.Instance.SubscribeToStartSyncingRequested(StartSyncing);
-            EventManager.Instance.SubscribeToStopSyncingRequested(StopSyncing);
             EventManager.Instance.SubscribeToStaticColorChanges(ChangeStaticColor);
             EventManager.Instance.SubscribeToTurnOnAllLightsRequests(TurnOnAllLights);
         }
@@ -101,32 +99,21 @@ namespace RGBMasterWPFRunner
 
         }
 
-        private async void StopSyncing(object sender, EventArgs e)
-        {
-            AppState.Instance.IsEffectRunning = false;
-
-            await supportedEffectsExecutors[AppState.Instance.SelectedEffect.EffectMetadataGuid].Stop();
-        }
-
         private async void ChangeStaticColor(object sender, StaticColorEffectProps staticColorEffectProps)
         {
             AppState.Instance.StaticColorEffectProperties = staticColorEffectProps;
 
-            var selectedEffectExecutor = supportedEffectsExecutors[AppState.Instance.SelectedEffect.EffectMetadataGuid];
-
-            if (AppState.Instance.IsEffectRunning && selectedEffectExecutor.GetType() == typeof(StaticColorEffectExecutor))
+            if (AppState.Instance.IsEffectRunning)
             {
-                ((StaticColorEffectMetadata)selectedEffectExecutor.executedEffectMetadata).UpdateProps(staticColorEffectProps);
+                var selectedEffectExecutor = supportedEffectsExecutors[AppState.Instance.ActiveEffect.EffectMetadataGuid];
 
-                await selectedEffectExecutor.Start();
+                if (selectedEffectExecutor.executedEffectMetadata.Type == EffectType.StaticColor)
+                {
+                    ((StaticColorEffectMetadata)selectedEffectExecutor.executedEffectMetadata).UpdateProps(staticColorEffectProps);
+
+                    await selectedEffectExecutor.Start();
+                }
             }
-        }
-
-        private async void StartSyncing(object sender, EventArgs e)
-        {
-            AppState.Instance.IsEffectRunning = true;
-
-            await supportedEffectsExecutors[AppState.Instance.SelectedEffect.EffectMetadataGuid].Start();
         }
 
         private void SetUIStateEffects()
@@ -137,8 +124,6 @@ namespace RGBMasterWPFRunner
             {
                 AppState.Instance.Effects.Add(supportedEffectExecutor.executedEffectMetadata);
             }
-
-            AppState.Instance.SelectedEffect = AppState.Instance.Effects.FirstOrDefault();
         }
 
         private void CreateAndSetSupportedEffectsExecutors(IEnumerable<EffectExecutor> effectExecutors)
@@ -205,27 +190,38 @@ namespace RGBMasterWPFRunner
                 concreteDevices.Add(device.DeviceMetadata.DeviceGuid, device);
             }
 
+            if (AppState.Instance.IsEffectRunning)
+            {
+                EventManager.Instance.RequestEffectActivation(null);
+            }
+
             initializeProvidersSemaphore.Release();
         }
 
         private async void Instance_EffectChanged(object sender, EffectMetadata e)
         {
-            var newEffectExecutor = supportedEffectsExecutors[e.EffectMetadataGuid];
-
-            Log.Logger.Information("Effect changed to {A}.", newEffectExecutor.executedEffectMetadata.EffectName);
-
-            newEffectExecutor.ChangeConnectedDevices(AppState.Instance.RegisteredProviders.Select(provider => provider.Devices).SelectMany(devices => devices).Where(device => device.IsChecked).Select(dev => this.concreteDevices[dev.Device.DeviceGuid]));
-
-            if (AppState.Instance.IsEffectRunning)
+            // If we want to stop syncing the effect, and there is an active effect right now, stop it
+            if (e == null && AppState.Instance.ActiveEffect != null)
             {
-                if (e.EffectMetadataGuid != AppState.Instance.SelectedEffect.EffectMetadataGuid)
+                await supportedEffectsExecutors[AppState.Instance.ActiveEffect.EffectMetadataGuid].Stop();
+            }
+            else
+            {
+                var newEffectExecutor = supportedEffectsExecutors[e.EffectMetadataGuid];
+
+                Log.Logger.Information("Effect changed to {A}.", newEffectExecutor.executedEffectMetadata.EffectName);
+
+                newEffectExecutor.ChangeConnectedDevices(AppState.Instance.RegisteredProviders.Select(provider => provider.Devices).SelectMany(devices => devices).Where(device => device.IsChecked).Select(dev => this.concreteDevices[dev.Device.DeviceGuid]));
+
+                if (AppState.Instance.ActiveEffect != null)
                 {
-                    await supportedEffectsExecutors[AppState.Instance.SelectedEffect.EffectMetadataGuid].Stop();
-                    await supportedEffectsExecutors[e.EffectMetadataGuid].Start();
+                    await supportedEffectsExecutors[AppState.Instance.ActiveEffect.EffectMetadataGuid].Stop();
                 }
+
+                await supportedEffectsExecutors[e.EffectMetadataGuid].Start();
             }
 
-            AppState.Instance.SelectedEffect = e;
+            AppState.Instance.ActiveEffect = e;
         }
 
         private async void Instance_SelectedDevicesChanged(object sender, List<DiscoveredDevice> devices)
@@ -234,7 +230,7 @@ namespace RGBMasterWPFRunner
 
             await changeConnectedDevicesSemaphore.WaitAsync();
 
-            if (newSelectedDevices == null)
+            if (!AppState.Instance.IsEffectRunning)
             {
                 return;
             }
@@ -261,7 +257,7 @@ namespace RGBMasterWPFRunner
                 }
             }
 
-            supportedEffectsExecutors[AppState.Instance.SelectedEffect.EffectMetadataGuid].ChangeConnectedDevices(newSelectedDevices.Where(device => device.IsChecked).Select(dev => this.concreteDevices[dev.Device.DeviceGuid]));
+            supportedEffectsExecutors[AppState.Instance.ActiveEffect.EffectMetadataGuid].ChangeConnectedDevices(newSelectedDevices.Where(device => device.IsChecked).Select(dev => this.concreteDevices[dev.Device.DeviceGuid]));
 
             changeConnectedDevicesSemaphore.Release();
         }

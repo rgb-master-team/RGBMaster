@@ -9,7 +9,7 @@
     >
 
     <StackPanel Orientation="Vertical">
-        <Pivot Title="Effects" SelectionChanged="Pivot_SelectionChanged" ItemsSource="{x:Bind SupportedEffects}">
+        <Pivot x:Name="EffectSelectionPivot" Title="Effects" SelectionChanged="Pivot_SelectionChanged" ItemsSource="{x:Bind SupportedEffects}">
             <Pivot.HeaderTemplate>
                 <DataTemplate x:DataType="common:EffectMetadata">
                     <StackPanel Orientation="Horizontal">
@@ -24,6 +24,7 @@
                 </DataTemplate>
             </Pivot.ItemTemplate>
         </Pivot>
+        <Button x:Name="EffectActivationControl" Click="EffectActivationControl_Click"></Button>
         <Frame x:Name="effectControlFrame" Margin="0 4 0 0"/>
     </StackPanel>
 </Page>

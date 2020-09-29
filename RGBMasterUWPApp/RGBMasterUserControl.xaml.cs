@@ -34,7 +34,7 @@ namespace RGBMasterUWPApp
         {
             get
             {
-                return AppState.Instance.SelectedEffect?.EffectName;
+                return AppState.Instance.ActiveEffect?.EffectName;
             }
         }
 
@@ -51,60 +51,6 @@ namespace RGBMasterUWPApp
         private void MainAppContentFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
 
-        }
-
-        private async void AppBarButton_Click(object sender, RoutedEventArgs e)
-        {
-            await startAndStopSemaphore.WaitAsync();
-
-            var oldInnerButton = FindName("InnerButton") as FontIcon;
-            var oldOuterButton = FindName("OuterButton") as FontIcon;
-
-            AppBarStartStopGrid.Children.Remove(oldInnerButton);
-            AppBarStartStopGrid.Children.Remove(oldOuterButton);
-
-            UIElement innerButton;
-            UIElement outerButton;
-
-            var syncStatusToolTip = new ToolTip();
-
-            if (AppState.Instance.IsEffectRunning)
-            {
-                EventManager.Instance.StopSyncing();
-
-                outerButton = new FontIcon() { Glyph = "\uE739", FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets"), Name = "OuterButton" };
-                innerButton = new FontIcon() { Glyph = "\uE73B", FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets"), Foreground = new SolidColorBrush(Colors.Red), Name = "InnerButton" };
-
-                AppBarButton button = (AppBarButton)sender;
-
-                outerButton = new FontIcon() { Glyph = "\uE768", FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets"), Name = "OuterButton" };
-                innerButton = new FontIcon() { Glyph = "\uF5B0", FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets"), Foreground = new SolidColorBrush(Colors.Green), Name = "InnerButton" };
-
-                button.Label = "Start";
-                DisplayCurrentSyncMode.Visibility = Visibility.Collapsed;
-
-                ToolTipService.SetToolTip(Sync_Button, null);
-            }
-            else
-            {
-                EventManager.Instance.StartSyncing();
-
-                AppBarButton button = (AppBarButton)sender;
-
-                outerButton = new FontIcon() { Glyph = "\uE739", FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets"), Name = "OuterButton" };
-                innerButton = new FontIcon() { Glyph = "\uE73B", FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets"), Foreground = new SolidColorBrush(Colors.Red), Name = "InnerButton" };
-
-                button.Label = "Stop";
-                DisplayCurrentSyncMode.Visibility = Visibility.Visible;
-
-                syncStatusToolTip.Content = AppState.Instance.SelectedEffect.EffectName;
-                ToolTipService.SetToolTip(Sync_Button, syncStatusToolTip);
-            }
-
-            AppBarStartStopGrid.Children.Add(innerButton);
-            AppBarStartStopGrid.Children.Add(outerButton);
-
-            startAndStopSemaphore.Release();
         }
 
         private void NavigationView_Loaded(object sender, RoutedEventArgs e)

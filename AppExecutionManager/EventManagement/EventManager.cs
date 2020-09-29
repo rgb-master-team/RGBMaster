@@ -12,10 +12,8 @@ namespace AppExecutionManager.EventManagement
         private static readonly EventManager instance = new EventManager();
 
         private event EventHandler<StaticColorEffectProps> StaticColorChanged;
-        private event EventHandler<EffectMetadata> EffectChanged;
+        private event EventHandler<EffectMetadata> NewEffectActivationRequested;
         private event EventHandler<List<DiscoveredDevice>> SelectedDevicesChanged;
-        private event EventHandler StartSyncingRequested;
-        private event EventHandler StopSyncingRequested;
         private event EventHandler InitializeProvidersRequested;
         private event EventHandler TurnOnAllLightsRequested;
 
@@ -34,14 +32,14 @@ namespace AppExecutionManager.EventManagement
             }
         }
 
-        public void SubscribeToEffectChanged(EventHandler<EffectMetadata> callback)
+        public void SubscribeToEffectActivationRequests(EventHandler<EffectMetadata> callback)
         {
-            EffectChanged += callback;
+            NewEffectActivationRequested += callback;
         }
 
-        public void UnsubscribeFromEffectChanged(EventHandler<EffectMetadata> callback)
+        public void UnsubscribeFromEffectActivationRequests(EventHandler<EffectMetadata> callback)
         {
-            EffectChanged -= callback;
+            NewEffectActivationRequested -= callback;
         }
 
         public void SubscribeToSelectedDevicesChanged(EventHandler<List<DiscoveredDevice>> callback)
@@ -54,44 +52,14 @@ namespace AppExecutionManager.EventManagement
             SelectedDevicesChanged -= callback;
         }
 
-        public void SubscribeToStartSyncingRequested(EventHandler callback)
+        public void RequestEffectActivation(EffectMetadata newEffect)
         {
-            StartSyncingRequested += callback;
-        }
-
-        public void UnsubscribeFromStartSyncingRequested(EventHandler callback)
-        {
-            StartSyncingRequested -= callback;
-        }
-
-        public void SubscribeToStopSyncingRequested(EventHandler callback)
-        {
-            StopSyncingRequested += callback;
-        }
-
-        public void UnsubscribeFromStopSyncingRequested(EventHandler callback)
-        {
-            StopSyncingRequested -= callback;
-        }
-
-        public void UpdateEffect(EffectMetadata newEffect)
-        {
-            EffectChanged?.Invoke(this, newEffect);
+            NewEffectActivationRequested?.Invoke(this, newEffect);
         }
 
         public void UpdateSelectedDevices(List<DiscoveredDevice> newSelectedDevices)
         {
             SelectedDevicesChanged?.Invoke(this, newSelectedDevices);
-        }
-
-        public void StartSyncing()
-        {
-            StartSyncingRequested?.Invoke(this, null);
-        }
-
-        public void StopSyncing()
-        {
-            StopSyncingRequested?.Invoke(this, null);
         }
 
         public void SubscribeToInitializeProvidersRequests(EventHandler callback)

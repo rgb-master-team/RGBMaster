@@ -29,6 +29,9 @@ namespace RGBMasterUWPApp.Pages
     /// </summary>
     public sealed partial class EffectsPage : Page
     {
+        private readonly string ActivateEffectText = "Activate Effect";
+        private readonly string DeactivateEffectText = "Deactivate Effect";
+
         public readonly Dictionary<EffectType, Type> contentByEffectType = new Dictionary<EffectType, Type>()
         {
             { EffectType.Music, typeof(MusicEffectControl) },
@@ -66,11 +69,6 @@ namespace RGBMasterUWPApp.Pages
             }*/
         }
 
-        private void ChangeCurrentRunningEffect(EffectMetadata desiredEffect)
-        {
-            EventManager.Instance.UpdateEffect(desiredEffect);
-        }
-
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var pivot = (Pivot)sender;
@@ -79,17 +77,17 @@ namespace RGBMasterUWPApp.Pages
 
             var newEffectMetadata = (EffectMetadata)selectedPivotItem.DataContext;
 
-            // This is obviously a lazy design. TODO - add types for all effects and take the time to
-            // reimplement the way we apply effects, instead of reinstantiating them all the time.
-            // perhaps a factory.
-            if (newEffectMetadata.EffectMetadataGuid != AppState.Instance.SelectedEffect?.EffectMetadataGuid)
-            {
-                ChangeCurrentRunningEffect(newEffectMetadata);
-            }
+            var selectedEffectMetadata = AppState.Instance.ActiveEffect;
 
-            if (effectControlFrame == null)
+            var isEffectRunning = AppState.Instance.IsEffectRunning;
+
+            if (isEffectRunning && selectedEffectMetadata.EffectMetadataGuid == newEffectMetadata.EffectMetadataGuid)
             {
-                return;
+                EffectActivationControl.Content = DeactivateEffectText;
+            }
+            else
+            {
+                EffectActivationControl.Content = ActivateEffectText;
             }
 
             if (!contentByEffectType.TryGetValue(newEffectMetadata.Type, out var effectType))
@@ -98,6 +96,28 @@ namespace RGBMasterUWPApp.Pages
             }
 
             effectControlFrame.Navigate(effectType);
+        }
+
+        private void EffectActivationControl_Click(object sender, RoutedEventArgs e)
+        {
+            var newEffectMetadata = (EffectMetadata)EffectSelectionPivot.SelectedItem;
+
+            var selectedEffectMetadata = AppState.Instance.ActiveEffect;
+
+            var isEffectRunning = AppState.Instance.IsEffectRunning;
+
+            // If an effect is running and is the one we're currently on, stop it
+            if (isEffectRunning && selectedEffectMetadata.EffectMetadataGuid == newEffectMetadata.EffectMetadataGuid)
+            {
+                EventManager.Instance.RequestEffectActivation(null);
+                EffectActivationControl.Content = ActivateEffectText;
+            }
+            // If an effect isn't running, or the running effect isn't the one we selected - update the effect to the relevant one
+            else
+            {
+                EventManager.Instance.RequestEffectActivation(newEffectMetadata);
+                EffectActivationControl.Content = DeactivateEffectText;
+            }
         }
     }
 }

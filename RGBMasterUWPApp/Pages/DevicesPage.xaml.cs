@@ -59,7 +59,10 @@ namespace RGBMasterUWPApp.Pages
 
             discoveredDevice.IsChecked = !discoveredDevice.IsChecked;
 
-            EventManager.Instance.UpdateSelectedDevices(AppState.Instance.RegisteredProviders.Select(prov => prov.Devices).SelectMany(devices => devices).ToImmutableList().ToList());
+            if (AppState.Instance.IsEffectRunning)
+            {
+                EventManager.Instance.UpdateSelectedDevices(AppState.Instance.RegisteredProviders.Select(prov => prov.Devices).SelectMany(devices => devices).ToImmutableList().ToList());
+            }
         }
 
         private void ManualConnectionButton_Click(object sender, RoutedEventArgs e)

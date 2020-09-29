@@ -131,7 +131,7 @@
                 </Button>
             </StackPanel>
             <StackPanel>
-                <TextBlock Text="Connected Devices" FontWeight="Bold" />
+                <TextBlock Text="Discovered devices" FontWeight="Bold" />
                 <ListView x:Name="ChosenDevicesListView" Loaded="ListView_Loaded" ItemsSource="{x:Bind RegisteredProviders}" SelectionMode="None" IsItemClickEnabled="False">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="state:RegisteredProvider">
