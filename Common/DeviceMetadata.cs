@@ -46,8 +46,10 @@ namespace Common
                         return @"/Assets/Icons/Motherboard.png";
                     case DeviceType.Chair:
                         return @"/Assets/Icons/Chair.png";
+                    case DeviceType.AllDevices:
+                        return @"/Assets/Icons/AllDevices.png";
                     default:
-                        return @"/Assets/Icons/Lightbulb.png";
+                        throw new NotSupportedException($"An icon is not mapped to device type {DeviceType}.");
                 }
             }
         }

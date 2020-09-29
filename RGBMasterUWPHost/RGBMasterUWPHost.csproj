@@ -128,6 +128,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\128.png" />
+    <Content Include="Assets\Icons\AllDevices.png" />
     <Content Include="Assets\Icons\Chair.png" />
     <Content Include="Assets\Icons\Fan.png" />
     <Content Include="Assets\Icons\GPU.png" />
@@ -139,6 +140,7 @@
     <Content Include="Assets\Icons\Memory.png" />
     <Content Include="Assets\Icons\Motherboard.png" />
     <Content Include="Assets\Icons\Mouse.png" />
+    <Content Include="Assets\Icons\Mousepad.png" />
     <Content Include="Assets\Icons\Speaker.png" />
     <Content Include="Assets\Icons\Unknown.png" />
     <Content Include="Assets\Logos\CorsairiCueLogo.png" />

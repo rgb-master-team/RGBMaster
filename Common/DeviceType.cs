@@ -20,5 +20,6 @@ namespace Common
         GPU,
         Motherboard,
         Chair,
+        AllDevices,
     }
 }
