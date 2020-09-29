@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -93,7 +94,7 @@ namespace RGBMasterUWPApp.Pages
 
             if (!contentByEffectType.TryGetValue(newEffectMetadata.Type, out var effectType))
             {
-                throw new NotImplementedException($"A view for effect {newEffectMetadata.EffectName} is not implemented. Implement it and be sure to include it on contentByEffectType.");
+                throw new NotImplementedException($"A view for effect {newEffectMetadata.EffectName} is not implemented. Implement it and be sure to include it on contentByEffectType and {MethodBase.GetCurrentMethod()}.");
             }
 
             effectControlFrame.Navigate(effectType);
