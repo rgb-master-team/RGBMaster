@@ -6,7 +6,7 @@ using System.Text;
 namespace EffectsExecution.Win32Api
 {
     [StructLayout(LayoutKind.Sequential)]
-    struct DEVMODE
+    internal struct DEVMODE
     {
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 0x20)]
         public string dmDeviceName;

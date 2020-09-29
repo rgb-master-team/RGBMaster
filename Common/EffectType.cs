@@ -9,5 +9,6 @@ namespace Common
         Music,
         StaticColor,
         DominantColor,
+        CursorColor,
     }
 }

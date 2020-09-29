@@ -1,18 +1,20 @@
 ﻿using Common;
 using EffectsExecution.Utils;
 using Provider;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace EffectsExecution
 {
-    public class DominantDisplayColorEffectExecutor : EffectExecutor
+    public class CursorColorEffectExecutor : EffectExecutor
     {
         private CancellationTokenSource backgroundWorkCancellationTokenSource;
 
-        public DominantDisplayColorEffectExecutor() : base(new DominantDisplayColorEffectMetadata())
+        public CursorColorEffectExecutor() : base(new CursorColorEffectMetadata())
         {
         }
 
@@ -21,16 +23,18 @@ namespace EffectsExecution
             var enumeratedDevices = Devices.ToList();
 
             backgroundWorkCancellationTokenSource = new CancellationTokenSource();
-            Task.Run(async () => await DoWork(enumeratedDevices), backgroundWorkCancellationTokenSource.Token);
+            Task.Run(() => DoWork(enumeratedDevices), backgroundWorkCancellationTokenSource.Token);
 
             return Task.CompletedTask;
         }
 
-        private async Task DoWork(List<Device> devices)
+        private async void DoWork(List<Device> devices)
         {
             while (!backgroundWorkCancellationTokenSource.IsCancellationRequested)
             {
-                var c = GfxUtils.GetDominantColorFromThief();
+                var cursorLoc = GfxUtils.GetCursorLocation();
+
+                var c = GfxUtils.GetColorAt(cursorLoc.X, cursorLoc.Y);
 
                 List<Task> setColorTasks = new List<Task>();
 
