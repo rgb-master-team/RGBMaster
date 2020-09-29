@@ -32,7 +32,8 @@ namespace RGBMasterUWPApp.Pages
         {
             { EffectType.Music, typeof(MusicEffectControl) },
             { EffectType.StaticColor, typeof(StaticColorEffectControl) },
-            { EffectType.DominantColor, typeof(DominantDisplayColorEffectControl) }
+            { EffectType.DominantColor, typeof(DominantDisplayColorEffectControl) },
+            { EffectType.CursorColor, typeof(CursorColorEffectControl) }
         };
 
         public ObservableCollection<EffectMetadata> SupportedEffects
@@ -90,7 +91,12 @@ namespace RGBMasterUWPApp.Pages
                 return;
             }
 
-            effectControlFrame.Navigate(contentByEffectType[newEffectMetadata.Type]);
+            if (!contentByEffectType.TryGetValue(newEffectMetadata.Type, out var effectType))
+            {
+                throw new NotImplementedException($"A view for effect {newEffectMetadata.EffectName} is not implemented. Implement it and be sure to include it on contentByEffectType.");
+            }
+
+            effectControlFrame.Navigate(effectType);
         }
     }
 }
