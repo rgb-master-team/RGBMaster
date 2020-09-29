@@ -56,8 +56,14 @@
                 <Pivot.ItemTemplate>
                     <DataTemplate x:DataType="state:RegisteredProvider">
                         <StackPanel HorizontalAlignment="Left" Orientation="Vertical">
-                            <TextBox x:Name="ManualConnectionAddressTxtBx" PlaceholderText="Manually connect via IP address or unique ID" MaxWidth="360"/>
-                            <Button Content="Connect" x:Name="ManualConnectionButton" Click="ManualConnectionButton_Click" Margin="4 0 0 0" />
+                            <StackPanel Orientation="Horizontal" Margin="0 0 0 12">
+                            <TextBox x:Name="ManualConnectionAddressTxtBx" PlaceholderText="Manually connect via IP address or unique ID" Width="360"/>
+                                <Button x:Name="ManualConnectionButton" Click="ManualConnectionButton_Click" Margin="4 0 0 0" ToolTipService.ToolTip="Connect">
+                                    <Button.Content>
+                                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xF0AF;"/>
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <ListView ItemsSource="{x:Bind Devices}" x:Name="listviewname">
                                     <ListView.ItemTemplate>

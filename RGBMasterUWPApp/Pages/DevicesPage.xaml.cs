@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -18,6 +19,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -112,25 +114,53 @@ namespace RGBMasterUWPApp.Pages
 
         private ContentDialog GenerateDeviceInfoContentDialog(DeviceMetadata deviceMetadata, XamlRoot elementRoot)
         {
-            var contentDialogInnerContent = new StackPanel()
-            {
-                Orientation = Orientation.Vertical
-            };
+            var contentDialogInnerContent = new StackPanel() { Orientation = Orientation.Vertical };
 
-            contentDialogInnerContent.Children.Add(new TextBlock() { Text = $"Device name: {deviceMetadata.DeviceName}" });
-            contentDialogInnerContent.Children.Add(new TextBlock() { Text = $"Device ID: {deviceMetadata.DeviceGuid}" });
+            // Device Name
+            var deviceNameStackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
+            deviceNameStackPanel.Children.Add(new TextBlock() { Text = $"Device name: " , FontWeight = FontWeight = Windows.UI.Text.FontWeights.Bold, Margin = new Thickness(0, 0, 4, 0) });
+            deviceNameStackPanel.Children.Add(new TextBlock() { Text = $"{deviceMetadata.DeviceName}" });
+            contentDialogInnerContent.Children.Add(deviceNameStackPanel);
 
+            // Device Type
+            var deviceTypeStackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
+            deviceTypeStackPanel.Children.Add(new TextBlock() { Text = $"Device type: ", FontWeight = FontWeight = Windows.UI.Text.FontWeights.Bold, Margin = new Thickness(0, 0, 4, 0) });
+            deviceTypeStackPanel.Children.Add(new TextBlock() { Text = $"{DeviceTypeToText(deviceMetadata.DeviceType)}" });
+            contentDialogInnerContent.Children.Add(deviceTypeStackPanel);
+
+            // Device GUID
+            var deviceGUIDStackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
+            deviceGUIDStackPanel.Children.Add(new TextBlock() { Text = $"Device ID: ", FontWeight = FontWeight = Windows.UI.Text.FontWeights.Bold, Margin = new Thickness(0, 0, 4, 0) });
+            deviceGUIDStackPanel.Children.Add(new TextBlock() { Text = $"{deviceMetadata.DeviceGuid}" });
+            contentDialogInnerContent.Children.Add(deviceGUIDStackPanel);
+
+            // Device Operations
+            var deviceOperationStackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
             var supportedOperationsList = new StackPanel() { Orientation = Orientation.Vertical };
             foreach (var supportedOp in deviceMetadata.SupportedOperations)
             {
                 supportedOperationsList.Children.Add(new TextBlock() { Text = OperationTypeToText(supportedOp) });
             }
 
-            contentDialogInnerContent.Children.Add(supportedOperationsList);
+            deviceOperationStackPanel.Children.Add(new TextBlock() { Text = $"Supported operations: ", FontWeight = Windows.UI.Text.FontWeights.Bold, Margin = new Thickness(0, 0, 4, 0) });
+            deviceOperationStackPanel.Children.Add(supportedOperationsList);
+            contentDialogInnerContent.Children.Add(deviceOperationStackPanel);
 
+            Image deviceIcon = new Image
+            {
+                Source = new BitmapImage { UriSource = new Uri(this.BaseUri, deviceMetadata.DeviceIconAssetPath) },
+                Height = 24,
+                Width = 24
+            };
+
+            StackPanel contentDialogTitleStackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
+            Image contentDialogDeviceIconImage = deviceIcon;
+            TextBlock contentDialogDeviceName = new TextBlock() { Text = deviceMetadata.DeviceName, Margin = new Thickness(4, 0, 0, 0) };
+            contentDialogTitleStackPanel.Children.Add(contentDialogDeviceIconImage);
+            contentDialogTitleStackPanel.Children.Add(contentDialogDeviceName);
             return new ContentDialog()
             {
-                Title = deviceMetadata.DeviceName,
+                Title = contentDialogTitleStackPanel,
                 CloseButtonText = "Close",
                 Content = contentDialogInnerContent,
                 XamlRoot = elementRoot // lmao
@@ -139,7 +169,7 @@ namespace RGBMasterUWPApp.Pages
 
         private string OperationTypeToText(OperationType opType)
         {
-            string operation = null;
+            string operation;
 
             switch (opType)
             {
@@ -162,11 +192,68 @@ namespace RGBMasterUWPApp.Pages
                     operation = "Turn off";
                     break;
                 default:
-                    operation = "Unknown operation";
-                    break;
+                    throw new NotSupportedException($"The operation type {opType} is not supported.");
             }
 
             return operation;
+        }
+
+        private string DeviceTypeToText(DeviceType deviceType)
+        {
+            string deviceTypeText;
+
+            switch (deviceType)
+            {
+                case DeviceType.Unknown:
+                    deviceTypeText = "Unknown";
+                    break;
+                case DeviceType.Lightbulb:
+                    deviceTypeText = "Lightbulb";
+                    break;
+                case DeviceType.LedStrip:
+                    deviceTypeText = "Led Strip";
+                    break;
+                case DeviceType.Keyboard:
+                    deviceTypeText = "Keyboard";
+                    break;
+                case DeviceType.Mouse:
+                    deviceTypeText = "Mouse";
+                    break;
+                case DeviceType.Fan:
+                    deviceTypeText = "Fan";
+                    break;
+                case DeviceType.Mousepad:
+                    deviceTypeText = "Mousepad";
+                    break;
+                case DeviceType.Speaker:
+                    deviceTypeText = "Speaker";
+                    break;
+                case DeviceType.Headset:
+                    deviceTypeText = "Headset";
+                    break;
+                case DeviceType.Keypad:
+                    deviceTypeText = "Keypad";
+                    break;
+                case DeviceType.Memory:
+                    deviceTypeText = "Memory";
+                    break;
+                case DeviceType.GPU:
+                    deviceTypeText = "Graphics Card";
+                    break;
+                case DeviceType.Motherboard:
+                    deviceTypeText = "Motherboard";
+                    break;
+                case DeviceType.Chair:
+                    deviceTypeText = "Chair";
+                    break;
+                case DeviceType.AllDevices:
+                    deviceTypeText = "All Devices";
+                    break; 
+                default:
+                    throw new NotSupportedException($"There is no matching text for device type {deviceType}. Make sure to include the translation in {MethodBase.GetCurrentMethod()}.");
+            }
+
+            return deviceTypeText;
         }
 
         //private void Change_Device_Name_Button_Click(object sender, RoutedEventArgs e)

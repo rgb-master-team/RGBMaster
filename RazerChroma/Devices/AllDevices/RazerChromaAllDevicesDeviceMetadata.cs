@@ -13,7 +13,7 @@ namespace RazerChroma.Devices.AllDevices
 
         public override HashSet<OperationType> SupportedOperations => chromaSupportedOps;
 
-        public RazerChromaAllDevicesDeviceMetadata() : base(DeviceType.Unknown)
+        public RazerChromaAllDevicesDeviceMetadata() : base(DeviceType.AllDevices)
         {
         }
     }
