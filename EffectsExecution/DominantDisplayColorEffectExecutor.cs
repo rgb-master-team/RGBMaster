@@ -62,7 +62,7 @@ namespace EffectsExecution
 
                 foreach (var device in devices)
                 {
-                    setColorTasks.Add(Task.Run(() => device.SetColor(c), backgroundWorkCancellationTokenSource.Token));
+                    setColorTasks.Add(Task.Run(() => device.SetColor(c)));
                 }
 
                 await Task.WhenAll(setColorTasks);
@@ -109,8 +109,8 @@ namespace EffectsExecution
             var width = 1280;
 
             var captureBmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-            using var captureGraphic = Graphics.FromImage(captureBmp);
-            captureGraphic.CopyFromScreen(0, 0, 0, 0, captureBmp.Size, CopyPixelOperation.SourceCopy);
+            /*using var captureGraphic = Graphics.FromImage(captureBmp);
+            //captureGraphic.CopyFromScreen(0, 0, 0, 0, captureBmp.Size, CopyPixelOperation.SourceCopy);*/
 
             using (Graphics gdest = Graphics.FromImage(captureBmp))
             {
