@@ -76,6 +76,9 @@ namespace EffectsExecution.Utils
                 }
             }
 
+            // TODO - Support letting the user change the desired resolution to which the screen
+            // output is downsampled to.
+            // Also - ensure we support all aspect ratios.
             var downSampledBitmap = new Bitmap(captureBmp, new Size(800, 600));
 
             var thiefColor = colorThief.GetColor(downSampledBitmap, 100, false);
