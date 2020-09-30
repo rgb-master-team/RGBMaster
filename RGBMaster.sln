@@ -35,6 +35,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Provider", "Provider\Provid
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EffectsExecution", "EffectsExecution\EffectsExecution.csproj", "{C3B03684-206C-4ABA-98BA-41A070DB2AA6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameSense", "GameSense\GameSense.csproj", "{6989BEC5-4861-4E08-B847-76ABFA2D0CBE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -385,6 +387,26 @@ Global
 		{C3B03684-206C-4ABA-98BA-41A070DB2AA6}.Release|x64.Build.0 = Release|Any CPU
 		{C3B03684-206C-4ABA-98BA-41A070DB2AA6}.Release|x86.ActiveCfg = Release|Any CPU
 		{C3B03684-206C-4ABA-98BA-41A070DB2AA6}.Release|x86.Build.0 = Release|Any CPU
+		{6989BEC5-4861-4E08-B847-76ABFA2D0CBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6989BEC5-4861-4E08-B847-76ABFA2D0CBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6989BEC5-4861-4E08-B847-76ABFA2D0CBE}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{6989BEC5-4861-4E08-B847-76ABFA2D0CBE}.Debug|ARM.Build.0 = Debug|Any CPU
+		{6989BEC5-4861-4E08-B847-76ABFA2D0CBE}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{6989BEC5-4861-4E08-B847-76ABFA2D0CBE}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{6989BEC5-4861-4E08-B847-76ABFA2D0CBE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6989BEC5-4861-4E08-B847-76ABFA2D0CBE}.Debug|x64.Build.0 = Debug|Any CPU
+		{6989BEC5-4861-4E08-B847-76ABFA2D0CBE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6989BEC5-4861-4E08-B847-76ABFA2D0CBE}.Debug|x86.Build.0 = Debug|Any CPU
+		{6989BEC5-4861-4E08-B847-76ABFA2D0CBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6989BEC5-4861-4E08-B847-76ABFA2D0CBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6989BEC5-4861-4E08-B847-76ABFA2D0CBE}.Release|ARM.ActiveCfg = Release|Any CPU
+		{6989BEC5-4861-4E08-B847-76ABFA2D0CBE}.Release|ARM.Build.0 = Release|Any CPU
+		{6989BEC5-4861-4E08-B847-76ABFA2D0CBE}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{6989BEC5-4861-4E08-B847-76ABFA2D0CBE}.Release|ARM64.Build.0 = Release|Any CPU
+		{6989BEC5-4861-4E08-B847-76ABFA2D0CBE}.Release|x64.ActiveCfg = Release|Any CPU
+		{6989BEC5-4861-4E08-B847-76ABFA2D0CBE}.Release|x64.Build.0 = Release|Any CPU
+		{6989BEC5-4861-4E08-B847-76ABFA2D0CBE}.Release|x86.ActiveCfg = Release|Any CPU
+		{6989BEC5-4861-4E08-B847-76ABFA2D0CBE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
