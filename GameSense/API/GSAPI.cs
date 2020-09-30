@@ -6,14 +6,14 @@ using System.IO;
 using System.Text;
 using static System.Environment;
 
-namespace GameSense
+namespace GameSense.API
 {
-    public class GameSenseAPI
+    public class GSAPI
     {
         private bool isInitialized = false;
         private RestClient gameSenseRestClient;
 
-        public GameSenseAPI()
+        public GSAPI()
         {
             
 
@@ -26,14 +26,14 @@ namespace GameSense
             if (!isInitialized && OSVersion.Platform == PlatformID.Win32NT)
             {
                 var corePropsPath = Path.Combine(GetFolderPath(SpecialFolder.CommonApplicationData), @"SteelSeries/SteelSeries Engine 3/coreProps.json");
-                var gameSenseCoreProps = JsonConvert.DeserializeObject<GameSenseCoreProps>(File.ReadAllText(corePropsPath));
+                var gameSenseCoreProps = JsonConvert.DeserializeObject<GSApiCoreProps>(File.ReadAllText(corePropsPath));
                 gameSenseRestClient = new RestClient(gameSenseCoreProps.Address);
                 
                 isInitialized = true;
             }
         }
 
-        public void RegisterGameMetadata(GameSenseGameMetadata gameSenseGameMetadata)
+        public void RegisterGameMetadata(GSApiGameMetadata gameSenseGameMetadata)
         {
             var restRequest = new RestRequest("game_metadata");
             restRequest.AddHeader("Content-Type", "application/json");

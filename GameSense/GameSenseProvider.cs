@@ -9,11 +9,11 @@ namespace GameSense
 {
     public class GameSenseProvider : BaseProvider
     {
-        private readonly GameSenseAPI gameSenseAPI;
+        private readonly GSAPI gameSenseAPI;
 
         public GameSenseProvider() : base(new GameSenseProviderMetadata())
         {
-            gameSenseAPI = new GameSenseAPI();
+            gameSenseAPI = new GSAPI();
         }
 
         public override Task<List<Device>> Discover()
@@ -30,7 +30,7 @@ namespace GameSense
         protected override Task Register()
         {
             gameSenseAPI.Initialize();
-            gameSenseAPI.RegisterGameMetadata(new GameSenseGameMetadata()
+            gameSenseAPI.RegisterGameMetadata(new GSApiGameMetadata()
             {
                 Game = "RGBMaster",
                 Developer = "RGBMaster team",

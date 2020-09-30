@@ -1,11 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using GameSense.API.Handlers;
+using GameSense.API.Handlers.Rate;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GameSense
+namespace GameSense.API.Handlers.ColorDefinitions
 {
-    public class GameSenseColorHandler : GameSenseHandler
+    public class GSApiColorHandler : GSApiHandler
     {
         [JsonProperty("device-type")]
         public string DeviceType { get; set; }
@@ -20,9 +22,12 @@ namespace GameSense
         public string Mode { get; set; }
 
         [JsonProperty("color")]
-        public GameSenseColorHandlerColorDefinition Color { get; set; }
+        public GSApiColorHandlerColorDefinition Color { get; set; }
 
         [JsonProperty("rate")]
-        public string Rate { get; set; }
+        public GSApiRateDefinition Rate { get; set; }
+
+        [JsonProperty("context-frame-key")]
+        public string ContextFrameKey { get; set; }
     }
 }

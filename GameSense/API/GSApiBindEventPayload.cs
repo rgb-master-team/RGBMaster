@@ -1,11 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using GameSense.API.Handlers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GameSense
+namespace GameSense.API
 {
-    public class GameSenseBindEventPayload
+    public class GSApiBindEventPayload
     {
         [JsonProperty("game")]
         public string Game { get; set; }
@@ -23,6 +24,6 @@ namespace GameSense
         public int? IconID { get; set; }
 
         [JsonProperty("handlers")]
-        public List<GameSenseHandler> Handlers { get; set; }
+        public List<GSApiHandler> Handlers { get; set; }
     }
 }

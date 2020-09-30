@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GameSense
+namespace GameSense.API
 {
-    public class GameSenseGameMetadata
+    public class GSApiGameMetadata
     {
         [JsonProperty("game")]
         public string Game { get; set; }
