@@ -76,7 +76,9 @@ namespace EffectsExecution.Utils
                 }
             }
 
-            var thiefColor = colorThief.GetColor(captureBmp, 100, false);
+            var downSampledBitmap = new Bitmap(captureBmp, new Size(800, 600));
+
+            var thiefColor = colorThief.GetColor(downSampledBitmap, 100, false);
 
             return Color.FromArgb(thiefColor.Color.R, thiefColor.Color.G, thiefColor.Color.B);
         }
