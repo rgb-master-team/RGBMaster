@@ -54,6 +54,7 @@ namespace Common
             }
         }
 
+        // TODO - Enforce constructor to receive all parameters instead of overriding them
         public DeviceMetadata(DeviceType deviceType = DeviceType.Unknown)
         {
             DeviceGuid = Guid.NewGuid();
