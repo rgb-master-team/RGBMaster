@@ -11,16 +11,15 @@ namespace Provider
     {
         public readonly ProviderMetadata ProviderMetadata;
         public bool IsRegistered { get; private set; }
-        public abstract Task Unregister();
         public abstract Task<List<Device>> Discover();
 
-        public async Task<bool> InitializeProvider()
+        public async Task<bool> Register()
         {
             try
             {
                 if (!IsRegistered)
                 {
-                    await Register();
+                    await InternalRegister();
 
                     IsRegistered = true;
                 }
@@ -33,11 +32,31 @@ namespace Provider
             }
         }
 
+        public async Task<bool> Unregister()
+        {
+            try
+            {
+                if (IsRegistered)
+                {
+                    await InternalUnregister();
+
+                    IsRegistered = false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public BaseProvider(ProviderMetadata providerMetadata)
         {
             this.ProviderMetadata = providerMetadata;
         }
 
-        protected abstract Task Register();
+        protected abstract Task InternalRegister();
+        protected abstract Task InternalUnregister();
     }
 }

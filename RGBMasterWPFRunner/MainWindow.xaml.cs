@@ -3,6 +3,7 @@ using AppExecutionManager.State;
 using Colore.Logging;
 using Common;
 using EffectsExecution;
+using GameSense;
 using Logitech;
 using MagicHome;
 using Provider;
@@ -67,7 +68,7 @@ namespace RGBMasterWPFRunner
 
             globalLog.Information("Initializing RGBMaster.....");
 
-            CreateAndSetSupportedProviders(new List<BaseProvider>() { new YeelightProvider(), new MagicHomeProvider(), new RazerChromaProvider(), new LogitechProvider() });
+            CreateAndSetSupportedProviders(new List<BaseProvider>() { new YeelightProvider(), new MagicHomeProvider(), new RazerChromaProvider(), new LogitechProvider(), new GameSenseProvider() });
 
             CreateAndSetSupportedEffectsExecutors(new List<EffectExecutor>() { new MusicEffectExecutor(), new DominantDisplayColorEffectExecutor(), new CursorColorEffectExecutor(), new StaticColorEffectExecutor() });
             SetUIStateEffects();
@@ -149,6 +150,12 @@ namespace RGBMasterWPFRunner
             await initializeProvidersSemaphore.WaitAsync();
             Log.Logger.Information("Initializing providers.....");
             concreteDevices.Clear();
+
+            foreach (var provider in AppState.Instance.RegisteredProviders)
+            {
+                await supportedProviders[provider.Provider.ProviderGuid].Unregister();
+            }
+
             AppState.Instance.RegisteredProviders.Clear();
             //AppState.Instance.SelectedDevices.Clear();
 
@@ -158,7 +165,7 @@ namespace RGBMasterWPFRunner
 
             foreach (var provider in supportedProviders.Values)
             {
-                var didInitialize = await provider.InitializeProvider();
+                var didInitialize = await provider.Register();
 
                 if (!didInitialize)
                 {
@@ -230,11 +237,6 @@ namespace RGBMasterWPFRunner
 
             await changeConnectedDevicesSemaphore.WaitAsync();
 
-            if (!AppState.Instance.IsEffectRunning)
-            {
-                return;
-            }
-
             foreach (var item in newSelectedDevices)
             {
                 var concreteDevice = concreteDevices[item.Device.DeviceGuid];
@@ -255,9 +257,13 @@ namespace RGBMasterWPFRunner
                     Log.Logger.Warning("Turning on device with GUID {A}.", concreteDevice.DeviceMetadata.DeviceGuid);
                     concreteDevice.TurnOn();
                 }
+
             }
 
-            supportedEffectsExecutors[AppState.Instance.ActiveEffect.EffectMetadataGuid].ChangeConnectedDevices(newSelectedDevices.Where(device => device.IsChecked).Select(dev => this.concreteDevices[dev.Device.DeviceGuid]));
+            if (AppState.Instance.IsEffectRunning)
+            {
+                supportedEffectsExecutors[AppState.Instance.ActiveEffect.EffectMetadataGuid].ChangeConnectedDevices(newSelectedDevices.Where(device => device.IsChecked).Select(dev => this.concreteDevices[dev.Device.DeviceGuid]));
+            }
 
             changeConnectedDevicesSemaphore.Release();
         }

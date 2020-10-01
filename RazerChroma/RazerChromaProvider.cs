@@ -25,13 +25,13 @@ namespace RazerChroma
             return Task.FromResult(new List<Device> { new RazerChromaAllDevicesDevice(internalChromaProvider), new RazerChromaKeyboardDevice(internalChromaProvider), new RazerChromaMousepadDevice(internalChromaProvider) });
         }
 
-        protected async override Task Register()
+        protected async override Task InternalRegister()
         {
             internalChromaProvider = await ColoreProvider.CreateNativeAsync();
             await internalChromaProvider.InitializeAsync(new Colore.Data.AppInfo("RGBMaster", "Syncs your brothers and sisters into the light", "RGBMasters", "RGBMaster@github", Colore.Data.Category.Application));
         }
 
-        public async override Task Unregister()
+        protected async override Task InternalUnregister()
         {
             internalChromaProvider.Unregister();
             await internalChromaProvider.UninitializeAsync();

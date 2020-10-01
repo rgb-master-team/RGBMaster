@@ -6,6 +6,7 @@ using Provider;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Dynamic;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,11 +23,35 @@ namespace GameSense.Devices.Headset
 
         protected override Task ConnectInternal()
         {
+            gsAPI.BindGameEvent(new GSApiBindEventPayload()
+            {
+                Game = GameSenseConstants.RGB_MASTER_GAME_NAME,
+                Event = GameSenseConstants.RGB_MASTER_SET_COLOR_EVENT_NAME,
+                Handlers = new List<API.Handlers.GSApiHandler>()
+                {
+                    new GSApiColorHandler()
+                    {
+                        DeviceType = GameSenseConstants.HEADSET_DEVICE_TYPE,
+                        Mode = GameSenseConstants.DYNAMIC_COLOR_MODE,
+                        Zone = GameSenseConstants.HEADSET_ZONE_EARCUP,
+                        ContextFrameKey = GameSenseConstants.DYNAMIC_COLOR_CONTEXT_FRAME_KEY,
+                        Rate = new API.Handlers.Rate.GSApiRateDefinition()
+                    }
+                },
+                IconID = GameSenseConstants.RGB_MASTER_ICON_ID
+            });
+
             return Task.CompletedTask;
         }
 
         protected override Task DisconnectInternal()
         {
+            gsAPI.RemoveGameEvent(new GSApiRemoveGameEventPayload()
+            {
+                Game = GameSenseConstants.RGB_MASTER_GAME_NAME,
+                Event = GameSenseConstants.RGB_MASTER_SET_COLOR_EVENT_NAME
+            });
+
             return Task.CompletedTask;
         }
 
@@ -47,24 +72,28 @@ namespace GameSense.Devices.Headset
 
         protected override void SetColorInternal(Color color)
         {
-            gsAPI.BindGameEvent(new GSApiBindEventPayload()
+            // GameSenseConstants.DYNAMIC_COLOR_CONTEXT_FRAME_KEY
+
+            var frameObject = new Dictionary<string, object>
             {
-                Game = "RGBMaster",
-                Event = "SET_COLOR",
-                Handlers = new List<API.Handlers.GSApiHandler>()
                 {
-                    new GSApiColorHandler()
+                    GameSenseConstants.DYNAMIC_COLOR_CONTEXT_FRAME_KEY,
+                    new GSApiColorHandlerStaticColorDefinition()
                     {
-                        Color = new GSApiColorHandlerStaticColorDefinition()
-                        {
-                            Red = color.R,
-                            Green = color.G,
-                            Blue = color.B
-                        },
-                        DeviceType = "headset",
-                        Mode = "color",
-                        Zone = "earcups"
+                        Red = color.R,
+                        Green = color.G,
+                        Blue = color.B
                     }
+                }
+            };
+
+            gsAPI.SendGameEvent(new GSApiSendGameEventPayload()
+            {
+                Game = GameSenseConstants.RGB_MASTER_GAME_NAME,
+                Event = GameSenseConstants.RGB_MASTER_SET_COLOR_EVENT_NAME,
+                Data = new GSApiSendGameEventDataPayload()
+                {
+                    Frame = frameObject
                 }
             });
         }

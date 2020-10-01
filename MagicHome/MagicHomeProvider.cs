@@ -35,12 +35,12 @@ namespace MagicHome
             return Task.FromResult(internalDevices.Select(internalDevice => new MagicHomeDevice(internalDevice)).ToList<Device>());
         }
 
-        protected override Task Register()
+        protected override Task InternalRegister()
         {
             return Task.CompletedTask;
         }
 
-        public override Task Unregister()
+        protected override Task InternalUnregister()
         {
             return Task.CompletedTask;
         }

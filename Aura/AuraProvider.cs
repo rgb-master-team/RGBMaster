@@ -21,13 +21,13 @@ namespace Aura
             return Task.FromResult(internalSdk.Motherboards.Select(mb => new AuraDevice(mb)).ToList<Device>());
         }
 
-        protected override Task Register()
+        protected override Task InternalRegister()
         {
             internalSdk = new AuraSDK();
             return Task.CompletedTask;
         }
 
-        public override Task Unregister()
+        public override Task InternalUnregister()
         {
             internalSdk.Unload();
             return Task.CompletedTask;

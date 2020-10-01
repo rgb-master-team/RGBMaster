@@ -12,14 +12,14 @@ namespace CorsairProvider
         {
         }
 
-        protected override Task Register()
+        protected override Task InternalRegister()
 		{
 			Corsair.CUESDK.CUESDK.PerformProtocolHandshake();
 
 			return Task.CompletedTask;
 		}
 
-		public override Task Unregister()
+		public override Task InternalUnregister()
 		{
 			return Task.CompletedTask;
 		}

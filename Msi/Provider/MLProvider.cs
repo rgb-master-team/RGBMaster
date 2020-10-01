@@ -13,14 +13,14 @@ namespace Msi.Provider
 
         }
 
-		protected override Task Register()
+		protected override Task InternalRegister()
 		{
 			MysticLightSdk.Initialize();
 
 			return Task.CompletedTask;
 		}
 
-		public override Task Unregister()
+		public override Task InternalUnregister()
 		{
 			return Task.CompletedTask;
 		}
