@@ -47,8 +47,18 @@ namespace GameSense.API
             }
         }
 
-        public void BindGameEvent()
+        public void BindGameEvent(GSApiBindEventPayload GSApiBindEventPayload)
         {
+            var restRequest = new RestRequest("bind_game_event");
+            restRequest.AddHeader("Content-Type", "application/json");
+            restRequest.AddJsonBody(GSApiBindEventPayload);
+
+            var restResponse = gameSenseRestClient.Post(restRequest);
+            if (!restResponse.IsSuccessful)
+            
+            {
+                throw new Exception("Failed to bind event payload in SteelSeries GameSense REST API", restResponse.ErrorException);
+            }
 
         }
     }
