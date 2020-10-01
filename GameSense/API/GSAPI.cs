@@ -64,7 +64,23 @@ namespace GameSense.API
             {
                 throw new Exception("Failed to bind event payload in SteelSeries GameSense REST API", new Exception(restResponse.Content));
             }
+        }
 
+        public void RegisterGameEvent(GSApiRegisterGameEventPayload gSApiRegisterGameEventPayload)
+        {
+            var restRequest = new RestRequest("register_game_event");
+            restRequest.AddHeader("Content-Type", "application/json");
+
+            var bodyJson = JsonConvert.SerializeObject(gSApiRegisterGameEventPayload, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore });
+
+            restRequest.AddParameter(null, bodyJson, ParameterType.RequestBody);
+
+            var restResponse = gameSenseRestClient.Post(restRequest);
+
+            if (!restResponse.IsSuccessful)
+            {
+                throw new Exception("Failed to register game event in SteelSeries GameSense REST API", new Exception(restResponse.Content));
+            }
         }
 
         public void SendGameEvent(GSApiSendGameEventPayload gsApiSendGameEventPayload)
