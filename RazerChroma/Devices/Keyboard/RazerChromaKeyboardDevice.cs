@@ -14,7 +14,7 @@ namespace RazerChroma.Devices.Keyboard
     {
         private readonly IChroma internalChromaDriver;
 
-        public RazerChromaKeyboardDevice(IChroma chroma) : base(new RazerChromaKeyboardDeviceMetadata())
+        public RazerChromaKeyboardDevice(IChroma chroma, RazerChromaKeyboardDeviceMetadata razerChromaKeyboardDeviceMetadata) : base(razerChromaKeyboardDeviceMetadata)
         {
             internalChromaDriver = chroma;
         }

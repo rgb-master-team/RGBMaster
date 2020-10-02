@@ -4,12 +4,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RgbMasterDeviceType = Common.DeviceType;
 
 namespace Logitech
 {
     public class LogitechProvider : BaseProvider
     {
         private static int VENDOR_ID = 0x046D;
+
+        private static RgbMasterDeviceType GetDeviceTypeForLogitech(Logitech.DeviceType logitechDevicesType)
+        {
+            switch (logitechDevicesType)
+            {
+                case DeviceType.Keyboard:
+                    return RgbMasterDeviceType.Keyboard;
+                case DeviceType.Mouse:
+                    return RgbMasterDeviceType.Mouse;
+                case DeviceType.Mousemat:
+                    return RgbMasterDeviceType.Mousepad;
+                case DeviceType.Headset:
+                    return RgbMasterDeviceType.Headset;
+                case DeviceType.Speaker:
+                    return RgbMasterDeviceType.Speaker;
+                default:
+                    return RgbMasterDeviceType.Unknown;
+            }
+        }
+
         public LogitechProvider(): base(new LogitechProviderMetadata())
         {
 
@@ -17,9 +38,7 @@ namespace Logitech
 
         public override Task<List<Device>> Discover()
         {
-            return Task.FromResult(new List<Device>() { new LogitechDevice() });
-            
-
+            return Task.FromResult(new List<Device>() { new LogitechMouseDevice(new LogitechMouseDeviceMetadata("All Logitech G Hub devices")) });
             /*
             // Set all devices to Black
             LogitechGSDK.LogiLedSetLighting(0, 0, 0);

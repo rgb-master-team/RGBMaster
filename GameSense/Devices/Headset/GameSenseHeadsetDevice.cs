@@ -16,7 +16,7 @@ namespace GameSense.Devices.Headset
     {
         private readonly GSAPI gsAPI;
 
-        public GameSenseHeadsetDevice(GSAPI gsAPI) : base(new GameSenseHeadsetDeviceMetadata())
+        public GameSenseHeadsetDevice(GSAPI gsAPI, GameSenseHeadsetDeviceMetadata gameSenseHeadsetDeviceMetadata) : base(gameSenseHeadsetDeviceMetadata)
         {
             this.gsAPI = gsAPI;
         }

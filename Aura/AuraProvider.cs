@@ -1,4 +1,5 @@
 ﻿using AuraSDKDotNet;
+using Common;
 using Provider;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace Aura
 
         public override Task<List<Device>> Discover()
         {
-            return Task.FromResult(internalSdk.Motherboards.Select(mb => new AuraDevice(mb)).ToList<Device>());
+            return Task.FromResult(internalSdk.Motherboards.Select(mb => new AuraMotherboardDevice(mb, new AuraMotherboardDeviceMetadata("Unknown Aura Motherboard", new HashSet<OperationType>() { OperationType.SetColor }))).ToList<Device>());
         }
 
         protected override Task InternalRegister()

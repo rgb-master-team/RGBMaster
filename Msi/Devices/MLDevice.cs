@@ -11,7 +11,7 @@ namespace Msi.Devices
 	{
 		public MLLed[] Leds { get; set; }
 
-		public MLDevice(string deviceType, int ledsCount) : base(new MLDeviceMetadata(deviceType))
+		public MLDevice(int ledsCount, MLDeviceMetadata mLDeviceMetadata) : base(mLDeviceMetadata)
 		{
 			Leds = new MLLed[ledsCount];
 		}

@@ -7,11 +7,8 @@ namespace GameSense.Devices.Headset
 {
     public class GameSenseHeadsetDeviceMetadata : DeviceMetadata
     {
-        public GameSenseHeadsetDeviceMetadata() : base(DeviceType.Headset)
+        public GameSenseHeadsetDeviceMetadata(string deviceName) : base(DeviceType.Headset, deviceName, new HashSet<OperationType>() { OperationType.SetColor })
         {
         }
-
-        public override string DeviceName => "SteelSeries Headset";
-        public override HashSet<OperationType> SupportedOperations => new HashSet<OperationType>() { OperationType.SetColor };
     }
 }

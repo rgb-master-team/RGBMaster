@@ -12,9 +12,8 @@ namespace MagicHome
     {
         private Light InternalLight;
 
-        public MagicHomeDevice(Light InternalLight) : base(new MagicHomeDeviceMetadata(DeviceType.LedStrip))
+        public MagicHomeDevice(Light InternalLight, MagicHomeDeviceMetadata magicHomeDeviceMetadata) : base(magicHomeDeviceMetadata)
         {
-
             this.InternalLight = InternalLight;
             this.InternalLight.Logger.Enabled = false;
         }

@@ -28,7 +28,7 @@ namespace Yeelight
         private readonly YeelightAPI.Device InternalDevice;
         private Socket musicModeSocket;
 
-        public YeelightDevice(YeelightAPI.Device internalDevice): base(new YeelightDeviceMetadata(!String.IsNullOrWhiteSpace(internalDevice.Name) ? internalDevice.Name: internalDevice.Hostname, GetDeviceTypeForYeelight(internalDevice)))
+        public YeelightDevice(YeelightAPI.Device internalDevice): base(new YeelightDeviceMetadata(GetDeviceTypeForYeelight(internalDevice), !String.IsNullOrWhiteSpace(internalDevice.Name) ? internalDevice.Name: internalDevice.Hostname, new HashSet<OperationType>() { OperationType.SetColor, OperationType.GetColor, OperationType.SetBrightness, OperationType.GetBrightness, OperationType.TurnOff, OperationType.TurnOn}))
         {
             InternalDevice = internalDevice;
         }

@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Common;
 using Msi.Devices;
 using Msi.Enums;
 using Msi.Exceptions;
@@ -20,7 +21,7 @@ namespace Msi.SDKs
 		{
 			GetDeviceInfo(out var devicesTypes, out var ledsCount);
 
-			var allDevices = devicesTypes.Select((deviceType, index) => new MLDevice(deviceType, ledsCount[index])).ToList();
+			var allDevices = devicesTypes.Select((deviceType, index) => new MLDevice(ledsCount[index], new Provider.MLDeviceMetadata(DeviceType.Unknown, deviceType))).ToList();
 
 			allDevices.ForEach(x => x.Load());
 

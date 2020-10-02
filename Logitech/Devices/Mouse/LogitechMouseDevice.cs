@@ -5,32 +5,12 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RgbMasterDeviceType = Common.DeviceType;
 
 namespace Logitech
 {
-    public class LogitechDevice : Device
+    public class LogitechMouseDevice : Device
     {
-
-        private static RgbMasterDeviceType GetDeviceTypeForLogitech(Logitech.DeviceType logitechDevicesType)
-        {
-            switch (logitechDevicesType)
-            {
-                case DeviceType.Keyboard:
-                    return RgbMasterDeviceType.Keyboard;
-                case DeviceType.Mouse:
-                    return RgbMasterDeviceType.Mouse;
-                case DeviceType.Mousemat:
-                    return RgbMasterDeviceType.Mousepad;
-                case DeviceType.Headset:
-                    return RgbMasterDeviceType.Headset;
-                case DeviceType.Speaker:
-                    return RgbMasterDeviceType.Speaker;
-                default:
-                    return RgbMasterDeviceType.Unknown;
-            }
-        }
-        public LogitechDevice() : base(new LogitechDeviceMetadata())
+        public LogitechMouseDevice(LogitechMouseDeviceMetadata logitechDeviceMetadata) : base(logitechDeviceMetadata)
         {
 
         }

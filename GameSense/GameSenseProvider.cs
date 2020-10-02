@@ -20,7 +20,7 @@ namespace GameSense
 
         public override Task<List<Device>> Discover()
         {
-            return Task.FromResult(new List<Device>() { new GameSenseHeadsetDevice(gameSenseAPI) });
+            return Task.FromResult(new List<Device>() { new GameSenseHeadsetDevice(gameSenseAPI, new GameSenseHeadsetDeviceMetadata("GameSense Headset Device"))});
         }
 
         protected override Task InternalUnregister()

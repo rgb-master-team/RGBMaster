@@ -18,35 +18,6 @@ namespace Corsair.Device
     /// </summary>
     public class CorsairDevice : RGBDevice
 	{
-		public static DeviceType GetDeviceTypeForCorsair(Corsair.Device.CorsairDeviceType internalDevice)
-        {
-            switch (internalDevice)
-            {
-                case CorsairDeviceType.Unknown:
-					return DeviceType.Unknown;
-                case CorsairDeviceType.Mouse:
-					return DeviceType.Mouse;
-                case CorsairDeviceType.Keyboard:
-					return DeviceType.Keyboard;
-				case CorsairDeviceType.Headset:
-					return DeviceType.Headset;
-				case CorsairDeviceType.MouseMat:
-					return DeviceType.Mousepad;
-				case CorsairDeviceType.HeadsetStand:
-                    return DeviceType.Unknown;
-                case CorsairDeviceType.CommanderPro:
-                    return DeviceType.Fan;
-                case CorsairDeviceType.LightingNodePro:
-                    return DeviceType.LedStrip;
-                case CorsairDeviceType.MemoryModule:
-                    return DeviceType.Memory;
-                case CorsairDeviceType.Cooler:
-					return DeviceType.Fan;
-                default:
-					return DeviceType.Unknown;
-            }
-        }
-
 		#region Corsair Native
 
 		internal CorsairDeviceNative Native;
@@ -96,7 +67,7 @@ namespace Corsair.Device
 		/// Creates a instance of CorsairDevice
 		/// </summary>
 		/// <param name="deviceNative">The native device info</param>
-		public CorsairDevice(CorsairDeviceNative deviceNative, int id): base(new CorsairDeviceMetadata(deviceNative.model != null ? Marshal.PtrToStringAuto(deviceNative.model) : "Unknown"))
+		public CorsairDevice(CorsairDeviceNative deviceNative, int id, CorsairDeviceMetadata corsairDeviceMetadata) : base(corsairDeviceMetadata)
 		{
 			Native = deviceNative;
 			Id = id;

@@ -8,10 +8,10 @@ namespace Common
 {
     public class DeviceMetadata
     {
-        public Guid DeviceGuid { get; }
-        public virtual string DeviceName { get; }
-        public virtual HashSet<OperationType> SupportedOperations { get; }
-        public DeviceType DeviceType { get; private set; }
+        public Guid RgbMasterDeviceGuid { get; }
+        public string DeviceName { get; }
+        public HashSet<OperationType> SupportedOperations { get; }
+        public DeviceType DeviceType { get; }
         public virtual string DeviceIconAssetPath
         {
             get
@@ -55,10 +55,12 @@ namespace Common
         }
 
         // TODO - Enforce constructor to receive all parameters instead of overriding them
-        public DeviceMetadata(DeviceType deviceType = DeviceType.Unknown)
+        public DeviceMetadata(DeviceType deviceType, string deviceName, HashSet<OperationType> supportedOperations)
         {
-            DeviceGuid = Guid.NewGuid();
+            RgbMasterDeviceGuid = Guid.NewGuid();
             DeviceType = deviceType;
+            DeviceName = deviceName;
+            SupportedOperations = supportedOperations;
         }
     }
 }

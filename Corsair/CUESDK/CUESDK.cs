@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Common;
 using Corsair.Device;
 using Corsair.Enums;
 using Corsair.Led;
 using Corsair.Protocol;
+using Corsair.Provider;
 
 namespace Corsair.CUESDK
 {
@@ -13,11 +15,40 @@ namespace Corsair.CUESDK
     /// </summary>
     public class CUESDK
     {
-		/// <summary>
-		/// Get all the connected device from the cue driver
-		/// </summary>
-		/// <returns>List of all the connected devices</returns>
-	    public static List<CorsairDevice> GetAllDevices()
+        private static DeviceType GetDeviceTypeForCorsair(Corsair.Device.CorsairDeviceType internalDevice)
+        {
+            switch (internalDevice)
+            {
+                case CorsairDeviceType.Unknown:
+                    return DeviceType.Unknown;
+                case CorsairDeviceType.Mouse:
+                    return DeviceType.Mouse;
+                case CorsairDeviceType.Keyboard:
+                    return DeviceType.Keyboard;
+                case CorsairDeviceType.Headset:
+                    return DeviceType.Headset;
+                case CorsairDeviceType.MouseMat:
+                    return DeviceType.Mousepad;
+                case CorsairDeviceType.HeadsetStand:
+                    return DeviceType.Unknown;
+                case CorsairDeviceType.CommanderPro:
+                    return DeviceType.Fan;
+                case CorsairDeviceType.LightingNodePro:
+                    return DeviceType.LedStrip;
+                case CorsairDeviceType.MemoryModule:
+                    return DeviceType.Memory;
+                case CorsairDeviceType.Cooler:
+                    return DeviceType.Fan;
+                default:
+                    return DeviceType.Unknown;
+            }
+        }
+
+        /// <summary>
+        /// Get all the connected device from the cue driver
+        /// </summary>
+        /// <returns>List of all the connected devices</returns>
+        public static List<CorsairDevice> GetAllDevices()
 	    {
 		    var devicesCount = GetDeviceCount();
 
@@ -240,7 +271,7 @@ namespace Corsair.CUESDK
             var deviceInfoPtr = CUESDKNative.CorsairGetDeviceInfo(deviceIndex);
             var deviceInfo = Marshal.PtrToStructure<CorsairDeviceNative>(deviceInfoPtr);
 
-            return new CorsairDevice(deviceInfo, deviceIndex);
+            return new CorsairDevice(deviceInfo, deviceIndex, new CorsairDeviceMetadata(GetDeviceTypeForCorsair(deviceInfo.type), deviceInfo.model != null ? Marshal.PtrToStringAuto(deviceInfo.model) : "Unknown", new HashSet<OperationType>() { OperationType.SetColor }));
         }
 
         /// <summary>

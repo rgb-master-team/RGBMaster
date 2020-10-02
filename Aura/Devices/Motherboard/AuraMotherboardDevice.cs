@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Aura
 {
-    public class AuraDevice : Device
+    public class AuraMotherboardDevice : Device
     {
         private readonly AuraSDKDotNet.AuraDevice internalAuraDevice;
 
-        public AuraDevice(AuraSDKDotNet.AuraDevice internalAuraDevice) : base(new AuraDeviceMetadata())
+        public AuraMotherboardDevice(AuraSDKDotNet.AuraDevice internalAuraDevice, AuraMotherboardDeviceMetadata auraMotherboardDeviceMetadata) : base(auraMotherboardDeviceMetadata)
         {
             this.internalAuraDevice = internalAuraDevice;
         }

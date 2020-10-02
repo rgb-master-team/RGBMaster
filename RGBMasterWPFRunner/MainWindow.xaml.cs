@@ -90,7 +90,7 @@ namespace RGBMasterWPFRunner
                 {
                     if (device.IsChecked)
                     {
-                        var deviceGuid = device.Device.DeviceGuid;
+                        var deviceGuid = device.Device.RgbMasterDeviceGuid;
                         tasks.Add(Task.Run(() => concreteDevices[deviceGuid].TurnOn()));
                     }
                 }
@@ -182,7 +182,7 @@ namespace RGBMasterWPFRunner
                     aggregatedDiscoveredDevices.AddRange(discoveredDevices);
 
                     Log.Logger.Information("Listing discovered devices for provider {A}:", provider.ProviderMetadata.ProviderName);
-                    Log.Logger.Information(string.Join("\n", discoveredDevices.Select(discoveredDevice => $"name: {discoveredDevice.DeviceMetadata.DeviceName}, guid: {discoveredDevice.DeviceMetadata.DeviceGuid}")));
+                    Log.Logger.Information(string.Join("\n", discoveredDevices.Select(discoveredDevice => $"name: {discoveredDevice.DeviceMetadata.DeviceName}, guid: {discoveredDevice.DeviceMetadata.RgbMasterDeviceGuid}")));
 
                     AppState.Instance.RegisteredProviders.Add(new RegisteredProvider()
                     {
@@ -194,7 +194,7 @@ namespace RGBMasterWPFRunner
 
             foreach (var device in aggregatedDiscoveredDevices)
             {
-                concreteDevices.Add(device.DeviceMetadata.DeviceGuid, device);
+                concreteDevices.Add(device.DeviceMetadata.RgbMasterDeviceGuid, device);
             }
 
             if (AppState.Instance.IsEffectRunning)
@@ -218,7 +218,7 @@ namespace RGBMasterWPFRunner
 
                 Log.Logger.Information("Effect changed to {A}.", newEffectExecutor.executedEffectMetadata.EffectName);
 
-                newEffectExecutor.ChangeConnectedDevices(AppState.Instance.RegisteredProviders.Select(provider => provider.Devices).SelectMany(devices => devices).Where(device => device.IsChecked).Select(dev => this.concreteDevices[dev.Device.DeviceGuid]));
+                newEffectExecutor.ChangeConnectedDevices(AppState.Instance.RegisteredProviders.Select(provider => provider.Devices).SelectMany(devices => devices).Where(device => device.IsChecked).Select(dev => this.concreteDevices[dev.Device.RgbMasterDeviceGuid]));
 
                 if (AppState.Instance.ActiveEffect != null)
                 {
@@ -239,22 +239,22 @@ namespace RGBMasterWPFRunner
 
             foreach (var item in newSelectedDevices)
             {
-                var concreteDevice = concreteDevices[item.Device.DeviceGuid];
+                var concreteDevice = concreteDevices[item.Device.RgbMasterDeviceGuid];
 
                 if (!item.IsChecked && concreteDevice.IsConnected)
                 {
-                    Log.Logger.Warning("Turning off device with GUID {A}.", concreteDevice.DeviceMetadata.DeviceGuid);
+                    Log.Logger.Warning("Turning off device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
                     concreteDevice.TurnOff();
 
-                    Log.Logger.Warning("Disconnecting from device with GUID {A}.", concreteDevice.DeviceMetadata.DeviceGuid);
+                    Log.Logger.Warning("Disconnecting from device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
                     await concreteDevice.Disconnect();
                 }
                 else if (item.IsChecked && !concreteDevice.IsConnected)
                 {
-                    Log.Logger.Warning("Connecting to device with GUID {A}.", concreteDevice.DeviceMetadata.DeviceGuid);
+                    Log.Logger.Warning("Connecting to device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
                     await concreteDevice.Connect();
 
-                    Log.Logger.Warning("Turning on device with GUID {A}.", concreteDevice.DeviceMetadata.DeviceGuid);
+                    Log.Logger.Warning("Turning on device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
                     concreteDevice.TurnOn();
                 }
 
@@ -262,7 +262,7 @@ namespace RGBMasterWPFRunner
 
             if (AppState.Instance.IsEffectRunning)
             {
-                supportedEffectsExecutors[AppState.Instance.ActiveEffect.EffectMetadataGuid].ChangeConnectedDevices(newSelectedDevices.Where(device => device.IsChecked).Select(dev => this.concreteDevices[dev.Device.DeviceGuid]));
+                supportedEffectsExecutors[AppState.Instance.ActiveEffect.EffectMetadataGuid].ChangeConnectedDevices(newSelectedDevices.Where(device => device.IsChecked).Select(dev => this.concreteDevices[dev.Device.RgbMasterDeviceGuid]));
             }
 
             changeConnectedDevicesSemaphore.Release();

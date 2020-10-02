@@ -8,13 +8,8 @@ namespace Msi.Provider
     {
         public readonly string deviceType;
 
-        public MLDeviceMetadata(string deviceType)
+        public MLDeviceMetadata(DeviceType deviceType, string deviceName) : base(deviceType, deviceName, new HashSet<OperationType>() { OperationType.SetColor })
         {
-            this.deviceType = deviceType;
         }
-
-        public override string DeviceName => deviceType;
-
-        public override HashSet<OperationType> SupportedOperations => new HashSet<OperationType>() { OperationType.SetColor };
     }
 }

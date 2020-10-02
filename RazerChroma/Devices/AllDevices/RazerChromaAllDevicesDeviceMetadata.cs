@@ -7,13 +7,7 @@ namespace RazerChroma.Devices.AllDevices
 {
     public class RazerChromaAllDevicesDeviceMetadata : DeviceMetadata
     {
-        private readonly HashSet<OperationType> chromaSupportedOps = new HashSet<OperationType>() { OperationType.SetColor };
-
-        public override string DeviceName => "All Razer Chroma connected devices";
-
-        public override HashSet<OperationType> SupportedOperations => chromaSupportedOps;
-
-        public RazerChromaAllDevicesDeviceMetadata() : base(DeviceType.AllDevices)
+        public RazerChromaAllDevicesDeviceMetadata() : base(DeviceType.AllDevices, "All Razer Chroma connected devices", new HashSet<OperationType>() { OperationType.SetColor, OperationType.TurnOff, OperationType.TurnOn })
         {
         }
     }

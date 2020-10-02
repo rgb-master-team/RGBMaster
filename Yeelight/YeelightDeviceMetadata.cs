@@ -6,23 +6,8 @@ namespace Yeelight
 {
     public class YeelightDeviceMetadata : DeviceMetadata
     {
-        private readonly string deviceName;
-
-        public override string DeviceName
+        public YeelightDeviceMetadata(DeviceType deviceType, string deviceName, HashSet<OperationType> supportedOps) : base(deviceType, deviceName, supportedOps)
         {
-            get
-            {
-                return deviceName;
-            }
         }
-
-        private readonly HashSet<OperationType> yeelightSupportedOps = new HashSet<OperationType>() { OperationType.GetBrightness, OperationType.SetBrightness, OperationType.GetColor, OperationType.SetColor, OperationType.TurnOn, OperationType.TurnOff };
-
-        public YeelightDeviceMetadata(string deviceName, DeviceType deviceType) : base(deviceType)
-        {
-            this.deviceName = deviceName;
-        }
-
-        public override HashSet<OperationType> SupportedOperations => yeelightSupportedOps;
     }
 }

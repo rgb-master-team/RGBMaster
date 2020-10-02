@@ -13,7 +13,7 @@ namespace RazerChroma.Devices.Mousepad
     {
         private readonly IChroma internalChromaDriver;
 
-        public RazerChromaMousepadDevice(IChroma chroma) : base(new RazerChromaMousepadDeviceMetadata())
+        public RazerChromaMousepadDevice(IChroma chroma, RazerChromaMousepadDeviceMetadata razerChromaMousepadDeviceMetadata) : base(razerChromaMousepadDeviceMetadata)
         {
             internalChromaDriver = chroma;
         }

@@ -145,7 +145,7 @@ namespace RGBMasterUWPApp.Pages
             // Device GUID
             var deviceGUIDStackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
             deviceGUIDStackPanel.Children.Add(new TextBlock() { Text = $"Device ID: ", FontWeight = FontWeight = Windows.UI.Text.FontWeights.Bold, Margin = new Thickness(0, 0, 4, 0) });
-            deviceGUIDStackPanel.Children.Add(new TextBlock() { Text = $"{deviceMetadata.DeviceGuid}" });
+            deviceGUIDStackPanel.Children.Add(new TextBlock() { Text = $"{deviceMetadata.RgbMasterDeviceGuid}" });
             contentDialogInnerContent.Children.Add(deviceGUIDStackPanel);
 
             // Device Operations

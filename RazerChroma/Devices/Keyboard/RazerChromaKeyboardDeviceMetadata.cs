@@ -7,10 +7,7 @@ namespace RazerChroma.Devices.Keyboard
 {
     public class RazerChromaKeyboardDeviceMetadata : DeviceMetadata
     {
-        public override string DeviceName => "Razer Chroma Keyboard";
-        public override HashSet<OperationType> SupportedOperations => new HashSet<OperationType>() { OperationType.SetColor };
-
-        public RazerChromaKeyboardDeviceMetadata() : base(DeviceType.Keyboard)
+        public RazerChromaKeyboardDeviceMetadata(string deviceName, HashSet<OperationType> operationTypes) : base(DeviceType.Keyboard, deviceName, operationTypes)
         {
         }
     }

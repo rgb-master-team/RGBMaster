@@ -6,11 +6,7 @@ namespace MagicHome
 {
     public class MagicHomeDeviceMetadata : DeviceMetadata
     {
-        public override string DeviceName => "Magic Home Device";
-
-        public override HashSet<OperationType> SupportedOperations => new HashSet<OperationType>() { OperationType.SetColor, OperationType.TurnOn, OperationType.TurnOff /*, OperationType.SetBrightness*/ };
-
-        public MagicHomeDeviceMetadata(DeviceType deviceType) : base(deviceType)
+        public MagicHomeDeviceMetadata(string deviceName) : base(DeviceType.Lightbulb, deviceName, new HashSet<OperationType>() { OperationType.SetColor, OperationType.TurnOn, OperationType.TurnOff /*, OperationType.SetBrightness*/ })
         {
 
         }
