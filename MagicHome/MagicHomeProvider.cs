@@ -9,9 +9,6 @@ namespace MagicHome
 {
     public class MagicHomeProvider : BaseProvider
     {
-        private List<Light> internalDiscoveredDevices;
-        private bool isInitialized = false;
-
         public MagicHomeProvider(): base(new MagicHomeProviderMetadata())
         {
 
@@ -20,17 +17,7 @@ namespace MagicHome
         public override Task<List<Device>> Discover()
         {
             List<Light> internalDevices;
-
-            if (!isInitialized)
-            {
-                internalDevices = Light.Discover();
-                internalDiscoveredDevices = internalDevices;
-                isInitialized = true;
-            }
-            else
-            {
-                internalDevices = internalDiscoveredDevices;
-            }
+            internalDevices = Light.Discover();
 
             return Task.FromResult(internalDevices.Select(internalDevice => new MagicHomeDevice(internalDevice)).ToList<Device>());
         }

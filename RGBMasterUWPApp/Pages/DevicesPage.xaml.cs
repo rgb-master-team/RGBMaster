@@ -69,6 +69,20 @@ namespace RGBMasterUWPApp.Pages
 
         private void Refresh_Button_Clicked(object sender, RoutedEventArgs e)
         {
+            // EventManager.Instance.InitializeProviders();
+
+            var button = (Button)sender;
+
+            var teachingTip = button.Resources["TeachingTip_RefreshDevices"] as Microsoft.UI.Xaml.Controls.TeachingTip;
+            teachingTip.Target = button;
+            teachingTip.PreferredPlacement = TeachingTipPlacementMode.Left;
+            teachingTip.IsOpen = true;
+
+        }
+
+        private void TeachingTip_RefreshDevices_ActionButtonClick(TeachingTip sender, object args)
+        {
+            sender.IsOpen = false;
             EventManager.Instance.InitializeProviders();
         }
 

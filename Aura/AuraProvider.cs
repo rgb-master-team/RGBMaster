@@ -11,6 +11,7 @@ namespace Aura
     public class AuraProvider : BaseProvider
     {
         private AuraSDK internalSdk;
+        private static int VENDOR_ID = 0x1532;
 
         public AuraProvider() : base(new AuraProviderMetadata())
         {
@@ -27,7 +28,7 @@ namespace Aura
             return Task.CompletedTask;
         }
 
-        public override Task InternalUnregister()
+        protected override Task InternalUnregister()
         {
             internalSdk.Unload();
             return Task.CompletedTask;

@@ -123,11 +123,18 @@
                 </RichTextBlock>
             </StackPanel>
             <StackPanel Margin="0 0 0 16">
-                <Button Click="Refresh_Button_Clicked" ToolTipService.ToolTip="Refresh Devices" Background="Transparent">
+                <Button x:Name="Refresh_Devices_Button" Click="Refresh_Button_Clicked" ToolTipService.ToolTip="Refresh Devices" Background="Transparent">
                     <StackPanel Orientation="Horizontal">
                         <FontIcon x:Name="OuterButton" Glyph="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="Orange"/>
                         <TextBlock Text="Refresh devices" Margin="4 0 0 0" />
                     </StackPanel>
+                    <Button.Resources>
+                        <muxc:TeachingTip x:Name="TeachingTip_RefreshDevices" Title="Refresh devices?" Subtitle="Refreshing the devices will disconnect all connected devices." ActionButtonClick="TeachingTip_RefreshDevices_ActionButtonClick" ActionButtonContent="Refresh" CloseButtonContent="Cancel" Target="{x:Bind Refresh_Devices_Button}">
+                            <muxc:TeachingTip.IconSource>
+                                <muxc:SymbolIconSource Symbol="Refresh" Foreground="Orange" />
+                            </muxc:TeachingTip.IconSource>
+                        </muxc:TeachingTip>
+                    </Button.Resources>
                 </Button>
             </StackPanel>
             <StackPanel>

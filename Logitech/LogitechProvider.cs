@@ -9,6 +9,7 @@ namespace Logitech
 {
     public class LogitechProvider : BaseProvider
     {
+        private static int VENDOR_ID = 0x046D;
         public LogitechProvider(): base(new LogitechProviderMetadata())
         {
 

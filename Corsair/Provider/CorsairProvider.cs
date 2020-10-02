@@ -8,7 +8,8 @@ namespace CorsairProvider
 {
     public class CorsairProvider : BaseProvider
     {
-        public CorsairProvider() : base(new CorsairProviderMetadata())
+		private static int VENDOR_ID = 0x1B1C;
+		public CorsairProvider() : base(new CorsairProviderMetadata())
         {
         }
 
@@ -19,7 +20,7 @@ namespace CorsairProvider
 			return Task.CompletedTask;
 		}
 
-		public override Task InternalUnregister()
+		protected override Task InternalUnregister()
 		{
 			return Task.CompletedTask;
 		}

@@ -12,7 +12,7 @@ namespace GameSense
     public class GameSenseProvider : BaseProvider
     {
         private readonly GSAPI gameSenseAPI;
-
+        private static int VENDOR_ID = 0x1038;
         public GameSenseProvider() : base(new GameSenseProviderMetadata())
         {
             gameSenseAPI = new GSAPI();

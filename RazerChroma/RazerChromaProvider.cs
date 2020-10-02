@@ -14,6 +14,7 @@ namespace RazerChroma
     public class RazerChromaProvider : BaseProvider
     {
         private IChroma internalChromaProvider;
+        private static int VENDOR_ID = 0x1532;
 
         public RazerChromaProvider(): base(new RazerChromaProviderMetadata())
         {

@@ -20,7 +20,7 @@ namespace Msi.Provider
 			return Task.CompletedTask;
 		}
 
-		public override Task InternalUnregister()
+		protected override Task InternalUnregister()
 		{
 			return Task.CompletedTask;
 		}
