@@ -27,7 +27,7 @@ namespace Msi.Provider
 
 		public override Task<List<RGBProvider.Device>> Discover()
 		{
-			return Task.FromResult(MysticLightSdk.GetAllDevices().ToList<RGBProvider.Device>());
+			return Task.FromResult(MysticLightSdk.GetAllDevices(ProviderMetadata.ProviderGuid).ToList<RGBProvider.Device>());
 		}
 	}
 }

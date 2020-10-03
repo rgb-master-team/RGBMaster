@@ -48,14 +48,14 @@ namespace Corsair.CUESDK
         /// Get all the connected device from the cue driver
         /// </summary>
         /// <returns>List of all the connected devices</returns>
-        public static List<CorsairDevice> GetAllDevices()
+        public static List<CorsairDevice> GetAllDevices(Guid discoveringProvider)
 	    {
 		    var devicesCount = GetDeviceCount();
 
 		    var devices = new List<CorsairDevice>();
 		    for (var deviceIndex = 0; deviceIndex < devicesCount; deviceIndex++)
 		    {
-			    devices.Add(GetDeviceInfo(deviceIndex));
+			    devices.Add(GetDeviceInfo(deviceIndex, discoveringProvider));
 
 			    devices[deviceIndex].Load();
 			}
@@ -266,12 +266,12 @@ namespace Corsair.CUESDK
         /// </summary>
         /// <param name="deviceIndex">Zero-based index of device. Should be strictly less than a value returned by GetDeviceInfo()</param>
         /// <returns>CorsairDevice structure that contains information about device or NULL if error has occurred.</returns>
-        public static CorsairDevice GetDeviceInfo(int deviceIndex)
+        public static CorsairDevice GetDeviceInfo(int deviceIndex, Guid discoveringProvider)
         {
             var deviceInfoPtr = CUESDKNative.CorsairGetDeviceInfo(deviceIndex);
             var deviceInfo = Marshal.PtrToStructure<CorsairDeviceNative>(deviceInfoPtr);
 
-            return new CorsairDevice(deviceInfo, deviceIndex, new CorsairDeviceMetadata(GetDeviceTypeForCorsair(deviceInfo.type), deviceInfo.model != null ? Marshal.PtrToStringAuto(deviceInfo.model) : "Unknown", new HashSet<OperationType>() { OperationType.SetColor }));
+            return new CorsairDevice(deviceInfo, deviceIndex, new CorsairDeviceMetadata(discoveringProvider, GetDeviceTypeForCorsair(deviceInfo.type), deviceInfo.model != null ? Marshal.PtrToStringAuto(deviceInfo.model) : "Unknown", new HashSet<OperationType>() { OperationType.SetColor }));
         }
 
         /// <summary>

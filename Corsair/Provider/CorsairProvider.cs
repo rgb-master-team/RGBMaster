@@ -27,7 +27,7 @@ namespace CorsairProvider
 
         public override Task<List<Device>> Discover()
         {
-			var devices = Corsair.CUESDK.CUESDK.GetAllDevices();
+			var devices = Corsair.CUESDK.CUESDK.GetAllDevices(ProviderMetadata.ProviderGuid);
 			return Task.FromResult(devices.ToList<Device>());
 		}
 	}

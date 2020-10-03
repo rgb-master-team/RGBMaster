@@ -38,7 +38,7 @@ namespace Logitech
 
         public override Task<List<Device>> Discover()
         {
-            return Task.FromResult(new List<Device>() { new LogitechMouseDevice(new LogitechMouseDeviceMetadata("All Logitech G Hub devices")) });
+            return Task.FromResult(new List<Device>() { new LogitechMouseDevice(new LogitechMouseDeviceMetadata(ProviderMetadata.ProviderGuid, "All Logitech G Hub devices")) });
             /*
             // Set all devices to Black
             LogitechGSDK.LogiLedSetLighting(0, 0, 0);

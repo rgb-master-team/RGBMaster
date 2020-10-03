@@ -96,7 +96,7 @@ namespace RazerChroma
 
             return discoveredDevices;*/
 
-            return Task.FromResult(new List<Device> { new RazerChromaAllDevicesDevice(internalChromaProvider), new RazerChromaKeyboardDevice(internalChromaProvider, new RazerChromaKeyboardDeviceMetadata("Razer Keyboard", new HashSet<OperationType>() { OperationType.SetColor })), new RazerChromaMousepadDevice(internalChromaProvider, new RazerChromaMousepadDeviceMetadata("Some Mousepad", new HashSet<OperationType>() { OperationType.SetColor})) });
+            return Task.FromResult(new List<Device> { new RazerChromaAllDevicesDevice(internalChromaProvider, new RazerChromaAllDevicesDeviceMetadata(ProviderMetadata.ProviderGuid)), new RazerChromaKeyboardDevice(internalChromaProvider, new RazerChromaKeyboardDeviceMetadata(ProviderMetadata.ProviderGuid, "Razer Keyboard", new HashSet<OperationType>() { OperationType.SetColor })), new RazerChromaMousepadDevice(internalChromaProvider, new RazerChromaMousepadDeviceMetadata(ProviderMetadata.ProviderGuid, "Razer Mousepad", new HashSet<OperationType>() { OperationType.SetColor})) });
         }
 
         protected async override Task InternalRegister()

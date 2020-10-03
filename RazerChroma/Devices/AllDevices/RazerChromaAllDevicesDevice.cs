@@ -11,7 +11,7 @@ namespace RazerChroma.Devices.AllDevices
     {
         private readonly IChroma internalChromaDriver;
 
-        public RazerChromaAllDevicesDevice(IChroma internalChromaDriver) : base(new RazerChromaAllDevicesDeviceMetadata())
+        public RazerChromaAllDevicesDevice(IChroma internalChromaDriver, RazerChromaAllDevicesDeviceMetadata razerChromaAllDevicesDeviceMetadata) : base(razerChromaAllDevicesDeviceMetadata)
         {
             this.internalChromaDriver = internalChromaDriver;
         }

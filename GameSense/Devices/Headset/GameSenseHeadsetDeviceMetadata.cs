@@ -7,7 +7,7 @@ namespace GameSense.Devices.Headset
 {
     public class GameSenseHeadsetDeviceMetadata : DeviceMetadata
     {
-        public GameSenseHeadsetDeviceMetadata(string deviceName) : base(DeviceType.Headset, deviceName, new HashSet<OperationType>() { OperationType.SetColor })
+        public GameSenseHeadsetDeviceMetadata(Guid discoveringProvider, string deviceName) : base(discoveringProvider, DeviceType.Headset, deviceName, new HashSet<OperationType>() { OperationType.SetColor })
         {
         }
     }

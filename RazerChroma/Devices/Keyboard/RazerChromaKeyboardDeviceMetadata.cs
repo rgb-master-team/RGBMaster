@@ -7,7 +7,7 @@ namespace RazerChroma.Devices.Keyboard
 {
     public class RazerChromaKeyboardDeviceMetadata : DeviceMetadata
     {
-        public RazerChromaKeyboardDeviceMetadata(string deviceName, HashSet<OperationType> operationTypes) : base(DeviceType.Keyboard, deviceName, operationTypes)
+        public RazerChromaKeyboardDeviceMetadata(Guid discoveringProvider, string deviceName, HashSet<OperationType> operationTypes) : base(discoveringProvider, DeviceType.Keyboard, deviceName, operationTypes)
         {
         }
     }

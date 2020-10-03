@@ -20,7 +20,7 @@ namespace Aura
 
         public override Task<List<Device>> Discover()
         {
-            return Task.FromResult(internalSdk.Motherboards.Select(mb => new AuraMotherboardDevice(mb, new AuraMotherboardDeviceMetadata("Unknown Aura Motherboard", new HashSet<OperationType>() { OperationType.SetColor }))).ToList<Device>());
+            return Task.FromResult(internalSdk.Motherboards.Select(mb => new AuraMotherboardDevice(mb, new AuraMotherboardDeviceMetadata(ProviderMetadata.ProviderGuid, "Unknown Aura Motherboard", new HashSet<OperationType>() { OperationType.SetColor }))).ToList<Device>());
         }
 
         protected override Task InternalRegister()

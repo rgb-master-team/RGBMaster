@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -17,11 +18,11 @@ namespace Msi.SDKs
 		/// </summary>
 		/// <returns>The list of all discovered devices</returns>
 		/// <exception cref="MysticLightErrorException">The exception containing the error message from the sdk</exception>
-		public static List<MLDevice> GetAllDevices()
+		public static List<MLDevice> GetAllDevices(Guid providerGuid)
 		{
 			GetDeviceInfo(out var devicesTypes, out var ledsCount);
 
-			var allDevices = devicesTypes.Select((deviceType, index) => new MLDevice(ledsCount[index], new Provider.MLDeviceMetadata(DeviceType.Unknown, deviceType))).ToList();
+			var allDevices = devicesTypes.Select((deviceType, index) => new MLDevice(ledsCount[index], new Provider.MLDeviceMetadata(providerGuid, DeviceType.Unknown, deviceType))).ToList();
 
 			allDevices.ForEach(x => x.Load());
 

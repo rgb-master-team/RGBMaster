@@ -57,7 +57,25 @@ namespace RGBMasterUWPApp.Pages
             var checkbox = sender as CheckBox;
             var discoveredDevice = (DiscoveredDevice)checkbox.Tag;
 
-            discoveredDevice.IsChecked = !discoveredDevice.IsChecked;
+            discoveredDevice.IsChecked = checkbox.IsChecked.GetValueOrDefault();
+
+            var discoveringProvider = AppState.Instance.RegisteredProviders.FirstOrDefault(x => x.Provider.ProviderGuid == discoveredDevice.Device.RgbMasterDiscoveringProvider);
+
+            if (discoveringProvider != null)
+            {
+                var allDevicesDevice = discoveringProvider.Devices.FirstOrDefault(x => x.Device.DeviceType == DeviceType.AllDevices);
+
+                if (allDevicesDevice != null && allDevicesDevice.IsChecked)
+                {
+                    foreach (var device in discoveringProvider.Devices)
+                    {
+                        if (device.Device.RgbMasterDeviceGuid != allDevicesDevice.Device.RgbMasterDeviceGuid)
+                        {
+                            device.IsChecked = false;
+                        }
+                    }
+                }
+            }
 
             EventManager.Instance.UpdateSelectedDevices(AppState.Instance.RegisteredProviders.Select(prov => prov.Devices).SelectMany(devices => devices).ToImmutableList().ToList());
         }
@@ -159,6 +177,8 @@ namespace RGBMasterUWPApp.Pages
             deviceOperationStackPanel.Children.Add(new TextBlock() { Text = $"Supported operations: ", FontWeight = Windows.UI.Text.FontWeights.Bold, Margin = new Thickness(0, 0, 4, 0) });
             deviceOperationStackPanel.Children.Add(supportedOperationsList);
             contentDialogInnerContent.Children.Add(deviceOperationStackPanel);
+
+            contentDialogInnerContent.Children.Add(new TextBlock() { Text = AppState.Instance.RegisteredProviders.FirstOrDefault(x => x.Provider.ProviderGuid == deviceMetadata.RgbMasterDiscoveringProvider)?.Provider?.ProviderName });
 
             Image deviceIcon = new Image
             {

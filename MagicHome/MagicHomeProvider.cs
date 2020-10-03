@@ -19,7 +19,7 @@ namespace MagicHome
             List<Light> internalDevices;
             internalDevices = Light.Discover();
 
-            return Task.FromResult(internalDevices.Select(internalDevice => new MagicHomeDevice(internalDevice, new MagicHomeDeviceMetadata("Magic Home Device"))).ToList<Device>());
+            return Task.FromResult(internalDevices.Select(internalDevice => new MagicHomeDevice(internalDevice, new MagicHomeDeviceMetadata(ProviderMetadata.ProviderGuid, "Magic Home Device"))).ToList<Device>());
         }
 
         protected override Task InternalRegister()

@@ -8,6 +8,7 @@ namespace Common
 {
     public class DeviceMetadata
     {
+        public Guid RgbMasterDiscoveringProvider { get; }
         public Guid RgbMasterDeviceGuid { get; }
         public string DeviceName { get; }
         public HashSet<OperationType> SupportedOperations { get; }
@@ -55,8 +56,9 @@ namespace Common
         }
 
         // TODO - Enforce constructor to receive all parameters instead of overriding them
-        public DeviceMetadata(DeviceType deviceType, string deviceName, HashSet<OperationType> supportedOperations)
+        public DeviceMetadata(Guid rgbMasterDiscoveringProvider, DeviceType deviceType, string deviceName, HashSet<OperationType> supportedOperations)
         {
+            RgbMasterDiscoveringProvider = rgbMasterDiscoveringProvider;
             RgbMasterDeviceGuid = Guid.NewGuid();
             DeviceType = deviceType;
             DeviceName = deviceName;
