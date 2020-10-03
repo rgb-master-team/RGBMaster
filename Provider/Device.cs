@@ -85,26 +85,58 @@ namespace Provider
         protected abstract void TurnOnInternal();
         protected abstract void TurnOffInternal();
 
-        public async Task Connect()
+        public async Task<bool> Connect()
         {
+            bool didSucceed;
+
             if (IsConnected)
             {
-                return;
+                didSucceed = true;
+            }
+            else
+            {
+                try
+                {
+                    await ConnectInternal();
+                    IsConnected = true;
+                    didSucceed = true;
+                }
+                catch (Exception)
+                {
+                    // TODO - Log exceptions here.
+                    IsConnected = false;
+                    didSucceed = false;
+                }
             }
 
-            await ConnectInternal();
-            IsConnected = true;
+            return didSucceed;
         }
 
-        public async Task Disconnect()
+        public async Task<bool> Disconnect()
         {
+            bool didSucceed;
+
             if (!IsConnected)
             {
-                return;
+                didSucceed = true;
+            }
+            else
+            {
+                try
+                {
+                    await DisconnectInternal();
+                    IsConnected = false;
+                    didSucceed = true;
+                }
+                catch (Exception)
+                {
+                    // TODO - Log
+                    IsConnected = false;
+                    didSucceed = false;
+                }
             }
 
-            await DisconnectInternal();
-            IsConnected = false;
+            return didSucceed;
         }
 
         protected abstract Task ConnectInternal();
