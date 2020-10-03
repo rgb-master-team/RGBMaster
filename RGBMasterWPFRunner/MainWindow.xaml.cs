@@ -28,6 +28,7 @@ namespace RGBMasterWPFRunner
     {
         private SemaphoreSlim changeConnectedDevicesSemaphore = new SemaphoreSlim(1, 1);
         private SemaphoreSlim initializeProvidersSemaphore = new SemaphoreSlim(1, 1);
+        private SemaphoreSlim changeStaticColorSemaphore = new SemaphoreSlim(1, 1);
 
         private readonly Dictionary<Guid, Provider.BaseProvider> supportedProviders = new Dictionary<Guid, Provider.BaseProvider>();
         private readonly Dictionary<Guid, EffectExecutor> supportedEffectsExecutors = new Dictionary<Guid, EffectExecutor>();
@@ -110,9 +111,13 @@ namespace RGBMasterWPFRunner
 
                 if (selectedEffectExecutor.executedEffectMetadata.Type == EffectType.StaticColor)
                 {
+                    await changeStaticColorSemaphore.WaitAsync();
+
                     ((StaticColorEffectMetadata)selectedEffectExecutor.executedEffectMetadata).UpdateProps(staticColorEffectProps);
 
                     await selectedEffectExecutor.Start();
+
+                    changeStaticColorSemaphore.Release();
                 }
             }
         }
@@ -149,15 +154,8 @@ namespace RGBMasterWPFRunner
         {
             await initializeProvidersSemaphore.WaitAsync();
             Log.Logger.Information("Initializing providers.....");
-            concreteDevices.Clear();
 
-            foreach (var provider in AppState.Instance.RegisteredProviders)
-            {
-                await supportedProviders[provider.Provider.ProviderGuid].Unregister();
-            }
-
-            AppState.Instance.RegisteredProviders.Clear();
-            //AppState.Instance.SelectedDevices.Clear();
+            await CleanupDevicesAndProviders();
 
             var tasks = new List<Task>();
 
@@ -266,6 +264,28 @@ namespace RGBMasterWPFRunner
             }
 
             changeConnectedDevicesSemaphore.Release();
+        }
+
+        private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            await CleanupDevicesAndProviders();
+        }
+
+        private async Task CleanupDevicesAndProviders()
+        {
+            foreach (var concreteDevice in concreteDevices)
+            {
+                await concreteDevice.Value.Disconnect();
+            }
+
+            concreteDevices.Clear();
+
+            foreach (var provider in AppState.Instance.RegisteredProviders)
+            {
+                await supportedProviders[provider.Provider.ProviderGuid].Unregister();
+            }
+
+            AppState.Instance.RegisteredProviders.Clear();
         }
     }
 }
