@@ -48,12 +48,12 @@ namespace RazerChroma.Devices.AllDevices
 
         protected override void TurnOffInternal()
         {
-            throw new NotImplementedException();
+            internalChromaDriver.SetAllAsync(new Colore.Data.Color(0, 0, 0)).Wait(10000);
         }
 
         protected override void TurnOnInternal()
         {
-            throw new NotImplementedException();
+            internalChromaDriver.SetAllAsync(new Colore.Data.Color(255, 255, 255)).Wait(10000);
         }
     }
 }
