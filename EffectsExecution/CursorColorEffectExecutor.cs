@@ -18,7 +18,7 @@ namespace EffectsExecution
         {
         }
 
-        public override Task StartInternal()
+        protected override Task StartInternal()
         {
             var enumeratedDevices = Devices.ToList();
 
@@ -47,7 +47,7 @@ namespace EffectsExecution
             }
         }
 
-        public override Task StopInternal()
+        protected override Task StopInternal()
         {
             backgroundWorkCancellationTokenSource.Cancel();
             return Task.CompletedTask;

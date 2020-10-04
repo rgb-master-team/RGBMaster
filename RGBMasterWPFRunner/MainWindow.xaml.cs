@@ -288,6 +288,11 @@ namespace RGBMasterWPFRunner
 
         private async Task CleanupDevicesAndProviders()
         {
+            if (AppState.Instance.IsEffectRunning)
+            {
+                await supportedEffectsExecutors[AppState.Instance.ActiveEffect.EffectMetadataGuid].Stop();
+            }
+
             foreach (var concreteDevice in concreteDevices)
             {
                 await concreteDevice.Value.Disconnect();

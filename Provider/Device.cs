@@ -124,9 +124,17 @@ namespace Provider
             {
                 try
                 {
-                    await DisconnectInternal();
-                    IsConnected = false;
-                    didSucceed = true;
+                    int disconnectTimeout = 5000;
+                    var task = DisconnectInternal();
+                    if (await Task.WhenAny(task, Task.Delay(disconnectTimeout)) == task)
+                    {
+                        IsConnected = false;
+                        didSucceed = true;
+                    }
+                    else
+                    {
+                        throw new Exception($"Failed to disconnect from device {DeviceMetadata.DeviceName} with guid {DeviceMetadata.RgbMasterDeviceGuid}");
+                    }
                 }
                 catch (Exception)
                 {

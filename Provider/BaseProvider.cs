@@ -38,9 +38,16 @@ namespace Provider
             {
                 if (IsRegistered)
                 {
-                    await InternalUnregister();
-
-                    IsRegistered = false;
+                    int unregisterTimeout = 1000;
+                    var task = InternalUnregister();
+                    if (await Task.WhenAny(task, Task.Delay(unregisterTimeout)) == task)
+                    {
+                        IsRegistered = false;
+                    }
+                    else
+                    {
+                        throw new Exception($"Failed to unregister from provider {ProviderMetadata.ProviderName} with guid {ProviderMetadata.ProviderGuid}");
+                    }
                 }
 
                 return true;

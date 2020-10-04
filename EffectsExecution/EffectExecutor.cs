@@ -35,7 +35,7 @@ namespace EffectsExecution
             await StopInternal();
         }
 
-        public abstract Task StopInternal();
-        public abstract Task StartInternal();
+        protected abstract Task StopInternal();
+        protected abstract Task StartInternal();
     }
 }

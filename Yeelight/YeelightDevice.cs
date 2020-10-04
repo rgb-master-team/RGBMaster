@@ -96,8 +96,7 @@ namespace Yeelight
 
         protected override byte GetBrightnessPercentageInternal()
         {
-            // TODO - Also implement background lighting???
-            // TODO2 - Keep the last known brightness at all time in a private member? is it a sensible approach?            
+            // TODO - GET THIS FROM THE SOCKET INSTEAD OF THE CLOUD
             var task = InternalDevice.GetProp(YeelightAPI.Models.PROPERTIES.bright);
             task.Wait();
             return (byte)task.Result;
@@ -105,6 +104,7 @@ namespace Yeelight
 
         protected override Color GetColorInternal()
         {
+            // TODO - GET THIS FROM THE SOCKET INSTEAD OF THE CLOUD
             var task = InternalDevice.GetProp(YeelightAPI.Models.PROPERTIES.rgb);
             task.Wait();
             return RGBColorHelper.ParseColor((int)task.Result);

@@ -29,12 +29,12 @@ namespace EffectsExecution
             await Task.WhenAll(tasksList);
         }
 
-        public override async Task StartInternal()
+        protected override async Task StartInternal()
         {
             await ChangeStaticColor(AppState.Instance.StaticColorEffectProperties);
         }
 
-        public override Task StopInternal()
+        protected override Task StopInternal()
         {
             return Task.CompletedTask;
         }
