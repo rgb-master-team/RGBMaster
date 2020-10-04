@@ -97,9 +97,17 @@ namespace Provider
             {
                 try
                 {
-                    await ConnectInternal();
-                    IsConnected = true;
-                    didSucceed = true;
+                    int connectTimeout = 5000;
+                    var task = ConnectInternal();
+                    if (await Task.WhenAny(task, Task.Delay(connectTimeout)) == task)
+                    {
+                        IsConnected = true;
+                        didSucceed = true;
+                    }
+                    else
+                    {
+                        throw new Exception($"Failed to connect to device {DeviceMetadata.DeviceName} with guid {DeviceMetadata.RgbMasterDeviceGuid}");
+                    }
                 }
                 catch (Exception)
                 {

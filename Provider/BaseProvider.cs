@@ -19,15 +19,24 @@ namespace Provider
             {
                 if (!IsRegistered)
                 {
-                    await InternalRegister();
+                    int registerProviderTimeout = 5000;
+                    var task = InternalRegister();
+                    if (await Task.WhenAny(task, Task.Delay(registerProviderTimeout)) == task)
+                    {
+                        IsRegistered = true;
+                    }
+                    else
+                    {
+                        throw new Exception($"Failed to register to provider {ProviderMetadata.ProviderName} with guid {ProviderMetadata.ProviderGuid}");
+                    }
 
-                    IsRegistered = true;
                 }
 
                 return IsRegistered;
             }
             catch (Exception ex)
             {
+                // TODO - Log
                 return false;
             }
         }
@@ -54,6 +63,7 @@ namespace Provider
             }
             catch (Exception ex)
             {
+                // TODO - Log
                 return false;
             }
         }
