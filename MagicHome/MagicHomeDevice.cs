@@ -17,24 +17,25 @@ namespace MagicHome
         private const int defaultMagicHomePort = 5577;
 
         private readonly string LightIp;
-        private readonly Socket InternalLightSocket;
+
+        private Socket InternalLightSocket;
         private LedProtocol MagicHomeProtocol;
         private bool shouldUseCsum;
 
         public MagicHomeDevice(string lightIp, MagicHomeDeviceMetadata magicHomeDeviceMetadata) : base(magicHomeDeviceMetadata)
         {
             LightIp = lightIp;
+            shouldUseCsum = true;
+        }
+
+        protected override async Task ConnectInternal()
+        {
             InternalLightSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
             {
                 ReceiveTimeout = 1000,
                 SendTimeout = 1000
             };
 
-            shouldUseCsum = true;
-        }
-
-        protected override async Task ConnectInternal()
-        {
             await InternalLightSocket.ConnectAsync(IPAddress.Parse(LightIp), defaultMagicHomePort);
 
             MagicHomeProtocol = await GetMagicHomeProtocol();
@@ -150,6 +151,7 @@ namespace MagicHome
                         );
 
                     didSucceed = true;
+                    break;
                 }
                 catch (TaskCanceledException)
                 {
@@ -170,12 +172,12 @@ namespace MagicHome
             return await TrySendDataToDevice(null, 1, dataToSend.ToArray());
         }
 
-        private async Task<bool> TrySendDataToDevice(TimeSpan timeout, params byte[] dataToSend)
+        private async Task<bool> TrySendDataToDevice(TimeSpan timeout, byte[] dataToSend)
         {
             return await TrySendDataToDevice(timeout, 1, dataToSend.ToArray());
         }
 
-        private async Task<bool> TrySendDataToDevice(int attemptsCount, params byte[] dataToSend)
+        private async Task<bool> TrySendDataToDevice(int attemptsCount, byte[] dataToSend)
         {
             return await TrySendDataToDevice(null, attemptsCount, dataToSend.ToArray());
         }
@@ -204,6 +206,7 @@ namespace MagicHome
                         timeout != null ? new CancellationTokenSource(timeout.Value).Token : default
                         );
                     didSucceed = true;
+                    break;
                 }
                 catch (TaskCanceledException)
                 {
