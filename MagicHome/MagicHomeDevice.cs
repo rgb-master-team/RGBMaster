@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Utils;
 
 namespace MagicHome
 {
@@ -22,7 +23,11 @@ namespace MagicHome
         public MagicHomeDevice(string lightIp, MagicHomeDeviceMetadata magicHomeDeviceMetadata) : base(magicHomeDeviceMetadata)
         {
             LightIp = lightIp;
-            InternalLightSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            InternalLightSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+            {
+                ReceiveTimeout = 1000,
+                SendTimeout = 1000
+            };
         }
 
         protected override async Task ConnectInternal()
@@ -73,17 +78,38 @@ namespace MagicHome
 
         protected override void SetColorInternal(System.Drawing.Color color)
         {
-            // TODEAN
+            if (MagicHomeProtocol == LedProtocol.LEDENET)
+            {
+                SendDataToDevice(0x41, color.R, color.G, color.B, 0x00, 0x00, 0x0f).Wait();
+            }
+            else
+            {
+                SendDataToDevice(0x56, color.R, color.G, color.B, 0xaa).Wait();
+            }
         }
 
         protected override void TurnOffInternal()
         {
-            // TODEAN
+            if (MagicHomeProtocol == LedProtocol.LEDENET)
+            {
+                SendDataToDevice(0x71, 0x24, 0x0f).Wait();
+            }
+            else
+            {
+                SendDataToDevice(0xcc, 0x24, 0x33).Wait();
+            }
         }
 
         protected override void TurnOnInternal()
         {
-            // TODEAN
+            if (MagicHomeProtocol == LedProtocol.LEDENET)
+            {
+                SendDataToDevice(0x71, 0x23, 0x0f).Wait();
+            }
+            else
+            {
+                SendDataToDevice(0xcc, 0x23, 0x33).Wait();
+            }
         }
 
         private async Task<LedProtocol> GetMagicHomeProtocol()
@@ -93,20 +119,23 @@ namespace MagicHome
             try
             {
                 byte[] buffer_ledenet = new byte[14];
-                InternalLightSocket.Receive(buffer_ledenet);
+
+                await InternalLightSocket.ReceiveAsync(new ArraySegment<byte>(buffer_ledenet), SocketFlags.None);
                 return LedProtocol.LEDENET;
             }
-            catch (SocketException)
+            catch (Exception ex)
             {
+                // TODO - Log exception
                 await SendDataToDevice(0xef, 0x01, 0x77);
                 try
                 {
                     byte[] buffer_original = new byte[14];
-                    InternalLightSocket.Receive(buffer_original);
+                    await InternalLightSocket.ReceiveAsync(new ArraySegment<byte>(buffer_original), SocketFlags.None);
                     return LedProtocol.LEDENET_ORIGINAL;
                 }
-                catch (SocketException)
+                catch (Exception innerEx)
                 {
+                    // Log this exception, too - it's more important
                     return LedProtocol.Unknown;
                 }
             }

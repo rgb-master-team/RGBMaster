@@ -14,7 +14,7 @@ namespace Provider
 
         public Device(DeviceMetadata deviceMetadata)
         {
-            this.DeviceMetadata = deviceMetadata;
+            DeviceMetadata = deviceMetadata;
         }
 
         public bool IsConnected { get; private set; }
@@ -97,7 +97,7 @@ namespace Provider
             {
                 try
                 {
-                    int connectTimeout = 5000;
+                    int connectTimeout = 50000;
                     var task = ConnectInternal();
                     if (await Task.WhenAny(task, Task.Delay(connectTimeout)) == task)
                     {
