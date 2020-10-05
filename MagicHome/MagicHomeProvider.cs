@@ -14,6 +14,7 @@ namespace MagicHome
     {
         private const int DISCOVERY_PORT = 48899;
         private const string DISCOVERY_MESSAGE = "HF-A11ASSISTHREAD";
+        private UdpClient discoveryUdpClient;
 
         public MagicHomeProvider(): base(new MagicHomeProviderMetadata())
         {
@@ -24,16 +25,15 @@ namespace MagicHome
         {
             var lights = new List<Device>();
 
-            var socket = new UdpClient(DISCOVERY_PORT);
             var data = Encoding.UTF8.GetBytes(DISCOVERY_MESSAGE);
-            await socket.SendAsync(data, data.Length, "255.255.255.255", DISCOVERY_PORT);
+            await discoveryUdpClient.SendAsync(data, data.Length, "255.255.255.255", DISCOVERY_PORT);
             bool keepReceiving = true;
 
             while (keepReceiving)
             {
                 using (var timeoutCancellationTokenSource = new CancellationTokenSource())
                 {
-                    var socketReceiveTask = socket.ReceiveAsync();
+                    var socketReceiveTask = discoveryUdpClient.ReceiveAsync();
                     socketReceiveTask.ConfigureAwait(false);
 
                     var completedTask = await Task.WhenAny(socketReceiveTask, Task.Delay(1000, timeoutCancellationTokenSource.Token));
@@ -63,11 +63,16 @@ namespace MagicHome
 
         protected override Task InternalRegister()
         {
+            discoveryUdpClient = new UdpClient(DISCOVERY_PORT);
+
             return Task.CompletedTask;
         }
 
         protected override Task InternalUnregister()
         {
+            discoveryUdpClient.Close();
+            discoveryUdpClient.Dispose();
+
             return Task.CompletedTask;
         }
     }

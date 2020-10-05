@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Utils;
 
@@ -28,6 +29,8 @@ namespace MagicHome
                 ReceiveTimeout = 1000,
                 SendTimeout = 1000
             };
+
+            shouldUseCsum = true;
         }
 
         protected override async Task ConnectInternal()
@@ -116,29 +119,45 @@ namespace MagicHome
         {
             await SendDataToDevice(0x81, 0x8a, 0x8b);
 
-            try
-            {
-                byte[] buffer_ledenet = new byte[14];
+            var lednetReceiveAttempt = await TryReceiveData(TimeSpan.FromSeconds(1));
 
-                await InternalLightSocket.ReceiveAsync(new ArraySegment<byte>(buffer_ledenet), SocketFlags.None);
+            if (lednetReceiveAttempt.Item1)
+            {
                 return LedProtocol.LEDENET;
             }
-            catch (Exception ex)
+
+            await SendDataToDevice(0xef, 0x01, 0x77);
+
+            var lednetOriginalReceiveAttempt = await TryReceiveData(TimeSpan.FromSeconds(1));
+
+            if (lednetOriginalReceiveAttempt.Item1)
             {
-                // TODO - Log exception
-                await SendDataToDevice(0xef, 0x01, 0x77);
+                return LedProtocol.LEDENET_ORIGINAL;
+            }
+
+            return LedProtocol.Unknown;
+        }
+
+        private async Task<Tuple<bool, byte[]>> TryReceiveData(TimeSpan timeout, int attemptsCount = 1)
+        {
+            bool didSucceed = false;
+            byte[] buffer = null;
+
+            while (attemptsCount > 0)
+            {
                 try
                 {
-                    byte[] buffer_original = new byte[14];
-                    await InternalLightSocket.ReceiveAsync(new ArraySegment<byte>(buffer_original), SocketFlags.None);
-                    return LedProtocol.LEDENET_ORIGINAL;
+                    buffer = new byte[14];
+                    await InternalLightSocket.ReceiveAsync(new ArraySegment<byte>(buffer), SocketFlags.None).TimeoutAfter(timeout);
+                    didSucceed = true;
                 }
-                catch (Exception innerEx)
+                catch (TimeoutException timeoutException)
                 {
-                    // Log this exception, too - it's more important
-                    return LedProtocol.Unknown;
+                    attemptsCount -= 1;
                 }
             }
+
+            return new Tuple<bool, byte[]>(didSucceed, buffer);
         }
 
         private async Task SendDataToDevice(params byte[] dataToSend)
