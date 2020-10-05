@@ -2,24 +2,63 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Utils;
 
 namespace MagicHome
 {
     public class MagicHomeProvider : BaseProvider
     {
+        private const int DISCOVERY_PORT = 48899;
+        private const string DISCOVERY_MESSAGE = "HF-A11ASSISTHREAD";
+
         public MagicHomeProvider(): base(new MagicHomeProviderMetadata())
         {
 
         }
 
-        public override Task<List<Device>> Discover()
+        public override async Task<List<Device>> Discover()
         {
-            List<Light> internalDevices;
-            internalDevices = Light.Discover();
+            var lights = new List<Device>();
 
-            return Task.FromResult(internalDevices.Select(internalDevice => new MagicHomeDevice(internalDevice, new MagicHomeDeviceMetadata(ProviderMetadata.ProviderGuid, "Magic Home Device"))).ToList<Device>());
+            var socket = new UdpClient(DISCOVERY_PORT);
+            var data = Encoding.UTF8.GetBytes(DISCOVERY_MESSAGE);
+            await socket.SendAsync(data, data.Length, "255.255.255.255", DISCOVERY_PORT);
+            bool keepReceiving = true;
+
+            while (keepReceiving)
+            {
+                using (var timeoutCancellationTokenSource = new CancellationTokenSource())
+                {
+                    var socketReceiveTask = socket.ReceiveAsync();
+                    socketReceiveTask.ConfigureAwait(false);
+
+                    var completedTask = await Task.WhenAny(socketReceiveTask, Task.Delay(1000, timeoutCancellationTokenSource.Token));
+
+                    if (completedTask != socketReceiveTask)
+                    {
+                        keepReceiving = false;
+                    }
+                    else
+                    {
+                        timeoutCancellationTokenSource.Cancel();
+                        var payload = await socketReceiveTask;
+
+                        string message = Encoding.UTF8.GetString(payload.Buffer);
+
+                        if (message != DISCOVERY_MESSAGE)
+                        {
+                            string address = message.Split(',')[0];
+                            lights.Add(new MagicHomeDevice(address, new MagicHomeDeviceMetadata(ProviderMetadata.ProviderGuid, address)));
+                        }
+                    }
+                }
+            }
+
+            return lights;
         }
 
         protected override Task InternalRegister()

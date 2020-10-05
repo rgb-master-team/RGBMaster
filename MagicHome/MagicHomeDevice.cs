@@ -3,6 +3,8 @@ using Provider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,20 +12,27 @@ namespace MagicHome
 {
     public class MagicHomeDevice : Device
     {
-        private Light InternalLight;
+        private const int defaultMagicHomePort = 5577;
 
-        public MagicHomeDevice(Light InternalLight, MagicHomeDeviceMetadata magicHomeDeviceMetadata) : base(magicHomeDeviceMetadata)
+        private readonly string LightIp;
+        private readonly Socket InternalLightSocket;
+
+        public MagicHomeDevice(string lightIp, MagicHomeDeviceMetadata magicHomeDeviceMetadata) : base(magicHomeDeviceMetadata)
         {
-            this.InternalLight = InternalLight;
-            this.InternalLight.Logger.Enabled = false;
+            LightIp = lightIp;
+            InternalLightSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         }
-        protected override Task ConnectInternal()
+
+        protected override async Task ConnectInternal()
         {
-            return Task.CompletedTask;
+            await InternalLightSocket.ConnectAsync(IPAddress.Parse(LightIp), defaultMagicHomePort);
         }
 
         protected override Task DisconnectInternal()
         {
+            InternalLightSocket.Close();
+            InternalLightSocket.Dispose();
+
             return Task.CompletedTask;
         }
 
@@ -39,22 +48,22 @@ namespace MagicHome
 
         protected override void SetBrightnessPercentageInternal(byte brightness)
         {
-            InternalLight.SetBrightness(brightness);
+            throw new NotImplementedException();
         }
 
         protected override void SetColorInternal(System.Drawing.Color color)
         {
-            InternalLight.SetColor(color.R, color.G, color.B);
+            // TODEAN
         }
 
         protected override void TurnOffInternal()
         {
-            InternalLight.TurnOff();
+            // TODEAN
         }
 
         protected override void TurnOnInternal()
         {
-            InternalLight.TurnOn();
+            // TODEAN
         }
     }
 }
