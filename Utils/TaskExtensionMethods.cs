@@ -25,5 +25,23 @@ namespace Utils
                 }
             }
         }
+
+        public static async Task TimeoutAfter(this Task task, TimeSpan timeout, string exceptionMessage = null)
+        {
+            using (var timeoutCancellationTokenSource = new CancellationTokenSource())
+            {
+
+                var completedTask = await Task.WhenAny(task, Task.Delay(timeout, timeoutCancellationTokenSource.Token));
+                if (completedTask == task)
+                {
+                    timeoutCancellationTokenSource.Cancel();
+                    await task;
+                }
+                else
+                {
+                    throw new TimeoutException(exceptionMessage ?? "The operation has timed out.");
+                }
+            }
+        }
     }
 }

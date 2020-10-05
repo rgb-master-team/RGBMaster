@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utils;
 
 namespace Provider
 {
@@ -19,17 +20,11 @@ namespace Provider
             {
                 if (!IsRegistered)
                 {
-                    int registerProviderTimeout = 5000;
-                    var task = InternalRegister();
-                    if (await Task.WhenAny(task, Task.Delay(registerProviderTimeout)) == task)
-                    {
-                        IsRegistered = true;
-                    }
-                    else
-                    {
-                        throw new Exception($"Failed to register to provider {ProviderMetadata.ProviderName} with guid {ProviderMetadata.ProviderGuid}");
-                    }
-
+                    // TODO - Move to a CancellationToken mechanism and enforce receiving CancellationTokens
+                    // in all InternalRegister methods.
+                    var registerTimeoutSpan = TimeSpan.FromSeconds(5);
+                    await InternalRegister().TimeoutAfter(registerTimeoutSpan, $"Failed to register to provider {ProviderMetadata.ProviderName} with guid {ProviderMetadata.ProviderGuid}").ConfigureAwait(false);
+                    IsRegistered = true;
                 }
 
                 return IsRegistered;
@@ -47,16 +42,11 @@ namespace Provider
             {
                 if (IsRegistered)
                 {
-                    int unregisterTimeout = 1000;
-                    var task = InternalUnregister();
-                    if (await Task.WhenAny(task, Task.Delay(unregisterTimeout)) == task)
-                    {
-                        IsRegistered = false;
-                    }
-                    else
-                    {
-                        throw new Exception($"Failed to unregister from provider {ProviderMetadata.ProviderName} with guid {ProviderMetadata.ProviderGuid}");
-                    }
+                    // TODO - Move to a CancellationToken mechanism and enforce receiving CancellationTokens
+                    // in all InternalUnregister methods.
+                    var unregisterTimeoutSpan = TimeSpan.FromSeconds(5);
+                    await InternalUnregister().TimeoutAfter(unregisterTimeoutSpan, $"Failed to unregister from provider {ProviderMetadata.ProviderName} with guid {ProviderMetadata.ProviderGuid}").ConfigureAwait(false);
+                    IsRegistered = false;
                 }
 
                 return true;
@@ -70,7 +60,7 @@ namespace Provider
 
         public BaseProvider(ProviderMetadata providerMetadata)
         {
-            this.ProviderMetadata = providerMetadata;
+            ProviderMetadata = providerMetadata;
         }
 
         protected abstract Task InternalRegister();

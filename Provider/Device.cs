@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utils;
 
 namespace Provider
 {
@@ -97,17 +98,13 @@ namespace Provider
             {
                 try
                 {
-                    int connectTimeout = 50000;
-                    var task = ConnectInternal();
-                    if (await Task.WhenAny(task, Task.Delay(connectTimeout)) == task)
-                    {
-                        IsConnected = true;
-                        didSucceed = true;
-                    }
-                    else
-                    {
-                        throw new Exception($"Failed to connect to device {DeviceMetadata.DeviceName} with guid {DeviceMetadata.RgbMasterDeviceGuid}");
-                    }
+                    // TODO - Move to a CancellationToken mechanism and enforce receiving CancellationTokens
+                    // in all ConnectInternal methods.
+                    var connectTimeoutSpan = TimeSpan.FromSeconds(10);
+                    await ConnectInternal().TimeoutAfter(connectTimeoutSpan, $"Failed to connect to device {DeviceMetadata.DeviceName} with guid {DeviceMetadata.RgbMasterDeviceGuid}").ConfigureAwait(false);
+
+                    IsConnected = true;
+                    didSucceed = true;
                 }
                 catch (Exception)
                 {
@@ -132,17 +129,13 @@ namespace Provider
             {
                 try
                 {
-                    int disconnectTimeout = 5000;
-                    var task = DisconnectInternal();
-                    if (await Task.WhenAny(task, Task.Delay(disconnectTimeout)) == task)
-                    {
-                        IsConnected = false;
-                        didSucceed = true;
-                    }
-                    else
-                    {
-                        throw new Exception($"Failed to disconnect from device {DeviceMetadata.DeviceName} with guid {DeviceMetadata.RgbMasterDeviceGuid}");
-                    }
+                    // TODO - Move to a cancellationtoken mechanism and enforce receiving cancellationtokens
+                    // in all DisconnectInternal methods.
+                    var disconnectTimeoutSpan = TimeSpan.FromSeconds(10);
+                    await DisconnectInternal().TimeoutAfter(disconnectTimeoutSpan, $"Failed to disconnect from device {DeviceMetadata.DeviceName} with guid {DeviceMetadata.RgbMasterDeviceGuid}").ConfigureAwait(false);
+
+                    IsConnected = false;
+                    didSucceed = true;
                 }
                 catch (Exception)
                 {

@@ -69,11 +69,11 @@ namespace MagicHome
         {
             if (MagicHomeProtocol == LedProtocol.LEDENET)
             {
-                SendDataToDevice(0x41, color.R, color.G, color.B, 0x00, 0x00, 0x0f).Wait();
+                TrySendDataToDevice(0x41, color.R, color.G, color.B, 0x00, 0x00, 0x0f).Wait();
             }
             else
             {
-                SendDataToDevice(0x56, color.R, color.G, color.B, 0xaa).Wait();
+                TrySendDataToDevice(0x56, color.R, color.G, color.B, 0xaa).Wait();
             }
         }
 
@@ -81,11 +81,11 @@ namespace MagicHome
         {
             if (MagicHomeProtocol == LedProtocol.LEDENET)
             {
-                SendDataToDevice(0x71, 0x24, 0x0f).Wait();
+                TrySendDataToDevice(0x71, 0x24, 0x0f).Wait();
             }
             else
             {
-                SendDataToDevice(0xcc, 0x24, 0x33).Wait();
+                TrySendDataToDevice(0xcc, 0x24, 0x33).Wait();
             }
         }
 
@@ -93,17 +93,22 @@ namespace MagicHome
         {
             if (MagicHomeProtocol == LedProtocol.LEDENET)
             {
-                SendDataToDevice(0x71, 0x23, 0x0f).Wait();
+                TrySendDataToDevice(0x71, 0x23, 0x0f).Wait();
             }
             else
             {
-                SendDataToDevice(0xcc, 0x23, 0x33).Wait();
+                TrySendDataToDevice(0xcc, 0x23, 0x33).Wait();
             }
         }
 
         private async Task<LedProtocol> GetMagicHomeProtocol()
         {
-            await SendDataToDevice(0x81, 0x8a, 0x8b);
+            var sentSuccessfully = await TrySendDataToDevice(0x81, 0x8a, 0x8b);
+
+            if (!sentSuccessfully)
+            {
+                throw new TimeoutException("The request for magic home protocol of LEDENET received a timeout");
+            }
 
             var lednetReceiveAttempt = await TryReceiveData(TimeSpan.FromSeconds(1));
 
@@ -112,7 +117,12 @@ namespace MagicHome
                 return LedProtocol.LEDENET;
             }
 
-            await SendDataToDevice(0xef, 0x01, 0x77);
+            sentSuccessfully = await TrySendDataToDevice(0xef, 0x01, 0x77);
+
+            if (!sentSuccessfully)
+            {
+                throw new TimeoutException("The request for magic home protocol of LEDENET_ORIGINAL received a timeout");
+            }
 
             var lednetOriginalReceiveAttempt = await TryReceiveData(TimeSpan.FromSeconds(1));
 
@@ -124,32 +134,55 @@ namespace MagicHome
             return LedProtocol.Unknown;
         }
 
-        private async Task<Tuple<bool, byte[]>> TryReceiveData(TimeSpan timeout, int attemptsCount = 1)
+        private async Task<Tuple<bool, byte[]>> TryReceiveData(TimeSpan? timeout = null, int attemptsCount = 1)
         {
             bool didSucceed = false;
-            byte[] buffer = null;
+            byte[] buffer = new byte[14];
 
             while (attemptsCount > 0)
             {
                 try
                 {
-                    buffer = new byte[14];
-                    await InternalLightSocket.ReceiveAsync(new ArraySegment<byte>(buffer), SocketFlags.None).TimeoutAfter(timeout);
+                    await InternalLightSocket.ReceiveAsync(
+                        buffer, 
+                        SocketFlags.None,
+                        timeout != null ? new CancellationTokenSource(timeout.Value).Token : default
+                        );
+
                     didSucceed = true;
                 }
-                catch (TimeoutException timeoutException)
+                catch (TaskCanceledException)
                 {
                     attemptsCount -= 1;
                 }
             }
 
+            if (!didSucceed)
+            {
+                buffer = null;
+            }
+
             return new Tuple<bool, byte[]>(didSucceed, buffer);
         }
 
-        private async Task SendDataToDevice(params byte[] dataToSend)
+        private async Task<bool> TrySendDataToDevice(params byte[] dataToSend)
         {
-            List<byte> finalSentData = new List<byte>();
-            finalSentData.AddRange(dataToSend);
+            return await TrySendDataToDevice(null, 1, dataToSend.ToArray());
+        }
+
+        private async Task<bool> TrySendDataToDevice(TimeSpan timeout, params byte[] dataToSend)
+        {
+            return await TrySendDataToDevice(timeout, 1, dataToSend.ToArray());
+        }
+
+        private async Task<bool> TrySendDataToDevice(int attemptsCount, params byte[] dataToSend)
+        {
+            return await TrySendDataToDevice(null, attemptsCount, dataToSend.ToArray());
+        }
+
+        private async Task<bool> TrySendDataToDevice(TimeSpan? timeout, int attemptsCount, byte[] dataToSend)
+        {
+            List<byte> finalSentData = new List<byte>(dataToSend);
 
             if (shouldUseCsum)
             {
@@ -159,7 +192,26 @@ namespace MagicHome
                 finalSentData.Add(csum);
             }
 
-            await InternalLightSocket.SendAsync(new ArraySegment<byte>(finalSentData.ToArray()), SocketFlags.None);
+            bool didSucceed = false;
+
+            while (attemptsCount > 0)
+            {
+                try
+                {
+                    await InternalLightSocket.SendAsync(
+                        finalSentData.ToArray(),
+                        SocketFlags.None,
+                        timeout != null ? new CancellationTokenSource(timeout.Value).Token : default
+                        );
+                    didSucceed = true;
+                }
+                catch (TaskCanceledException)
+                {
+                    attemptsCount -= 1;
+                }
+            }
+
+            return didSucceed;
         }
     }
 }
