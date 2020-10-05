@@ -39,21 +39,7 @@ namespace MagicHome
 
             MagicHomeProtocol = await GetMagicHomeProtocol();
 
-            switch (MagicHomeProtocol)
-            {
-                case LedProtocol.Unknown:
-                    shouldUseCsum = false;
-                    break;
-                case LedProtocol.LEDENET:
-                    shouldUseCsum = true;
-                    break;
-                case LedProtocol.LEDENET_ORIGINAL:
-                    shouldUseCsum = false;
-                    break;
-                default:
-                    shouldUseCsum = false;
-                    break;
-            }
+            shouldUseCsum = MagicHomeProtocol == LedProtocol.LEDENET;
         }
 
         protected override Task DisconnectInternal()
