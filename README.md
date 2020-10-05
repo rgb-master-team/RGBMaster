@@ -29,7 +29,7 @@ The project attempts to use official libraries when possible and focuses on the 
 - [x] MagicHome
 - [ ] Corsair - WIP
 - [ ] Asus Aura - WIP
-- [ ] SteelSeries - WIP
+- [x] SteelSeries
 - [ ] ShellyRGB - WIP
 
 <a name="prerequisites"></a>
