@@ -96,7 +96,8 @@ namespace Yeelight
 
         protected override byte GetBrightnessPercentageInternal()
         {
-            // TODO - GET THIS FROM THE SOCKET INSTEAD OF THE CLOUD
+            // TODO - Don't get this from the music socket as it won't return anything to us - 
+            // move to standard request like in the API specifications.
             var task = InternalDevice.GetProp(YeelightAPI.Models.PROPERTIES.bright);
             task.Wait();
             return (byte)task.Result;
@@ -104,7 +105,8 @@ namespace Yeelight
 
         protected override Color GetColorInternal()
         {
-            // TODO - GET THIS FROM THE SOCKET INSTEAD OF THE CLOUD
+            // TODO - Don't get this from the music socket as it won't return anything to us - 
+            // move to standard request like in the API specifications.
             var task = InternalDevice.GetProp(YeelightAPI.Models.PROPERTIES.rgb);
             task.Wait();
             return RGBColorHelper.ParseColor((int)task.Result);
