@@ -128,6 +128,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\128.png" />
+    <Content Include="Assets\Icons\AllDevices.png" />
     <Content Include="Assets\Icons\Chair.png" />
     <Content Include="Assets\Icons\Fan.png" />
     <Content Include="Assets\Icons\GPU.png" />
@@ -139,6 +140,7 @@
     <Content Include="Assets\Icons\Memory.png" />
     <Content Include="Assets\Icons\Motherboard.png" />
     <Content Include="Assets\Icons\Mouse.png" />
+    <Content Include="Assets\Icons\Mousepad.png" />
     <Content Include="Assets\Icons\Speaker.png" />
     <Content Include="Assets\Icons\Unknown.png" />
     <Content Include="Assets\Logos\CorsairiCueLogo.png" />
@@ -147,6 +149,7 @@
     <Content Include="Assets\Logos\LogitechGHubLogo.png" />
     <Content Include="Assets\Logos\MagicHomeLogo.png" />
     <Content Include="Assets\Logos\MsiMysticLightLogo.png" />
+    <Content Include="Assets\Logos\SteelSeries.png" />
     <Content Include="Assets\Logos\YeelightLogo.png" />
     <Content Include="Assets\SplashScreen.png" />
     <Content Include="Assets\Logos\SynapseLogo.png" />
@@ -163,10 +166,10 @@
       <Version>6.2.10</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Win32.UI.XamlApplication">
-      <Version>6.1.1</Version>
+      <Version>6.1.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
-      <Version>2.5.0-prerelease.200708003</Version>
+      <Version>2.5.0-prerelease.200923002</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

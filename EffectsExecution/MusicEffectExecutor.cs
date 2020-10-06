@@ -19,7 +19,7 @@ namespace EffectsExecution
 
         }
 
-        public override Task StopInternal()
+        protected override Task StopInternal()
         {
             captureInstance.StopRecording();
 
@@ -28,7 +28,7 @@ namespace EffectsExecution
             return Task.CompletedTask;
         }
 
-        public override Task StartInternal()
+        protected override Task StartInternal()
         {
             MMDeviceEnumerator enumerator = new MMDeviceEnumerator();
             foreach (MMDevice device in enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.All))

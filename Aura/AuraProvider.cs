@@ -1,4 +1,5 @@
 ﻿using AuraSDKDotNet;
+using Common;
 using Provider;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace Aura
     public class AuraProvider : BaseProvider
     {
         private AuraSDK internalSdk;
+        private static int VENDOR_ID = 0x1532;
 
         public AuraProvider() : base(new AuraProviderMetadata())
         {
@@ -18,16 +20,16 @@ namespace Aura
 
         public override Task<List<Device>> Discover()
         {
-            return Task.FromResult(internalSdk.Motherboards.Select(mb => new AuraDevice(mb)).ToList<Device>());
+            return Task.FromResult(internalSdk.Motherboards.Select(mb => new AuraMotherboardDevice(mb, new AuraMotherboardDeviceMetadata(ProviderMetadata.ProviderGuid, "Unknown Aura Motherboard", new HashSet<OperationType>() { OperationType.SetColor }))).ToList<Device>());
         }
 
-        protected override Task Register()
+        protected override Task InternalRegister()
         {
             internalSdk = new AuraSDK();
             return Task.CompletedTask;
         }
 
-        public override Task Unregister()
+        protected override Task InternalUnregister()
         {
             internalSdk.Unload();
             return Task.CompletedTask;

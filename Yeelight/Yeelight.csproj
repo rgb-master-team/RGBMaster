@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="YeelightAPI" Version="1.8.0" />
+    <PackageReference Include="YeelightAPI" Version="1.7.0" />
   </ItemGroup>
 
   <ItemGroup>

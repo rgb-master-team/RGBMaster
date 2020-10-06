@@ -13,21 +13,21 @@ namespace Msi.Provider
 
         }
 
-		protected override Task Register()
+		protected override Task InternalRegister()
 		{
 			MysticLightSdk.Initialize();
 
 			return Task.CompletedTask;
 		}
 
-		public override Task Unregister()
+		protected override Task InternalUnregister()
 		{
 			return Task.CompletedTask;
 		}
 
 		public override Task<List<RGBProvider.Device>> Discover()
 		{
-			return Task.FromResult(MysticLightSdk.GetAllDevices().ToList<RGBProvider.Device>());
+			return Task.FromResult(MysticLightSdk.GetAllDevices(ProviderMetadata.ProviderGuid).ToList<RGBProvider.Device>());
 		}
 	}
 }

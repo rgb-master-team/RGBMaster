@@ -1,10 +1,13 @@
 ﻿using Common;
+using Serilog;
+using Serilog.Core;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utils;
 
 namespace Provider
 {
@@ -14,7 +17,7 @@ namespace Provider
 
         public Device(DeviceMetadata deviceMetadata)
         {
-            this.DeviceMetadata = deviceMetadata;
+            DeviceMetadata = deviceMetadata;
         }
 
         public bool IsConnected { get; private set; }
@@ -85,26 +88,68 @@ namespace Provider
         protected abstract void TurnOnInternal();
         protected abstract void TurnOffInternal();
 
-        public async Task Connect()
+        public async Task<bool> Connect()
         {
+            bool didSucceed;
+
             if (IsConnected)
             {
-                return;
+                didSucceed = true;
+            }
+            else
+            {
+                try
+                {
+                    // TODO - Move to a CancellationToken mechanism and enforce receiving CancellationTokens
+                    // in all ConnectInternal methods.
+                    var connectTimeoutSpan = TimeSpan.FromSeconds(10);
+                    await ConnectInternal().TimeoutAfter(connectTimeoutSpan, $"Failed to connect to device {DeviceMetadata.DeviceName} with guid {DeviceMetadata.RgbMasterDeviceGuid}").ConfigureAwait(false);
+
+                    IsConnected = true;
+                    didSucceed = true;
+                }
+                catch (Exception ex)
+                {
+                    Log.Logger.Error(ex, "Failed connecting to device with GUID {A}.", DeviceMetadata.RgbMasterDeviceGuid);
+
+                    IsConnected = false;
+                    didSucceed = false;
+                }
             }
 
-            await ConnectInternal();
-            IsConnected = true;
+            return didSucceed;
         }
 
-        public async Task Disconnect()
+        public async Task<bool> Disconnect()
         {
+            bool didSucceed;
+
             if (!IsConnected)
             {
-                return;
+                didSucceed = true;
+            }
+            else
+            {
+                try
+                {
+                    // TODO - Move to a cancellationtoken mechanism and enforce receiving cancellationtokens
+                    // in all DisconnectInternal methods.
+                    var disconnectTimeoutSpan = TimeSpan.FromSeconds(10);
+                    await DisconnectInternal().TimeoutAfter(disconnectTimeoutSpan, $"Failed to disconnect from device {DeviceMetadata.DeviceName} with guid {DeviceMetadata.RgbMasterDeviceGuid}").ConfigureAwait(false);
+
+                    IsConnected = false;
+                    didSucceed = true;
+                }
+                catch (Exception ex)
+                {
+                    Log.Logger.Error(ex, "Failed disconnecting from device with GUID {A}", DeviceMetadata.RgbMasterDeviceGuid);
+
+                    IsConnected = false;
+                    didSucceed = false;
+                }
             }
 
-            await DisconnectInternal();
-            IsConnected = false;
+            return didSucceed;
         }
 
         protected abstract Task ConnectInternal();

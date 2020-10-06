@@ -1,20 +1,18 @@
-﻿using Colore;
-using Provider;
+﻿using Provider;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RazerChroma
+namespace Logitech
 {
-    public class RazerChromaDevice : Device
+    public class LogitechMouseDevice : Device
     {
-        private readonly IChroma internalChromaDriver;
-
-        public RazerChromaDevice(IChroma internalChromaDriver): base(new RazerChromaDeviceMetadata())
+        public LogitechMouseDevice(LogitechMouseDeviceMetadata logitechDeviceMetadata) : base(logitechDeviceMetadata)
         {
-            this.internalChromaDriver = internalChromaDriver;
+
         }
 
         protected override Task ConnectInternal()
@@ -32,7 +30,7 @@ namespace RazerChroma
             throw new NotImplementedException();
         }
 
-        protected override System.Drawing.Color GetColorInternal()
+        protected override Color GetColorInternal()
         {
             throw new NotImplementedException();
         }
@@ -42,9 +40,9 @@ namespace RazerChroma
             throw new NotImplementedException();
         }
 
-        protected async override void SetColorInternal(System.Drawing.Color color)
+        protected override void SetColorInternal(Color color)
         {
-            await internalChromaDriver.SetAllAsync(new Colore.Data.Color(color.R, color.G, color.B));
+            LogitechGSDK.LogiLedSetLightingForTargetZone(DeviceType.Mouse, 1, 100 * (color.R / byte.MaxValue), 100 * (color.G / byte.MaxValue), 100 * (color.B / byte.MaxValue));
         }
 
         protected override void TurnOffInternal()

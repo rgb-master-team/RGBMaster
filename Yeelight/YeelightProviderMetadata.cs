@@ -1,6 +1,4 @@
 ﻿using Common;
-using System.Drawing;
-
 namespace Yeelight
 {
     public class YeelightProviderMetadata : ProviderMetadata

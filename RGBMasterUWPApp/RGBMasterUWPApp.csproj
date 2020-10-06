@@ -123,6 +123,9 @@
     <Compile Include="Pages\DevicesPage.xaml.cs">
       <DependentUpon>DevicesPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\EffectsControls\CursorColorEffectControl.xaml.cs">
+      <DependentUpon>CursorColorEffectControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\EffectsControls\DominantDisplayColorEffectControl.xaml.cs">
       <DependentUpon>DominantDisplayColorEffectControl.xaml</DependentUpon>
     </Compile>
@@ -150,13 +153,17 @@
       <Version>6.2.10</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
-      <Version>2.5.0-prerelease.200708003</Version>
+      <Version>2.5.0-prerelease.200923002</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Pages\DevicesPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\EffectsControls\CursorColorEffectControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\EffectsControls\DominantDisplayColorEffectControl.xaml">
       <SubType>Designer</SubType>

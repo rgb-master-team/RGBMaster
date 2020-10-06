@@ -19,15 +19,15 @@ namespace Yeelight
         public override async Task<List<Provider.Device>> Discover()
         {
             var yeelightInternalDevices = await DeviceLocator.Discover();
-            return yeelightInternalDevices.Select(device => new YeelightDevice(device)).ToList<Provider.Device>();
+            return yeelightInternalDevices.Select(device => new YeelightDevice(ProviderMetadata.ProviderGuid, device)).ToList<Provider.Device>();
         }
 
-        protected override Task Register()
+        protected override Task InternalRegister()
         {
             return Task.CompletedTask;
         }
 
-        public override Task Unregister()
+        protected override Task InternalUnregister()
         {
             return Task.CompletedTask;
         }

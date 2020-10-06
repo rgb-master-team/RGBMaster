@@ -8,10 +8,11 @@ namespace Common
 {
     public class DeviceMetadata
     {
-        public Guid DeviceGuid { get; }
-        public virtual string DeviceName { get; }
-        public virtual HashSet<OperationType> SupportedOperations { get; }
-        public DeviceType DeviceType { get; private set; }
+        public Guid RgbMasterDiscoveringProvider { get; }
+        public Guid RgbMasterDeviceGuid { get; }
+        public string DeviceName { get; }
+        public HashSet<OperationType> SupportedOperations { get; }
+        public DeviceType DeviceType { get; }
         public virtual string DeviceIconAssetPath
         {
             get
@@ -46,16 +47,21 @@ namespace Common
                         return @"/Assets/Icons/Motherboard.png";
                     case DeviceType.Chair:
                         return @"/Assets/Icons/Chair.png";
+                    case DeviceType.AllDevices:
+                        return @"/Assets/Icons/AllDevices.png";
                     default:
-                        return @"/Assets/Icons/Lightbulb.png";
+                        throw new NotSupportedException($"An icon is not mapped to device type {DeviceType}.");
                 }
             }
         }
 
-        public DeviceMetadata(DeviceType deviceType = DeviceType.Unknown)
+        public DeviceMetadata(Guid rgbMasterDiscoveringProvider, DeviceType deviceType, string deviceName, HashSet<OperationType> supportedOperations)
         {
-            DeviceGuid = Guid.NewGuid();
+            RgbMasterDiscoveringProvider = rgbMasterDiscoveringProvider;
+            RgbMasterDeviceGuid = Guid.NewGuid();
             DeviceType = deviceType;
+            DeviceName = deviceName;
+            SupportedOperations = supportedOperations;
         }
     }
 }

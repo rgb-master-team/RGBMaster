@@ -1,14 +1,15 @@
 ﻿using AppExecutionManager.EventManagement;
 using AppExecutionManager.State;
-using Colore.Logging;
 using Common;
 using EffectsExecution;
+using GameSense;
 using Logitech;
 using MagicHome;
+using Microsoft.Toolkit.Wpf.UI.XamlHost;
 using Provider;
 using RazerChroma;
 using Serilog;
-using Serilog.Events;
+using Serilog.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,6 +17,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Yeelight;
 
 namespace RGBMasterWPFRunner
@@ -27,10 +30,13 @@ namespace RGBMasterWPFRunner
     {
         private SemaphoreSlim changeConnectedDevicesSemaphore = new SemaphoreSlim(1, 1);
         private SemaphoreSlim initializeProvidersSemaphore = new SemaphoreSlim(1, 1);
+        private SemaphoreSlim changeStaticColorSemaphore = new SemaphoreSlim(1, 1);
 
         private readonly Dictionary<Guid, Provider.BaseProvider> supportedProviders = new Dictionary<Guid, Provider.BaseProvider>();
         private readonly Dictionary<Guid, EffectExecutor> supportedEffectsExecutors = new Dictionary<Guid, EffectExecutor>();
         private readonly Dictionary<Guid, Device> concreteDevices = new Dictionary<Guid, Device>();
+
+        private RGBMasterUWPApp.RGBMasterUserControl MainUserControl;
 
         public MainWindow()
         {
@@ -41,9 +47,6 @@ namespace RGBMasterWPFRunner
             PackageVersion version = packageId.Version;
             AppState.Instance.AppVersion = string.Format($"{version.Major}.{version.Minor}.{version.Build}.{version.Revision}");
 
-            // TODO - For fuck sake, check why the fuck it is impossible to write to AppData via Serilog when the user's name contains spaces?!
-            // var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"{AppState.Instance.AppVersion}.txt");
-
             var path = Path.Combine(
                     Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System)),
                     @$"RGBMaster\Logs\{AppState.Instance.AppVersion}.txt"
@@ -52,6 +55,7 @@ namespace RGBMasterWPFRunner
             var globalLog = new LoggerConfiguration()
                 .MinimumLevel
                 .Is(Serilog.Events.LogEventLevel.Debug)
+                .Enrich.WithExceptionDetails()
                 .WriteTo
                 .File(
                     path,
@@ -67,16 +71,14 @@ namespace RGBMasterWPFRunner
 
             globalLog.Information("Initializing RGBMaster.....");
 
-            CreateAndSetSupportedProviders(new List<BaseProvider>() { new YeelightProvider(), new MagicHomeProvider(), new RazerChromaProvider(), new LogitechProvider() });
+            CreateAndSetSupportedProviders(new List<BaseProvider>() { new YeelightProvider(), new MagicHomeProvider(), new RazerChromaProvider(), new LogitechProvider(), new GameSenseProvider() });
 
-            CreateAndSetSupportedEffectsExecutors(new List<EffectExecutor>() { new MusicEffectExecutor(), new DominantDisplayColorEffectExecutor(), new StaticColorEffectExecutor() });
+            CreateAndSetSupportedEffectsExecutors(new List<EffectExecutor>() { new MusicEffectExecutor(), new DominantDisplayColorEffectExecutor(), new CursorColorEffectExecutor(), new StaticColorEffectExecutor() });
             SetUIStateEffects();
 
-            EventManager.Instance.SubscribeToEffectChanged(Instance_EffectChanged);
+            EventManager.Instance.SubscribeToEffectActivationRequests(Instance_EffectChanged);
             EventManager.Instance.SubscribeToSelectedDevicesChanged(Instance_SelectedDevicesChanged);
             EventManager.Instance.SubscribeToInitializeProvidersRequests(InitializeProviders);
-            EventManager.Instance.SubscribeToStartSyncingRequested(StartSyncing);
-            EventManager.Instance.SubscribeToStopSyncingRequested(StopSyncing);
             EventManager.Instance.SubscribeToStaticColorChanges(ChangeStaticColor);
             EventManager.Instance.SubscribeToTurnOnAllLightsRequests(TurnOnAllLights);
         }
@@ -91,42 +93,34 @@ namespace RGBMasterWPFRunner
                 {
                     if (device.IsChecked)
                     {
-                        var deviceGuid = device.Device.DeviceGuid;
+                        var deviceGuid = device.Device.RgbMasterDeviceGuid;
                         tasks.Add(Task.Run(() => concreteDevices[deviceGuid].TurnOn()));
                     }
                 }
             }
 
             await Task.WhenAll(tasks);
-
-        }
-
-        private async void StopSyncing(object sender, EventArgs e)
-        {
-            AppState.Instance.IsEffectRunning = false;
-
-            await supportedEffectsExecutors[AppState.Instance.SelectedEffect.EffectMetadataGuid].Stop();
         }
 
         private async void ChangeStaticColor(object sender, StaticColorEffectProps staticColorEffectProps)
         {
             AppState.Instance.StaticColorEffectProperties = staticColorEffectProps;
 
-            var selectedEffectExecutor = supportedEffectsExecutors[AppState.Instance.SelectedEffect.EffectMetadataGuid];
-
-            if (AppState.Instance.IsEffectRunning && selectedEffectExecutor.GetType() == typeof(StaticColorEffectExecutor))
+            if (AppState.Instance.IsEffectRunning)
             {
-                ((StaticColorEffectMetadata)selectedEffectExecutor.executedEffectMetadata).UpdateProps(staticColorEffectProps);
+                var selectedEffectExecutor = supportedEffectsExecutors[AppState.Instance.ActiveEffect.EffectMetadataGuid];
 
-                await selectedEffectExecutor.Start();
+                if (selectedEffectExecutor.executedEffectMetadata.Type == EffectType.StaticColor)
+                {
+                    await changeStaticColorSemaphore.WaitAsync();
+
+                    ((StaticColorEffectMetadata)selectedEffectExecutor.executedEffectMetadata).UpdateProps(staticColorEffectProps);
+
+                    await selectedEffectExecutor.Start();
+
+                    changeStaticColorSemaphore.Release();
+                }
             }
-        }
-
-        private async void StartSyncing(object sender, EventArgs e)
-        {
-            AppState.Instance.IsEffectRunning = true;
-
-            await supportedEffectsExecutors[AppState.Instance.SelectedEffect.EffectMetadataGuid].Start();
         }
 
         private void SetUIStateEffects()
@@ -137,8 +131,6 @@ namespace RGBMasterWPFRunner
             {
                 AppState.Instance.Effects.Add(supportedEffectExecutor.executedEffectMetadata);
             }
-
-            AppState.Instance.SelectedEffect = AppState.Instance.Effects.FirstOrDefault();
         }
 
         private void CreateAndSetSupportedEffectsExecutors(IEnumerable<EffectExecutor> effectExecutors)
@@ -163,9 +155,8 @@ namespace RGBMasterWPFRunner
         {
             await initializeProvidersSemaphore.WaitAsync();
             Log.Logger.Information("Initializing providers.....");
-            concreteDevices.Clear();
-            AppState.Instance.RegisteredProviders.Clear();
-            //AppState.Instance.SelectedDevices.Clear();
+
+            await CleanupDevicesAndProviders();
 
             var tasks = new List<Task>();
 
@@ -173,7 +164,7 @@ namespace RGBMasterWPFRunner
 
             foreach (var provider in supportedProviders.Values)
             {
-                var didInitialize = await provider.InitializeProvider();
+                var didInitialize = await provider.Register();
 
                 if (!didInitialize)
                 {
@@ -190,7 +181,7 @@ namespace RGBMasterWPFRunner
                     aggregatedDiscoveredDevices.AddRange(discoveredDevices);
 
                     Log.Logger.Information("Listing discovered devices for provider {A}:", provider.ProviderMetadata.ProviderName);
-                    Log.Logger.Information(string.Join("\n", discoveredDevices.Select(discoveredDevice => $"name: {discoveredDevice.DeviceMetadata.DeviceName}, guid: {discoveredDevice.DeviceMetadata.DeviceGuid}")));
+                    Log.Logger.Information(string.Join("\n", discoveredDevices.Select(discoveredDevice => $"name: {discoveredDevice.DeviceMetadata.DeviceName}, guid: {discoveredDevice.DeviceMetadata.RgbMasterDeviceGuid}")));
 
                     AppState.Instance.RegisteredProviders.Add(new RegisteredProvider()
                     {
@@ -202,7 +193,12 @@ namespace RGBMasterWPFRunner
 
             foreach (var device in aggregatedDiscoveredDevices)
             {
-                concreteDevices.Add(device.DeviceMetadata.DeviceGuid, device);
+                concreteDevices.Add(device.DeviceMetadata.RgbMasterDeviceGuid, device);
+            }
+
+            if (AppState.Instance.IsEffectRunning)
+            {
+                EventManager.Instance.RequestEffectActivation(null);
             }
 
             initializeProvidersSemaphore.Release();
@@ -210,22 +206,28 @@ namespace RGBMasterWPFRunner
 
         private async void Instance_EffectChanged(object sender, EffectMetadata e)
         {
-            var newEffectExecutor = supportedEffectsExecutors[e.EffectMetadataGuid];
-
-            Log.Logger.Information("Effect changed to {A}.", newEffectExecutor.executedEffectMetadata.EffectName);
-
-            newEffectExecutor.ChangeConnectedDevices(AppState.Instance.RegisteredProviders.Select(provider => provider.Devices).SelectMany(devices => devices).Where(device => device.IsChecked).Select(dev => this.concreteDevices[dev.Device.DeviceGuid]));
-
-            if (AppState.Instance.IsEffectRunning)
+            // If we want to stop syncing the effect, and there is an active effect right now, stop it
+            if (e == null && AppState.Instance.ActiveEffect != null)
             {
-                if (e.EffectMetadataGuid != AppState.Instance.SelectedEffect.EffectMetadataGuid)
+                await supportedEffectsExecutors[AppState.Instance.ActiveEffect.EffectMetadataGuid].Stop();
+            }
+            else
+            {
+                var newEffectExecutor = supportedEffectsExecutors[e.EffectMetadataGuid];
+
+                Log.Logger.Information("Effect changed to {A}.", newEffectExecutor.executedEffectMetadata.EffectName);
+
+                newEffectExecutor.ChangeConnectedDevices(AppState.Instance.RegisteredProviders.Select(provider => provider.Devices).SelectMany(devices => devices).Where(device => device.IsChecked).Select(dev => this.concreteDevices[dev.Device.RgbMasterDeviceGuid]));
+
+                if (AppState.Instance.ActiveEffect != null)
                 {
-                    await supportedEffectsExecutors[AppState.Instance.SelectedEffect.EffectMetadataGuid].Stop();
-                    await supportedEffectsExecutors[e.EffectMetadataGuid].Start();
+                    await supportedEffectsExecutors[AppState.Instance.ActiveEffect.EffectMetadataGuid].Stop();
                 }
+
+                await supportedEffectsExecutors[e.EffectMetadataGuid].Start();
             }
 
-            AppState.Instance.SelectedEffect = e;
+            AppState.Instance.ActiveEffect = e;
         }
 
         private async void Instance_SelectedDevicesChanged(object sender, List<DiscoveredDevice> devices)
@@ -234,36 +236,114 @@ namespace RGBMasterWPFRunner
 
             await changeConnectedDevicesSemaphore.WaitAsync();
 
-            if (newSelectedDevices == null)
-            {
-                return;
-            }
-
             foreach (var item in newSelectedDevices)
             {
-                var concreteDevice = concreteDevices[item.Device.DeviceGuid];
+                var concreteDevice = concreteDevices[item.Device.RgbMasterDeviceGuid];
 
                 if (!item.IsChecked && concreteDevice.IsConnected)
                 {
-                    Log.Logger.Warning("Turning off device with GUID {A}.", concreteDevice.DeviceMetadata.DeviceGuid);
+                    Log.Logger.Warning("Turning off device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
                     concreteDevice.TurnOff();
 
-                    Log.Logger.Warning("Disconnecting from device with GUID {A}.", concreteDevice.DeviceMetadata.DeviceGuid);
-                    await concreteDevice.Disconnect();
+                    Log.Logger.Warning("Disconnecting from device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
+                    var didSucceed = await concreteDevice.Disconnect();
+
+                    if (!didSucceed)
+                    {
+                        Log.Logger.Error("Failed disconnecting from device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
+                        InformErrorOnFlyout($"Failed to disconnect from device {item.Device.DeviceName}. \nThis might be a problem in the {AppState.Instance.SupportedProviders.First(x => x.ProviderGuid == item.Device.RgbMasterDiscoveringProvider).ProviderName} provider. \nMake sure network connection is valid and try to refresh devices or restart the app.");
+                    }
                 }
                 else if (item.IsChecked && !concreteDevice.IsConnected)
                 {
-                    Log.Logger.Warning("Connecting to device with GUID {A}.", concreteDevice.DeviceMetadata.DeviceGuid);
-                    await concreteDevice.Connect();
+                    Log.Logger.Warning("Connecting to device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
+                    var didSucceed = await concreteDevice.Connect();
 
-                    Log.Logger.Warning("Turning on device with GUID {A}.", concreteDevice.DeviceMetadata.DeviceGuid);
-                    concreteDevice.TurnOn();
+                    if (!didSucceed)
+                    {
+                        Log.Logger.Error("Failed connecting to device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
+                        InformErrorOnFlyout($"Failed to connect to device {item.Device.DeviceName}. \nThis might be a problem in the {AppState.Instance.SupportedProviders.First(x => x.ProviderGuid == item.Device.RgbMasterDiscoveringProvider).ProviderName} provider. \nMake sure network connection is valid and try to refresh devices or restart the app.");
+
+                        item.IsChecked = false;
+                    }
+                    else
+                    {
+                        Log.Logger.Warning("Turning on device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
+                        concreteDevice.TurnOn();
+                    }
                 }
             }
 
-            supportedEffectsExecutors[AppState.Instance.SelectedEffect.EffectMetadataGuid].ChangeConnectedDevices(newSelectedDevices.Where(device => device.IsChecked).Select(dev => this.concreteDevices[dev.Device.DeviceGuid]));
+            if (AppState.Instance.IsEffectRunning)
+            {
+                supportedEffectsExecutors[AppState.Instance.ActiveEffect.EffectMetadataGuid].ChangeConnectedDevices(newSelectedDevices.Where(device => device.IsChecked).Select(dev => this.concreteDevices[dev.Device.RgbMasterDeviceGuid]));
+            }
 
             changeConnectedDevicesSemaphore.Release();
+        }
+
+        private void InformErrorOnFlyout(string errorMessage)
+        {
+            var flyoutContentStackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
+
+            flyoutContentStackPanel.Children.Add(new FontIcon
+            {
+                FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets"),
+                Glyph = "\uE783",
+                FontSize = 42,
+                Margin = new Thickness(0, 0, 8, 0)
+            });
+
+            flyoutContentStackPanel.Children.Add(new TextBlock()
+            {
+                Text = errorMessage
+            });
+
+            var flyoutPresenterStyle = new Style(typeof(FlyoutPresenter));
+
+            flyoutPresenterStyle.Setters.Add(new Setter(FrameworkElement.MaxWidthProperty, MainUserControl.Width));
+
+            var flyout = new Flyout()
+            {
+                Content = flyoutContentStackPanel,
+                FlyoutPresenterStyle = flyoutPresenterStyle,
+                Placement = Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Bottom,
+                XamlRoot = MainUserControl.XamlRoot
+            };
+
+            flyout.ShowAt(MainUserControl);
+        }
+
+        private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            await CleanupDevicesAndProviders();
+        }
+
+        private async Task CleanupDevicesAndProviders()
+        {
+            if (AppState.Instance.IsEffectRunning)
+            {
+                await supportedEffectsExecutors[AppState.Instance.ActiveEffect.EffectMetadataGuid].Stop();
+            }
+
+            foreach (var concreteDevice in concreteDevices)
+            {
+                await concreteDevice.Value.Disconnect();
+            }
+
+            concreteDevices.Clear();
+
+            foreach (var provider in AppState.Instance.RegisteredProviders)
+            {
+                await supportedProviders[provider.Provider.ProviderGuid].Unregister();
+            }
+
+            AppState.Instance.RegisteredProviders.Clear();
+        }
+
+        private void MainUserControlWrapper_ChildChanged(object sender, EventArgs e)
+        {
+            MainUserControl = (RGBMasterUWPApp.RGBMasterUserControl) ((WindowsXamlHost)sender).Child;
         }
     }
 }

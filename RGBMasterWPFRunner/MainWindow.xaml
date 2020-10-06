@@ -8,10 +8,10 @@
         xmlns:Controls="clr-namespace:Microsoft.Toolkit.Wpf.UI.Controls;assembly=Microsoft.Toolkit.Wpf.UI.Controls"
         xmlns:xamlhost="clr-namespace:Microsoft.Toolkit.Wpf.UI.XamlHost;assembly=Microsoft.Toolkit.Wpf.UI.XamlHost"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
-        MinHeight="1100" MinWidth="1100"
+        Title="RGBMaster" Height="450" Width="800"
+        Closing="Window_Closing"
         >
     <Grid>
-        <xamlhost:WindowsXamlHost InitialTypeName="RGBMasterUWPApp.RGBMasterUserControl" x:Name="MainNavigationViewWrapper" />
+        <xamlhost:WindowsXamlHost InitialTypeName="RGBMasterUWPApp.RGBMasterUserControl" x:Name="MainUserControlWrapper" ChildChanged="MainUserControlWrapper_ChildChanged" />
     </Grid>
 </Window>

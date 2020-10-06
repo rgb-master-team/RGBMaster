@@ -1,9 +1,11 @@
 ﻿using Common;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utils;
 
 namespace Provider
 {
@@ -11,17 +13,18 @@ namespace Provider
     {
         public readonly ProviderMetadata ProviderMetadata;
         public bool IsRegistered { get; private set; }
-        public abstract Task Unregister();
         public abstract Task<List<Device>> Discover();
 
-        public async Task<bool> InitializeProvider()
+        public async Task<bool> Register()
         {
             try
             {
                 if (!IsRegistered)
                 {
-                    await Register();
-
+                    // TODO - Move to a CancellationToken mechanism and enforce receiving CancellationTokens
+                    // in all InternalRegister methods.
+                    var registerTimeoutSpan = TimeSpan.FromSeconds(5);
+                    await InternalRegister().TimeoutAfter(registerTimeoutSpan, $"Failed to register to provider {ProviderMetadata.ProviderName} with guid {ProviderMetadata.ProviderGuid}").ConfigureAwait(false);
                     IsRegistered = true;
                 }
 
@@ -29,15 +32,39 @@ namespace Provider
             }
             catch (Exception ex)
             {
+                Log.Logger.Error(ex, "Failed registering Provider with GUID {A}.", ProviderMetadata.ProviderGuid);
+                return false;
+            }
+        }
+
+        public async Task<bool> Unregister()
+        {
+            try
+            {
+                if (IsRegistered)
+                {
+                    // TODO - Move to a CancellationToken mechanism and enforce receiving CancellationTokens
+                    // in all InternalUnregister methods.
+                    var unregisterTimeoutSpan = TimeSpan.FromSeconds(5);
+                    await InternalUnregister().TimeoutAfter(unregisterTimeoutSpan, $"Failed to unregister from provider {ProviderMetadata.ProviderName} with guid {ProviderMetadata.ProviderGuid}").ConfigureAwait(false);
+                    IsRegistered = false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Failed to unregister provider with GUID {A}.", ProviderMetadata.ProviderGuid);
                 return false;
             }
         }
 
         public BaseProvider(ProviderMetadata providerMetadata)
         {
-            this.ProviderMetadata = providerMetadata;
+            ProviderMetadata = providerMetadata;
         }
 
-        protected abstract Task Register();
+        protected abstract Task InternalRegister();
+        protected abstract Task InternalUnregister();
     }
 }

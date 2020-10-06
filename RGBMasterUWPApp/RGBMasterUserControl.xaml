@@ -7,11 +7,34 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:winui="using:Microsoft.UI.Xaml.Controls"
     Loaded="RGBMasterUserControl_Loaded"
-    mc:Ignorable="d"
-    d:DesignHeight="1000"
-    d:DesignWidth="1000" >
+    mc:Ignorable="d">
     <Grid>
-        <winui:NavigationView x:Name="MainNavigationView" PaneDisplayMode="Left" IsBackButtonVisible="Collapsed" SelectionChanged="MainNavigationView_SelectionChanged" Loaded="NavigationView_Loaded" Background="{StaticResource NavigationMenuBrush}">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="None">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainNavigationView.IsPaneOpen" Value="False" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState x:Name="Compact">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="940" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainNavigationView.IsPaneOpen" Value="True" />
+                    </VisualState.Setters>
+                </VisualState>
+                
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        
+        
+        
+        <winui:NavigationView x:Name="MainNavigationView" PaneDisplayMode="Left" IsBackButtonVisible="Collapsed" SelectionChanged="MainNavigationView_SelectionChanged" Loaded="NavigationView_Loaded">
                 <winui:NavigationView.PaneHeader>
                 <StackPanel Orientation="Horizontal">
                     <Image Source="Assets/128.png" Width="23" Height="23" Margin="4 0 4 0" />
@@ -19,11 +42,6 @@
                 </StackPanel>
             </winui:NavigationView.PaneHeader>
             <winui:NavigationView.MenuItems>
-                <!--<winui:NavigationViewItem Content="Control Panel" x:Name="StatusNavigationItem" Tag="ControlPanelPage">
-                    <winui:NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE946;" FontFamily="Segoe MDL2 Assets"/>
-                    </winui:NavigationViewItem.Icon>
-                </winui:NavigationViewItem>-->
                 <winui:NavigationViewItem Content="Devices" x:Name="DevicesNavigationItem" Tag="DevicesPage">
                     <winui:NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xEA80;" FontFamily="Segoe MDL2 Assets"/>
@@ -36,20 +54,14 @@
                 </winui:NavigationViewItem>
             </winui:NavigationView.MenuItems>
             <ScrollViewer>
-                <StackPanel Background="{StaticResource FrameBrush}">
-                    <CommandBar OverflowButtonVisibility="Collapsed" DefaultLabelPosition="Right" Background="{StaticResource FrameBrush}">
+                <StackPanel>
+                    <CommandBar OverflowButtonVisibility="Collapsed" DefaultLabelPosition="Right">
                         <CommandBar.PrimaryCommands>
                             <AppBarButton Label="{x:Bind CurrentEffectName}" x:Name="DisplayCurrentSyncMode" Visibility="Collapsed" />
-                            <AppBarButton Click="AppBarButton_Click" Label="Start" x:Name="Sync_Button">
-                                <Grid x:Name="AppBarStartStopGrid">
-                                    <FontIcon x:Name="InnerButton" Glyph="&#xF5B0;" FontFamily="Segoe MDL2 Assets" Foreground="Green"/>
-                                    <FontIcon x:Name="OuterButton" Glyph="&#xE768;" FontFamily="Segoe MDL2 Assets"/>
-                                </Grid>
-                            </AppBarButton>
                         </CommandBar.PrimaryCommands>
                     </CommandBar>
                     <Frame x:Name="MainAppContentFrame" Padding="12,0,12,24" IsTabStop="True"
-                   NavigationFailed="MainAppContentFrame_NavigationFailed" Background="{StaticResource FrameBrush}"/>
+                   NavigationFailed="MainAppContentFrame_NavigationFailed"/>
                 </StackPanel>
             </ScrollViewer>
         </winui:NavigationView>

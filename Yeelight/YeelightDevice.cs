@@ -28,7 +28,7 @@ namespace Yeelight
         private readonly YeelightAPI.Device InternalDevice;
         private Socket musicModeSocket;
 
-        public YeelightDevice(YeelightAPI.Device internalDevice): base(new YeelightDeviceMetadata(!String.IsNullOrWhiteSpace(internalDevice.Name) ? internalDevice.Name: internalDevice.Hostname, GetDeviceTypeForYeelight(internalDevice)))
+        public YeelightDevice(Guid discoveringProvider, YeelightAPI.Device internalDevice): base(new YeelightDeviceMetadata(discoveringProvider, GetDeviceTypeForYeelight(internalDevice), !String.IsNullOrWhiteSpace(internalDevice.Name) ? internalDevice.Name: internalDevice.Hostname, new HashSet<OperationType>() { OperationType.SetColor, OperationType.GetColor, OperationType.SetBrightness, OperationType.GetBrightness, OperationType.TurnOff, OperationType.TurnOn}))
         {
             InternalDevice = internalDevice;
         }
@@ -96,8 +96,8 @@ namespace Yeelight
 
         protected override byte GetBrightnessPercentageInternal()
         {
-            // TODO - Also implement background lighting???
-            // TODO2 - Keep the last known brightness at all time in a private member? is it a sensible approach?            
+            // TODO - Don't get this from the music socket as it won't return anything to us - 
+            // move to standard request like in the API specifications.
             var task = InternalDevice.GetProp(YeelightAPI.Models.PROPERTIES.bright);
             task.Wait();
             return (byte)task.Result;
@@ -105,6 +105,8 @@ namespace Yeelight
 
         protected override Color GetColorInternal()
         {
+            // TODO - Don't get this from the music socket as it won't return anything to us - 
+            // move to standard request like in the API specifications.
             var task = InternalDevice.GetProp(YeelightAPI.Models.PROPERTIES.rgb);
             task.Wait();
             return RGBColorHelper.ParseColor((int)task.Result);

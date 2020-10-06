@@ -18,8 +18,6 @@ namespace AppExecutionManager.State
             instance = new AppState()
             {
                 RegisteredProviders = new ObservableCollection<RegisteredProvider>(),
-                IsEffectRunning = false,
-                //SelectedDevices = new ObservableCollection<DiscoveredDevice>(),
                 Effects = new ObservableCollection<EffectMetadata>(),
                 StaticColorEffectProperties=new StaticColorEffectProps() { SelectedColor = Color.White, SelectedBrightness = 100 },
                 SupportedProviders = new ObservableCollection<ProviderMetadata>()
@@ -38,12 +36,11 @@ namespace AppExecutionManager.State
         }
 
         public ObservableCollection<RegisteredProvider> RegisteredProviders { get; set; }
-        //public ObservableCollection<DiscoveredDevice> SelectedDevices { get; set; }
-        public EffectMetadata SelectedEffect { get; set; }
+        public EffectMetadata ActiveEffect { get; set; }
         public ObservableCollection<EffectMetadata> Effects { get; set; }
-        public bool IsEffectRunning { get; set; }
         public StaticColorEffectProps StaticColorEffectProperties { get; set; }
         public string AppVersion { get; set; }
         public ObservableCollection<ProviderMetadata> SupportedProviders { get; set; }
+        public bool IsEffectRunning => ActiveEffect != null;
     }
 }

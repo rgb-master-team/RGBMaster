@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -28,11 +29,15 @@ namespace RGBMasterUWPApp.Pages
     /// </summary>
     public sealed partial class EffectsPage : Page
     {
+        private readonly string ActivateEffectText = "Activate Effect";
+        private readonly string DeactivateEffectText = "Deactivate Effect";
+
         public readonly Dictionary<EffectType, Type> contentByEffectType = new Dictionary<EffectType, Type>()
         {
             { EffectType.Music, typeof(MusicEffectControl) },
             { EffectType.StaticColor, typeof(StaticColorEffectControl) },
-            { EffectType.DominantColor, typeof(DominantDisplayColorEffectControl) }
+            { EffectType.DominantColor, typeof(DominantDisplayColorEffectControl) },
+            { EffectType.CursorColor, typeof(CursorColorEffectControl) }
         };
 
         public ObservableCollection<EffectMetadata> SupportedEffects
@@ -64,11 +69,6 @@ namespace RGBMasterUWPApp.Pages
             }*/
         }
 
-        private void ChangeCurrentRunningEffect(EffectMetadata desiredEffect)
-        {
-            EventManager.Instance.UpdateEffect(desiredEffect);
-        }
-
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var pivot = (Pivot)sender;
@@ -77,20 +77,47 @@ namespace RGBMasterUWPApp.Pages
 
             var newEffectMetadata = (EffectMetadata)selectedPivotItem.DataContext;
 
-            // This is obviously a lazy design. TODO - add types for all effects and take the time to
-            // reimplement the way we apply effects, instead of reinstantiating them all the time.
-            // perhaps a factory.
-            if (newEffectMetadata.EffectMetadataGuid != AppState.Instance.SelectedEffect?.EffectMetadataGuid)
+            var selectedEffectMetadata = AppState.Instance.ActiveEffect;
+
+            var isEffectRunning = AppState.Instance.IsEffectRunning;
+
+            if (isEffectRunning && selectedEffectMetadata.EffectMetadataGuid == newEffectMetadata.EffectMetadataGuid)
             {
-                ChangeCurrentRunningEffect(newEffectMetadata);
+                EffectActivationControl.Content = DeactivateEffectText;
+            }
+            else
+            {
+                EffectActivationControl.Content = ActivateEffectText;
             }
 
-            if (effectControlFrame == null)
+            if (!contentByEffectType.TryGetValue(newEffectMetadata.Type, out var effectType))
             {
-                return;
+                throw new NotImplementedException($"A view for effect {newEffectMetadata.EffectName} is not implemented. Implement it and be sure to include it on contentByEffectType.");
             }
 
-            effectControlFrame.Navigate(contentByEffectType[newEffectMetadata.Type]);
+            effectControlFrame.Navigate(effectType);
+        }
+
+        private void EffectActivationControl_Click(object sender, RoutedEventArgs e)
+        {
+            var newEffectMetadata = (EffectMetadata)EffectSelectionPivot.SelectedItem;
+
+            var selectedEffectMetadata = AppState.Instance.ActiveEffect;
+
+            var isEffectRunning = AppState.Instance.IsEffectRunning;
+
+            // If an effect is running and is the one we're currently on, stop it
+            if (isEffectRunning && selectedEffectMetadata.EffectMetadataGuid == newEffectMetadata.EffectMetadataGuid)
+            {
+                EventManager.Instance.RequestEffectActivation(null);
+                EffectActivationControl.Content = ActivateEffectText;
+            }
+            // If an effect isn't running, or the running effect isn't the one we selected - update the effect to the relevant one
+            else
+            {
+                EventManager.Instance.RequestEffectActivation(newEffectMetadata);
+                EffectActivationControl.Content = DeactivateEffectText;
+            }
         }
     }
 }

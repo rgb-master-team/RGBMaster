@@ -1,4 +1,5 @@
 ﻿using Common;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -8,13 +9,8 @@ namespace Msi.Provider
     {
         public readonly string deviceType;
 
-        public MLDeviceMetadata(string deviceType)
+        public MLDeviceMetadata(Guid discoveringProvider, DeviceType deviceType, string deviceName) : base(discoveringProvider, deviceType, deviceName, new HashSet<OperationType>() { OperationType.SetColor })
         {
-            this.deviceType = deviceType;
         }
-
-        public override string DeviceName => deviceType;
-
-        public override HashSet<OperationType> SupportedOperations => new HashSet<OperationType>() { OperationType.SetColor };
     }
 }
