@@ -11,36 +11,6 @@
                 <ResourceDictionary>
                     <ResourceDictionary.ThemeDictionaries>
                         <ResourceDictionary x:Key="Default">
-                            <AcrylicBrush x:Key="NavigationMenuBrush"
-                                          BackgroundSource="HostBackdrop"
-                                          TintColor="White"
-                                          TintOpacity="0.1"   
-                                          TintLuminosityOpacity="0.4"
-                                          FallbackColor="{StaticResource SystemColorInactiveCaptionColor}"
-                                          />
-                            <AcrylicBrush x:Key="FrameBrush"
-                                          BackgroundSource="HostBackdrop"
-                                          TintColor="White"
-                                          TintOpacity="0.1"
-                                          TintLuminosityOpacity="0.6"
-                                          />
-                            <AcrylicBrush x:Key="NavigationViewExpandedPaneBackground"
-                                          BackgroundSource="Backdrop"
-                                          TintColor="White"
-                                          TintOpacity="0.5"
-                                          TintLuminosityOpacity="0"
-                                          />
-                            <AcrylicBrush x:Key="NavigationViewDefaultPaneBackground"
-                                          BackgroundSource="Backdrop"
-                                          TintColor="White"
-                                          TintOpacity="0.5"
-                                          TintLuminosityOpacity="0" />
-                            <AcrylicBrush x:Key="NavigationViewTopPaneBackground"
-                                          BackgroundSource="Backdrop"
-                                          TintColor="White"
-                                          TintOpacity="0.5"
-                                          TintLuminosityOpacity="0" />
-
                         </ResourceDictionary>
                     </ResourceDictionary.ThemeDictionaries>
                 </ResourceDictionary>

@@ -154,6 +154,12 @@ namespace RGBMasterUWPApp.Pages
             deviceNameStackPanel.Children.Add(new TextBlock() { Text = $"{deviceMetadata.DeviceName}" });
             contentDialogInnerContent.Children.Add(deviceNameStackPanel);
 
+            // Provider Name
+            var providerNameStackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
+            providerNameStackPanel.Children.Add(new TextBlock() { Text = $"Provider name: ", FontWeight = FontWeight = Windows.UI.Text.FontWeights.Bold, Margin = new Thickness(0, 0, 4, 0) });
+            providerNameStackPanel.Children.Add(new TextBlock() { Text = AppState.Instance.RegisteredProviders.FirstOrDefault(x => x.Provider.ProviderGuid == deviceMetadata.RgbMasterDiscoveringProvider)?.Provider?.ProviderName });
+            contentDialogInnerContent.Children.Add(providerNameStackPanel);
+
             // Device Type
             var deviceTypeStackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
             deviceTypeStackPanel.Children.Add(new TextBlock() { Text = $"Device type: ", FontWeight = FontWeight = Windows.UI.Text.FontWeights.Bold, Margin = new Thickness(0, 0, 4, 0) });
@@ -177,8 +183,6 @@ namespace RGBMasterUWPApp.Pages
             deviceOperationStackPanel.Children.Add(new TextBlock() { Text = $"Supported operations: ", FontWeight = Windows.UI.Text.FontWeights.Bold, Margin = new Thickness(0, 0, 4, 0) });
             deviceOperationStackPanel.Children.Add(supportedOperationsList);
             contentDialogInnerContent.Children.Add(deviceOperationStackPanel);
-
-            contentDialogInnerContent.Children.Add(new TextBlock() { Text = AppState.Instance.RegisteredProviders.FirstOrDefault(x => x.Provider.ProviderGuid == deviceMetadata.RgbMasterDiscoveringProvider)?.Provider?.ProviderName });
 
             Image deviceIcon = new Image
             {

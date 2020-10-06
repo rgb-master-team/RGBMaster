@@ -34,7 +34,7 @@
         
         
         
-        <winui:NavigationView x:Name="MainNavigationView" PaneDisplayMode="Left" IsBackButtonVisible="Collapsed" SelectionChanged="MainNavigationView_SelectionChanged" Loaded="NavigationView_Loaded" Background="{StaticResource NavigationMenuBrush}">
+        <winui:NavigationView x:Name="MainNavigationView" PaneDisplayMode="Left" IsBackButtonVisible="Collapsed" SelectionChanged="MainNavigationView_SelectionChanged" Loaded="NavigationView_Loaded">
                 <winui:NavigationView.PaneHeader>
                 <StackPanel Orientation="Horizontal">
                     <Image Source="Assets/128.png" Width="23" Height="23" Margin="4 0 4 0" />
@@ -54,14 +54,14 @@
                 </winui:NavigationViewItem>
             </winui:NavigationView.MenuItems>
             <ScrollViewer>
-                <StackPanel Background="{StaticResource FrameBrush}">
-                    <CommandBar OverflowButtonVisibility="Collapsed" DefaultLabelPosition="Right" Background="{StaticResource FrameBrush}">
+                <StackPanel>
+                    <CommandBar OverflowButtonVisibility="Collapsed" DefaultLabelPosition="Right">
                         <CommandBar.PrimaryCommands>
                             <AppBarButton Label="{x:Bind CurrentEffectName}" x:Name="DisplayCurrentSyncMode" Visibility="Collapsed" />
                         </CommandBar.PrimaryCommands>
                     </CommandBar>
                     <Frame x:Name="MainAppContentFrame" Padding="12,0,12,24" IsTabStop="True"
-                   NavigationFailed="MainAppContentFrame_NavigationFailed" Background="{StaticResource FrameBrush}"/>
+                   NavigationFailed="MainAppContentFrame_NavigationFailed"/>
                 </StackPanel>
             </ScrollViewer>
         </winui:NavigationView>
