@@ -247,7 +247,7 @@ namespace RGBMasterWPFRunner
                     Log.Logger.Warning("Disconnecting from device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
                     var didSucceed = await concreteDevice.Disconnect();
 
-                    // TODO - Handle case where connection failed - 
+                    // TODO - Handle case where disconnection failed - 
                     // we have to uncheck the device in the UI.
                     if (!didSucceed)
                     {
@@ -263,12 +263,15 @@ namespace RGBMasterWPFRunner
                     // we have to uncheck the device in the UI.
                     if (!didSucceed)
                     {
+                        item.IsChecked = false;
                         // TODO - Popup the user with a message that connection has failed, and recommend him to refresh
                         // the devices/providers or restart the app.
                     }
-
-                    Log.Logger.Warning("Turning on device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
-                    concreteDevice.TurnOn();
+                    else
+                    {
+                        Log.Logger.Warning("Turning on device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
+                        concreteDevice.TurnOn();
+                    }
                 }
 
             }
