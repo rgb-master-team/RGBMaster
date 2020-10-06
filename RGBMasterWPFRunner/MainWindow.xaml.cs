@@ -9,6 +9,7 @@ using Microsoft.Toolkit.Wpf.UI.XamlHost;
 using Provider;
 using RazerChroma;
 using Serilog;
+using Serilog.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -46,9 +47,6 @@ namespace RGBMasterWPFRunner
             PackageVersion version = packageId.Version;
             AppState.Instance.AppVersion = string.Format($"{version.Major}.{version.Minor}.{version.Build}.{version.Revision}");
 
-            // TODO - For fuck sake, check why the fuck it is impossible to write to AppData via Serilog when the user's name contains spaces?!
-            // var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"{AppState.Instance.AppVersion}.txt");
-
             var path = Path.Combine(
                     Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System)),
                     @$"RGBMaster\Logs\{AppState.Instance.AppVersion}.txt"
@@ -57,6 +55,7 @@ namespace RGBMasterWPFRunner
             var globalLog = new LoggerConfiguration()
                 .MinimumLevel
                 .Is(Serilog.Events.LogEventLevel.Debug)
+                .Enrich.WithExceptionDetails()
                 .WriteTo
                 .File(
                     path,
@@ -249,11 +248,10 @@ namespace RGBMasterWPFRunner
                     Log.Logger.Warning("Disconnecting from device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
                     var didSucceed = await concreteDevice.Disconnect();
 
-                    // TODO - Handle case where disconnection failed - 
-                    // we have to uncheck the device in the UI.
                     if (!didSucceed)
                     {
-                        // TODO - "Fail silently" - inform the user that disconnection has failed.
+                        Log.Logger.Error("Failed disconnecting from device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
+                        InformErrorOnFlyout($"Failed to disconnect from device {item.Device.DeviceName}. \nThis might be a problem in the {AppState.Instance.SupportedProviders.First(x => x.ProviderGuid == item.Device.RgbMasterDiscoveringProvider).ProviderName} provider. \nMake sure network connection is valid and try to refresh devices or restart the app.");
                     }
                 }
                 else if (item.IsChecked && !concreteDevice.IsConnected)
@@ -261,33 +259,12 @@ namespace RGBMasterWPFRunner
                     Log.Logger.Warning("Connecting to device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
                     var didSucceed = await concreteDevice.Connect();
 
-                    // TODO - Handle case where connection failed - 
-                    // we have to uncheck the device in the UI.
                     if (!didSucceed)
                     {
+                        Log.Logger.Error("Failed connecting to device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
+                        InformErrorOnFlyout($"Failed to connect to device {item.Device.DeviceName}. \nThis might be a problem in the {AppState.Instance.SupportedProviders.First(x => x.ProviderGuid == item.Device.RgbMasterDiscoveringProvider).ProviderName} provider. \nMake sure network connection is valid and try to refresh devices or restart the app.");
+
                         item.IsChecked = false;
-
-                        var flyoutContentStackPanel = new StackPanel();
-
-                        // TODO: Benbense
-                        flyoutContentStackPanel.Children.Add(new TextBlock()
-                        {
-                            Text = $"Failed to connect to device {item.Device.DeviceName}. \nThis might be a problem in the {AppState.Instance.SupportedProviders.First(x => x.ProviderGuid == item.Device.RgbMasterDiscoveringProvider).ProviderName} provider. \nMake sure network connection is valid and try to refresh devices or restart the app."
-                        });
-
-                        var flyoutPresenterStyle = new Style(typeof(FlyoutPresenter));
-
-                        flyoutPresenterStyle.Setters.Add(new Setter(FrameworkElement.MaxWidthProperty, MainUserControl.Width));
-
-                        var flyout = new Flyout()
-                        {
-                            Content = flyoutContentStackPanel,
-                            FlyoutPresenterStyle = flyoutPresenterStyle,
-                            Placement = Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Bottom,
-                            XamlRoot = MainUserControl.XamlRoot
-                        };
-
-                        flyout.ShowAt(MainUserControl);
                     }
                     else
                     {
@@ -295,7 +272,6 @@ namespace RGBMasterWPFRunner
                         concreteDevice.TurnOn();
                     }
                 }
-
             }
 
             if (AppState.Instance.IsEffectRunning)
@@ -304,6 +280,38 @@ namespace RGBMasterWPFRunner
             }
 
             changeConnectedDevicesSemaphore.Release();
+        }
+
+        private void InformErrorOnFlyout(string errorMessage)
+        {
+            var flyoutContentStackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
+
+            flyoutContentStackPanel.Children.Add(new FontIcon
+            {
+                FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets"),
+                Glyph = "\uE783",
+                FontSize = 42,
+                Margin = new Thickness(0, 0, 8, 0)
+            });
+
+            flyoutContentStackPanel.Children.Add(new TextBlock()
+            {
+                Text = errorMessage
+            });
+
+            var flyoutPresenterStyle = new Style(typeof(FlyoutPresenter));
+
+            flyoutPresenterStyle.Setters.Add(new Setter(FrameworkElement.MaxWidthProperty, MainUserControl.Width));
+
+            var flyout = new Flyout()
+            {
+                Content = flyoutContentStackPanel,
+                FlyoutPresenterStyle = flyoutPresenterStyle,
+                Placement = Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Bottom,
+                XamlRoot = MainUserControl.XamlRoot
+            };
+
+            flyout.ShowAt(MainUserControl);
         }
 
         private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

@@ -1,4 +1,5 @@
 ﻿using Common;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace Provider
             }
             catch (Exception ex)
             {
-                // TODO - Log
+                Log.Logger.Error(ex, "Failed registering Provider with GUID {A}.", ProviderMetadata.ProviderGuid);
                 return false;
             }
         }
@@ -53,7 +54,7 @@ namespace Provider
             }
             catch (Exception ex)
             {
-                // TODO - Log
+                Log.Logger.Error(ex, "Failed to unregister provider with GUID {A}.", ProviderMetadata.ProviderGuid);
                 return false;
             }
         }

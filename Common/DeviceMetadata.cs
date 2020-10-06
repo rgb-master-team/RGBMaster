@@ -55,7 +55,6 @@ namespace Common
             }
         }
 
-        // TODO - Enforce constructor to receive all parameters instead of overriding them
         public DeviceMetadata(Guid rgbMasterDiscoveringProvider, DeviceType deviceType, string deviceName, HashSet<OperationType> supportedOperations)
         {
             RgbMasterDiscoveringProvider = rgbMasterDiscoveringProvider;

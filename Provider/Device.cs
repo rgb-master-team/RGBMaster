@@ -1,4 +1,6 @@
 ﻿using Common;
+using Serilog;
+using Serilog.Core;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -106,9 +108,10 @@ namespace Provider
                     IsConnected = true;
                     didSucceed = true;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // TODO - Log exceptions here.
+                    Log.Logger.Error(ex, "Failed connecting to device with GUID {A}.", DeviceMetadata.RgbMasterDeviceGuid);
+
                     IsConnected = false;
                     didSucceed = false;
                 }
@@ -137,9 +140,10 @@ namespace Provider
                     IsConnected = false;
                     didSucceed = true;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // TODO - Log
+                    Log.Logger.Error(ex, "Failed disconnecting from device with GUID {A}", DeviceMetadata.RgbMasterDeviceGuid);
+
                     IsConnected = false;
                     didSucceed = false;
                 }

@@ -25,8 +25,6 @@ namespace GameSense
 
         protected override Task InternalUnregister()
         {
-            // TODO - Consider explicitly calling stop_game @ GameSense REST API.
-
             gameSenseAPI.RemoveGame(new GSApiRemoveGamePayload()
             {
                 Game = GameSenseConstants.RGB_MASTER_GAME_NAME
