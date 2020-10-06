@@ -69,7 +69,7 @@
                                     <ListView.ItemTemplate>
                                         <DataTemplate x:DataType="state:DiscoveredDevice">
                                             <StackPanel Orientation="Horizontal">
-                                                <CheckBox IsChecked="{x:Bind IsChecked}" Tag="{x:Bind}" Click="CheckBox_Click">
+                                                <CheckBox IsChecked="{x:Bind IsChecked, Mode=TwoWay}" Tag="{x:Bind}" Click="CheckBox_Click">
                                                     <CheckBox.Content>
                                                         <StackPanel Orientation="Horizontal">
                                                             <Image Source="{x:Bind Device.DeviceIconAssetPath}" Width="24px" Height="24px" Margin="0 0 4 0"/>

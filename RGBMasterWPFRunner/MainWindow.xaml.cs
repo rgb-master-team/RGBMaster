@@ -1,15 +1,14 @@
 ﻿using AppExecutionManager.EventManagement;
 using AppExecutionManager.State;
-using Colore.Logging;
 using Common;
 using EffectsExecution;
 using GameSense;
 using Logitech;
 using MagicHome;
+using Microsoft.Toolkit.Wpf.UI.XamlHost;
 using Provider;
 using RazerChroma;
 using Serilog;
-using Serilog.Events;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,6 +16,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Yeelight;
 
 namespace RGBMasterWPFRunner
@@ -33,6 +34,8 @@ namespace RGBMasterWPFRunner
         private readonly Dictionary<Guid, Provider.BaseProvider> supportedProviders = new Dictionary<Guid, Provider.BaseProvider>();
         private readonly Dictionary<Guid, EffectExecutor> supportedEffectsExecutors = new Dictionary<Guid, EffectExecutor>();
         private readonly Dictionary<Guid, Device> concreteDevices = new Dictionary<Guid, Device>();
+
+        private RGBMasterUWPApp.RGBMasterUserControl MainUserControl;
 
         public MainWindow()
         {
@@ -98,7 +101,6 @@ namespace RGBMasterWPFRunner
             }
 
             await Task.WhenAll(tasks);
-
         }
 
         private async void ChangeStaticColor(object sender, StaticColorEffectProps staticColorEffectProps)
@@ -264,8 +266,28 @@ namespace RGBMasterWPFRunner
                     if (!didSucceed)
                     {
                         item.IsChecked = false;
-                        // TODO - Popup the user with a message that connection has failed, and recommend him to refresh
-                        // the devices/providers or restart the app.
+
+                        var flyoutContentStackPanel = new StackPanel();
+
+                        // TODO: Benbense
+                        flyoutContentStackPanel.Children.Add(new TextBlock()
+                        {
+                            Text = $"Failed to connect to device {item.Device.DeviceName}. \nThis might be a problem in the {AppState.Instance.SupportedProviders.First(x => x.ProviderGuid == item.Device.RgbMasterDiscoveringProvider).ProviderName} provider. \nMake sure network connection is valid and try to refresh devices or restart the app."
+                        });
+
+                        var flyoutPresenterStyle = new Style(typeof(FlyoutPresenter));
+
+                        flyoutPresenterStyle.Setters.Add(new Setter(FrameworkElement.MaxWidthProperty, MainUserControl.Width));
+
+                        var flyout = new Flyout()
+                        {
+                            Content = flyoutContentStackPanel,
+                            FlyoutPresenterStyle = flyoutPresenterStyle,
+                            Placement = Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Bottom,
+                            XamlRoot = MainUserControl.XamlRoot
+                        };
+
+                        flyout.ShowAt(MainUserControl);
                     }
                     else
                     {
@@ -309,6 +331,11 @@ namespace RGBMasterWPFRunner
             }
 
             AppState.Instance.RegisteredProviders.Clear();
+        }
+
+        private void MainUserControlWrapper_ChildChanged(object sender, EventArgs e)
+        {
+            MainUserControl = (RGBMasterUWPApp.RGBMasterUserControl) ((WindowsXamlHost)sender).Child;
         }
     }
 }

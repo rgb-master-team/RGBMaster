@@ -67,12 +67,36 @@ namespace RGBMasterUWPApp.Pages
 
                 if (allDevicesDevice != null && allDevicesDevice.IsChecked)
                 {
+                    bool shouldDisplayFlyout = false;
+
                     foreach (var device in discoveringProvider.Devices)
                     {
-                        if (device.Device.RgbMasterDeviceGuid != allDevicesDevice.Device.RgbMasterDeviceGuid)
+                        if (device.Device.RgbMasterDeviceGuid != allDevicesDevice.Device.RgbMasterDeviceGuid && device.IsChecked)
                         {
                             device.IsChecked = false;
+                            shouldDisplayFlyout = true;
                         }
+                    }
+
+                    if (shouldDisplayFlyout)
+                    {
+                        var clickedCheckbox = (CheckBox)sender;
+
+                        var flyoutPresenterStyle = new Style(typeof(FlyoutPresenter));
+
+                        flyoutPresenterStyle.Setters.Add(new Setter(FrameworkElement.MaxWidthProperty, Width));
+
+                        Flyout flyout = new Flyout()
+                        {
+                            Content = new TextBlock()
+                            {
+                                Text = "Specific devices are unselected when an 'All Devices' device is selected."
+                            },
+                            FlyoutPresenterStyle = flyoutPresenterStyle,
+                            XamlRoot = clickedCheckbox.XamlRoot
+                        };
+
+                        flyout.ShowAt(clickedCheckbox);
                     }
                 }
             }
