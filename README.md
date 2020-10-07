@@ -10,7 +10,12 @@
 
 # About
 
-The project attempts to use official libraries when possible and focuses on the synchronisation between the devices, rather than the way we integrate with the device and its API/SDK. It uses Razer's `Colore` library for syncing colours via Razer's SDK through .NET bindings, and YeelightAPI library for .NET for that matter.
+The project, created by [Dean Kevorkian](https://github.com/deankevorkian) and joined by [Ben Selbiger](https://github.com/benbense), attempts to use official libraries when possible and focuses on the synchronisation between the devices, rather than the way we integrate with the device and its API/SDK. i.e - Razer's `Colore` library for syncing colours via Razer's SDK through .NET bindings, and YeelightAPI for controlling Yeelight bulbs and led strips.
+
+# Development
+Currently only available to Windows 10 but built with expectations for future Mac & Linux ports, this project contains the wrappers for several SDKs (code-named "Providers") and the UI (which is a mix of WPF and UWP in order to achieve WPF's complete access and integration to Windows APIs, along with UWP's latest WinUI used in Windows 10 apps by Microsoft, via Xaml Islands experimental technology).
+
+TODO - Write a simple explanation of the project structure, how to build it, UI / Providers logic seperation.
 
 ## Table of Contents
 
@@ -35,11 +40,22 @@ The project attempts to use official libraries when possible and focuses on the 
 <a name="prerequisites"></a>
 ## Prerequisites 
 
+In order to use any of the available providers, make sure you've done the required early steps, as follows -
+
 **Razer**
-- Make sure that Razer Synapse with **Studio** is installed.
+- Make sure that Razer Synapse with the **Studio** component is installed.
 
 **Yeelight**
 - Make sure that LAN Control is enabled by setting it in the Xiaomi Yeelight app.
+
+**Logitech**
+- Make sure Logitech G Hub is installed.
+
+**MagicHome**
+- Make sure the led strips are configured in the Android or iOS MagicHome app and are detected.
+
+**SteelSeries**
+- Make sure you have SteelSeries Engine 3 installed.
 
 <a name="installation"></a>
 ## Installation Instructions
@@ -54,12 +70,13 @@ The project attempts to use official libraries when possible and focuses on the 
 RGBMaster allows choosing a desired effect for the way colors are chosen.
 - Music effect - Sync devices with a color that represents the tone of the current playback music in the running host.
 - Dominant effect - Sync devices with the dominant color of the displayed frames in the screen. Might be useful for movies, gaming, etc.
+- Cursor effect - Sync devices with the color the cursor's pointing at in every moment :)
+- Static color effect - Sync devices with a static color chosen by you. Allows brightness modification to devices as well.
 
 <a name="flows"></a>
 ## Supported "Flows"
-RGBMaster should allow choosing a flow, that will decide the way and timing of which the Effect is applied between devices.
-For example - setting the order of devices receiving the color.
-As of now, all devices are concurrently being changed to a certain color every time.
+RGBMaster should allow choosing a flow, which is our codename for **custom pre-defined effects** created by anyone who wants to.
+These effects ought to be exportable and importable to ensure community sharing around this project in order to help it evolve and reach its potential :)
 
 <a name="contrib"></a>
 ## Contribution
@@ -68,11 +85,13 @@ Feel free to suggest any idea you have for this app, or even make one yourself a
 <a name="todos"></a>
 ## TODOs
 - General
-  - [ ] Design a simple but nice looking UI
-  - [ ] Allow selection of the discovered devices in the area
+  - [x] Design a simple but nice looking UI
+  - [x] Allow selection of the discovered devices in the area
   - [ ] Change synchronisation model to the bulbs to an async (currently Razer's `Colore` library asynchronously sets the colour, but we set the bulbs colours with messages sent through sockets synchronously)
-  - [ ] Add calculation of RGB values for the dominant or average sound in the host system
-  - [ ] Introduce a normal color palette that allows simply syncing colours between the devices (regardless of sound in the background)
+- Dominant/Cursor effects
+  - [x] Add calculation of RGB values for the dominant or average sound in the host system
+- Static color effect
+  - [x] Introduce a normal color palette that allows simply syncing colours between the devices (regardless of sound in the background)
 - Music Mode -
   - [ ] Add configuration settings for effects (transition of the music effect - smooth or sudden, etc.)
   - [ ] Add options such as frequency/time between color changes
@@ -80,4 +99,15 @@ Feel free to suggest any idea you have for this app, or even make one yourself a
   - [ ] Allow defining the spectrum levels themselves (volume levels that trigger changes)
 - Misc
   - [ ] Add some basic explanation
-  - [ ] Add references to libraries used for this to work
+  - [x] Add references to libraries used for this to work
+
+## Credits
+This project was heavily inspired and utilizes the amazing work of several open-source projects and libraries -
+
+- [diyHue](https://github.com/diyhue/diyHue)
+- [YeelightAPI](https://github.com/roddone/YeelightAPI)
+- [Colore](https://github.com/chroma-sdk/Colore)
+- [ColorThief](https://github.com/KSemenenko/ColorThief)
+- [NAudio](https://github.com/naudio/NAudio)
+- [RGB.NET](https://github.com/DarthAffe/RGB.NET)
+- [OpenRGB.NET](https://github.com/diogotr7/OpenRGB.NET)
