@@ -11,6 +11,7 @@
 # About
 
 The project, created by [Dean Kevorkian](https://github.com/deankevorkian) and joined by [Ben Selbiger](https://github.com/benbense), attempts to use official libraries when possible and focuses on the synchronisation between the devices, rather than the way we integrate with the device and its API/SDK. i.e - Razer's `Colore` library for syncing colours via Razer's SDK through .NET bindings, and YeelightAPI for controlling Yeelight bulbs and led strips.
+We aspire to bring support to as many vendors (code-named "Providers") as we can from both growing worlds of RGB peripherals and RGB IoT devices, and allow synchronizing them together with colors, sounds, effects we support - and even let users define their own effects (code-named "Flows").
 
 # Development
 Currently only available to Windows 10 but built with expectations for future Mac & Linux ports, this project contains the wrappers for several SDKs (code-named "Providers") and the UI (which is a mix of WPF and UWP in order to achieve WPF's complete access and integration to Windows APIs, along with UWP's latest WinUI used in Windows 10 apps by Microsoft, via Xaml Islands experimental technology).
@@ -111,3 +112,4 @@ This project was heavily inspired and utilizes the amazing work of several open-
 - [NAudio](https://github.com/naudio/NAudio)
 - [RGB.NET](https://github.com/DarthAffe/RGB.NET)
 - [OpenRGB.NET](https://github.com/diogotr7/OpenRGB.NET)
+- [MagicHomeAPI](https://github.com/nathanielxd/magic-home)
