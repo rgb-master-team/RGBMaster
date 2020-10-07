@@ -91,6 +91,7 @@ Feel free to suggest any idea you have for this app, or even make one yourself a
   - [x] Design a simple but nice looking UI
   - [x] Allow selection of the discovered devices in the area
   - [ ] Change synchronisation model to the bulbs to an async (currently Razer's `Colore` library asynchronously sets the colour, but we set the bulbs colours with messages sent through sockets synchronously)
+  - [ ] Allow general behavior of devices when changing colors - "immediate" or "gradual" for that matter (or let each device device decide for it's own) - It's a bit epileptic as of now.
 - Dominant/Cursor effects
   - [x] Add calculation of RGB values for the dominant or average sound in the host system
 - Static color effect
