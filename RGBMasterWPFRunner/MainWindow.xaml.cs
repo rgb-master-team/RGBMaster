@@ -160,8 +160,6 @@ namespace RGBMasterWPFRunner
 
             var tasks = new List<Task>();
 
-            var aggregatedDiscoveredDevices = new List<Device>();
-
             foreach (var provider in supportedProviders.Values)
             {
                 var didInitialize = await provider.Register();
@@ -178,7 +176,11 @@ namespace RGBMasterWPFRunner
 
                 if ((discoveredDevices?.Count).GetValueOrDefault() > 0)
                 {
-                    aggregatedDiscoveredDevices.AddRange(discoveredDevices);
+
+                    foreach (var device in discoveredDevices)
+                    {
+                        concreteDevices.Add(device.DeviceMetadata.RgbMasterDeviceGuid, device);
+                    }
 
                     Log.Logger.Information("Listing discovered devices for provider {A}:", provider.ProviderMetadata.ProviderName);
                     Log.Logger.Information(string.Join("\n", discoveredDevices.Select(discoveredDevice => $"name: {discoveredDevice.DeviceMetadata.DeviceName}, guid: {discoveredDevice.DeviceMetadata.RgbMasterDeviceGuid}")));
@@ -189,11 +191,6 @@ namespace RGBMasterWPFRunner
                         Devices = new System.Collections.ObjectModel.ObservableCollection<DiscoveredDevice>(discoveredDevices.Select(device => new DiscoveredDevice() { Device = device.DeviceMetadata, IsChecked = false }))
                     });
                 }
-            }
-
-            foreach (var device in aggregatedDiscoveredDevices)
-            {
-                concreteDevices.Add(device.DeviceMetadata.RgbMasterDeviceGuid, device);
             }
 
             if (AppState.Instance.IsEffectRunning)
