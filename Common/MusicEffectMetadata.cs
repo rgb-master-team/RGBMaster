@@ -9,7 +9,7 @@ namespace Common
     {
         public override string EffectName => "Music Sync";
 
-        public override string ShortDescription => "Sync the color of the max frequency of the played music/sound.";
+        public override string ShortDescription => "Syncs the color of your lights according to the max frequency of the played music/sound.";
 
         public override string FullDescription => ShortDescription;
 

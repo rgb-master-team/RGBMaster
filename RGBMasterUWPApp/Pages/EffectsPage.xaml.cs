@@ -29,9 +29,6 @@ namespace RGBMasterUWPApp.Pages
     /// </summary>
     public sealed partial class EffectsPage : Page
     {
-        private readonly string ActivateEffectText = "Activate Effect";
-        private readonly string DeactivateEffectText = "Deactivate Effect";
-
         public readonly Dictionary<EffectType, Type> contentByEffectType = new Dictionary<EffectType, Type>()
         {
             { EffectType.Music, typeof(MusicEffectControl) },
@@ -39,6 +36,8 @@ namespace RGBMasterUWPApp.Pages
             { EffectType.DominantColor, typeof(DominantDisplayColorEffectControl) },
             { EffectType.CursorColor, typeof(CursorColorEffectControl) }
         };
+
+        private bool shouldIgnoreToggleEvent = false;
 
         public ObservableCollection<EffectMetadata> SupportedEffects
         {
@@ -81,13 +80,21 @@ namespace RGBMasterUWPApp.Pages
 
             var isEffectRunning = AppState.Instance.IsEffectRunning;
 
+            bool shouldToggleBeOn;
+
             if (isEffectRunning && selectedEffectMetadata.EffectMetadataGuid == newEffectMetadata.EffectMetadataGuid)
             {
-                EffectActivationControl.Content = DeactivateEffectText;
+                shouldToggleBeOn = true;
             }
             else
             {
-                EffectActivationControl.Content = ActivateEffectText;
+                shouldToggleBeOn = false;
+            }
+
+            if (shouldToggleBeOn != EffectActivationControl.IsOn)
+            {
+                shouldIgnoreToggleEvent = true;
+                EffectActivationControl.IsOn = shouldToggleBeOn;
             }
 
             if (!contentByEffectType.TryGetValue(newEffectMetadata.Type, out var effectType))
@@ -98,8 +105,14 @@ namespace RGBMasterUWPApp.Pages
             effectControlFrame.Navigate(effectType);
         }
 
-        private void EffectActivationControl_Click(object sender, RoutedEventArgs e)
+        private void EffectActivationControl_Toggled(object sender, RoutedEventArgs e)
         {
+            if (shouldIgnoreToggleEvent)
+            {
+                shouldIgnoreToggleEvent = false;
+                return;
+            }
+            
             var newEffectMetadata = (EffectMetadata)EffectSelectionPivot.SelectedItem;
 
             var selectedEffectMetadata = AppState.Instance.ActiveEffect;
@@ -109,14 +122,12 @@ namespace RGBMasterUWPApp.Pages
             // If an effect is running and is the one we're currently on, stop it
             if (isEffectRunning && selectedEffectMetadata.EffectMetadataGuid == newEffectMetadata.EffectMetadataGuid)
             {
-                EventManager.Instance.RequestEffectActivation(null);
-                EffectActivationControl.Content = ActivateEffectText;
+                EventManager.Instance.RequestEffectActivation(null);        
             }
             // If an effect isn't running, or the running effect isn't the one we selected - update the effect to the relevant one
             else
             {
-                EventManager.Instance.RequestEffectActivation(newEffectMetadata);
-                EffectActivationControl.Content = DeactivateEffectText;
+                EventManager.Instance.RequestEffectActivation(newEffectMetadata);        
             }
         }
     }
