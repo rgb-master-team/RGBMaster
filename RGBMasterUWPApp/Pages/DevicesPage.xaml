@@ -39,7 +39,23 @@
         <StackPanel Grid.Column="0">
             <Pivot ItemsSource="{x:Bind RegisteredProviders}" x:Name="ProvidersPivot">
                 <Pivot.Title>
-                    <TextBlock Text="Devices" HorizontalAlignment="Left" />
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel.Resources>
+                            <Storyboard x:Name="EnterStoryboard">
+                                <FadeInThemeAnimation Storyboard.TargetName="ProvidersProgress"/>
+                            </Storyboard>
+                            <Storyboard x:Name="ExitStoryboard">
+                                <FadeOutThemeAnimation Storyboard.TargetName="ProvidersProgress" BeginTime="0:0:1"/>
+                            </Storyboard>
+                        </StackPanel.Resources>
+                        <TextBlock Text="Devices" HorizontalAlignment="Left" />
+                        <StackPanel x:Name="ProvidersProgress" Orientation="Horizontal" Padding="8, 0, 0, 0">
+                            <ProgressBar Width="150" Maximum="100" Value="{x:Bind ProvidersLoadingProgressValue, Mode=OneWay}" Margin="0, 0, 4, 0" />
+                            <TextBlock Text="Intizalizing " Padding="0, 0, 4, 0"/>
+                            <Image Source="{x:Bind CurrentProcessedProvider.ProviderIconAssetPath, Mode=OneWay}" Margin="0, 0, 4, 0" Width="14px" Height="14px"/>
+                            <TextBlock Text="{x:Bind CurrentProcessedProvider.ProviderName, Mode=OneWay}" />
+                        </StackPanel>
+                    </StackPanel>
                 </Pivot.Title>
                 <Pivot.HeaderTemplate>
                     <DataTemplate x:DataType="state:RegisteredProvider">

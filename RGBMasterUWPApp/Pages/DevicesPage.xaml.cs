@@ -3,22 +3,15 @@ using AppExecutionManager.State;
 using Common;
 using Microsoft.UI.Xaml.Controls;
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.IO;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using System.Runtime.CompilerServices;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
@@ -29,8 +22,12 @@ namespace RGBMasterUWPApp.Pages
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class DevicesPage : Page
+    public sealed partial class DevicesPage : Page, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        public double ProvidersLoadingProgressValue => AppState.Instance.ProvidersLoadingProgress;
+        public ProviderMetadata CurrentProcessedProvider => AppState.Instance.CurrentProcessedProvider;
+
         public ObservableCollection<RegisteredProvider> RegisteredProviders 
         { 
             get
@@ -44,6 +41,33 @@ namespace RGBMasterUWPApp.Pages
             this.InitializeComponent();
             RefreshDeviceCounter();
             AppState.Instance.RegisteredProviders.CollectionChanged += RefreshDeviceCounter;
+            AppState.Instance.PropertyChanged += AppState_PropertyChanged;
+        }
+
+        private void AppState_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsLoadingProviders")
+            {
+                if (IsLoaded)
+                {
+                    if (AppState.Instance.IsLoadingProviders)
+                    {
+                        EnterStoryboard.Begin();
+                    }
+                    else
+                    {
+                        ExitStoryboard.Begin();
+                    }
+                }
+            }
+            else if (e.PropertyName == "ProvidersLoadingProgress")
+            {
+                OnPropertyChanged("ProvidersLoadingProgressValue");
+            }
+            else if (e.PropertyName == "CurrentProcessedProvider")
+            {
+                OnPropertyChanged("CurrentProcessedProvider");
+            }
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
@@ -318,14 +342,9 @@ namespace RGBMasterUWPApp.Pages
             return deviceTypeText;
         }
 
-        //private void Change_Device_Name_Button_Click(object sender, RoutedEventArgs e)
-        //{
-        //    TeachingTip_SetName.IsOpen = true;
-        //}
-
-        //private void TeachingTip_SetName_ActionButtonClick(TeachingTip sender, object args)
-        //{
-        //    TeachingTip_SetName.IsOpen = false;
-        //}
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
     }
 }

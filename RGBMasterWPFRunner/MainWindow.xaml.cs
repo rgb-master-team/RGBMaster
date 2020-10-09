@@ -158,7 +158,13 @@ namespace RGBMasterWPFRunner
 
             await CleanupDevicesAndProviders();
 
+            AppState.Instance.ProvidersLoadingProgress = 0.0;
+            AppState.Instance.IsLoadingProviders = true;
+            AppState.Instance.CurrentProcessedProvider = null;
+
             var tasks = new List<Task>();
+
+            var registeredProviders = new List<BaseProvider>();
 
             foreach (var provider in supportedProviders.Values)
             {
@@ -172,11 +178,19 @@ namespace RGBMasterWPFRunner
 
                 Log.Logger.Information("Provider {A} initialized.", provider.ProviderMetadata.ProviderName);
 
+                registeredProviders.Add(provider);
+            }
+
+            int loadedProviders = 0;
+
+            foreach (var provider in registeredProviders)
+            {
+                AppState.Instance.CurrentProcessedProvider = provider.ProviderMetadata;
+
                 var discoveredDevices = await provider.Discover();
 
                 if ((discoveredDevices?.Count).GetValueOrDefault() > 0)
                 {
-
                     foreach (var device in discoveredDevices)
                     {
                         concreteDevices.Add(device.DeviceMetadata.RgbMasterDeviceGuid, device);
@@ -191,7 +205,12 @@ namespace RGBMasterWPFRunner
                         Devices = new System.Collections.ObjectModel.ObservableCollection<DiscoveredDevice>(discoveredDevices.Select(device => new DiscoveredDevice() { Device = device.DeviceMetadata, IsChecked = false }))
                     });
                 }
+
+                loadedProviders++;
+                AppState.Instance.ProvidersLoadingProgress = ((double)loadedProviders / (double)registeredProviders.Count)*100.0;
             }
+
+            AppState.Instance.IsLoadingProviders = false;
 
             if (AppState.Instance.IsEffectRunning)
             {
@@ -336,6 +355,10 @@ namespace RGBMasterWPFRunner
             }
 
             AppState.Instance.RegisteredProviders.Clear();
+
+            AppState.Instance.IsLoadingProviders = false;
+            AppState.Instance.ProvidersLoadingProgress = 100.0;
+            AppState.Instance.CurrentProcessedProvider = null;
         }
 
         private void MainUserControlWrapper_ChildChanged(object sender, EventArgs e)
