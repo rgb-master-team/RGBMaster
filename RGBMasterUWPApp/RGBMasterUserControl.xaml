@@ -54,6 +54,7 @@
                 <StackPanel Orientation="Horizontal">
                     <Image Source="Assets/128.png" Width="23" Height="23" Margin="4 0 4 0" />
                     <TextBlock VerticalAlignment="Center" Text="RGB Master" FontWeight="SemiBold" FontSize="16" />
+                    <TextBlock Text="{x:Bind CurrentEffectName, Mode=OneWay}" />
                 </StackPanel>
             </winui:NavigationView.PaneHeader>
             <winui:NavigationView.MenuItems>

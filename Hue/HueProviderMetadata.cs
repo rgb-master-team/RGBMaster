@@ -9,12 +9,12 @@ namespace Hue
     {
         public override string ProviderName => "Phillips Hue";
 
-        public override string ProviderShortDescription => "Phillips Hue";
+        public override string ProviderShortDescription => "A provider for Phillips Hue devices.";
 
         public override string ProviderFullDescription => ProviderShortDescription;
 
-        public override string ProviderIconAssetPath => "/Assets/Logos/YeelightLogo.png";
+        public override string ProviderIconAssetPath => "/Assets/Logos/HueLogo.png";
 
-        public override string ProviderUrl => "";
+        public override string ProviderUrl => "https://www.philips-hue.com/";
     }
 }

@@ -10,7 +10,7 @@ namespace GameSense
 
         public override string ProviderFullDescription => ProviderShortDescription;
 
-        public override string ProviderIconAssetPath => "/Assets/Logos/SteelSeries.png";
+        public override string ProviderIconAssetPath => "/Assets/Logos/SteelSeriesLogo.png";
         public override string ProviderUrl => "https://steelseries.com/developer";
     }
 }
