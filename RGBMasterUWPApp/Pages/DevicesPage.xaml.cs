@@ -50,14 +50,7 @@ namespace RGBMasterUWPApp.Pages
             {
                 if (IsLoaded)
                 {
-                    if (AppState.Instance.IsLoadingProviders)
-                    {
-                        EnterStoryboard.Begin();
-                    }
-                    else
-                    {
-                        ExitStoryboard.Begin();
-                    }
+                    HandleProgressbarAnimation();
                 }
             }
             else if (e.PropertyName == "ProvidersLoadingProgress")
@@ -345,6 +338,24 @@ namespace RGBMasterUWPApp.Pages
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            HandleProgressbarAnimation();
+        }
+
+        private void HandleProgressbarAnimation()
+        {
+            if (AppState.Instance.IsLoadingProviders)
+            {
+                ProvidersProgress.Visibility = Visibility.Visible;
+                EnterStoryboard.Begin();
+            }
+            else
+            {
+                ExitStoryboard.Begin();
+            }
         }
     }
 }
