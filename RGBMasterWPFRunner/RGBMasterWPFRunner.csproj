@@ -23,6 +23,7 @@
     <ProjectReference Include="..\AppExecutionManager\AppExecutionManager.csproj" />
     <ProjectReference Include="..\EffectsExecution\EffectsExecution.csproj" />
     <ProjectReference Include="..\GameSense\GameSense.csproj" />
+    <ProjectReference Include="..\Hue\Hue.csproj" />
     <ProjectReference Include="..\Logitech\Logitech.csproj" />
     <ProjectReference Include="..\MagicHome\MagicHome.csproj" />
     <ProjectReference Include="..\Provider\Provider.csproj" />
