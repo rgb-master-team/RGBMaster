@@ -26,6 +26,7 @@
     <ProjectReference Include="..\Hue\Hue.csproj" />
     <ProjectReference Include="..\Logitech\Logitech.csproj" />
     <ProjectReference Include="..\MagicHome\MagicHome.csproj" />
+    <ProjectReference Include="..\NZXT\NZXT.csproj" />
     <ProjectReference Include="..\Provider\Provider.csproj" />
     <ProjectReference Include="..\RazerChroma\RazerChroma.csproj" />
     <ProjectReference Include="..\RGBMasterUWPApp\RGBMasterUWPApp.csproj" />
