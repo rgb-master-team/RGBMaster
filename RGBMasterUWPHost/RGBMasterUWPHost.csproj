@@ -150,6 +150,7 @@
     <Content Include="Assets\Logos\LogitechGHubLogo.png" />
     <Content Include="Assets\Logos\MagicHomeLogo.png" />
     <Content Include="Assets\Logos\MsiMysticLightLogo.png" />
+    <Content Include="Assets\Logos\NZXTProviderLogo.png" />
     <Content Include="Assets\Logos\SteelSeriesLogo.png" />
     <Content Include="Assets\Logos\YeelightLogo.png" />
     <Content Include="Assets\SplashScreen.png" />
