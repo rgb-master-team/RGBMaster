@@ -42,7 +42,8 @@ namespace Logitech
 
         protected override void SetColorInternal(Color color)
         {
-            LogitechGSDK.LogiLedSetLightingForTargetZone(DeviceType.Mouse, 1, 100 * (color.R / byte.MaxValue), 100 * (color.G / byte.MaxValue), 100 * (color.B / byte.MaxValue));
+            LogitechGSDK.LogiLedSetLightingForTargetZone(DeviceType.Mouse, 0, (int)(100 * (double)color.R / byte.MaxValue), (int)(100 * (double)color.G / byte.MaxValue), (int)(100 * (double)color.B / byte.MaxValue));
+            LogitechGSDK.LogiLedSetLightingForTargetZone(DeviceType.Mouse, 1, (int)(100 * (double)color.R / byte.MaxValue), (int)(100 * (double)color.G / byte.MaxValue), (int)(100 * (double)color.B / byte.MaxValue));
         }
 
         protected override void TurnOffInternal()
