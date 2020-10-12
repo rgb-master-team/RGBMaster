@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Common
 {
-    public class MusicEffectMetadata : EffectMetadata
+    public class MusicEffectMetadata : EffectMetadata<MusicEffectMetadataProperties>
     {
         public override string EffectName => "Music Sync";
 
@@ -16,5 +16,13 @@ namespace Common
         public override string IconGlyph => "\uF61F";
 
         public override EffectType Type => EffectType.Music;
+
+        public MusicEffectMetadata()
+        {
+            EffectProperties = new MusicEffectMetadataProperties()
+            {
+                AudioPoints = new List<MusicEffectAudioPoint>()
+            };
+        }
     }
 }

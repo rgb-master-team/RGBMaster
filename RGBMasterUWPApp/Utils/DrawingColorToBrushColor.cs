@@ -17,7 +17,8 @@ namespace RGBMasterUWPApp.Utils
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
-            throw new NotImplementedException();
+            var uiColor = (Windows.UI.Color)value;
+            return System.Drawing.Color.FromArgb(uiColor.A, uiColor.R, uiColor.G, uiColor.B);
         }
     }
 }

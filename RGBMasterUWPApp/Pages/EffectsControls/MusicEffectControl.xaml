@@ -11,24 +11,24 @@
     </Page.Resources>
     <ContentControl x:Name="AudioPointsContentControl" IsEnabled="{x:Bind IsAudioPointsEditingEnabled, Mode=OneWay}">
         <StackPanel Orientation="Vertical" Spacing="10" >
-            <ComboBox x:Name="AudioPointsComboBox" IsEditable="True" SelectedValue="{x:Bind AudioPointsCount, Mode=OneWay}" SelectionChanged="AudioPointsComboBox_SelectionChanged" ItemsSource="{x:Bind PossibleAudioPointsCount}" />
+            <ComboBox x:Name="AudioPointsComboBox" IsEditable="True" SelectedValue="{x:Bind AudioPointsCount, Mode=OneWay}" TextSubmitted="AudioPointsComboBox_TextSubmitted" ItemsSource="{x:Bind PossibleAudioPointsCount, Mode=OneWay}" />
             <GridView ItemsSource="{x:Bind AudioPoints, Mode=OneWay}">
                 <GridView.ItemTemplate>
                     <DataTemplate x:DataType="common:MusicEffectAudioPoint">
-                        <Button x:Name="ColorPickButton" Foreground="DarkSalmon" Click="ColorPickButton_Click" Content="{x:Bind MinimumAudioPoint}" Width="50px" Height="50px" >
+                        <Button x:Name="ColorPickButton" Foreground="DarkSalmon" Click="ColorPickButton_Click" Content="{x:Bind MinimumAudioPoint, Mode=OneWay}" Width="50px" Height="50px" >
                             <Button.Background>
                                 <SolidColorBrush Color="{x:Bind Color, Mode=OneWay, Converter={StaticResource ColorConverter}}" />
                             </Button.Background>
                             <Button.Resources>
-                                <muxc:TeachingTip x:Key="AudioPointEditTeachingTip" IsLightDismissEnabled="True">
+                                <muxc:TeachingTip x:Key="AudioPointEditTeachingTip" IsLightDismissEnabled="True" Closed="AudioPointEditTeachingTip_Closed">
                                     <StackPanel Orientation="Vertical">
                                         <ColorPicker x:Name="ColorPicker" 
                                                  ColorSpectrumShape="Ring" 
-                                                 ColorChanged="ColorPicker_ColorChanged"
-                                                 IsColorSliderVisible="False" 
+                                                 IsColorSliderVisible="False"
+                                                 Color="{x:Bind Color, Converter={StaticResource ColorConverter}, Mode=TwoWay}"
                                                   />
                                         <TextBlock Text="Minimum Volume" HorizontalAlignment="Center" FontSize="16" />
-                                        <Slider x:Name="Brighness_Slider" Minimum="0" Maximum="1" />
+                                        <Slider x:Name="Brighness_Slider" Minimum="0" Maximum="1" TickFrequency="0.01" StepFrequency="0.01" Value="{x:Bind MinimumAudioPoint, Mode=TwoWay}" />
                                     </StackPanel>
                                 </muxc:TeachingTip>
                             </Button.Resources>

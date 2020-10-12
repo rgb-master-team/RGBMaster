@@ -30,8 +30,6 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
     /// </summary>
     public sealed partial class MusicEffectControl : Page, INotifyPropertyChanged
     {
-        private List<MusicEffectAudioPoint> audioPoints;
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         public bool IsAudioPointsEditingEnabled => !AppState.Instance.IsEffectRunning;
@@ -40,19 +38,25 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         {
             get
             {
-                return audioPoints;
+                return ((MusicEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Music)).EffectProperties.AudioPoints;
             }
             set
             {
-                audioPoints = value;
+                var musicEffectProperties = ((MusicEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Music)).EffectProperties;
+                musicEffectProperties.AudioPoints = value;
                 OnPropertyChanged();
-
             }
         }
 
         public readonly List<int> PossibleAudioPointsCount = Enumerable.Range(1, 100).ToList();
-        public int AudioPointsCount;
 
+        public int AudioPointsCount
+        {
+            get
+            {
+                return AudioPoints.Count;
+            }
+        }
 
         public MusicEffectControl()
         {
@@ -68,16 +72,7 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             }
         }
 
-        private void AudioPointsComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var newCount = (int)AudioPointsComboBox.SelectedValue;
-            AudioPoints = new List<MusicEffectAudioPoint>(newCount);
-            for (int i = 0; i < newCount; i++)
-            {
-                AudioPoints.Add(new MusicEffectAudioPoint() { Index = i, MinimumAudioPoint = (double)i / 10, Color = Color.White });
-            }
-        }
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        private void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
@@ -89,9 +84,45 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             teachingTip.IsOpen = true;
         }
 
-        private void ColorPicker_ColorChanged(Windows.UI.Xaml.Controls.ColorPicker sender, Windows.UI.Xaml.Controls.ColorChangedEventArgs args)
+        private void AudioPointEditTeachingTip_Closed(TeachingTip sender, TeachingTipClosedEventArgs args)
         {
+            AudioPoints = AudioPoints.OrderBy(x => x.MinimumAudioPoint).ToList();
+        }
 
+        private void AudioPointsComboBox_TextSubmitted(ComboBox sender, ComboBoxTextSubmittedEventArgs args)
+        {
+            var newCountText = args.Text;
+
+            if (!int.TryParse(newCountText, out var newCount) || newCount < 1 || newCount > 100)
+            {
+                //TODO - Change to Flyout
+                var teachingTip = new TeachingTip()
+                {
+                    Content = "The audio points count must be from 1 to 100.",
+                    PreferredPlacement = TeachingTipPlacementMode.Bottom,
+                    XamlRoot = XamlRoot,
+                    Target = sender
+                };
+
+                teachingTip.IsOpen = true;
+
+                args.Handled = true;
+                return;
+            }
+
+            if (AudioPoints.Count < newCount)
+            {
+                for (int i = AudioPoints.Count; i < newCount; i++)
+                {
+                    AudioPoints.Add(new MusicEffectAudioPoint() { Index = i, MinimumAudioPoint = (double)i / 10, Color = Color.White });
+                }
+            }
+            else if (AudioPoints.Count > newCount)
+            {
+                AudioPoints = AudioPoints.GetRange(0, newCount);
+            }
+
+            AudioPoints = new List<MusicEffectAudioPoint>(AudioPoints);
         }
     }
 }

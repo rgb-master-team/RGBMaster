@@ -64,44 +64,23 @@ namespace EffectsExecution
 
             Color color = Color.Black;
 
-            if (max > 0.01 && max <= 0.1)
-            {
-                max = 1;
-                color = Color.Red;
-            }
+            var musicEffectProperties = ((MusicEffectMetadata)executedEffectMetadata).EffectProperties;
 
-            if (max > 0.1 && max <= 0.2)
-            {
-                max = 1;
-                color = Color.Orange;
-            }
+            double maxAudioPointAsDouble = max;
+            byte desiredBrightnessPercentage = 1;
 
-            else if (max > 0.2 && max <= 0.35)
+            // We scan the audio points of the effect properties (assuming they are kept ordered in our state, which
+            // is probably a bad thing, we'll think about it later). The first audio point which minimum is surpassed by the maximum
+            // level of played audio will represent the desired brightness and color of the sound.
+            for (int i = musicEffectProperties.AudioPoints.Count - 1; i >= 0; i--)
             {
-                max = 30;
-                color = Color.Yellow;
-            }
-
-            else if (max > 0.35 && max <= 0.5)
-            {
-                max = 30;
-                color = Color.Cyan;
-            }
-
-            else if (max > 0.5 && max <= 0.65)
-            {
-                max = 60;
-                color = Color.Blue;
-            }
-
-            else if (max > 0.65)
-            {
-                max = 100;
-                color = Color.Violet;
-            }
-            else
-            {
-                return;
+                var audioPoint = musicEffectProperties.AudioPoints[i];
+                if (maxAudioPointAsDouble >= audioPoint.MinimumAudioPoint)
+                {
+                    desiredBrightnessPercentage = (byte)(audioPoint.MinimumAudioPoint * 100);
+                    color = audioPoint.Color;
+                    break;
+                }
             }
 
             var tasks = new List<Task>();
@@ -110,7 +89,7 @@ namespace EffectsExecution
             {
                 if (device.DeviceMetadata.SupportedOperations.Contains(OperationType.SetBrightness))
                 {
-                    tasks.Add(Task.Run(() => device.SetBrightnessPercentage((byte)(max))));
+                    tasks.Add(Task.Run(() => device.SetBrightnessPercentage(desiredBrightnessPercentage)));
                 }
 
                 if (device.DeviceMetadata.SupportedOperations.Contains(OperationType.SetColor))
