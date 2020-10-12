@@ -28,9 +28,35 @@ namespace Yeelight
         private readonly YeelightAPI.Device InternalDevice;
         private Socket musicModeSocket;
 
-        public YeelightDevice(Guid discoveringProvider, YeelightAPI.Device internalDevice): base(new YeelightDeviceMetadata(discoveringProvider, GetDeviceTypeForYeelight(internalDevice), !String.IsNullOrWhiteSpace(internalDevice.Name) ? internalDevice.Name: internalDevice.Hostname, new HashSet<OperationType>() { OperationType.SetColor, OperationType.GetColor, OperationType.SetBrightness, OperationType.GetBrightness, OperationType.TurnOff, OperationType.TurnOn}))
+        public YeelightDevice(Guid discoveringProvider, YeelightAPI.Device internalDevice): base(new YeelightDeviceMetadata(discoveringProvider, GetDeviceTypeForYeelight(internalDevice), !String.IsNullOrWhiteSpace(internalDevice.Name) ? internalDevice.Name: internalDevice.Hostname, GetSupportedOperationsForYeelight(internalDevice)))
         {
             InternalDevice = internalDevice;
+        }
+
+        private static HashSet<OperationType> GetSupportedOperationsForYeelight(YeelightAPI.Device internalDevice)
+        {
+            var operationTypes = new HashSet<OperationType>();
+
+            foreach (var supportedOp in internalDevice.SupportedOperations)
+            {
+                switch (supportedOp)
+                {
+                    case METHODS.SetRGBColor:
+                        operationTypes.Add(OperationType.SetColor);
+                        break;
+                    case METHODS.SetBrightness:
+                        operationTypes.Add(OperationType.SetBrightness);
+                        break;
+                    case METHODS.SetPower:
+                        operationTypes.Add(OperationType.TurnOn);
+                        operationTypes.Add(OperationType.TurnOff);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return operationTypes;
         }
 
         private static DeviceType GetDeviceTypeForYeelight(YeelightAPI.Device internalDevice)

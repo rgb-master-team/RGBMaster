@@ -55,11 +55,11 @@ namespace RGBMasterUWPApp.Pages
             }
             else if (e.PropertyName == "ProvidersLoadingProgress")
             {
-                OnPropertyChanged("ProvidersLoadingProgressValue");
+                OnPropertyChanged(nameof(ProvidersLoadingProgressValue));
             }
             else if (e.PropertyName == "CurrentProcessedProvider")
             {
-                OnPropertyChanged("CurrentProcessedProvider");
+                OnPropertyChanged(nameof(CurrentProcessedProvider));
             }
         }
 

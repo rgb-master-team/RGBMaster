@@ -18,6 +18,7 @@ namespace AppExecutionManager.State
         private bool isLoadingProviders = false;
         private double providersLoadingProgress = 0.0;
         private ProviderMetadata currentProcessedProvider;
+        private EffectMetadata activeEffect;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -43,7 +44,19 @@ namespace AppExecutionManager.State
             }
         }
         public ObservableCollection<RegisteredProvider> RegisteredProviders { get; set; }
-        public EffectMetadata ActiveEffect { get; set; }
+        public EffectMetadata ActiveEffect 
+        {
+            get
+            {
+                return activeEffect;
+            }
+            set
+            {
+                activeEffect = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsEffectRunning));
+            }
+        }
         public ObservableCollection<EffectMetadata> Effects { get; set; }
         public StaticColorEffectProps StaticColorEffectProperties { get; set; }
         public string AppVersion { get; set; }

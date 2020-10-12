@@ -4,9 +4,39 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:RGBMasterUWPApp.Pages.EffectsControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:common="using:Common" xmlns:utils="using:RGBMasterUWPApp.Utils" xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
-
-    <StackPanel />
+    <Page.Resources>
+        <utils:DrawingColorToBrushColor x:Key="ColorConverter" />
+    </Page.Resources>
+    <ContentControl x:Name="AudioPointsContentControl" IsEnabled="{x:Bind IsAudioPointsEditingEnabled, Mode=OneWay}">
+        <StackPanel Orientation="Vertical" Spacing="10" >
+            <ComboBox x:Name="AudioPointsComboBox" IsEditable="True" SelectedValue="{x:Bind AudioPointsCount, Mode=OneWay}" SelectionChanged="AudioPointsComboBox_SelectionChanged" ItemsSource="{x:Bind PossibleAudioPointsCount}" />
+            <GridView ItemsSource="{x:Bind AudioPoints, Mode=OneWay}">
+                <GridView.ItemTemplate>
+                    <DataTemplate x:DataType="common:MusicEffectAudioPoint">
+                        <Button x:Name="ColorPickButton" Foreground="DarkSalmon" Click="ColorPickButton_Click" Content="{x:Bind MinimumAudioPoint}" Width="50px" Height="50px" >
+                            <Button.Background>
+                                <SolidColorBrush Color="{x:Bind Color, Mode=OneWay, Converter={StaticResource ColorConverter}}" />
+                            </Button.Background>
+                            <Button.Resources>
+                                <muxc:TeachingTip x:Key="AudioPointEditTeachingTip" IsLightDismissEnabled="True">
+                                    <StackPanel Orientation="Vertical">
+                                        <ColorPicker x:Name="ColorPicker" 
+                                                 ColorSpectrumShape="Ring" 
+                                                 ColorChanged="ColorPicker_ColorChanged"
+                                                 IsColorSliderVisible="False" 
+                                                  />
+                                        <TextBlock Text="Minimum Volume" HorizontalAlignment="Center" FontSize="16" />
+                                        <Slider x:Name="Brighness_Slider" Minimum="0" Maximum="1" />
+                                    </StackPanel>
+                                </muxc:TeachingTip>
+                            </Button.Resources>
+                        </Button>
+                    </DataTemplate>
+                </GridView.ItemTemplate>
+            </GridView>
+        </StackPanel>
+    </ContentControl>
 
 </Page>

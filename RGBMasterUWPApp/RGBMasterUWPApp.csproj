@@ -145,6 +145,7 @@
     <Compile Include="RGBMasterUserControl.xaml.cs">
       <DependentUpon>RGBMasterUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utils\DrawingColorToBrushColor.cs" />
     <Compile Include="Utils\ExtensionMethods.cs" />
     <EmbeddedResource Include="Properties\RGBMasterUWPApp.rd.xml" />
   </ItemGroup>
