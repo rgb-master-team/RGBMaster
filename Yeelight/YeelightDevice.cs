@@ -104,7 +104,7 @@ namespace Yeelight
 
                     await InternalDevice.StartMusicMode(ipAddress.ToString(), ((IPEndPoint)musicModeSocketListener.LocalEndPoint).Port);
 
-                    this.musicModeSocket = musicModeSocketListener.Accept();
+                    musicModeSocket = await musicModeSocketListener.AcceptAsync();
                 }
                 catch (Exception ex)
                 {

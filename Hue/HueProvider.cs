@@ -65,7 +65,7 @@ namespace Hue
 
         protected override Task InternalUnregister()
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
     }
 }

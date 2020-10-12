@@ -45,6 +45,7 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
                 var musicEffectProperties = ((MusicEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Music)).EffectProperties;
                 musicEffectProperties.AudioPoints = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(AudioPointsCount));
             }
         }
 
@@ -96,33 +97,33 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             if (!int.TryParse(newCountText, out var newCount) || newCount < 1 || newCount > 100)
             {
                 //TODO - Change to Flyout
-                var teachingTip = new TeachingTip()
+                var flyout = new Flyout()
                 {
-                    Content = "The audio points count must be from 1 to 100.",
-                    PreferredPlacement = TeachingTipPlacementMode.Bottom,
-                    XamlRoot = XamlRoot,
-                    Target = sender
+                    Content = new TextBlock() { Text= "The audio points count must be from 1 to 100." },
+                    Placement = FlyoutPlacementMode.Bottom,
+                    XamlRoot = sender.XamlRoot,
                 };
 
-                teachingTip.IsOpen = true;
+                flyout.ShowAt(sender);
 
                 args.Handled = true;
-                return;
             }
-
-            if (AudioPoints.Count < newCount)
+            else
             {
-                for (int i = AudioPoints.Count; i < newCount; i++)
+                if (AudioPoints.Count < newCount)
                 {
-                    AudioPoints.Add(new MusicEffectAudioPoint() { Index = i, MinimumAudioPoint = (double)i / 10, Color = Color.White });
+                    for (int i = AudioPoints.Count; i < newCount; i++)
+                    {
+                        AudioPoints.Add(new MusicEffectAudioPoint() { Index = i, MinimumAudioPoint = (double)i / 100, Color = Color.White });
+                    }
+
+                    AudioPoints = new List<MusicEffectAudioPoint>(AudioPoints);
+                }
+                else if (AudioPoints.Count > newCount)
+                {
+                    AudioPoints = AudioPoints.GetRange(0, newCount);
                 }
             }
-            else if (AudioPoints.Count > newCount)
-            {
-                AudioPoints = AudioPoints.GetRange(0, newCount);
-            }
-
-            AudioPoints = new List<MusicEffectAudioPoint>(AudioPoints);
         }
     }
 }
