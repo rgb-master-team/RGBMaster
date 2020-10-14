@@ -13,10 +13,13 @@ using System.Threading;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Media;
+using Windows.Networking.Sockets;
+using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
@@ -96,11 +99,32 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
 
             if (!int.TryParse(newCountText, out var newCount) || newCount < 1 || newCount > 100)
             {
-                //TODO - Change to Flyout
+                var flyoutStackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
+                flyoutStackPanel.Children.Add(new FontIcon
+                {
+                    FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets"),
+                    Glyph = "\uE783",
+                    FontSize = 42,
+                    Margin = new Thickness(0, 0, 8, 0)
+                });
+
+                flyoutStackPanel.Children.Add(new TextBlock
+                {
+                    Text = "The audio points count must be from 1 to 100."
+                });
+
+                var flyoutPresenterStyle = new Style(typeof(FlyoutPresenter));
+               
+                //TODO - Change Property based on window size
+                //Get page FrameworkElement to point the flyout at the botoom of the screnn.
+                flyoutPresenterStyle.Setters.Add(new Setter(FrameworkElement.MaxWidthProperty, 1000));
+
+
                 var flyout = new Flyout()
                 {
-                    Content = new TextBlock() { Text= "The audio points count must be from 1 to 100." },
-                    Placement = FlyoutPlacementMode.Bottom,
+                    Content = flyoutStackPanel,
+                    FlyoutPresenterStyle = flyoutPresenterStyle,
+                    Placement = Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Bottom,
                     XamlRoot = sender.XamlRoot,
                 };
 
@@ -124,6 +148,26 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
                     AudioPoints = AudioPoints.GetRange(0, newCount);
                 }
             }
+        }
+
+        private async void InfoButton_Click(object sender, RoutedEventArgs e)
+        {
+            var infoContentDialog = new ContentDialog() {Title = "Music effect sync explenation", CloseButtonText = "Close" ,XamlRoot = XamlRoot };
+            var infoStackPanel = new StackPanel();
+            var infoTextBlock = new TextBlock() { TextWrapping = TextWrapping.Wrap };
+            infoTextBlock.Inlines.Add(new Run { Text = "Music Effect Sync", FontWeight = Windows.UI.Text.FontWeights.Bold });
+            infoTextBlock.Inlines.Add(new LineBreak());
+            infoTextBlock.Inlines.Add(new Run { Text = "Music effect will sync you devices colors bט certain volume points that you choose from the dropdown list." });
+            infoTextBlock.Inlines.Add(new LineBreak());
+            infoTextBlock.Inlines.Add(new Run { Text = "Each volume point is assinged with a color and a minimum volume value." });
+            infoTextBlock.Inlines.Add(new LineBreak());
+            infoTextBlock.Inlines.Add(new LineBreak());
+            infoTextBlock.Inlines.Add(new Run { Text = "Minimum Volume", FontWeight = Windows.UI.Text.FontWeights.Bold });
+            infoTextBlock.Inlines.Add(new LineBreak());
+            infoTextBlock.Inlines.Add(new Run { Text = "You can choose certain value between 0 to 1 that representes the volume point, that will bind the selected color to that specific point." });
+            infoStackPanel.Children.Add(infoTextBlock);
+            infoContentDialog.Content = infoStackPanel;
+            await infoContentDialog.ShowAsync();
         }
     }
 }
