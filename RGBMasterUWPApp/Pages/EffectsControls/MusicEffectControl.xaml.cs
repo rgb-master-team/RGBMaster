@@ -152,22 +152,7 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
 
         private async void InfoButton_Click(object sender, RoutedEventArgs e)
         {
-            var infoContentDialog = new ContentDialog() {Title = "Music effect sync explenation", CloseButtonText = "Close" ,XamlRoot = XamlRoot };
-            var infoStackPanel = new StackPanel();
-            var infoTextBlock = new TextBlock() { TextWrapping = TextWrapping.Wrap };
-            infoTextBlock.Inlines.Add(new Run { Text = "Music Effect Sync", FontWeight = Windows.UI.Text.FontWeights.Bold });
-            infoTextBlock.Inlines.Add(new LineBreak());
-            infoTextBlock.Inlines.Add(new Run { Text = "Music effect will sync you devices colors bט certain volume points that you choose from the dropdown list." });
-            infoTextBlock.Inlines.Add(new LineBreak());
-            infoTextBlock.Inlines.Add(new Run { Text = "Each volume point is assinged with a color and a minimum volume value." });
-            infoTextBlock.Inlines.Add(new LineBreak());
-            infoTextBlock.Inlines.Add(new LineBreak());
-            infoTextBlock.Inlines.Add(new Run { Text = "Minimum Volume", FontWeight = Windows.UI.Text.FontWeights.Bold });
-            infoTextBlock.Inlines.Add(new LineBreak());
-            infoTextBlock.Inlines.Add(new Run { Text = "You can choose certain value between 0 to 1 that representes the volume point, that will bind the selected color to that specific point." });
-            infoStackPanel.Children.Add(infoTextBlock);
-            infoContentDialog.Content = infoStackPanel;
-            await infoContentDialog.ShowAsync();
+            await InfoContentDialog.ShowAsync();
         }
     }
 }
