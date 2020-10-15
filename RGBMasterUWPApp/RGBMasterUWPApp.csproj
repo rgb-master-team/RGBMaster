@@ -200,6 +200,10 @@
       <Project>{043D9F41-3261-453B-BCB9-E6921B67E4B5}</Project>
       <Name>Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Utils\Utils.csproj">
+      <Project>{E9D5574F-DD24-4DC1-9993-673CD9AACE84}</Project>
+      <Name>Utils</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\128.png" />

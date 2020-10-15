@@ -31,7 +31,7 @@
         <ContentControl x:Name="AudioPointsContentControl" IsEnabled="{x:Bind IsAudioPointsEditingEnabled, Mode=OneWay}">
             <StackPanel Orientation="Vertical" Spacing="10" >
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <ComboBox x:Name="AudioPointsComboBox" IsEditable="True" SelectedValue="{x:Bind AudioPointsCount, Mode=OneWay}" TextSubmitted="AudioPointsComboBox_TextSubmitted" ItemsSource="{x:Bind PossibleAudioPointsCount, Mode=OneWay}" />
+                    <ComboBox SelectionChangedTrigger="Always" x:Name="AudioPointsComboBox" IsEditable="True" SelectedValue="{x:Bind AudioPointsCount, Mode=OneWay}" TextSubmitted="AudioPointsComboBox_TextSubmitted" ItemsSource="{x:Bind PossibleAudioPointsCount, Mode=OneWay}" />
                     <Button x:Name="InfoButton" Click="InfoButton_Click">
                         <Button.Content>
                             <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE946;"/>
