@@ -28,7 +28,7 @@ namespace AppExecutionManager.State
             {
                 RegisteredProviders = new ObservableCollection<RegisteredProvider>(),
                 Effects = new ObservableCollection<EffectMetadata>(),
-                StaticColorEffectProperties=new StaticColorEffectProps() { SelectedColor = Color.White, SelectedBrightness = 100 },
+                StaticColorEffectProperties = new StaticColorEffectProps() { SelectedColor = Color.White, SelectedBrightness = 100 },
                 SupportedProviders = new ObservableCollection<ProviderMetadata>()
             };
 

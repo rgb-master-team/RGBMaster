@@ -21,7 +21,7 @@
                                     <LineBreak /><LineBreak/>
                                     <Run FontWeight="Bold" Text="Minimum Volume"/>
                                     <LineBreak />
-                                    <Run Text="You can choose certain value between 0 to 1 that representes the volume point, that will bind the selected color to that specific point."/>
+                                    <Run Text="You can choose certain value between 0 to 99 that representes the volume point, that will bind the selected color to that specific point."/>
                 </TextBlock>
             </StackPanel>
         </ContentDialog>
@@ -40,11 +40,36 @@
                         <DataTemplate x:DataType="common:MusicEffectAudioPoint">
                             <Button x:Name="ColorPickButton" Click="ColorPickButton_Click" Width="50px" Height="50px" >
                                 <Button.Content>
-                                    <TextBlock Text="{x:Bind MinimumAudioPoint, Mode=OneWay}" Foreground="{StaticResource TextBoxBackgroundThemeBrush}"/>
+                                    <TextBlock Text="{x:Bind MinimumAudioPoint, Mode=OneWay}" Foreground="Black" FontWeight="SemiBold"/>
                                 </Button.Content>
                                 <Button.Background>
                                     <SolidColorBrush Color="{x:Bind Color, Mode=OneWay, Converter={StaticResource ColorConverter}}" />
                                 </Button.Background>
+                                <Button.ContextFlyout>
+                                    <MenuFlyout>
+                                        <MenuFlyoutItem x:Name="AddAudioPointBefore" Text="Add Before" Click="AddAudioPointBefore_Click">
+                                            <MenuFlyoutItem.Icon>
+                                                <FontIcon Glyph="&#xE112;" />
+                                            </MenuFlyoutItem.Icon>
+                                        </MenuFlyoutItem>
+                                        <MenuFlyoutItem x:Name="RemoveAudioPoint" Text="Remove" Click="RemoveAudioPoint_Click">
+                                            <MenuFlyoutItem.Icon>
+                                                <FontIcon Glyph="&#xE106;" />
+                                            </MenuFlyoutItem.Icon>
+                                        </MenuFlyoutItem>
+                                        <MenuFlyoutItem x:Name="AddAudioPointAfter" Text="Add After" Click="AddAudioPointAfter_Click">
+                                            <MenuFlyoutItem.Icon>
+                                                <FontIcon Glyph="&#xE111;" />
+                                            </MenuFlyoutItem.Icon>
+                                        </MenuFlyoutItem>
+                                        <MenuFlyoutSeparator />
+                                        <MenuFlyoutItem x:Name="DuplicateAudioPoint" Text="Duplicate" Click="DuplicateAudioPoint_Click">
+                                            <MenuFlyoutItem.Icon>
+                                                <FontIcon Glyph="&#xE16F;" />
+                                            </MenuFlyoutItem.Icon>
+                                        </MenuFlyoutItem>
+                                    </MenuFlyout>
+                                </Button.ContextFlyout>
                                 <Button.Resources>
                                     <muxc:TeachingTip x:Key="AudioPointEditTeachingTip" IsLightDismissEnabled="True" Closed="AudioPointEditTeachingTip_Closed" ScrollViewer.VerticalScrollMode="Disabled">
                                         <StackPanel>
@@ -54,7 +79,7 @@
                                                  Color="{x:Bind Color, Converter={StaticResource ColorConverter}, Mode=TwoWay}"
                                                   />
                                             <TextBlock Text="Minimum Volume" HorizontalAlignment="Center" FontSize="16" Margin="0 4 0 0" />
-                                            <Slider x:Name="Brighness_Slider" Minimum="0" Maximum="1" TickFrequency="0.01" StepFrequency="0.01" Value="{x:Bind MinimumAudioPoint, Mode=TwoWay}" />
+                                            <Slider x:Name="Brighness_Slider" Minimum="0" Maximum="100" StepFrequency="1" Value="{x:Bind MinimumAudioPoint, Mode=TwoWay}" />
                                         </StackPanel>
                                     </muxc:TeachingTip>
                                 </Button.Resources>

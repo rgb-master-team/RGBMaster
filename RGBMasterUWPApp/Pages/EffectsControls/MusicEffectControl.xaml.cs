@@ -33,6 +33,9 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
     /// </summary>
     public sealed partial class MusicEffectControl : Page, INotifyPropertyChanged
     {
+        private const double Gamma = 0.80;
+        private const double IntensityMax = 255;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public bool IsAudioPointsEditingEnabled => !AppState.Instance.IsEffectRunning;
@@ -49,18 +52,15 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
                 musicEffectProperties.AudioPoints = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(AudioPointsCount));
+                OnPropertyChanged(nameof(IsAddAudioPointEnabled));
             }
         }
 
         public readonly List<int> PossibleAudioPointsCount = Enumerable.Range(1, 100).ToList();
 
-        public int AudioPointsCount
-        {
-            get
-            {
-                return AudioPoints.Count;
-            }
-        }
+        public int AudioPointsCount => AudioPoints.Count;
+
+        public bool IsAddAudioPointEnabled => AudioPointsCount < 100;
 
         public MusicEffectControl()
         {
@@ -90,7 +90,85 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
 
         private void AudioPointEditTeachingTip_Closed(TeachingTip sender, TeachingTipClosedEventArgs args)
         {
-            AudioPoints = AudioPoints.OrderBy(x => x.MinimumAudioPoint).ToList();
+            //AudioPoints = AudioPoints.OrderBy(x => x.MinimumAudioPoint).ToList();
+        }
+
+        private static Color ColorFromWaveLength(double estimatedWavelength)
+        {
+            double factor;
+
+            double red;
+            double green;
+            double blue;
+
+            if ((estimatedWavelength >= 380) && (estimatedWavelength < 440))
+            {
+                red = -(estimatedWavelength - 440) / (440 - 380);
+                green = 0.0;
+                blue = 1.0;
+            }
+            else if ((estimatedWavelength >= 440) && (estimatedWavelength < 490))
+            {
+                red = 0.0;
+                green = (estimatedWavelength - 440) / (490 - 440);
+                blue = 1.0;
+            }
+            else if ((estimatedWavelength >= 490) && (estimatedWavelength < 510))
+            {
+                red = 0.0;
+                green = 1.0;
+                blue = -(estimatedWavelength - 510) / (510 - 490);
+            }
+            else if ((estimatedWavelength >= 510) && (estimatedWavelength < 580))
+            {
+                red = (estimatedWavelength - 510) / (580 - 510);
+                green = 1.0;
+                blue = 0.0;
+            }
+            else if ((estimatedWavelength >= 580) && (estimatedWavelength < 645))
+            {
+                red = 1.0;
+                green = -(estimatedWavelength - 645) / (645 - 580);
+                blue = 0.0;
+            }
+            else if ((estimatedWavelength >= 645) && (estimatedWavelength < 781))
+            {
+                red = 1.0;
+                green = 0.0;
+                blue = 0.0;
+            }
+            else
+            {
+                red = 0.0;
+                green = 0.0;
+                blue = 0.0;
+            }
+
+            // Let the intensity fall off near the vision limits
+
+            if ((estimatedWavelength >= 380) && (estimatedWavelength < 420))
+            {
+                factor = 0.3 + 0.7 * (estimatedWavelength - 380) / (420 - 380);
+            }
+            else if ((estimatedWavelength >= 420) && (estimatedWavelength < 701))
+            {
+                factor = 1.0;
+            }
+            else if ((estimatedWavelength >= 701) && (estimatedWavelength < 781))
+            {
+                factor = 0.3 + 0.7 * (780 - estimatedWavelength) / (780 - 700);
+            }
+            else
+            {
+                factor = 0.0;
+            }
+
+            // Don't want 0^x = 1 for x <> 0
+            int redColorComponent = red == 0.0 ? 0 : (int)Math.Round(IntensityMax * Math.Pow(red * factor, Gamma));
+            int greenColorComponent = green == 0.0 ? 0 : (int)Math.Round(IntensityMax * Math.Pow(green * factor, Gamma));
+            int blueColorComponent = blue == 0.0 ? 0 : (int)Math.Round(IntensityMax * Math.Pow(blue * factor, Gamma));
+
+            return Color.FromArgb(redColorComponent, greenColorComponent, blueColorComponent);
         }
 
         private void AudioPointsComboBox_TextSubmitted(ComboBox sender, ComboBoxTextSubmittedEventArgs args)
@@ -134,25 +212,80 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             }
             else
             {
-                if (AudioPoints.Count < newCount)
-                {
-                    for (int i = AudioPoints.Count; i < newCount; i++)
-                    {
-                        AudioPoints.Add(new MusicEffectAudioPoint() { Index = i, MinimumAudioPoint = (double)i / 100, Color = Color.White });
-                    }
+                var newAudioPoints = new List<MusicEffectAudioPoint>();
 
-                    AudioPoints = new List<MusicEffectAudioPoint>(AudioPoints);
-                }
-                else if (AudioPoints.Count > newCount)
+                for (int i = 0; i < newCount; i++)
                 {
-                    AudioPoints = AudioPoints.GetRange(0, newCount);
+                    double relativeWavelength = ((double)i / newCount) * (780 - 380) + 380;
+                    double relativeAudioPercentage = ((double)i / newCount) * 100;
+                    newAudioPoints.Add(new MusicEffectAudioPoint() { Index = i, MinimumAudioPoint = Math.Round(relativeAudioPercentage, MidpointRounding.AwayFromZero), Color = ColorFromWaveLength(relativeWavelength) });
                 }
+
+                AudioPoints = newAudioPoints;
             }
         }
 
         private async void InfoButton_Click(object sender, RoutedEventArgs e)
         {
             await InfoContentDialog.ShowAsync();
+        }
+
+        private void RemoveAudioPoint_Click(object sender, RoutedEventArgs e)
+        {
+            var menuFlyout = (MenuFlyoutItem)sender;
+            var audioPoint = (MusicEffectAudioPoint)menuFlyout.DataContext;
+
+            AudioPoints.RemoveAt(audioPoint.Index);
+
+            for (int i = audioPoint.Index; i < AudioPointsCount; i++)
+            {
+                AudioPoints[i].Index--;
+            }
+
+            AudioPoints = new List<MusicEffectAudioPoint>(AudioPoints);
+        }
+
+        private void AddAudioPointBefore_Click(object sender, RoutedEventArgs e)
+        {
+            var menuFlyout = (MenuFlyoutItem)sender;
+            var audioPoint = (MusicEffectAudioPoint)menuFlyout.DataContext;
+
+            var newAudioPoint = new MusicEffectAudioPoint() { Index = audioPoint.Index - 1, MinimumAudioPoint = 100, Color = Color.White };
+
+            AudioPoints.Insert(newAudioPoint.Index, newAudioPoint);
+
+            var currentAudioPointsCount = AudioPointsCount;
+
+            for (int i = newAudioPoint.Index + 1; i < currentAudioPointsCount; i++)
+            {
+                AudioPoints[i].Index++;
+            }
+
+            AudioPoints = new List<MusicEffectAudioPoint>(AudioPoints);
+        }
+
+        private void AddAudioPointAfter_Click(object sender, RoutedEventArgs e)
+        {
+            var menuFlyout = (MenuFlyoutItem)sender;
+            var audioPoint = (MusicEffectAudioPoint)menuFlyout.DataContext;
+
+            var newAudioPoint = new MusicEffectAudioPoint() { Index = audioPoint.Index + 1, MinimumAudioPoint = 100, Color = Color.White };
+
+            AudioPoints.Insert(newAudioPoint.Index, newAudioPoint);
+
+            var currentAudioPointsCount = AudioPointsCount;
+
+            for (int i = newAudioPoint.Index + 1; i < currentAudioPointsCount; i++)
+            {
+                AudioPoints[i].Index++;
+            }
+
+            AudioPoints = new List<MusicEffectAudioPoint>(AudioPoints);
+        }
+
+        private void DuplicateAudioPoint_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

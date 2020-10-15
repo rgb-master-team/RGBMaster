@@ -55,19 +55,23 @@ namespace EffectsExecution
             {
                 float sample = buffer.FloatBuffer[index];
 
-                // absolute value 
-                //if (sample < 0) sample = -sample;
-                if (sample < 0) sample = -sample;
-                // is this the max value?
-                if (sample > max) max = sample;
+                if (sample < 0)
+                {
+                    sample = -sample;
+                }
+
+                if (sample > max)
+                {
+                    max = sample;
+                }
             }
 
             Color color = Color.Black;
 
             var musicEffectProperties = ((MusicEffectMetadata)executedEffectMetadata).EffectProperties;
 
-            double maxAudioPointAsDouble = max;
-            byte desiredBrightnessPercentage = 1;
+            double maxAudioPoint = max * 100;
+            byte desiredBrightnessPercentage = 0;
 
             // We scan the audio points of the effect properties (assuming they are kept ordered in our state, which
             // is probably a bad thing, we'll think about it later). The first audio point which minimum is surpassed by the maximum
@@ -75,9 +79,9 @@ namespace EffectsExecution
             for (int i = musicEffectProperties.AudioPoints.Count - 1; i >= 0; i--)
             {
                 var audioPoint = musicEffectProperties.AudioPoints[i];
-                if (maxAudioPointAsDouble >= audioPoint.MinimumAudioPoint)
+                if (maxAudioPoint >= audioPoint.MinimumAudioPoint)
                 {
-                    desiredBrightnessPercentage = (byte)(audioPoint.MinimumAudioPoint * 100);
+                    desiredBrightnessPercentage = (byte)audioPoint.MinimumAudioPoint;
                     color = audioPoint.Color;
                     break;
                 }

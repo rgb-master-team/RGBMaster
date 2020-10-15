@@ -15,6 +15,7 @@ namespace Common
         private Color color;
 
         public int Index { get; set; }
+
         public double MinimumAudioPoint 
         { 
             get
