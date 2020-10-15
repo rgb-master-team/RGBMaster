@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Utils;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
@@ -46,20 +47,20 @@ namespace RGBMasterUWPApp.Pages
 
         private void AppState_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "IsLoadingProviders")
+            if (e.PropertyName == nameof(AppState.IsLoadingProviders))
             {
                 if (IsLoaded)
                 {
                     HandleProgressbarAnimation();
                 }
             }
-            else if (e.PropertyName == "ProvidersLoadingProgress")
+            else if (e.PropertyName == nameof(AppState.ProvidersLoadingProgress))
             {
-                OnPropertyChanged(nameof(ProvidersLoadingProgressValue));
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this, nameof(ProvidersLoadingProgressValue));
             }
-            else if (e.PropertyName == "CurrentProcessedProvider")
+            else if (e.PropertyName == nameof(AppState.CurrentProcessedProvider))
             {
-                OnPropertyChanged(nameof(CurrentProcessedProvider));
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this, nameof(CurrentProcessedProvider));
             }
         }
 
@@ -333,11 +334,6 @@ namespace RGBMasterUWPApp.Pages
             }
 
             return deviceTypeText;
-        }
-
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)

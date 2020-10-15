@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
+using Utils;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Media;
@@ -50,9 +51,9 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             {
                 var musicEffectProperties = ((MusicEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Music)).EffectProperties;
                 musicEffectProperties.AudioPoints = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(AudioPointsCount));
-                OnPropertyChanged(nameof(IsAddAudioPointEnabled));
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this, nameof(AudioPointsCount));
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this, nameof(IsAddAudioPointEnabled));
             }
         }
 
@@ -72,14 +73,10 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         {
             if (e.PropertyName == nameof(AppState.Instance.IsEffectRunning))
             {
-                OnPropertyChanged(nameof(IsAudioPointsEditingEnabled));
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this, nameof(IsAudioPointsEditingEnabled));
             }
         }
 
-        private void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
         private void ColorPickButton_Click(object sender, RoutedEventArgs e)
         {
             var button = (Button)sender;

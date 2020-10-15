@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Utils;
 
 namespace AppExecutionManager.State
 {
@@ -53,8 +54,8 @@ namespace AppExecutionManager.State
             set
             {
                 activeEffect = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(IsEffectRunning));
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this, nameof(IsEffectRunning));
             }
         }
         public ObservableCollection<EffectMetadata> Effects { get; set; }
@@ -71,7 +72,7 @@ namespace AppExecutionManager.State
             set
             {
                 isLoadingProviders = value;
-                OnPropertyChanged();
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
             }
         }
 
@@ -84,7 +85,7 @@ namespace AppExecutionManager.State
             set
             {
                 providersLoadingProgress = value;
-                OnPropertyChanged();
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
             }
         }
 
@@ -97,12 +98,8 @@ namespace AppExecutionManager.State
             set
             {
                 currentProcessedProvider = value;
-                OnPropertyChanged();
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
             }
-        }
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

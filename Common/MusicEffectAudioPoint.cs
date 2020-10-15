@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Utils;
 
 namespace Common
 {
@@ -25,7 +26,7 @@ namespace Common
             set
             {
                 minimumAudioPoint = value;
-                OnPropertyChanged();
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
             }
         }
         public Color Color
@@ -39,14 +40,9 @@ namespace Common
                 if (color != value)
                 {
                     color = value;
-                    OnPropertyChanged();
+                    NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
                 }
             }
-        }
-
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

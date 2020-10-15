@@ -13,22 +13,25 @@
         <ContentDialog x:Name="InfoContentDialog" CloseButtonText="Close">
             <StackPanel>
                 <TextBlock TextWrapping="Wrap">
-                                    <Run FontWeight="Bold" Text="Music Effect Sync"/>
-                                    <LineBreak />
-                                    <Run Text="Music effect will sync you devices colors bט certain volume points that you choose from the dropdown list."/>
-                                    <LineBreak/>
-                                    <Run Text="Each volume point is assinged with a color and a minimum volume value." />
-                                    <LineBreak /><LineBreak/>
-                                    <Run FontWeight="Bold" Text="Minimum Volume"/>
-                                    <LineBreak />
-                                    <Run Text="You can choose certain value between 0 to 99 that representes the volume point, that will bind the selected color to that specific point."/>
+                    <Run FontWeight="Bold" Text="Music Effect Sync"/>
+                    <LineBreak />
+                    <Run Text="Music effect syncs your devices according to audio points defined by you."/>
+                    <LineBreak/>
+                    <Run Text="Each audio point is assinged with a color and a minimum volume value." />
+                    <LineBreak />
+                    <Run Text="The devices are then synced with the color of the audio point whose minimum point is the closest (from bottom) to the current volume." />
+                    <LineBreak />
+                    <LineBreak />
+                    <Run FontWeight="Bold" Text="Minimum Volume"/>
+                    <LineBreak />
+                    <Run Text="You can choose certain value between 0 to 1 that representes the volume point, that will bind the selected color to that specific point."/>
                 </TextBlock>
             </StackPanel>
         </ContentDialog>
         <ContentControl x:Name="AudioPointsContentControl" IsEnabled="{x:Bind IsAudioPointsEditingEnabled, Mode=OneWay}">
             <StackPanel Orientation="Vertical" Spacing="10" >
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <ComboBox x:Name="AudioPointsComboBox" IsEditable="True" SelectedValue="{x:Bind AudioPointsCount, Mode=OneWay}" TextSubmitted="AudioPointsComboBox_TextSubmitted" ItemsSource="{x:Bind PossibleAudioPointsCount, Mode=OneWay}" />
+                    <ComboBox SelectionChangedTrigger="Always" x:Name="AudioPointsComboBox" IsEditable="True" SelectedValue="{x:Bind AudioPointsCount, Mode=OneWay}" TextSubmitted="AudioPointsComboBox_TextSubmitted" ItemsSource="{x:Bind PossibleAudioPointsCount, Mode=OneWay}" />
                     <Button x:Name="InfoButton" Click="InfoButton_Click">
                         <Button.Content>
                             <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE946;"/>
