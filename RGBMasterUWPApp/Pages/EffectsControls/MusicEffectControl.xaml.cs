@@ -54,6 +54,7 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
                 NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
                 NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this, nameof(AudioPointsCount));
                 NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this, nameof(IsAddAudioPointEnabled));
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this, nameof(IsRemoveAudioPointEnabled));
             }
         }
 
@@ -62,6 +63,8 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         public int AudioPointsCount => AudioPoints.Count;
 
         public bool IsAddAudioPointEnabled => AudioPointsCount < 100;
+
+        public bool IsRemoveAudioPointEnabled => AudioPoints.Count > 1;
 
         public MusicEffectControl()
         {
@@ -282,7 +285,21 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
 
         private void DuplicateAudioPoint_Click(object sender, RoutedEventArgs e)
         {
+            var menuFlyout = (MenuFlyoutItem)sender;
+            var audioPoint = (MusicEffectAudioPoint)menuFlyout.DataContext;
 
+            var newAudioPoint = new MusicEffectAudioPoint() { Index = audioPoint.Index + 1, MinimumAudioPoint = audioPoint.MinimumAudioPoint, Color = audioPoint.Color };
+
+            AudioPoints.Insert(newAudioPoint.Index, newAudioPoint);
+
+            var currentAudioPointsCount = AudioPointsCount;
+
+            for (int i = newAudioPoint.Index + 1; i < currentAudioPointsCount; i++)
+            {
+                AudioPoints[i].Index++;
+            }
+
+            AudioPoints = new List<MusicEffectAudioPoint>(AudioPoints);
         }
     }
 }
