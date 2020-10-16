@@ -1,10 +1,12 @@
-﻿using Common;
+﻿using AppExecutionManager.State;
+using Common;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -13,6 +15,8 @@ namespace EffectsExecution
     public class MusicEffectExecutor : EffectExecutor
     {
         private WasapiLoopbackCapture captureInstance = null;
+
+        private List<MusicEffectAudioPoint> orderedAudioPoints;
 
         public MusicEffectExecutor() : base(new MusicEffectMetadata())
         {
@@ -30,6 +34,8 @@ namespace EffectsExecution
 
         protected override Task StartInternal()
         {
+            orderedAudioPoints = ((MusicEffectMetadata)executedEffectMetadata).EffectProperties.AudioPoints.OrderBy(audioPoint => audioPoint.MinimumAudioPoint).ToList();
+
             MMDeviceEnumerator enumerator = new MMDeviceEnumerator();
             foreach (MMDevice device in enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.All))
             {
@@ -68,17 +74,15 @@ namespace EffectsExecution
 
             Color color = Color.Black;
 
-            var musicEffectProperties = ((MusicEffectMetadata)executedEffectMetadata).EffectProperties;
-
             double maxAudioPoint = max * 100;
             byte desiredBrightnessPercentage = 0;
 
             // We scan the audio points of the effect properties (assuming they are kept ordered in our state, which
             // is probably a bad thing, we'll think about it later). The first audio point which minimum is surpassed by the maximum
             // level of played audio will represent the desired brightness and color of the sound.
-            for (int i = musicEffectProperties.AudioPoints.Count - 1; i >= 0; i--)
+            for (int i = orderedAudioPoints.Count - 1; i >= 0; i--)
             {
-                var audioPoint = musicEffectProperties.AudioPoints[i];
+                var audioPoint = orderedAudioPoints[i];
                 if (maxAudioPoint >= audioPoint.MinimumAudioPoint)
                 {
                     desiredBrightnessPercentage = (byte)audioPoint.MinimumAudioPoint;
