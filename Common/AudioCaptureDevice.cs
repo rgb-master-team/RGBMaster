@@ -9,7 +9,6 @@ namespace Common
         Unknown,
         Input,
         Output,
-        Both
     }
 
     public class AudioCaptureDevice

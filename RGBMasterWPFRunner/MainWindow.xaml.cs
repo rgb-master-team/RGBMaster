@@ -108,8 +108,6 @@ namespace RGBMasterWPFRunner
                     return AudioCaptureDeviceFlowType.Output;
                 case DataFlow.Capture:
                     return AudioCaptureDeviceFlowType.Input;
-                case DataFlow.All:
-                    return AudioCaptureDeviceFlowType.Both;
                 default:
                     return AudioCaptureDeviceFlowType.Unknown;
             }

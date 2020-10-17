@@ -14,7 +14,7 @@ namespace EffectsExecution
 {
     public class MusicEffectExecutor : EffectExecutor
     {
-        private WasapiLoopbackCapture captureInstance = null;
+        private IWaveIn captureInstance = null;
 
         private List<MusicEffectAudioPoint> orderedAudioPoints;
 
@@ -38,8 +38,38 @@ namespace EffectsExecution
 
             orderedAudioPoints = musicEffectMetadataProperties.AudioPoints.OrderBy(audioPoint => audioPoint.MinimumAudioPoint).ToList();
 
-            MMDeviceEnumerator enumerator = new MMDeviceEnumerator();
-            captureInstance = new WasapiLoopbackCapture(enumerator.GetDevice(musicEffectMetadataProperties.CaptureDevice.Id));
+            var enumerator = new MMDeviceEnumerator();
+            var nAudioDevice = enumerator.GetDevice(musicEffectMetadataProperties.CaptureDevice.Id);
+
+            if (musicEffectMetadataProperties.CaptureDevice.FlowType == AudioCaptureDeviceFlowType.Output)
+            {
+                captureInstance = new WasapiLoopbackCapture(nAudioDevice);
+            }
+            else if (musicEffectMetadataProperties.CaptureDevice.FlowType == AudioCaptureDeviceFlowType.Input)
+            {
+                for (int i = 0; i < WaveIn.DeviceCount; i++)
+                {
+                    var capabilities = WaveIn.GetCapabilities(i);
+
+                    // HACK - This hack was made since when working on capturing input devices
+                    // using NAudio's wrappers for windows APIs we seek a WaveIn device.
+                    // However, we don't have a way of enumerating those devices completely like in 
+                    // output devices or getting a device by an id. So instead, we use the count of input
+                    // devices detected on this system, and then call `WaveIn.GetCapabilities(i)` for
+                    // every device and then compare names (because we don't have GUIDs or anything else).
+                    // Eventually - even the name isn't shown completely - but rather the first 32 chars.
+                    // So we make this comparison.
+                    if (nAudioDevice.FriendlyName.StartsWith(capabilities.ProductName))
+                    {
+                        captureInstance = new WaveIn()
+                        {
+                            DeviceNumber = i
+                        };
+
+                        break;
+                    }    
+                }
+            }
 
             captureInstance.DataAvailable += (ss, ee) => OnNewSoundReceived(ss, ee);
             captureInstance.RecordingStopped += (ss, ee) => captureInstance.Dispose();
