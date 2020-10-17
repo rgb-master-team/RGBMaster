@@ -71,7 +71,7 @@
                 <GridView ItemsSource="{x:Bind AudioPoints, Mode=OneWay}">
                     <GridView.ItemTemplate>
                         <DataTemplate x:DataType="common:MusicEffectAudioPoint">
-                            <Button x:Name="ColorPickButton" Click="ColorPickButton_Click" Width="50px" Height="50px" CanDrag="True">
+                            <Button x:Name="ColorPickButton" Click="ColorPickButton_Click" Width="50px" Height="50px">
                                 <Button.Content>
                                     <TextBlock Text="{x:Bind MinimumAudioPoint, Mode=OneWay}" Foreground="Black" FontWeight="SemiBold"/>
                                 </Button.Content>
