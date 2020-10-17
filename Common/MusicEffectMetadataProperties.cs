@@ -7,5 +7,6 @@ namespace Common
     public class MusicEffectMetadataProperties
     {
         public List<MusicEffectAudioPoint> AudioPoints { get; set; }
+        public AudioCaptureDevice CaptureDevice { get; set; }
     }
 }

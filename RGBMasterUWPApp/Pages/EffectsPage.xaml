@@ -13,7 +13,7 @@
             <Pivot.HeaderTemplate>
                 <DataTemplate x:DataType="common:EffectMetadata">
                     <StackPanel Orientation="Horizontal" ToolTipService.ToolTip="{x:Bind ShortDescription}">
-                        <FontIcon Glyph="{x:Bind IconGlyph}" FontFamily="Segoe MDL2 Assets"  Margin="0 4 4 0"/>
+                        <FontIcon Glyph="{x:Bind IconGlyph}" FontFamily="{StaticResource SymbolThemeFontFamily}"  Margin="0 4 4 0"/>
                         <TextBlock Text="{x:Bind EffectName}" />
                     </StackPanel>
                 </DataTemplate>

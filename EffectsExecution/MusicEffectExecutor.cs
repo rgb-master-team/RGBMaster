@@ -34,19 +34,15 @@ namespace EffectsExecution
 
         protected override Task StartInternal()
         {
-            orderedAudioPoints = ((MusicEffectMetadata)executedEffectMetadata).EffectProperties.AudioPoints.OrderBy(audioPoint => audioPoint.MinimumAudioPoint).ToList();
+            var musicEffectMetadataProperties = ((MusicEffectMetadata)executedEffectMetadata).EffectProperties;
+
+            orderedAudioPoints = musicEffectMetadataProperties.AudioPoints.OrderBy(audioPoint => audioPoint.MinimumAudioPoint).ToList();
 
             MMDeviceEnumerator enumerator = new MMDeviceEnumerator();
-            foreach (MMDevice device in enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.All))
-            {
-                
-            }
-
-            captureInstance = new WasapiLoopbackCapture();
+            captureInstance = new WasapiLoopbackCapture(enumerator.GetDevice(musicEffectMetadataProperties.CaptureDevice.Id));
 
             captureInstance.DataAvailable += (ss, ee) => OnNewSoundReceived(ss, ee);
             captureInstance.RecordingStopped += (ss, ee) => captureInstance.Dispose();
-
             captureInstance.StartRecording();
 
             return Task.CompletedTask;

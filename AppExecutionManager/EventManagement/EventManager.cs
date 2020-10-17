@@ -16,6 +16,7 @@ namespace AppExecutionManager.EventManagement
         private event EventHandler<List<DiscoveredDevice>> SelectedDevicesChanged;
         private event EventHandler InitializeProvidersRequested;
         private event EventHandler TurnOnAllLightsRequested;
+        private event EventHandler GetInputDevicesRequested;
 
         static EventManager()
         {
@@ -104,6 +105,18 @@ namespace AppExecutionManager.EventManagement
         public void TurnOnAllLights()
         {
             TurnOnAllLightsRequested?.Invoke(this, null);
+        }
+        public void SubscribeToGetInputDevicesRequests(EventHandler callback)
+        {
+            GetInputDevicesRequested += callback;
+        }
+        public void UnubscribeFromGetInputDevicesRequests(EventHandler callback)
+        {
+            GetInputDevicesRequested -= callback;
+        }
+        public void GetInputDevices()
+        {
+            GetInputDevicesRequested?.Invoke(this, null);
         }
     }
 }

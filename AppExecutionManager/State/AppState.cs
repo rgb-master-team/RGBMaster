@@ -16,10 +16,11 @@ namespace AppExecutionManager.State
     {
         private static readonly AppState instance = new AppState();
 
-        private bool isLoadingProviders = false;
-        private double providersLoadingProgress = 0.0;
+        private bool isLoadingProviders;
+        private double providersLoadingProgress;
         private ProviderMetadata currentProcessedProvider;
         private EffectMetadata activeEffect;
+        private List<AudioCaptureDevice> audioCaptureDevices;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -30,7 +31,10 @@ namespace AppExecutionManager.State
                 RegisteredProviders = new ObservableCollection<RegisteredProvider>(),
                 Effects = new ObservableCollection<EffectMetadata>(),
                 StaticColorEffectProperties = new StaticColorEffectProps() { SelectedColor = Color.White, SelectedBrightness = 100 },
-                SupportedProviders = new ObservableCollection<ProviderMetadata>()
+                SupportedProviders = new ObservableCollection<ProviderMetadata>(),
+                IsLoadingProviders = false,
+                ProvidersLoadingProgress = 0.0,
+                AudioCaptureDevices = new List<AudioCaptureDevice>()
             };
 
         }
@@ -98,6 +102,19 @@ namespace AppExecutionManager.State
             set
             {
                 currentProcessedProvider = value;
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
+            }
+        }
+
+        public List<AudioCaptureDevice> AudioCaptureDevices 
+        { 
+            get
+            {
+                return audioCaptureDevices;
+            }
+            set
+            {
+                audioCaptureDevices = value;
                 NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
             }
         }

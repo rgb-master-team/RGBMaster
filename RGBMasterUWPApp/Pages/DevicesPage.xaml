@@ -77,7 +77,7 @@
                             <TextBox x:Name="ManualConnectionAddressTxtBx" PlaceholderText="Manually connect via IP address or unique ID" Width="360"/>
                                 <Button x:Name="ManualConnectionButton" Click="ManualConnectionButton_Click" Margin="4 0 0 0" ToolTipService.ToolTip="Connect">
                                     <Button.Content>
-                                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xF0AF;"/>
+                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xF0AF;"/>
                                     </Button.Content>
                                 </Button>
                             </StackPanel>
@@ -115,7 +115,7 @@
                                                         <SolidColorBrush Opacity="0" />
                                                     </Button.Background>
                                                     <Button.Content>
-                                                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE946;"/>
+                                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE946;"/>
                                                     </Button.Content>
                                                 </Button>
                                             </StackPanel>
@@ -142,7 +142,7 @@
             <StackPanel Margin="0 0 0 16">
                 <Button x:Name="Refresh_Devices_Button" Click="Refresh_Button_Clicked" ToolTipService.ToolTip="Refresh Devices" Background="Transparent">
                     <StackPanel Orientation="Horizontal">
-                        <FontIcon x:Name="OuterButton" Glyph="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="Orange"/>
+                        <FontIcon x:Name="OuterButton" Glyph="&#xE72C;" FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="16" Foreground="Orange"/>
                         <TextBlock Text="Refresh devices" Margin="4 0 0 0" />
                     </StackPanel>
                     <Button.Resources>

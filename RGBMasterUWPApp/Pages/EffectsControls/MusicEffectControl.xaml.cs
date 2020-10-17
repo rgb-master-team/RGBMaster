@@ -1,4 +1,5 @@
-﻿using AppExecutionManager.State;
+﻿using AppExecutionManager.EventManagement;
+using AppExecutionManager.State;
 using Common;
 using Microsoft.UI.Xaml.Controls;
 using System;
@@ -66,10 +67,23 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
 
         public bool IsRemoveAudioPointEnabled => AudioPoints.Count > 1;
 
+        public AudioCaptureDevice SelectedAudioCaptureDevice
+        {
+            get
+            {
+                return ((MusicEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Music)).EffectProperties.CaptureDevice;
+            }
+            set
+            {
+                ((MusicEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Music)).EffectProperties.CaptureDevice = value;
+            }
+        }
+
         public MusicEffectControl()
         {
             this.InitializeComponent();
             AppState.Instance.PropertyChanged += AppStateInstance_PropertyChanged;
+            EventManager.Instance.GetInputDevices();
         }
 
         private void AppStateInstance_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -250,7 +264,7 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             var menuFlyout = (MenuFlyoutItem)sender;
             var audioPoint = (MusicEffectAudioPoint)menuFlyout.DataContext;
 
-            var newAudioPoint = new MusicEffectAudioPoint() { Index = audioPoint.Index - 1, MinimumAudioPoint = 100, Color = Color.White };
+            var newAudioPoint = new MusicEffectAudioPoint() { Index = audioPoint.Index == 0 ? 0 : audioPoint.Index - 1, MinimumAudioPoint = 100, Color = Color.White };
 
             AudioPoints.Insert(newAudioPoint.Index, newAudioPoint);
 
@@ -300,6 +314,11 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             }
 
             AudioPoints = new List<MusicEffectAudioPoint>(AudioPoints);
+        }
+
+        private void CaptureDeviceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SelectedAudioCaptureDevice = (AudioCaptureDevice)CaptureDeviceComboBox.SelectedItem;
         }
     }
 }

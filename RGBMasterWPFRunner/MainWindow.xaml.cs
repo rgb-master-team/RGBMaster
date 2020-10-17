@@ -7,6 +7,7 @@ using Hue;
 using Logitech;
 using MagicHome;
 using Microsoft.Toolkit.Wpf.UI.XamlHost;
+using NAudio.CoreAudioApi;
 using NZXT;
 using Provider;
 using RazerChroma;
@@ -83,6 +84,35 @@ namespace RGBMasterWPFRunner
             EventManager.Instance.SubscribeToInitializeProvidersRequests(InitializeProviders);
             EventManager.Instance.SubscribeToStaticColorChanges(ChangeStaticColor);
             EventManager.Instance.SubscribeToTurnOnAllLightsRequests(TurnOnAllLights);
+            EventManager.Instance.SubscribeToGetInputDevicesRequests(GetInputDevices);
+        }
+
+        private void GetInputDevices(object sender, EventArgs e)
+        {
+            var audioCaptureDevices = new List<AudioCaptureDevice>();
+
+            MMDeviceEnumerator enumerator = new MMDeviceEnumerator();
+            foreach (MMDevice device in enumerator.EnumerateAudioEndPoints(DataFlow.All, DeviceState.Active))
+            {
+                audioCaptureDevices.Add(new AudioCaptureDevice(device.ID, device.FriendlyName, DataFlowToFlowType(device.DataFlow)));
+            }
+
+            AppState.Instance.AudioCaptureDevices = audioCaptureDevices;
+        }
+
+        private AudioCaptureDeviceFlowType DataFlowToFlowType(DataFlow dataFlow)
+        {
+            switch (dataFlow)
+            {
+                case DataFlow.Render:
+                    return AudioCaptureDeviceFlowType.Output;
+                case DataFlow.Capture:
+                    return AudioCaptureDeviceFlowType.Input;
+                case DataFlow.All:
+                    return AudioCaptureDeviceFlowType.Both;
+                default:
+                    return AudioCaptureDeviceFlowType.Unknown;
+            }
         }
 
         private async void TurnOnAllLights(object sender, EventArgs e)
