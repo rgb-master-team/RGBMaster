@@ -81,9 +81,15 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
 
         public MusicEffectControl()
         {
+            // If the audio capture devices was not yet loaded - load it.
+            // Otherwise, use the existing list of capture devices we have in our state.
+            if (AppState.Instance.AudioCaptureDevices == null)
+            {
+                EventManager.Instance.GetInputDevices();
+            }
+
             this.InitializeComponent();
             AppState.Instance.PropertyChanged += AppStateInstance_PropertyChanged;
-            EventManager.Instance.GetInputDevices();
         }
 
         private void AppStateInstance_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -318,7 +324,12 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
 
         private void CaptureDeviceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            SelectedAudioCaptureDevice = (AudioCaptureDevice)CaptureDeviceComboBox.SelectedItem;
+            var selectedAudioCaptureDevice = (AudioCaptureDevice)CaptureDeviceComboBox.SelectedItem;
+
+            if (selectedAudioCaptureDevice != null)
+            {
+                SelectedAudioCaptureDevice = selectedAudioCaptureDevice;
+            }
         }
     }
 }

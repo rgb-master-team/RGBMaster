@@ -44,7 +44,7 @@
                     <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE7F5;"/>
                     <TextBlock Text="Capture Device" Style="{StaticResource BodyTextBlockStyle}"/>
                 </StackPanel>
-                <ComboBox x:Name="CaptureDeviceComboBox" SelectionChanged="CaptureDeviceComboBox_SelectionChanged" PlaceholderText="Select capture device" Margin="0 0 0 8" ItemsSource="{x:Bind state:AppState.Instance.AudioCaptureDevices, Mode=OneWay}">
+                <ComboBox x:Name="CaptureDeviceComboBox" SelectedItem="{x:Bind SelectedAudioCaptureDevice, Mode=OneWay}" SelectionChanged="CaptureDeviceComboBox_SelectionChanged" PlaceholderText="Select capture device" Margin="0 0 0 8" ItemsSource="{x:Bind state:AppState.Instance.AudioCaptureDevices, Mode=OneWay}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate x:DataType="common:AudioCaptureDevice">
                             <StackPanel Orientation="Horizontal">
@@ -61,7 +61,7 @@
                 </StackPanel>
                 
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <ComboBox SelectionChangedTrigger="Always" x:Name="AudioPointsComboBox" IsEditable="True" SelectedValue="{x:Bind AudioPointsCount, Mode=OneWay}" TextSubmitted="AudioPointsComboBox_TextSubmitted" ItemsSource="{x:Bind PossibleAudioPointsCount, Mode=OneWay}" />
+                    <ComboBox SelectionChangedTrigger="Always" x:Name="AudioPointsComboBox" IsEditable="True" SelectedItem="{x:Bind AudioPointsCount, Mode=OneWay}" TextSubmitted="AudioPointsComboBox_TextSubmitted" ItemsSource="{x:Bind PossibleAudioPointsCount, Mode=OneWay}" />
                     <Button x:Name="InfoButton" Click="InfoButton_Click" ToolTipService.ToolTip="How to use">
                         <Button.Content>
                             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE946;"/>

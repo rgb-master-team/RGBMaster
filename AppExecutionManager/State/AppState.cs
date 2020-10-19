@@ -34,7 +34,7 @@ namespace AppExecutionManager.State
                 SupportedProviders = new ObservableCollection<ProviderMetadata>(),
                 IsLoadingProviders = false,
                 ProvidersLoadingProgress = 0.0,
-                AudioCaptureDevices = new List<AudioCaptureDevice>()
+                AudioCaptureDevices = null
             };
 
         }
