@@ -37,7 +37,7 @@ TODO - Write a simple explanation of the project structure, how to build it, UI 
 - [ ] Asus Aura - WIP
 - [x] SteelSeries
 - [ ] ShellyRGB - WIP
-- [ ] Phillips Hue
+- [x] Phillips Hue
 - [ ] Gigabyte RGB FUSION
 
 <a name="prerequisites"></a>
