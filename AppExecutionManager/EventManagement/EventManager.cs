@@ -2,8 +2,6 @@
 using Common;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
 
 namespace AppExecutionManager.EventManagement
 {
@@ -17,6 +15,7 @@ namespace AppExecutionManager.EventManagement
         private event EventHandler InitializeProvidersRequested;
         private event EventHandler TurnOnAllLightsRequested;
         private event EventHandler GetInputDevicesRequested;
+        private event EventHandler<List<DiscoveredDevice>> TurnOnDevicesRequested;
 
         static EventManager()
         {
@@ -117,6 +116,18 @@ namespace AppExecutionManager.EventManagement
         public void GetInputDevices()
         {
             GetInputDevicesRequested?.Invoke(this, null);
+        }
+        public void SubscribeToTurnOnDevicesRequests(EventHandler<List<DiscoveredDevice>> callback)
+        {
+            TurnOnDevicesRequested += callback;
+        }
+        public void UnsubscribeFromTurnOnDevicesRequests(EventHandler<List<DiscoveredDevice>> callback)
+        {
+            TurnOnDevicesRequested -= callback;
+        }
+        public void TurnOnDevices(List<DiscoveredDevice> devices)
+        {
+            TurnOnDevicesRequested?.Invoke(this, devices);
         }
     }
 }

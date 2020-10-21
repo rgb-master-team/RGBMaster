@@ -9,7 +9,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using Utils;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -167,20 +166,9 @@ namespace RGBMasterUWPApp.Pages
         {
          //   this.ChosenDevicesListView.ItemsSource = AppState.Instance.RegisteredProviders.Select(provider=> new RegisteredProvider() { Provider = provider.Provider, Devices = provider.Devices.Where(device => device.IsChecked)})
         }
-
-        private void Change_Device_Name_Button_Click(object sender, RoutedEventArgs e)
+        private async void DevicePropertiesContextItem(object sender, RoutedEventArgs e)
         {
-            var button = (Button)sender;
-
-            var teachingTip = button.Resources["TeachingTip_SetName"] as Microsoft.UI.Xaml.Controls.TeachingTip;
-            teachingTip.Target = button;
-            teachingTip.PreferredPlacement = TeachingTipPlacementMode.Right;
-            teachingTip.IsOpen = true;
-        }
-
-        private async void Device_Info_Button_Click(object sender, RoutedEventArgs e)
-        {
-            var button = (Button)sender;
+            var button = (MenuFlyoutItem)sender;
             var discoveredDevice = (DiscoveredDevice)button.DataContext;
             var deviceInfoContentDialog = GenerateDeviceInfoContentDialog(discoveredDevice.Device, button.XamlRoot); // lmfaooo
             await deviceInfoContentDialog.ShowAsync();
@@ -352,6 +340,25 @@ namespace RGBMasterUWPApp.Pages
             {
                 ExitStoryboard.Begin();
             }
+        }
+
+        private void TurnOnDeviceContextItem_Click(object sender, RoutedEventArgs e)
+        {
+            var device = (DiscoveredDevice)((MenuFlyoutItem)sender).DataContext;
+            EventManager.Instance.TurnOnDevices(new System.Collections.Generic.List<DiscoveredDevice>() { device });
+        }
+
+        private void SetNameContextItem_Click(object sender, RoutedEventArgs e)
+        {
+            var flyoutItem = (MenuFlyoutItem)sender;
+
+            var triggeringCheckbox = (CheckBox)flyoutItem.FindName("DeviceSelectionCheckbox");
+
+            var teachingTip = triggeringCheckbox.Resources["TeachingTip_SetName"] as Microsoft.UI.Xaml.Controls.TeachingTip;
+            teachingTip.Target = triggeringCheckbox;
+            teachingTip.PreferredPlacement = TeachingTipPlacementMode.Right;
+            teachingTip.XamlRoot = triggeringCheckbox.XamlRoot;
+            teachingTip.IsOpen = true;
         }
     }
 }

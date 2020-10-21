@@ -85,8 +85,36 @@ namespace RGBMasterWPFRunner
             EventManager.Instance.SubscribeToStaticColorChanges(ChangeStaticColor);
             EventManager.Instance.SubscribeToTurnOnAllLightsRequests(TurnOnAllLights);
             EventManager.Instance.SubscribeToGetInputDevicesRequests(GetInputDevices);
+            EventManager.Instance.SubscribeToTurnOnDevicesRequests(TurnOnDevices);
         }
 
+        private async void TurnOnDevices(object sender, List<DiscoveredDevice> e)
+        {
+            foreach (var device in e)
+            {
+                await TurnOnDevice(device);
+            }
+        }
+        private async Task TurnOnDevice(DiscoveredDevice item)
+        {
+            var concreteDevice = concreteDevices[item.Device.RgbMasterDeviceGuid];
+
+            Log.Logger.Warning("Connecting to device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
+            var didSucceed = await concreteDevice.Connect();
+
+            if (!didSucceed)
+            {
+                Log.Logger.Error("Failed connecting to device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
+                InformErrorOnFlyout($"Failed to connect to device {item.Device.DeviceName}. \nThis might be a problem in the {AppState.Instance.SupportedProviders.First(x => x.ProviderGuid == item.Device.RgbMasterDiscoveringProvider).ProviderName} provider. \nMake sure network connection is valid and try to refresh devices or restart the app.");
+
+                item.IsChecked = false;
+            }
+            else
+            {
+                Log.Logger.Warning("Turning on device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
+                concreteDevice.TurnOn();
+            }
+        }
         private void GetInputDevices(object sender, EventArgs e)
         {
             var audioCaptureDevices = new List<AudioCaptureDevice>();
@@ -304,21 +332,7 @@ namespace RGBMasterWPFRunner
                 }
                 else if (item.IsChecked && !concreteDevice.IsConnected)
                 {
-                    Log.Logger.Warning("Connecting to device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
-                    var didSucceed = await concreteDevice.Connect();
-
-                    if (!didSucceed)
-                    {
-                        Log.Logger.Error("Failed connecting to device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
-                        InformErrorOnFlyout($"Failed to connect to device {item.Device.DeviceName}. \nThis might be a problem in the {AppState.Instance.SupportedProviders.First(x => x.ProviderGuid == item.Device.RgbMasterDiscoveringProvider).ProviderName} provider. \nMake sure network connection is valid and try to refresh devices or restart the app.");
-
-                        item.IsChecked = false;
-                    }
-                    else
-                    {
-                        Log.Logger.Warning("Turning on device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
-                        concreteDevice.TurnOn();
-                    }
+                    await TurnOnDevice(item);
                 }
             }
 
