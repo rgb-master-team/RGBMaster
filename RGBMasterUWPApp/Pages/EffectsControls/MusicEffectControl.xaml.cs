@@ -325,11 +325,7 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         private void CaptureDeviceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var selectedAudioCaptureDevice = (AudioCaptureDevice)CaptureDeviceComboBox.SelectedItem;
-
-            if (selectedAudioCaptureDevice != null)
-            {
-                SelectedAudioCaptureDevice = selectedAudioCaptureDevice;
-            }
+            SelectedAudioCaptureDevice = selectedAudioCaptureDevice;
         }
     }
 }
