@@ -120,25 +120,23 @@ namespace Yeelight
             return Task.CompletedTask;
         }
 
-        protected override byte GetBrightnessPercentageInternal()
+        protected override async Task<byte> GetBrightnessPercentageInternal()
         {
             // TODO - Don't get this from the music socket as it won't return anything to us - 
             // move to standard request like in the API specifications.
-            var task = InternalDevice.GetProp(YeelightAPI.Models.PROPERTIES.bright);
-            task.Wait();
-            return (byte)task.Result;
+            var result = await InternalDevice.GetProp(YeelightAPI.Models.PROPERTIES.bright).ConfigureAwait(false);
+            return (byte)result;
         }
 
-        protected override Color GetColorInternal()
+        protected override async Task<Color> GetColorInternal()
         {
             // TODO - Don't get this from the music socket as it won't return anything to us - 
             // move to standard request like in the API specifications.
-            var task = InternalDevice.GetProp(YeelightAPI.Models.PROPERTIES.rgb);
-            task.Wait();
-            return RGBColorHelper.ParseColor((int)task.Result);
+            var result = await InternalDevice.GetProp(YeelightAPI.Models.PROPERTIES.rgb).ConfigureAwait(false);
+            return RGBColorHelper.ParseColor((int)result);
         }
 
-        protected override void SetBrightnessPercentageInternal(byte brightness)
+        protected override async Task SetBrightnessPercentageInternal(byte brightness)
         {
             var serverParams = new List<object>() { brightness };
 
@@ -154,10 +152,10 @@ namespace Yeelight
             string data = JsonConvert.SerializeObject(brightnessCommand, DeviceSerializerSettings);
             byte[] sentData = Encoding.ASCII.GetBytes(data + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
 
-            musicModeSocket.Send(sentData);
+            await musicModeSocket.SendAsync(sentData, SocketFlags.None).ConfigureAwait(false);
         }
 
-        protected override void SetColorInternal(Color color)
+        protected override async Task SetColorInternal(Color color)
         {
             var colorValue = RGBColorHelper.ComputeRGBColor(color.R, color.G, color.B);
 
@@ -171,10 +169,10 @@ namespace Yeelight
             string colorData = JsonConvert.SerializeObject(colorCommand, DeviceSerializerSettings);
             byte[] colorSentData = Encoding.ASCII.GetBytes(colorData + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
 
-            musicModeSocket.Send(colorSentData);
+            await musicModeSocket.SendAsync(colorSentData, SocketFlags.None).ConfigureAwait(false);
         }
 
-        protected override void TurnOffInternal()
+        protected override async Task TurnOffInternal()
         {
             Command turnOffCommand = new Command()
             {
@@ -186,10 +184,14 @@ namespace Yeelight
             string turnOffJSON = JsonConvert.SerializeObject(turnOffCommand, DeviceSerializerSettings);
             byte[] turnOffSentData = Encoding.ASCII.GetBytes(turnOffJSON + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
 
-            musicModeSocket.Send(turnOffSentData);
+            await musicModeSocket.SendAsync(turnOffSentData, SocketFlags.None).ConfigureAwait(false);
+
+            // HACK - this is done because of the way Yeelight operates...
+            await DisconnectInternal();
+            await ConnectInternal();
         }
 
-        protected override void TurnOnInternal()
+        protected override async Task TurnOnInternal()
         {
             Command turnOnCommand = new Command()
             {
@@ -201,7 +203,7 @@ namespace Yeelight
             string turnOnJSON = JsonConvert.SerializeObject(turnOnCommand, DeviceSerializerSettings);
             byte[] turnOnSentData = Encoding.ASCII.GetBytes(turnOnJSON + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
 
-            musicModeSocket.Send(turnOnSentData);
+            await musicModeSocket.SendAsync(turnOnSentData, SocketFlags.None).ConfigureAwait(false);
         }
     }
 }

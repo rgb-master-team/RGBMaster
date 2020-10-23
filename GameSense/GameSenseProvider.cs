@@ -23,27 +23,23 @@ namespace GameSense
             return Task.FromResult(new List<Device>() { new GameSenseHeadsetDevice(gameSenseAPI, new GameSenseHeadsetDeviceMetadata(ProviderMetadata.ProviderGuid, "GameSense Headset Device"))});
         }
 
-        protected override Task InternalUnregister()
+        protected override async Task InternalUnregister()
         {
-            gameSenseAPI.RemoveGame(new GSApiRemoveGamePayload()
+            await gameSenseAPI.RemoveGame(new GSApiRemoveGamePayload()
             {
                 Game = GameSenseConstants.RGB_MASTER_GAME_NAME
-            });
-
-            return Task.CompletedTask;
+            }).ConfigureAwait(false);
         }
 
-        protected override Task InternalRegister()
+        protected override async Task InternalRegister()
         {
             gameSenseAPI.Initialize();
-            gameSenseAPI.RegisterGameMetadata(new GSApiGameMetadata()
+            await gameSenseAPI.RegisterGameMetadata(new GSApiGameMetadata()
             {
                 Game = GameSenseConstants.RGB_MASTER_GAME_NAME,
                 Developer = GameSenseConstants.RGB_MASTER_GAME_DEVELOPER,
                 GameDisplayName = GameSenseConstants.RGB_MASTER_GAME_NAME
-            });
-
-            return Task.CompletedTask;
+            }).ConfigureAwait(false);
         }
     }
 }

@@ -30,26 +30,28 @@ namespace Msi.Devices
 
 		#region Device Methods
 
-		protected override Color GetColorInternal()
+		protected override Task<Color> GetColorInternal()
 		{
 			throw new System.NotImplementedException();
 		}
 
-		protected override void SetColorInternal(Color color)
+		protected override Task SetColorInternal(Color color)
 		{
 			foreach (var led in Leds)
 			{
 				led.SetStyle("Steady");
 				led.SetColor(color);
 			}
+
+			return Task.CompletedTask;
 		}
 
-		protected override byte GetBrightnessPercentageInternal()
+		protected override Task<byte> GetBrightnessPercentageInternal()
 		{
 			throw new System.NotImplementedException();
 		}
 
-		protected override void SetBrightnessPercentageInternal(byte brightness)
+		protected override Task SetBrightnessPercentageInternal(byte brightness)
 		{
 			throw new System.NotImplementedException();
 		}
@@ -64,12 +66,12 @@ namespace Msi.Devices
 			return Task.CompletedTask;
 		}
 
-		protected override void TurnOnInternal()
+		protected override Task TurnOnInternal()
 		{
 			throw new System.NotImplementedException();
 		}
 
-		protected override void TurnOffInternal()
+		protected override Task TurnOffInternal()
 		{
 			throw new System.NotImplementedException();
 		}

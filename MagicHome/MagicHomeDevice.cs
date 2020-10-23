@@ -36,9 +36,9 @@ namespace MagicHome
                 SendTimeout = 1000
             };
 
-            await InternalLightSocket.ConnectAsync(IPAddress.Parse(LightIp), defaultMagicHomePort);
+            await InternalLightSocket.ConnectAsync(IPAddress.Parse(LightIp), defaultMagicHomePort).ConfigureAwait(false);
 
-            MagicHomeProtocol = await GetMagicHomeProtocol();
+            MagicHomeProtocol = await GetMagicHomeProtocol().ConfigureAwait(false);
 
             shouldUseCsum = MagicHomeProtocol == LedProtocol.LEDENET;
         }
@@ -51,54 +51,54 @@ namespace MagicHome
             return Task.CompletedTask;
         }
 
-        protected override byte GetBrightnessPercentageInternal()
+        protected override Task<byte> GetBrightnessPercentageInternal()
         {
             throw new NotImplementedException();
         }
 
-        protected override System.Drawing.Color GetColorInternal()
+        protected override Task<System.Drawing.Color> GetColorInternal()
         {
             throw new NotImplementedException();
         }
 
-        protected override void SetBrightnessPercentageInternal(byte brightness)
+        protected override Task SetBrightnessPercentageInternal(byte brightness)
         {
             throw new NotImplementedException();
         }
 
-        protected override void SetColorInternal(System.Drawing.Color color)
+        protected override async Task SetColorInternal(System.Drawing.Color color)
         {
             if (MagicHomeProtocol == LedProtocol.LEDENET)
             {
-                TrySendDataToDevice(0x41, color.R, color.G, color.B, 0x00, 0x00, 0x0f).Wait();
+                await TrySendDataToDevice(0x41, color.R, color.G, color.B, 0x00, 0x00, 0x0f).ConfigureAwait(false);
             }
             else
             {
-                TrySendDataToDevice(0x56, color.R, color.G, color.B, 0xaa).Wait();
+                await TrySendDataToDevice(0x56, color.R, color.G, color.B, 0xaa).ConfigureAwait(false);
             }
         }
 
-        protected override void TurnOffInternal()
+        protected override async Task TurnOffInternal()
         {
             if (MagicHomeProtocol == LedProtocol.LEDENET)
             {
-                TrySendDataToDevice(0x71, 0x24, 0x0f).Wait();
+                await TrySendDataToDevice(0x71, 0x24, 0x0f).ConfigureAwait(false);
             }
             else
             {
-                TrySendDataToDevice(0xcc, 0x24, 0x33).Wait();
+                await TrySendDataToDevice(0xcc, 0x24, 0x33).ConfigureAwait(false);
             }
         }
 
-        protected override void TurnOnInternal()
+        protected override async Task TurnOnInternal()
         {
             if (MagicHomeProtocol == LedProtocol.LEDENET)
             {
-                TrySendDataToDevice(0x71, 0x23, 0x0f).Wait();
+                await TrySendDataToDevice(0x71, 0x23, 0x0f).ConfigureAwait(false);
             }
             else
             {
-                TrySendDataToDevice(0xcc, 0x23, 0x33).Wait();
+                await TrySendDataToDevice(0xcc, 0x23, 0x33).ConfigureAwait(false);
             }
         }
 

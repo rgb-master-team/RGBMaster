@@ -33,56 +33,48 @@ namespace Hue
             return Task.CompletedTask;
         }
 
-        protected override byte GetBrightnessPercentageInternal()
+        protected override Task<byte> GetBrightnessPercentageInternal()
         {
             throw new NotImplementedException();
         }
 
-        protected override Color GetColorInternal()
+        protected override Task<Color> GetColorInternal()
         {
             throw new NotImplementedException();
         }
 
-        protected override void SetBrightnessPercentageInternal(byte brightness)
+        protected override async Task SetBrightnessPercentageInternal(byte brightness)
         {
             var command = new LightCommand
             {
                 Brightness = brightness
             };
 
-            var task = localHueClient.SendCommandAsync(command, new List<string> {internalLight.Id });
-            task.ConfigureAwait(false);
-            task.Wait();
+            await localHueClient.SendCommandAsync(command, new List<string> {internalLight.Id }).ConfigureAwait(false);
         }
 
-        protected override void SetColorInternal(Color color)
+        protected override async Task SetColorInternal(Color color)
         {
             var command = new LightCommand();
             command.SetColor(new RGBColor(color.R, color.G, color.B));
 
-            var task = localHueClient.SendCommandAsync(command, new List<string> { internalLight.Id });
-            task.ConfigureAwait(false);
-            task.Wait();
+            await localHueClient.SendCommandAsync(command, new List<string> { internalLight.Id }).ConfigureAwait(false);
         }
 
-        protected override void TurnOffInternal()
+        protected override async Task TurnOffInternal()
         {
             var command = new LightCommand();
-            command.TurnOff();            
+            command.TurnOff();
 
-            var task = localHueClient.SendCommandAsync(command, new List<string> { internalLight.Id });
-            task.ConfigureAwait(false);
-            task.Wait();
+            await localHueClient.SendCommandAsync(command, new List<string> { internalLight.Id }).ConfigureAwait(false);
         }
 
-        protected override void TurnOnInternal()
+        protected override async Task TurnOnInternal()
         {
             var command = new LightCommand();
             command.TurnOn();
 
-            var task = localHueClient.SendCommandAsync(command, new List<string> { internalLight.Id });
-            task.ConfigureAwait(false);
-            task.Wait();
+            await localHueClient.SendCommandAsync(command, new List<string> { internalLight.Id }).ConfigureAwait(false);
         }
     }
 }

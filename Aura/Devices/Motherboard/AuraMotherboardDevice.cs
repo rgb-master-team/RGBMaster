@@ -28,32 +28,33 @@ namespace Aura
             return Task.CompletedTask;
         }
 
-        protected override byte GetBrightnessPercentageInternal()
+        protected override Task<byte> GetBrightnessPercentageInternal()
         {
             throw new NotImplementedException();
         }
 
-        protected override System.Drawing.Color GetColorInternal()
+        protected override Task<System.Drawing.Color> GetColorInternal()
         {
             throw new NotImplementedException();
         }
 
-        protected override void SetBrightnessPercentageInternal(byte brightness)
+        protected override Task SetBrightnessPercentageInternal(byte brightness)
         {
             throw new NotImplementedException();
         }
 
-        protected override void SetColorInternal(System.Drawing.Color color)
+        protected override Task SetColorInternal(System.Drawing.Color color)
         {
             this.internalAuraDevice.SetColors(new Color[] { new Color(color.R, color.G, color.B) });
+            return Task.CompletedTask;
         }
 
-        protected override void TurnOffInternal()
+        protected override Task TurnOffInternal()
         {
             throw new NotImplementedException();
         }
 
-        protected override void TurnOnInternal()
+        protected override Task TurnOnInternal()
         {
             throw new NotImplementedException();
         }
