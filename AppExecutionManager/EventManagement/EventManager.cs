@@ -16,6 +16,7 @@ namespace AppExecutionManager.EventManagement
         private event EventHandler TurnOnAllLightsRequested;
         private event EventHandler GetInputDevicesRequested;
         private event EventHandler<List<DiscoveredDevice>> TurnOnDevicesRequested;
+        private event EventHandler<List<DiscoveredDevice>> TurnOffDevicesRequested;
 
         static EventManager()
         {
@@ -128,6 +129,18 @@ namespace AppExecutionManager.EventManagement
         public void TurnOnDevices(List<DiscoveredDevice> devices)
         {
             TurnOnDevicesRequested?.Invoke(this, devices);
+        }
+        public void SubscribeToTurnOffDevicesRequests(EventHandler<List<DiscoveredDevice>> callback)
+        {
+            TurnOffDevicesRequested += callback;
+        }
+        public void UnsubscribeFromTurnOffDevicesRequests(EventHandler<List<DiscoveredDevice>> callback)
+        {
+            TurnOffDevicesRequested -= callback;
+        }
+        public void TurnOffDevices(List<DiscoveredDevice> devices)
+        {
+            TurnOffDevicesRequested?.Invoke(this, devices);
         }
     }
 }

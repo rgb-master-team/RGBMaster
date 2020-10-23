@@ -108,7 +108,7 @@
                                                                     <FontIcon Glyph="&#xE7E8;" Foreground="Green" />
                                                                 </MenuFlyoutItem.Icon>
                                                             </MenuFlyoutItem>
-                                                            <MenuFlyoutItem Text="Turn Off" IsEnabled="{x:Bind Device.IsOperationSupported(common:OperationType.TurnOff)}">
+                                                            <MenuFlyoutItem x:Name="TurnOffDeviceContextItem" Click="TurnOffDeviceContextItem_Click" Text="Turn Off" IsEnabled="{x:Bind Device.IsOperationSupported(common:OperationType.TurnOff)}">
                                                                 <MenuFlyoutItem.Icon>
                                                                     <FontIcon Glyph="&#xE7E8;" Foreground="Red"/>
                                                                 </MenuFlyoutItem.Icon>

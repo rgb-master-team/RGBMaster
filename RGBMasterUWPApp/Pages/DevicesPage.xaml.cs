@@ -360,5 +360,11 @@ namespace RGBMasterUWPApp.Pages
             teachingTip.XamlRoot = triggeringCheckbox.XamlRoot;
             teachingTip.IsOpen = true;
         }
+
+        private void TurnOffDeviceContextItem_Click(object sender, RoutedEventArgs e)
+        {
+            var device = (DiscoveredDevice)((MenuFlyoutItem)sender).DataContext;
+            EventManager.Instance.TurnOffDevices(new System.Collections.Generic.List<DiscoveredDevice>() { device });
+        }
     }
 }

@@ -86,6 +86,15 @@ namespace RGBMasterWPFRunner
             EventManager.Instance.SubscribeToTurnOnAllLightsRequests(TurnOnAllLights);
             EventManager.Instance.SubscribeToGetInputDevicesRequests(GetInputDevices);
             EventManager.Instance.SubscribeToTurnOnDevicesRequests(TurnOnDevices);
+            EventManager.Instance.SubscribeToTurnOffDevicesRequests(TurnOffDevices);
+        }
+
+        private async void TurnOffDevices(object sender, List<DiscoveredDevice> e)
+        {
+            foreach (var device in e)
+            {
+                await TurnOffDevice(device);
+            }
         }
 
         private async void TurnOnDevices(object sender, List<DiscoveredDevice> e)
@@ -95,6 +104,23 @@ namespace RGBMasterWPFRunner
                 await TurnOnDevice(device);
             }
         }
+        private async Task TurnOffDevice(DiscoveredDevice item)
+        {
+            var concreteDevice = concreteDevices[item.Device.RgbMasterDeviceGuid];
+
+            Log.Logger.Warning("Turning off device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
+            concreteDevice.TurnOff();
+
+            Log.Logger.Warning("Disconnecting from device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
+            var didSucceed = await concreteDevice.Disconnect();
+
+            if (!didSucceed)
+            {
+                Log.Logger.Error("Failed disconnecting from device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
+                InformErrorOnFlyout($"Failed to disconnect from device {item.Device.DeviceName}. \nThis might be a problem in the {AppState.Instance.SupportedProviders.First(x => x.ProviderGuid == item.Device.RgbMasterDiscoveringProvider).ProviderName} provider. \nMake sure network connection is valid and try to refresh devices or restart the app.");
+            }
+        }
+
         private async Task TurnOnDevice(DiscoveredDevice item)
         {
             var concreteDevice = concreteDevices[item.Device.RgbMasterDeviceGuid];
@@ -318,17 +344,7 @@ namespace RGBMasterWPFRunner
 
                 if (!item.IsChecked && concreteDevice.IsConnected)
                 {
-                    Log.Logger.Warning("Turning off device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
-                    concreteDevice.TurnOff();
-
-                    Log.Logger.Warning("Disconnecting from device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
-                    var didSucceed = await concreteDevice.Disconnect();
-
-                    if (!didSucceed)
-                    {
-                        Log.Logger.Error("Failed disconnecting from device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
-                        InformErrorOnFlyout($"Failed to disconnect from device {item.Device.DeviceName}. \nThis might be a problem in the {AppState.Instance.SupportedProviders.First(x => x.ProviderGuid == item.Device.RgbMasterDiscoveringProvider).ProviderName} provider. \nMake sure network connection is valid and try to refresh devices or restart the app.");
-                    }
+                    await TurnOffDevice(item);
                 }
                 else if (item.IsChecked && !concreteDevice.IsConnected)
                 {
