@@ -34,7 +34,8 @@ namespace RGBMasterUWPApp.Pages
             { EffectType.Music, typeof(MusicEffectControl) },
             { EffectType.StaticColor, typeof(StaticColorEffectControl) },
             { EffectType.DominantColor, typeof(DominantDisplayColorEffectControl) },
-            { EffectType.CursorColor, typeof(CursorColorEffectControl) }
+            { EffectType.CursorColor, typeof(CursorColorEffectControl) },
+            { EffectType.Gradient, typeof(GradientEffectControl) }
         };
 
         private bool shouldIgnoreToggleEvent = false;

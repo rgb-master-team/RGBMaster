@@ -129,6 +129,9 @@
     <Compile Include="Pages\EffectsControls\DominantDisplayColorEffectControl.xaml.cs">
       <DependentUpon>DominantDisplayColorEffectControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\EffectsControls\GradientEffectControl.xaml.cs">
+      <DependentUpon>GradientEffectControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\EffectsControls\MusicEffectControl.xaml.cs">
       <DependentUpon>MusicEffectControl.xaml</DependentUpon>
     </Compile>
@@ -167,6 +170,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\EffectsControls\DominantDisplayColorEffectControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\EffectsControls\GradientEffectControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
