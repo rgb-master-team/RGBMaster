@@ -123,12 +123,12 @@ namespace EffectsExecution
             {
                 if (device.DeviceMetadata.SupportedOperations.Contains(OperationType.SetBrightness))
                 {
-                    tasks.Add(Task.Run(() => device.SetBrightnessPercentage(desiredBrightnessPercentage)));
+                    tasks.Add(Task.Run(async () => await device.SetBrightnessPercentage(desiredBrightnessPercentage)));
                 }
 
                 if (device.DeviceMetadata.SupportedOperations.Contains(OperationType.SetColor))
                 {
-                    tasks.Add(Task.Run(() => device.SetColor(color)));
+                    tasks.Add(Task.Run(async () => await device.SetColor(color)));
                 }
             }
 

@@ -40,7 +40,7 @@ namespace EffectsExecution
 
                 foreach (var device in devices)
                 {
-                    setColorTasks.Add(Task.Run(() => device.SetColor(c)));
+                    setColorTasks.Add(Task.Run(async () => await device.SetColor(c)));
                 }
 
                 await Task.WhenAll(setColorTasks);
