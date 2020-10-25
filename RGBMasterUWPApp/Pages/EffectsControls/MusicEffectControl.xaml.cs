@@ -50,6 +50,8 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             }
             set
             {
+                // TODO - FIX THIS TO USE UPDATE PROPS INSTEAD OF DIRECT ASSIGNMENTS.
+                // IMMUTABILITY......................
                 var musicEffectProperties = ((MusicEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Music)).EffectProperties;
                 musicEffectProperties.AudioPoints = value;
                 NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);

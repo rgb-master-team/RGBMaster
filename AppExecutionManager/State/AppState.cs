@@ -30,6 +30,7 @@ namespace AppExecutionManager.State
             {
                 RegisteredProviders = new ObservableCollection<RegisteredProvider>(),
                 Effects = new ObservableCollection<EffectMetadata>(),
+                // TODO - REMOVE THIS AND MAKE EVERYONE USE THE EFFECT METADATA INSTEAD.
                 StaticColorEffectProperties = new StaticColorEffectProps() { SelectedColor = Color.White, SelectedBrightness = 100 },
                 SupportedProviders = new ObservableCollection<ProviderMetadata>(),
                 IsLoadingProviders = false,

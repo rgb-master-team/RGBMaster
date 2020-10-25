@@ -2,10 +2,12 @@
 using Common;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Utils;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -25,45 +27,71 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
     /// </summary>
     public sealed partial class GradientEffectControl : Page
     {
-        public List<GradientPoint> GradientPoints
+        public Thickness AudioStopButtonMargin
         {
             get
             {
-                return ((GradientEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Gradient)).EffectProperties.GradientPoints;
+                return new Thickness(0, 0, (1.0 / GradientStops.Count) * GradientStopsBrushRectangle.Width, 0);
             }
-            set
+        }
+
+        public GradientEffectMetadataProperties GradientEffectMdProps => ((GradientEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Gradient)).EffectProperties;
+
+        public GradientStopCollection GradientStops
+        {
+            get
             {
-                ((GradientEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Gradient)).EffectProperties.GradientPoints = value;
+                var gradientPoints = GradientEffectMdProps.GradientPoints;
+
+                var gradientStops = new GradientStopCollection();
+
+                for (int i = 0; i < gradientPoints.Count; i++)
+                {
+                    var gradientPoint = gradientPoints[i];
+
+                    gradientStops.Add(new GradientStop()
+                    {
+                        // TODO - USE THE DAMN CONVERTER
+                        Color = Windows.UI.Color.FromArgb(gradientPoint.Color.A, gradientPoint.Color.R, gradientPoint.Color.G, gradientPoint.Color.B),
+                        Offset = (double)(i + 1) / gradientPoints.Count
+                    });
+                }
+
+                return gradientStops;
             }
         }
 
         public GradientEffectControl()
         {
             this.InitializeComponent();
-        }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-
-            GradientPoints = new List<GradientPoint>()
+            // TODO - FIX ALL TODOS DEAN
+            GradientEffectMdProps.GradientPoints = new List<GradientPoint>()
             {
                 new GradientPoint()
                 {
+                    Index = 0,
                     Color = Color.Red,
                     RelativeSmoothness = 10000
                 },
                 new GradientPoint()
                 {
+                    Index = 1,
                     Color = Color.Green,
                     RelativeSmoothness = 10000
                 },
                 new GradientPoint()
                 {
+                    Index = 2,
                     Color = Color.Blue,
                     RelativeSmoothness = 10000
                 }
             };
+
+            // HACK
+            var newStyle = new Style(typeof(GridViewItem));
+            newStyle.Setters.Add(new Setter(GridViewItem.MarginProperty, AudioStopButtonMargin));
+            GradientStopButtonsGridView.ItemContainerStyle = newStyle;
         }
     }
 }

@@ -83,7 +83,9 @@ namespace MagicHome
             List<byte> data = new List<byte>() { 0x51, gradientPoint.Color.R, gradientPoint.Color.G, gradientPoint.Color.B };
 
             for (int i = 0; i < 16 - 1; i++)
+            {
                 data.AddRange(new byte[] { 0, 1, 2, 3 });
+            }
 
             data.AddRange(new byte[] { 0x00, SpeedToDelay(gradientPoint.RelativeSmoothness), Convert.ToByte(0x3a), 0xff, 0x0f });
 
