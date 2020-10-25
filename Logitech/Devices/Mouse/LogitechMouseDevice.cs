@@ -48,6 +48,11 @@ namespace Logitech
             return Task.CompletedTask;
         }
 
+        protected override Task SetGradientInternal(Common.GradientPoint gradientPoint)
+        {
+            throw new NotImplementedException();
+        }
+
         protected override Task TurnOffInternal()
         {
             throw new NotImplementedException();

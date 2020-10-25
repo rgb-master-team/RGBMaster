@@ -78,6 +78,53 @@ namespace MagicHome
             }
         }
 
+        protected override async Task SetGradientInternal(GradientPoint gradientPoint)
+        {
+            List<byte> data = new List<byte>() { 0x51, gradientPoint.Color.R, gradientPoint.Color.G, gradientPoint.Color.B };
+
+            for (int i = 0; i < 16 - 1; i++)
+                data.AddRange(new byte[] { 0, 1, 2, 3 });
+
+            data.AddRange(new byte[] { 0x00, SpeedToDelay(gradientPoint.RelativeSmoothness), Convert.ToByte(0x3a), 0xff, 0x0f });
+
+            byte[] dataReady = data.ToArray();
+            await TrySendDataToDevice(dataReady);
+        }
+
+        private byte SpeedToDelay(int speed)
+        {
+            // Speed 31, is approximately 2 second, the fastest option possible. We consider that 100%.
+            // Speed 1, is approximately 60 seconds, the slowest option possible. We consider that 1%.
+            // These are our boundries.
+            // We base our calculation according to these assumptions.
+            // We consider every speed point ~2 seconds (just a bit longer maybe).
+
+            int boundSpeed;
+
+            if (speed < 2000)
+            {
+                boundSpeed = 2000;
+            }
+            else if (speed > 62000)
+            {
+                boundSpeed = 62000;
+            }
+            else
+            {
+                boundSpeed = speed;
+            }
+
+            var estimatedSpeedPoints = 31 - (int)Math.Round(boundSpeed / 2000.0, MidpointRounding.AwayFromZero);
+            var estimatedSpeedPercentage = (estimatedSpeedPoints / 31.0) * 100;
+
+            var invertedSpeedPercentage = 100 - estimatedSpeedPercentage;
+
+            byte delay = Convert.ToByte((invertedSpeedPercentage * (0x1f - 1)) / 100);
+            delay += 1;
+
+            return delay;
+        }
+
         protected override async Task TurnOffInternal()
         {
             if (MagicHomeProtocol == LedProtocol.LEDENET)

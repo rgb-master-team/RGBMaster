@@ -48,6 +48,11 @@ namespace RazerChroma.Devices.Mousepad
             await internalChromaDriver.Mousepad.SetStaticAsync(new Colore.Effects.Mousepad.StaticMousepadEffect(new Colore.Data.Color(color.R, color.G, color.B))).ConfigureAwait(false);
         }
 
+        protected override Task SetGradientInternal(GradientPoint gradientPoint)
+        {
+            throw new NotImplementedException();
+        }
+
         protected override Task TurnOffInternal()
         {
             throw new NotImplementedException();

@@ -113,7 +113,7 @@ namespace RGBMasterUWPApp.Pages
                 shouldIgnoreToggleEvent = false;
                 return;
             }
-            
+
             var newEffectMetadata = (EffectMetadata)EffectSelectionPivot.SelectedItem;
 
             var selectedEffectMetadata = AppState.Instance.ActiveEffect;
@@ -123,7 +123,7 @@ namespace RGBMasterUWPApp.Pages
             // If an effect is running and is the one we're currently on, stop it
             if (isEffectRunning && selectedEffectMetadata.EffectMetadataGuid == newEffectMetadata.EffectMetadataGuid)
             {
-                EventManager.Instance.RequestEffectActivation(null);        
+                EventManager.Instance.RequestEffectActivation(null);
             }
             // If an effect isn't running, or the running effect isn't the one we selected - update the effect to the relevant one
             else

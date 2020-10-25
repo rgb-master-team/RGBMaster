@@ -1,4 +1,5 @@
-﻿using NZXTSharp;
+﻿using Common;
+using NZXTSharp;
 using NZXTSharp.HuePlus;
 using Provider;
 using System;
@@ -49,6 +50,11 @@ namespace NZXT
             internalDevice.ApplyEffect(nzxtColor);
 
             return Task.CompletedTask;
+        }
+
+        protected override Task SetGradientInternal(GradientPoint gradientPoint)
+        {
+            throw new NotImplementedException();
         }
 
         protected override Task TurnOffInternal()

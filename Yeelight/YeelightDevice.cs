@@ -43,6 +43,7 @@ namespace Yeelight
                 {
                     case METHODS.SetRGBColor:
                         operationTypes.Add(OperationType.SetColor);
+                        operationTypes.Add(OperationType.SetGradient);
                         break;
                     case METHODS.SetBrightness:
                         operationTypes.Add(OperationType.SetBrightness);
@@ -204,6 +205,23 @@ namespace Yeelight
             byte[] turnOnSentData = Encoding.ASCII.GetBytes(turnOnJSON + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
 
             await musicModeSocket.SendAsync(turnOnSentData, SocketFlags.None).ConfigureAwait(false);
+        }
+
+        protected override async Task SetGradientInternal(GradientPoint gradientPoint)
+        {
+            var colorValue = RGBColorHelper.ComputeRGBColor(gradientPoint.Color.R, gradientPoint.Color.G, gradientPoint.Color.B);
+
+            Command colorCommand = new Command()
+            {
+                Id = 1,
+                Method = "set_rgb",
+                Params = new List<object>() { colorValue, "smooth", gradientPoint.RelativeSmoothness }
+            };
+
+            string colorData = JsonConvert.SerializeObject(colorCommand, DeviceSerializerSettings);
+            byte[] colorSentData = Encoding.ASCII.GetBytes(colorData + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
+
+            await musicModeSocket.SendAsync(colorSentData, SocketFlags.None).ConfigureAwait(false);
         }
     }
 }

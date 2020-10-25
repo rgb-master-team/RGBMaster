@@ -52,6 +52,11 @@ namespace NZXT.Devices
             return Task.CompletedTask;
         }
 
+        protected override Task SetGradientInternal(GradientPoint gradientPoint)
+        {
+            throw new NotImplementedException();
+        }
+
         protected override Task TurnOffInternal()
         {
             throw new NotImplementedException();

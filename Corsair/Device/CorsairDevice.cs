@@ -139,6 +139,11 @@ namespace Corsair.Device
 			throw new NotImplementedException();
 		}
 
-		#endregion
-	}
+        protected override Task SetGradientInternal(GradientPoint gradientPoint)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+    }
 }

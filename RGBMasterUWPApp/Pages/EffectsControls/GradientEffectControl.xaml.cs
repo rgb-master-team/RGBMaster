@@ -1,5 +1,8 @@
-﻿using System;
+﻿using AppExecutionManager.State;
+using Common;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -22,9 +25,45 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
     /// </summary>
     public sealed partial class GradientEffectControl : Page
     {
+        public List<GradientPoint> GradientPoints
+        {
+            get
+            {
+                return ((GradientEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Gradient)).EffectProperties.GradientPoints;
+            }
+            set
+            {
+                ((GradientEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Gradient)).EffectProperties.GradientPoints = value;
+            }
+        }
+
         public GradientEffectControl()
         {
             this.InitializeComponent();
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            GradientPoints = new List<GradientPoint>()
+            {
+                new GradientPoint()
+                {
+                    Color = Color.Red,
+                    RelativeSmoothness = 10000
+                },
+                new GradientPoint()
+                {
+                    Color = Color.Green,
+                    RelativeSmoothness = 10000
+                },
+                new GradientPoint()
+                {
+                    Color = Color.Blue,
+                    RelativeSmoothness = 10000
+                }
+            };
         }
     }
 }

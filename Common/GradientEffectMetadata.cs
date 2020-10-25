@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Common
 {
-    public class GradientEffectMetadata : EffectMetadata
+    public class GradientEffectMetadata : EffectMetadata<GradientEffectMetadataProperties>
     {
         public override string EffectName => "Gradient sync";
 
@@ -15,5 +15,13 @@ namespace Common
         public override string IconGlyph => "\uEE40";
 
         public override EffectType Type => EffectType.Gradient;
+
+        public GradientEffectMetadata()
+        {
+            EffectProperties = new GradientEffectMetadataProperties()
+            {
+                GradientPoints = new List<GradientPoint>()
+            };
+        }
     }
 }

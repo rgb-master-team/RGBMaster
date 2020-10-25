@@ -61,6 +61,11 @@ namespace Hue
             await localHueClient.SendCommandAsync(command, new List<string> { internalLight.Id }).ConfigureAwait(false);
         }
 
+        protected override Task SetGradientInternal(GradientPoint gradientPoint)
+        {
+            throw new NotImplementedException();
+        }
+
         protected override async Task TurnOffInternal()
         {
             var command = new LightCommand();

@@ -1,4 +1,5 @@
 ﻿using Colore;
+using Common;
 using Provider;
 using System;
 using System.Collections.Generic;
@@ -44,6 +45,11 @@ namespace RazerChroma.Devices.AllDevices
         protected override async Task SetColorInternal(System.Drawing.Color color)
         {
             await internalChromaDriver.SetAllAsync(new Colore.Data.Color(color.R, color.G, color.B)).ConfigureAwait(false);
+        }
+
+        protected override Task SetGradientInternal(GradientPoint gradientPoint)
+        {
+            throw new NotImplementedException();
         }
 
         protected override async Task TurnOffInternal()

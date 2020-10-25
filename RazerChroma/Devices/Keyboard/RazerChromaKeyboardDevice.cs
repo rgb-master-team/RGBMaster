@@ -49,6 +49,11 @@ namespace RazerChroma.Devices.Keyboard
             await internalChromaDriver.Keyboard.SetStaticAsync(new Colore.Effects.Keyboard.StaticKeyboardEffect(new ColoreColor(color.R, color.G, color.B))).ConfigureAwait(false);
         }
 
+        protected override Task SetGradientInternal(GradientPoint gradientPoint)
+        {
+            throw new NotImplementedException();
+        }
+
         protected override Task TurnOffInternal()
         {
             throw new NotImplementedException();
