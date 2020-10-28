@@ -43,10 +43,10 @@ namespace EffectsExecution
 
                 foreach (var device in Devices)
                 {
-                    tasks.Add(Task.Run(async () => await device.SetGradient(currentGradientPoint)));
+                    tasks.Add(Task.Run(async () => await device.SetGradient(currentGradientPoint, effectProps.RelativeSmoothness)));
                 }
 
-                await Task.WhenAll(tasks).ContinueWith(async (_) => await Task.Delay(TimeSpan.FromMilliseconds(currentGradientPoint.RelativeSmoothness))).Unwrap();
+                await Task.WhenAll(tasks).ContinueWith(async (_) => await Task.Delay(TimeSpan.FromMilliseconds(effectProps.RelativeSmoothness + effectProps.DelayInterval))).Unwrap();
 
                 index = index == effectProps.GradientPoints.Count - 1 ? 0 : index + 1;
             }

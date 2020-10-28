@@ -1,4 +1,5 @@
-﻿using Provider;
+﻿using Common;
+using Provider;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -48,7 +49,7 @@ namespace Logitech
             return Task.CompletedTask;
         }
 
-        protected override Task SetGradientInternal(Common.GradientPoint gradientPoint)
+        protected override Task SetGradientInternal(GradientPoint gradientPoint, int relativeSmoothness)
         {
             throw new NotImplementedException();
         }

@@ -26,25 +26,21 @@ namespace Common
                     new GradientPoint()
                     {
                         Index = 0,
-                        Color = Color.Red,
-                        DelayInterval = 100,
-                        RelativeSmoothness = 300
+                        Color = Color.Red
                     },
                     new GradientPoint()
                     {
                         Index = 1,
-                        Color = Color.Green,
-                        DelayInterval = 100,
-                        RelativeSmoothness = 300
+                        Color = Color.Green
                     },
                     new GradientPoint()
                     {
                         Index = 2,
-                        Color = Color.Blue,
-                        DelayInterval = 100,
-                        RelativeSmoothness = 300
+                        Color = Color.Blue
                     }
-                }
+                },
+                RelativeSmoothness = 1000,
+                DelayInterval = 0,
             };
         }
     }

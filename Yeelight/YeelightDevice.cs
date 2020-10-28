@@ -207,7 +207,7 @@ namespace Yeelight
             await musicModeSocket.SendAsync(turnOnSentData, SocketFlags.None).ConfigureAwait(false);
         }
 
-        protected override async Task SetGradientInternal(GradientPoint gradientPoint)
+        protected override async Task SetGradientInternal(GradientPoint gradientPoint, int relativeSmoothness)
         {
             var colorValue = RGBColorHelper.ComputeRGBColor(gradientPoint.Color.R, gradientPoint.Color.G, gradientPoint.Color.B);
 
@@ -215,7 +215,7 @@ namespace Yeelight
             {
                 Id = 1,
                 Method = "set_rgb",
-                Params = new List<object>() { colorValue, "smooth", gradientPoint.RelativeSmoothness }
+                Params = new List<object>() { colorValue, "smooth", relativeSmoothness }
             };
 
             string colorData = JsonConvert.SerializeObject(colorCommand, DeviceSerializerSettings);

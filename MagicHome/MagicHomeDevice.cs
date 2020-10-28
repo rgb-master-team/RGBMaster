@@ -78,7 +78,7 @@ namespace MagicHome
             }
         }
 
-        protected override async Task SetGradientInternal(GradientPoint gradientPoint)
+        protected override async Task SetGradientInternal(GradientPoint gradientPoint, int relativeSmoothness)
         {
             List<byte> data = new List<byte>() { 0x51, gradientPoint.Color.R, gradientPoint.Color.G, gradientPoint.Color.B };
 
@@ -87,7 +87,7 @@ namespace MagicHome
                 data.AddRange(new byte[] { 0, 1, 2, 3 });
             }
 
-            data.AddRange(new byte[] { 0x00, SpeedToDelay(gradientPoint.RelativeSmoothness), Convert.ToByte(0x3a), 0xff, 0x0f });
+            data.AddRange(new byte[] { 0x00, SpeedToDelay(relativeSmoothness), Convert.ToByte(0x3a), 0xff, 0x0f });
 
             byte[] dataReady = data.ToArray();
             await TrySendDataToDevice(dataReady);

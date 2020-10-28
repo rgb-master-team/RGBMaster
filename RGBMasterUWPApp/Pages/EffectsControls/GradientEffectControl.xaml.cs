@@ -35,7 +35,7 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         {
             get
             {
-                return new Thickness(0, 0, ((1.0 / GradientStops.Count) * GradientStopsBrushRectangle.Width)-30, 0);
+                return new Thickness(0, 0, ((1.0 / GradientStops.Count) * GradientStopsBrushRectangle.Width) - 30, 0);
             }
         }
 
@@ -131,9 +131,7 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             newGradientPoints.Insert(newGradientPointIndex, new GradientPoint()
             {
                 Color = Color.White,
-                Index = newGradientPointIndex,
-                DelayInterval = 100,
-                RelativeSmoothness = 300
+                Index = newGradientPointIndex
             });
 
             GradientPoints = newGradientPoints;
@@ -157,9 +155,7 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             newGradientPoints.Insert(newGradientPointIndex, new GradientPoint()
             {
                 Color = Color.White,
-                Index = newGradientPointIndex,
-                DelayInterval = 100,
-                RelativeSmoothness = 300
+                Index = newGradientPointIndex
             });
 
             GradientPoints = newGradientPoints;
@@ -184,8 +180,6 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             {
                 Color = clickedGradientPoint.Color,
                 Index = newGradientPointIndex,
-                DelayInterval = clickedGradientPoint.DelayInterval,
-                RelativeSmoothness = clickedGradientPoint.RelativeSmoothness
             });
 
             GradientPoints = newGradientPoints;

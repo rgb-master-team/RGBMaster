@@ -23,7 +23,5 @@ namespace Common
                 NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
             }
         }
-        public int RelativeSmoothness { get; set; }
-        public int DelayInterval { get; set; }
     }
 }

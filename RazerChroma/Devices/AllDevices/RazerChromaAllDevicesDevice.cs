@@ -47,7 +47,7 @@ namespace RazerChroma.Devices.AllDevices
             await internalChromaDriver.SetAllAsync(new Colore.Data.Color(color.R, color.G, color.B)).ConfigureAwait(false);
         }
 
-        protected override Task SetGradientInternal(GradientPoint gradientPoint)
+        protected override Task SetGradientInternal(GradientPoint gradientPoint, int relativeSmoothness)
         {
             throw new NotImplementedException();
         }
