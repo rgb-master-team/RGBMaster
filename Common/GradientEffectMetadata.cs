@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 
 namespace Common
@@ -21,6 +22,29 @@ namespace Common
             EffectProperties = new GradientEffectMetadataProperties()
             {
                 GradientPoints = new List<GradientPoint>()
+                {
+                    new GradientPoint()
+                    {
+                        Index = 0,
+                        Color = Color.Red,
+                        DelayInterval = 100,
+                        RelativeSmoothness = 300
+                    },
+                    new GradientPoint()
+                    {
+                        Index = 1,
+                        Color = Color.Green,
+                        DelayInterval = 100,
+                        RelativeSmoothness = 300
+                    },
+                    new GradientPoint()
+                    {
+                        Index = 2,
+                        Color = Color.Blue,
+                        DelayInterval = 100,
+                        RelativeSmoothness = 300
+                    }
+                }
             };
         }
     }
