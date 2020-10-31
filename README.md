@@ -11,7 +11,7 @@
 # About
 
 The project, created by [Dean Kevorkian](https://github.com/deankevorkian) and joined by [Ben Selbiger](https://github.com/benbense), attempts to use official libraries when possible and focuses on the synchronisation between the devices, rather than the way we integrate with the device and its API/SDK. i.e - Razer's `Colore` library for syncing colours via Razer's SDK through .NET bindings, and YeelightAPI for controlling Yeelight bulbs and led strips.
-We aspire to bring support to as many vendors (code-named "Providers") as we can from both growing worlds of RGB peripherals and RGB IoT devices, and allow synchronizing them together with colors, sounds, effects we support - and even let users define their own effects (code-named "Flows").
+We aspire to bring support to as many vendors (code-named "Providers") as we can from both growing worlds of RGB peripherals and RGB IoT devices, and allow synchronizing them together with colors, sounds, effects we support - and even let users define their own effects (code-named ["Flows"](#flows)).
 
 # Development
 Currently only available to Windows 10 but built with expectations for future Mac & Linux ports, this project contains the wrappers for several SDKs (code-named "Providers") and the UI (which is a mix of WPF and UWP in order to achieve WPF's complete access and integration to Windows APIs, along with UWP's latest WinUI used in Windows 10 apps by Microsoft, via Xaml Islands experimental technology).
@@ -24,7 +24,7 @@ TODO - Write a simple explanation of the project structure, how to build it, UI 
 - [Prerequisites](#prerequisites)
 - [Installation Instructions](#installation)
 - [Supported "Effects"](#effects)
-- [Supported "Flows"](#flows)
+- ["Flows"](#flows)
 - [Contribution](#contrib)
 
 <a name="integrations"></a>
@@ -75,6 +75,7 @@ RGBMaster allows choosing a desired effect for the way colors are chosen.
 - Dominant effect - Sync devices with the dominant color of the displayed frames in the screen. Might be useful for movies, gaming, etc.
 - Cursor effect - Sync devices with the color the cursor's pointing at in every moment :)
 - Static color effect - Sync devices with a static color chosen by you. Allows brightness modification to devices as well.
+- Gradient color effect - Sync the color of your lights based on a configured gradient pattern. Syncs color switches smoothly between all colors of the pattern.
 
 <a name="flows"></a>
 ## Supported "Flows"
@@ -90,7 +91,7 @@ Feel free to suggest any idea you have for this app, or even make one yourself a
 - General
   - [x] Design a simple but nice looking UI
   - [x] Allow selection of the discovered devices in the area
-  - [ ] Change synchronisation model to the bulbs to an async (currently Razer's `Colore` library asynchronously sets the colour, but we set the bulbs colours with messages sent through sockets synchronously)
+  - [x] Change synchronisation model to the bulbs to an async (currently Razer's `Colore` library asynchronously sets the colour, but we set the bulbs colours with messages sent through sockets synchronously)
   - [ ] Allow general behavior of devices when changing colors - "immediate" or "gradual" for that matter (or let each device device decide for it's own) - It's a bit epileptic as of now.
 - Dominant/Cursor effects
   - [x] Add calculation of RGB values for the dominant or average sound in the host system
@@ -99,8 +100,8 @@ Feel free to suggest any idea you have for this app, or even make one yourself a
 - Music Mode -
   - [ ] Add configuration settings for effects (transition of the music effect - smooth or sudden, etc.)
   - [ ] Add options such as frequency/time between color changes
-  - [ ] Allow defining the color spectrum for each volume level
-  - [ ] Allow defining the spectrum levels themselves (volume levels that trigger changes)
+  - [x] Allow defining the color spectrum for each volume level
+  - [x] Allow defining the spectrum levels themselves (volume levels that trigger changes)
 - Misc
   - [ ] Add some basic explanation
   - [x] Add references to libraries used for this to work
