@@ -78,7 +78,7 @@ RGBMaster allows choosing a desired effect for the way colors are chosen.
 - Gradient color effect - Sync the color of your lights based on a configured gradient pattern. Syncs color switches smoothly between all colors of the pattern.
 
 <a name="flows"></a>
-## Supported "Flows"
+## "Flows"
 RGBMaster should allow choosing a flow, which is our codename for **custom pre-defined effects** created by anyone who wants to.
 These effects ought to be exportable and importable to ensure community sharing around this project in order to help it evolve and reach its potential :)
 
