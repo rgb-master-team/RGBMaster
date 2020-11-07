@@ -1,4 +1,5 @@
-﻿using Msi.Devices.Leds;
+﻿using Common;
+using Msi.Devices.Leds;
 using Msi.Provider;
 using Msi.SDKs;
 using Provider;
@@ -76,6 +77,11 @@ namespace Msi.Devices
 			throw new System.NotImplementedException();
 		}
 
-		#endregion
-	}
+        protected override Task SetGradientInternal(GradientPoint gradientPoint, int relativeSmoothness)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion
+    }
 }
