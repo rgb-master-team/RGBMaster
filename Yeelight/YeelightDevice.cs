@@ -1,15 +1,20 @@
 ﻿using Common;
+using ComposableAsync;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Provider;
+using RateLimiter;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using Utils;
 using YeelightAPI.Models;
 
@@ -27,6 +32,8 @@ namespace Yeelight
 
         private readonly YeelightAPI.Device InternalDevice;
         private Socket musicModeSocket;
+
+        private readonly TimeLimiter timeConstraint = TimeLimiter.GetFromMaxCountByInterval(1, TimeSpan.FromSeconds(1));
 
         public YeelightDevice(Guid discoveringProvider, YeelightAPI.Device internalDevice) : base(new YeelightDeviceMetadata(discoveringProvider, GetDeviceTypeForYeelight(internalDevice), !String.IsNullOrWhiteSpace(internalDevice.Name) ? internalDevice.Name : internalDevice.Hostname, GetSupportedOperationsForYeelight(internalDevice)))
         {
@@ -91,7 +98,10 @@ namespace Yeelight
             }
             else
             {
-                await ConnectViaApi().ConfigureAwait(false);
+                await ExecuteIfQuotaAllowsAsync(async () =>
+                {
+                    await ConnectViaApi().ConfigureAwait(false);
+                }).ConfigureAwait(false);
             }
         }
 
@@ -171,7 +181,10 @@ namespace Yeelight
             }
             else
             {
-                await InternalDevice.SetBrightness(brightness).ConfigureAwait(false);
+                await ExecuteIfQuotaAllowsAsync(async () =>
+                {
+                    await InternalDevice.SetBrightness(brightness).ConfigureAwait(false);
+                }).ConfigureAwait(false);
             }
         }
 
@@ -195,7 +208,10 @@ namespace Yeelight
             }
             else
             {
-                await InternalDevice.SetRGBColor(color.R, color.G, color.B, 30).ConfigureAwait(false);
+                await ExecuteIfQuotaAllowsAsync(async () =>
+                {
+                    await InternalDevice.SetRGBColor(color.R, color.G, color.B, 30).ConfigureAwait(false);
+                }).ConfigureAwait(false);
             }
         }
 
@@ -221,7 +237,10 @@ namespace Yeelight
             }
             else
             {
-                await InternalDevice.TurnOff(500).ConfigureAwait(false);
+                await ExecuteIfQuotaAllowsAsync(async () =>
+                {
+                    await InternalDevice.TurnOff(500).ConfigureAwait(false);
+                }).ConfigureAwait(false);
             }
         }
 
@@ -267,13 +286,21 @@ namespace Yeelight
             }
             else
             {
-                await InternalDevice.SetRGBColor(gradientPoint.Color.R, gradientPoint.Color.G, gradientPoint.Color.B, relativeSmoothness).ConfigureAwait(false);
+                await ExecuteIfQuotaAllowsAsync(async () =>
+                {
+                    await InternalDevice.SetRGBColor(gradientPoint.Color.R, gradientPoint.Color.G, gradientPoint.Color.B, relativeSmoothness).ConfigureAwait(false);
+                });
             }
         }
 
         private bool IsMusicModeSupported()
         {
             return InternalDevice.SupportedOperations.Contains(METHODS.SetMusicMode);
+        }
+
+        private async Task ExecuteIfQuotaAllowsAsync(Action ac, int timeoutInMs = 1000)
+        {
+            await timeConstraint.Enqueue(ac, new CancellationTokenSource(timeoutInMs).Token).ConfigureAwait(false);
         }
     }
 }

@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="RateLimiter" Version="2.2.0" />
     <PackageReference Include="YeelightAPI" Version="1.7.0" />
   </ItemGroup>
 
