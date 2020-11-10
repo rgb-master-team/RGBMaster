@@ -108,7 +108,7 @@
                                         <StackPanel>
                                             <ColorPicker x:Name="ColorPicker" 
                                                  ColorSpectrumShape="Ring" 
-                                                 IsColorSliderVisible="False"
+                                                 IsColorSliderVisible="True"
                                                  Color="{x:Bind Color, Converter={StaticResource ColorConverter}, Mode=TwoWay}"
                                                   />
                                             <TextBlock Text="Minimum Volume" HorizontalAlignment="Center" FontSize="16" Margin="0 4 0 0" />

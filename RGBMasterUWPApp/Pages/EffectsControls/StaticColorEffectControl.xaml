@@ -13,7 +13,7 @@
                 <ColorPicker x:Name="ColorPicker" 
                              ColorSpectrumShape="Ring" 
                              ColorChanged="ColorPicker_ColorChanged" 
-                             IsColorSliderVisible="False" 
+                             IsColorSliderVisible="True" 
                              Margin="0 4 0 0" />
             </StackPanel>
             <StackPanel Orientation="Vertical" Margin="0 12 0 0">
