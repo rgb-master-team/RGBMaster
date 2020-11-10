@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Provider;
 using RateLimiter;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,6 +12,7 @@ using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -298,9 +300,15 @@ namespace Yeelight
             return InternalDevice.SupportedOperations.Contains(METHODS.SetMusicMode);
         }
 
-        private async Task ExecuteIfQuotaAllowsAsync(Action ac, int timeoutInMs = 1000)
+        private async Task ExecuteIfQuotaAllowsAsync(Action ac, int timeoutInMs = 2000, [CallerMemberName] string callingFunction = "")
         {
-            await timeConstraint.Enqueue(ac, new CancellationTokenSource(timeoutInMs).Token).ConfigureAwait(false);
+            await timeConstraint.Enqueue(ac, new CancellationTokenSource(timeoutInMs).Token).ContinueWith(continuation =>
+            {
+                if (continuation.Status == TaskStatus.Canceled)
+                {
+                    Log.Logger.Verbose($"Method {callingFunction} fell off the rate limit.");
+                }
+            }).ConfigureAwait(false);
         }
     }
 }
