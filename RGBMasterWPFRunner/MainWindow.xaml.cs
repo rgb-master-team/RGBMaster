@@ -44,17 +44,39 @@ namespace RGBMasterWPFRunner
 
         public MainWindow()
         {
+            Dispatcher.UnhandledException += Dispatcher_UnhandledException;
+
             InitializeComponent();
+            SetAppVersion();
+            Serilog.Core.Logger globalLog = GenerateAppLogger();
 
-            Package package = Package.Current;
-            PackageId packageId = package.Id;
-            PackageVersion version = packageId.Version;
-            AppState.Instance.AppVersion = string.Format($"{version.Major}.{version.Minor}.{version.Build}.{version.Revision}");
+            globalLog.Information("Initializing RGBMaster.....");
 
+            CreateAndSetSupportedProviders(new List<BaseProvider>() { new YeelightProvider(), new MagicHomeProvider(), new RazerChromaProvider(), new LogitechProvider(), new GameSenseProvider(), new HueProvider(), /*new NZXTProvider()*/ });
+            CreateAndSetSupportedEffectsExecutors(new List<EffectExecutor>() { new MusicEffectExecutor(), new DominantDisplayColorEffectExecutor(), new CursorColorEffectExecutor(), new StaticColorEffectExecutor(), new GradientEffectExecutor() });
+            SetUIStateEffects();
+
+            EventManager.Instance.SubscribeToEffectActivationRequests(Instance_EffectChanged);
+            EventManager.Instance.SubscribeToSelectedDevicesChanged(Instance_SelectedDevicesChanged);
+            EventManager.Instance.SubscribeToInitializeProvidersRequests(InitializeProviders);
+            EventManager.Instance.SubscribeToStaticColorChanges(ChangeStaticColor);
+            EventManager.Instance.SubscribeToTurnOnAllLightsRequests(TurnOnAllLights);
+            EventManager.Instance.SubscribeToGetInputDevicesRequests(GetInputDevices);
+            EventManager.Instance.SubscribeToTurnOnDevicesRequests(TurnOnDevices);
+            EventManager.Instance.SubscribeToTurnOffDevicesRequests(TurnOffDevices);
+        }
+
+        private void Dispatcher_UnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            Log.Logger.Fatal(e.Exception, "An unhandled exception was thrown.");
+        }
+
+        private static Serilog.Core.Logger GenerateAppLogger()
+        {
             var path = Path.Combine(
-                    Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System)),
-                    @$"RGBMaster\Logs\{AppState.Instance.AppVersion}.txt"
-                );
+                                Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System)),
+                                @$"RGBMaster\Logs\{AppState.Instance.AppVersion}.txt"
+                            );
 
             var globalLog = new LoggerConfiguration()
                 .MinimumLevel
@@ -72,22 +94,15 @@ namespace RGBMasterWPFRunner
             // meaning - when a library writes to log via microsoft's diagnostic it is sinked to this globalLog object.
             // We may want to change this behaviour in the subject as we grow. :)
             Log.Logger = globalLog;
+            return globalLog;
+        }
 
-            globalLog.Information("Initializing RGBMaster.....");
-
-            CreateAndSetSupportedProviders(new List<BaseProvider>() { new YeelightProvider(), new MagicHomeProvider(), new RazerChromaProvider(), new LogitechProvider(), new GameSenseProvider(), new HueProvider(), /*new NZXTProvider()*/ });
-
-            CreateAndSetSupportedEffectsExecutors(new List<EffectExecutor>() { new MusicEffectExecutor(), new DominantDisplayColorEffectExecutor(), new CursorColorEffectExecutor(), new StaticColorEffectExecutor(), new GradientEffectExecutor() });
-            SetUIStateEffects();
-
-            EventManager.Instance.SubscribeToEffectActivationRequests(Instance_EffectChanged);
-            EventManager.Instance.SubscribeToSelectedDevicesChanged(Instance_SelectedDevicesChanged);
-            EventManager.Instance.SubscribeToInitializeProvidersRequests(InitializeProviders);
-            EventManager.Instance.SubscribeToStaticColorChanges(ChangeStaticColor);
-            EventManager.Instance.SubscribeToTurnOnAllLightsRequests(TurnOnAllLights);
-            EventManager.Instance.SubscribeToGetInputDevicesRequests(GetInputDevices);
-            EventManager.Instance.SubscribeToTurnOnDevicesRequests(TurnOnDevices);
-            EventManager.Instance.SubscribeToTurnOffDevicesRequests(TurnOffDevices);
+        private static void SetAppVersion()
+        {
+            Package package = Package.Current;
+            PackageId packageId = package.Id;
+            PackageVersion version = packageId.Version;
+            AppState.Instance.AppVersion = string.Format($"{version.Major}.{version.Minor}.{version.Build}.{version.Revision}");
         }
 
         private async Task<bool> AttemptDeviceConnection(Device concreteDevice)

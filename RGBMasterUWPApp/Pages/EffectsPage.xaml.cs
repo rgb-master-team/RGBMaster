@@ -5,11 +5,13 @@ using RGBMasterUWPApp.Pages.EffectsControls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Utils;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -29,6 +31,8 @@ namespace RGBMasterUWPApp.Pages
     /// </summary>
     public sealed partial class EffectsPage : Page
     {
+        private EffectMetadata selectedEffectMetadata;
+
         public readonly Dictionary<EffectType, Type> contentByEffectType = new Dictionary<EffectType, Type>()
         {
             { EffectType.Music, typeof(MusicEffectControl) },
@@ -75,15 +79,15 @@ namespace RGBMasterUWPApp.Pages
 
             var selectedPivotItem = (PivotItem)pivot.ItemsPanelRoot.Children.ElementAt(pivot.SelectedIndex);
 
-            var newEffectMetadata = (EffectMetadata)selectedPivotItem.DataContext;
+            selectedEffectMetadata = (EffectMetadata)selectedPivotItem.DataContext;
 
-            var selectedEffectMetadata = AppState.Instance.ActiveEffect;
+            var currentActiveEffect = AppState.Instance.ActiveEffect;
 
             var isEffectRunning = AppState.Instance.IsEffectRunning;
 
             bool shouldToggleBeOn;
 
-            if (isEffectRunning && selectedEffectMetadata.EffectMetadataGuid == newEffectMetadata.EffectMetadataGuid)
+            if (isEffectRunning && currentActiveEffect.EffectMetadataGuid == selectedEffectMetadata.EffectMetadataGuid)
             {
                 shouldToggleBeOn = true;
             }
@@ -98,9 +102,9 @@ namespace RGBMasterUWPApp.Pages
                 EffectActivationControl.IsOn = shouldToggleBeOn;
             }
 
-            if (!contentByEffectType.TryGetValue(newEffectMetadata.Type, out var effectType))
+            if (!contentByEffectType.TryGetValue(selectedEffectMetadata.Type, out var effectType))
             {
-                throw new NotImplementedException($"A view for effect {newEffectMetadata.EffectName} is not implemented. Implement it and be sure to include it on contentByEffectType.");
+                throw new NotImplementedException($"A view for effect {selectedEffectMetadata.EffectName} is not implemented. Implement it and be sure to include it on contentByEffectType.");
             }
 
             effectControlFrame.Navigate(effectType);
