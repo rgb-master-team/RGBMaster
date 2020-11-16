@@ -52,12 +52,16 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
                 GradientEffectMdProps.GradientPoints = value;
                 NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
                 NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this, nameof(GradientStops));
-
-                // HACK
-                var newStyle = new Style(typeof(GridViewItem));
-                newStyle.Setters.Add(new Setter(GridViewItem.MarginProperty, AudioStopButtonMargin));
-                GradientStopButtonsGridView.ItemContainerStyle = newStyle;
+                ReApplyGradientStopsButtonsStyle();
             }
+        }
+
+        private void ReApplyGradientStopsButtonsStyle()
+        {
+            // HACK
+            var newStyle = new Style(typeof(GridViewItem));
+            newStyle.Setters.Add(new Setter(GridViewItem.MarginProperty, AudioStopButtonMargin));
+            GradientStopButtonsGridView.ItemContainerStyle = newStyle;
         }
 
         public GradientStopCollection GradientStops
@@ -87,6 +91,7 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         public GradientEffectControl()
         {
             this.InitializeComponent();
+            ReApplyGradientStopsButtonsStyle();
         }
 
         private void ChangeColor_Click(object sender, RoutedEventArgs e)
