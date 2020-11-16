@@ -14,7 +14,7 @@ namespace AppExecutionManager.EventManagement
         private event EventHandler<List<DiscoveredDevice>> SelectedDevicesChanged;
         private event EventHandler InitializeProvidersRequested;
         private event EventHandler TurnOnAllLightsRequested;
-        private event EventHandler GetInputDevicesRequested;
+        private event EventHandler LoadAudioDevicesRequested;
         private event EventHandler<List<DiscoveredDevice>> TurnOnDevicesRequested;
         private event EventHandler<List<DiscoveredDevice>> TurnOffDevicesRequested;
 
@@ -106,17 +106,17 @@ namespace AppExecutionManager.EventManagement
         {
             TurnOnAllLightsRequested?.Invoke(this, null);
         }
-        public void SubscribeToGetInputDevicesRequests(EventHandler callback)
+        public void SubscribeToLoadAudioDevicesRequests(EventHandler callback)
         {
-            GetInputDevicesRequested += callback;
+            LoadAudioDevicesRequested += callback;
         }
-        public void UnubscribeFromGetInputDevicesRequests(EventHandler callback)
+        public void UnubscribeFromLoadAudioDevicesRequests(EventHandler callback)
         {
-            GetInputDevicesRequested -= callback;
+            LoadAudioDevicesRequested -= callback;
         }
-        public void GetInputDevices()
+        public void LoadAudioDevices()
         {
-            GetInputDevicesRequested?.Invoke(this, null);
+            LoadAudioDevicesRequested?.Invoke(this, null);
         }
         public void SubscribeToTurnOnDevicesRequests(EventHandler<List<DiscoveredDevice>> callback)
         {

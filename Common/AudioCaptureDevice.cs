@@ -31,12 +31,14 @@ namespace Common
                 }
             }
         }
+        public bool IsDefaultDevice { get; }
 
-        public AudioCaptureDevice(string id, string deviceFriendlyName, AudioCaptureDeviceFlowType flowType)
+        public AudioCaptureDevice(string id, string deviceFriendlyName, AudioCaptureDeviceFlowType flowType, bool isDefaultDevice)
         {
             Id = id;
             DeviceFriendlyName = deviceFriendlyName;
             FlowType = flowType;
+            IsDefaultDevice = isDefaultDevice;
         }
     }
 }

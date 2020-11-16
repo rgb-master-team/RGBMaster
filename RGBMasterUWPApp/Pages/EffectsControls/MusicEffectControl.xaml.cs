@@ -83,14 +83,42 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
 
         public MusicEffectControl()
         {
-            // If the audio capture devices was not yet loaded - load it.
-            // Otherwise, use the existing list of capture devices we have in our state.
-            if (AppState.Instance.AudioCaptureDevices == null)
+            //// If the audio capture devices was not yet loaded - load it.
+            //// Otherwise, use the existing list of capture devices we have in our state.
+            //if (AppState.Instance.AudioCaptureDevices == null)
+            //{
+            //    EventManager.Instance.GetInputDevices();
+            //}
+
+            // Always get the latest audio capture devices, in case they change.
+            EventManager.Instance.LoadAudioDevices();
+
+            if (AppState.Instance.AudioCaptureDevices != null)
             {
-                EventManager.Instance.GetInputDevices();
+                AudioCaptureDevice tempSelectedDevice = null;
+
+                var defaultDevices = AppState.Instance.AudioCaptureDevices.Where(capDev => capDev.IsDefaultDevice);
+
+                var defaultOutputDevice = defaultDevices.FirstOrDefault(defaultDevice => defaultDevice.FlowType == AudioCaptureDeviceFlowType.Output);
+
+                if (defaultOutputDevice != null)
+                {
+                    tempSelectedDevice = defaultOutputDevice;
+                }
+                else
+                {
+                    var defaultInputDevice = defaultDevices.FirstOrDefault(defaultDevice => defaultDevice.FlowType == AudioCaptureDeviceFlowType.Input);
+                    if (defaultInputDevice != null)
+                    {
+                        tempSelectedDevice = defaultInputDevice;
+                    }
+                }
+
+                SelectedAudioCaptureDevice = tempSelectedDevice;
             }
 
             this.InitializeComponent();
+
             AppState.Instance.PropertyChanged += AppStateInstance_PropertyChanged;
         }
 

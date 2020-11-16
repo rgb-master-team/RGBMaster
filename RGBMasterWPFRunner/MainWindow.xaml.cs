@@ -61,7 +61,7 @@ namespace RGBMasterWPFRunner
             EventManager.Instance.SubscribeToInitializeProvidersRequests(InitializeProviders);
             EventManager.Instance.SubscribeToStaticColorChanges(ChangeStaticColor);
             EventManager.Instance.SubscribeToTurnOnAllLightsRequests(TurnOnAllLights);
-            EventManager.Instance.SubscribeToGetInputDevicesRequests(GetInputDevices);
+            EventManager.Instance.SubscribeToLoadAudioDevicesRequests(LoadAudioDevices);
             EventManager.Instance.SubscribeToTurnOnDevicesRequests(TurnOnDevices);
             EventManager.Instance.SubscribeToTurnOffDevicesRequests(TurnOffDevices);
         }
@@ -176,14 +176,29 @@ namespace RGBMasterWPFRunner
             }
         }
 
-        private void GetInputDevices(object sender, EventArgs e)
+        private void LoadAudioDevices(object sender, EventArgs e)
         {
             var audioCaptureDevices = new List<AudioCaptureDevice>();
 
             MMDeviceEnumerator enumerator = new MMDeviceEnumerator();
+
+            var defaultOutputDevice = enumerator.HasDefaultAudioEndpoint(DataFlow.Render, Role.Console) ? enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Console) : null;
+            var defaultInputDevice = enumerator.HasDefaultAudioEndpoint(DataFlow.Capture, Role.Console) ? enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Console) : null;
+
             foreach (MMDevice device in enumerator.EnumerateAudioEndPoints(DataFlow.All, DeviceState.Active))
             {
-                audioCaptureDevices.Add(new AudioCaptureDevice(device.ID, device.FriendlyName, DataFlowToFlowType(device.DataFlow)));
+                bool isDeviceDefault = false;
+                var flowType = DataFlowToFlowType(device.DataFlow);
+
+                if (
+                    (flowType == AudioCaptureDeviceFlowType.Input && device.ID == defaultInputDevice?.ID) ||
+                    (flowType == AudioCaptureDeviceFlowType.Output && device.ID == defaultOutputDevice?.ID)
+                    )
+                {
+                    isDeviceDefault = true;
+                }
+
+                audioCaptureDevices.Add(new AudioCaptureDevice(device.ID, device.FriendlyName, flowType, isDeviceDefault));
             }
 
             AppState.Instance.AudioCaptureDevices = audioCaptureDevices;
@@ -191,15 +206,12 @@ namespace RGBMasterWPFRunner
 
         private AudioCaptureDeviceFlowType DataFlowToFlowType(DataFlow dataFlow)
         {
-            switch (dataFlow)
+            return dataFlow switch
             {
-                case DataFlow.Render:
-                    return AudioCaptureDeviceFlowType.Output;
-                case DataFlow.Capture:
-                    return AudioCaptureDeviceFlowType.Input;
-                default:
-                    return AudioCaptureDeviceFlowType.Unknown;
-            }
+                DataFlow.Render => AudioCaptureDeviceFlowType.Output,
+                DataFlow.Capture => AudioCaptureDeviceFlowType.Input,
+                _ => AudioCaptureDeviceFlowType.Unknown,
+            };
         }
 
         private async void TurnOnAllLights(object sender, EventArgs e)
