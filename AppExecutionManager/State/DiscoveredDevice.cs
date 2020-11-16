@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Utils;
 
 namespace AppExecutionManager.State
 {
@@ -24,13 +25,8 @@ namespace AppExecutionManager.State
             set
             {
                 isChecked = value;
-                OnPropertyChanged();
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
             }
-        }
-
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

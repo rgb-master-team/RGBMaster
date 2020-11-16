@@ -1,15 +1,22 @@
 ﻿using Common;
+using ComposableAsync;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Provider;
+using RateLimiter;
+using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using Utils;
 using YeelightAPI.Models;
 
@@ -28,9 +35,38 @@ namespace Yeelight
         private readonly YeelightAPI.Device InternalDevice;
         private Socket musicModeSocket;
 
-        public YeelightDevice(Guid discoveringProvider, YeelightAPI.Device internalDevice): base(new YeelightDeviceMetadata(discoveringProvider, GetDeviceTypeForYeelight(internalDevice), !String.IsNullOrWhiteSpace(internalDevice.Name) ? internalDevice.Name: internalDevice.Hostname, new HashSet<OperationType>() { OperationType.SetColor, OperationType.GetColor, OperationType.SetBrightness, OperationType.GetBrightness, OperationType.TurnOff, OperationType.TurnOn}))
+        private readonly TimeLimiter timeConstraint = TimeLimiter.GetFromMaxCountByInterval(1, TimeSpan.FromSeconds(1));
+
+        public YeelightDevice(Guid discoveringProvider, YeelightAPI.Device internalDevice) : base(new YeelightDeviceMetadata(discoveringProvider, GetDeviceTypeForYeelight(internalDevice), !String.IsNullOrWhiteSpace(internalDevice.Name) ? internalDevice.Name : internalDevice.Hostname, GetSupportedOperationsForYeelight(internalDevice)))
         {
             InternalDevice = internalDevice;
+        }
+
+        private static HashSet<OperationType> GetSupportedOperationsForYeelight(YeelightAPI.Device internalDevice)
+        {
+            var operationTypes = new HashSet<OperationType>();
+
+            foreach (var supportedOp in internalDevice.SupportedOperations)
+            {
+                switch (supportedOp)
+                {
+                    case METHODS.SetRGBColor:
+                        operationTypes.Add(OperationType.SetColor);
+                        operationTypes.Add(OperationType.SetGradient);
+                        break;
+                    case METHODS.SetBrightness:
+                        operationTypes.Add(OperationType.SetBrightness);
+                        break;
+                    case METHODS.SetPower:
+                        operationTypes.Add(OperationType.TurnOn);
+                        operationTypes.Add(OperationType.TurnOff);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return operationTypes;
         }
 
         private static DeviceType GetDeviceTypeForYeelight(YeelightAPI.Device internalDevice)
@@ -58,11 +94,26 @@ namespace Yeelight
             await InternalDevice.Connect();
             var supportedOps = InternalDevice.SupportedOperations;
 
-            if (!supportedOps.Contains(YeelightAPI.Models.METHODS.SetMusicMode))
+            if (IsMusicModeSupported())
             {
-                throw new YeelightDeviceNotSupportedException();
+                await ConnectViaMusicMode().ConfigureAwait(false);
             }
+            else
+            {
+                await ExecuteIfQuotaAllowsAsync(async () =>
+                {
+                    await ConnectViaApi().ConfigureAwait(false);
+                }).ConfigureAwait(false);
+            }
+        }
 
+        private async Task ConnectViaApi()
+        {
+            await InternalDevice.Connect().ConfigureAwait(false);
+        }
+
+        private async Task ConnectViaMusicMode()
+        {
             var ipAddress = Dns.GetHostEntry(Dns.GetHostName()).AddressList.Where(addr => addr.AddressFamily == AddressFamily.InterNetwork).First();
 
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 0);
@@ -78,7 +129,7 @@ namespace Yeelight
 
                     await InternalDevice.StartMusicMode(ipAddress.ToString(), ((IPEndPoint)musicModeSocketListener.LocalEndPoint).Port);
 
-                    this.musicModeSocket = musicModeSocketListener.Accept();
+                    musicModeSocket = await musicModeSocketListener.AcceptAsync();
                 }
                 catch (Exception ex)
                 {
@@ -94,88 +145,170 @@ namespace Yeelight
             return Task.CompletedTask;
         }
 
-        protected override byte GetBrightnessPercentageInternal()
+        protected override async Task<byte> GetBrightnessPercentageInternal()
         {
             // TODO - Don't get this from the music socket as it won't return anything to us - 
             // move to standard request like in the API specifications.
-            var task = InternalDevice.GetProp(YeelightAPI.Models.PROPERTIES.bright);
-            task.Wait();
-            return (byte)task.Result;
+            var result = await InternalDevice.GetProp(YeelightAPI.Models.PROPERTIES.bright).ConfigureAwait(false);
+            return (byte)result;
         }
 
-        protected override Color GetColorInternal()
+        protected override async Task<Color> GetColorInternal()
         {
             // TODO - Don't get this from the music socket as it won't return anything to us - 
             // move to standard request like in the API specifications.
-            var task = InternalDevice.GetProp(YeelightAPI.Models.PROPERTIES.rgb);
-            task.Wait();
-            return RGBColorHelper.ParseColor((int)task.Result);
+            var result = await InternalDevice.GetProp(YeelightAPI.Models.PROPERTIES.rgb).ConfigureAwait(false);
+            return RGBColorHelper.ParseColor((int)result);
         }
 
-        protected override void SetBrightnessPercentageInternal(byte brightness)
+        protected override async Task SetBrightnessPercentageInternal(byte brightness)
         {
-            var serverParams = new List<object>() { brightness };
-
-            // We create 2 commands that opposite each other.
-            // When one is extremely bright, the other one is extremely dark.
-            Command brightnessCommand = new Command()
+            if (IsMusicModeSupported())
             {
-                Id = 1,
-                Method = "set_bright",
-                Params = serverParams
-            };
+                var serverParams = new List<object>() { brightness };
 
-            string data = JsonConvert.SerializeObject(brightnessCommand, DeviceSerializerSettings);
-            byte[] sentData = Encoding.ASCII.GetBytes(data + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
+                // We create 2 commands that opposite each other.
+                // When one is extremely bright, the other one is extremely dark.
+                Command brightnessCommand = new Command()
+                {
+                    Id = 1,
+                    Method = "set_bright",
+                    Params = serverParams
+                };
 
-            musicModeSocket.Send(sentData);
+                string data = JsonConvert.SerializeObject(brightnessCommand, DeviceSerializerSettings);
+                byte[] sentData = Encoding.ASCII.GetBytes(data + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
+
+                await musicModeSocket.SendAsync(sentData, SocketFlags.None).ConfigureAwait(false);
+            }
+            else
+            {
+                await ExecuteIfQuotaAllowsAsync(async () =>
+                {
+                    await InternalDevice.SetBrightness(brightness).ConfigureAwait(false);
+                }).ConfigureAwait(false);
+            }
         }
 
-        protected override void SetColorInternal(Color color)
+        protected override async Task SetColorInternal(Color color)
         {
-            var colorValue = RGBColorHelper.ComputeRGBColor(color.R, color.G, color.B);
-
-            Command colorCommand = new Command()
+            if (IsMusicModeSupported())
             {
-                Id = 1,
-                Method = "set_rgb",
-                Params = new List<object>() { colorValue, "smooth", 30 }
-            };
+                var colorValue = RGBColorHelper.ComputeRGBColor(color.R, color.G, color.B);
 
-            string colorData = JsonConvert.SerializeObject(colorCommand, DeviceSerializerSettings);
-            byte[] colorSentData = Encoding.ASCII.GetBytes(colorData + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
+                Command colorCommand = new Command()
+                {
+                    Id = 1,
+                    Method = "set_rgb",
+                    Params = new List<object>() { colorValue, "smooth", 30 }
+                };
 
-            musicModeSocket.Send(colorSentData);
+                string colorData = JsonConvert.SerializeObject(colorCommand, DeviceSerializerSettings);
+                byte[] colorSentData = Encoding.ASCII.GetBytes(colorData + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
+
+                await musicModeSocket.SendAsync(colorSentData, SocketFlags.None).ConfigureAwait(false);
+            }
+            else
+            {
+                await ExecuteIfQuotaAllowsAsync(async () =>
+                {
+                    await InternalDevice.SetRGBColor(color.R, color.G, color.B, 30).ConfigureAwait(false);
+                }).ConfigureAwait(false);
+            }
         }
 
-        protected override void TurnOffInternal()
+        protected override async Task TurnOffInternal()
         {
-            Command turnOffCommand = new Command()
+            if (IsMusicModeSupported())
             {
-                Id = 1,
-                Method = "set_power",
-                Params = new List<object>() { "off", "smooth", 500 }
-            };
+                Command turnOffCommand = new Command()
+                {
+                    Id = 1,
+                    Method = "set_power",
+                    Params = new List<object>() { "off", "smooth", 500 }
+                };
 
-            string turnOffJSON = JsonConvert.SerializeObject(turnOffCommand, DeviceSerializerSettings);
-            byte[] turnOffSentData = Encoding.ASCII.GetBytes(turnOffJSON + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
+                string turnOffJSON = JsonConvert.SerializeObject(turnOffCommand, DeviceSerializerSettings);
+                byte[] turnOffSentData = Encoding.ASCII.GetBytes(turnOffJSON + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
 
-            musicModeSocket.Send(turnOffSentData);
+                await musicModeSocket.SendAsync(turnOffSentData, SocketFlags.None).ConfigureAwait(false);
+
+                // HACK - this is done because of the way Yeelight operates...
+                await DisconnectInternal();
+                await ConnectInternal();
+            }
+            else
+            {
+                await ExecuteIfQuotaAllowsAsync(async () =>
+                {
+                    await InternalDevice.TurnOff(500).ConfigureAwait(false);
+                }).ConfigureAwait(false);
+            }
         }
 
-        protected override void TurnOnInternal()
+        protected override async Task TurnOnInternal()
         {
-            Command turnOnCommand = new Command()
+            if (IsMusicModeSupported())
             {
-                Id = 1,
-                Method = "set_power",
-                Params = new List<object>() { "on", "smooth", 500 }
-            };
+                Command turnOnCommand = new Command()
+                {
+                    Id = 1,
+                    Method = "set_power",
+                    Params = new List<object>() { "on", "smooth", 500 }
+                };
 
-            string turnOnJSON = JsonConvert.SerializeObject(turnOnCommand, DeviceSerializerSettings);
-            byte[] turnOnSentData = Encoding.ASCII.GetBytes(turnOnJSON + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
+                string turnOnJSON = JsonConvert.SerializeObject(turnOnCommand, DeviceSerializerSettings);
+                byte[] turnOnSentData = Encoding.ASCII.GetBytes(turnOnJSON + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
 
-            musicModeSocket.Send(turnOnSentData);
+                await musicModeSocket.SendAsync(turnOnSentData, SocketFlags.None).ConfigureAwait(false);
+            }
+            else
+            {
+                await InternalDevice.TurnOn(500).ConfigureAwait(false);
+            }
+        }
+
+        protected override async Task SetGradientInternal(GradientPoint gradientPoint, int relativeSmoothness)
+        {
+            if (IsMusicModeSupported())
+            {
+                var colorValue = RGBColorHelper.ComputeRGBColor(gradientPoint.Color.R, gradientPoint.Color.G, gradientPoint.Color.B);
+
+                Command colorCommand = new Command()
+                {
+                    Id = 1,
+                    Method = "set_rgb",
+                    Params = new List<object>() { colorValue, "smooth", relativeSmoothness }
+                };
+
+                string colorData = JsonConvert.SerializeObject(colorCommand, DeviceSerializerSettings);
+                byte[] colorSentData = Encoding.ASCII.GetBytes(colorData + "\r\n"); // \r\n is the end of the message, it needs to be sent for the message to be read by the device
+
+                await musicModeSocket.SendAsync(colorSentData, SocketFlags.None).ConfigureAwait(false);
+            }
+            else
+            {
+                await ExecuteIfQuotaAllowsAsync(async () =>
+                {
+                    await InternalDevice.SetRGBColor(gradientPoint.Color.R, gradientPoint.Color.G, gradientPoint.Color.B, relativeSmoothness).ConfigureAwait(false);
+                });
+            }
+        }
+
+        private bool IsMusicModeSupported()
+        {
+            return InternalDevice.SupportedOperations.Contains(METHODS.SetMusicMode);
+        }
+
+        private async Task ExecuteIfQuotaAllowsAsync(Action ac, int timeoutInMs = 2000, [CallerMemberName] string callingFunction = "")
+        {
+            await timeConstraint.Enqueue(ac, new CancellationTokenSource(timeoutInMs).Token).ContinueWith(continuation =>
+            {
+                if (continuation.Status == TaskStatus.Canceled)
+                {
+                    Log.Logger.Verbose($"Method {callingFunction} fell off the rate limit.");
+                }
+            }).ConfigureAwait(false);
         }
     }
 }

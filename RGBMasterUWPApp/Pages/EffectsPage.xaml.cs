@@ -5,11 +5,13 @@ using RGBMasterUWPApp.Pages.EffectsControls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Utils;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -29,16 +31,18 @@ namespace RGBMasterUWPApp.Pages
     /// </summary>
     public sealed partial class EffectsPage : Page
     {
-        private readonly string ActivateEffectText = "Activate Effect";
-        private readonly string DeactivateEffectText = "Deactivate Effect";
+        private EffectMetadata selectedEffectMetadata;
 
         public readonly Dictionary<EffectType, Type> contentByEffectType = new Dictionary<EffectType, Type>()
         {
             { EffectType.Music, typeof(MusicEffectControl) },
             { EffectType.StaticColor, typeof(StaticColorEffectControl) },
             { EffectType.DominantColor, typeof(DominantDisplayColorEffectControl) },
-            { EffectType.CursorColor, typeof(CursorColorEffectControl) }
+            { EffectType.CursorColor, typeof(CursorColorEffectControl) },
+            { EffectType.Gradient, typeof(GradientEffectControl) }
         };
+
+        private bool shouldIgnoreToggleEvent = false;
 
         public ObservableCollection<EffectMetadata> SupportedEffects
         {
@@ -75,31 +79,45 @@ namespace RGBMasterUWPApp.Pages
 
             var selectedPivotItem = (PivotItem)pivot.ItemsPanelRoot.Children.ElementAt(pivot.SelectedIndex);
 
-            var newEffectMetadata = (EffectMetadata)selectedPivotItem.DataContext;
+            selectedEffectMetadata = (EffectMetadata)selectedPivotItem.DataContext;
 
-            var selectedEffectMetadata = AppState.Instance.ActiveEffect;
+            var currentActiveEffect = AppState.Instance.ActiveEffect;
 
             var isEffectRunning = AppState.Instance.IsEffectRunning;
 
-            if (isEffectRunning && selectedEffectMetadata.EffectMetadataGuid == newEffectMetadata.EffectMetadataGuid)
+            bool shouldToggleBeOn;
+
+            if (isEffectRunning && currentActiveEffect.EffectMetadataGuid == selectedEffectMetadata.EffectMetadataGuid)
             {
-                EffectActivationControl.Content = DeactivateEffectText;
+                shouldToggleBeOn = true;
             }
             else
             {
-                EffectActivationControl.Content = ActivateEffectText;
+                shouldToggleBeOn = false;
             }
 
-            if (!contentByEffectType.TryGetValue(newEffectMetadata.Type, out var effectType))
+            if (shouldToggleBeOn != EffectActivationControl.IsOn)
             {
-                throw new NotImplementedException($"A view for effect {newEffectMetadata.EffectName} is not implemented. Implement it and be sure to include it on contentByEffectType.");
+                shouldIgnoreToggleEvent = true;
+                EffectActivationControl.IsOn = shouldToggleBeOn;
+            }
+
+            if (!contentByEffectType.TryGetValue(selectedEffectMetadata.Type, out var effectType))
+            {
+                throw new NotImplementedException($"A view for effect {selectedEffectMetadata.EffectName} is not implemented. Implement it and be sure to include it on contentByEffectType.");
             }
 
             effectControlFrame.Navigate(effectType);
         }
 
-        private void EffectActivationControl_Click(object sender, RoutedEventArgs e)
+        private void EffectActivationControl_Toggled(object sender, RoutedEventArgs e)
         {
+            if (shouldIgnoreToggleEvent)
+            {
+                shouldIgnoreToggleEvent = false;
+                return;
+            }
+
             var newEffectMetadata = (EffectMetadata)EffectSelectionPivot.SelectedItem;
 
             var selectedEffectMetadata = AppState.Instance.ActiveEffect;
@@ -110,13 +128,11 @@ namespace RGBMasterUWPApp.Pages
             if (isEffectRunning && selectedEffectMetadata.EffectMetadataGuid == newEffectMetadata.EffectMetadataGuid)
             {
                 EventManager.Instance.RequestEffectActivation(null);
-                EffectActivationControl.Content = ActivateEffectText;
             }
             // If an effect isn't running, or the running effect isn't the one we selected - update the effect to the relevant one
             else
             {
-                EventManager.Instance.RequestEffectActivation(newEffectMetadata);
-                EffectActivationControl.Content = DeactivateEffectText;
+                EventManager.Instance.RequestEffectActivation(newEffectMetadata);        
             }
         }
     }

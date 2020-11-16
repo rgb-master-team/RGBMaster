@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Utils;
 
@@ -15,6 +16,8 @@ namespace Provider
     {
         public readonly DeviceMetadata DeviceMetadata;
 
+        private readonly SemaphoreSlim deviceConnectionChangesSemaphore = new SemaphoreSlim(1, 1);
+
         public Device(DeviceMetadata deviceMetadata)
         {
             DeviceMetadata = deviceMetadata;
@@ -23,73 +26,85 @@ namespace Provider
         public bool IsConnected { get; private set; }
         public bool IsTurnedOn { get; private set; }
 
-        public Color GetColor()
+        public async Task<Color> GetColor()
         {
             if (DeviceMetadata.SupportedOperations.Contains(OperationType.GetColor))
             {
-                return GetColorInternal();
+                return await GetColorInternal();
             }
 
             return Color.Empty;
         }
 
-        protected abstract Color GetColorInternal();
+        protected abstract Task<Color> GetColorInternal();
 
-        public void SetColor(Color color)
+        public async Task SetColor(Color color)
         {
             if (DeviceMetadata.SupportedOperations.Contains(OperationType.SetColor))
             {
-                SetColorInternal(color);
+                await SetColorInternal(color);
             }
         }
 
-        protected abstract void SetColorInternal(Color color);
+        protected abstract Task SetColorInternal(Color color);
 
-        public byte GetBrightnessPercentage()
+        public async Task SetGradient(GradientPoint gradientPoint, int relativeSmoothness)
+        {
+            if (DeviceMetadata.SupportedOperations.Contains(OperationType.SetGradient))
+            {
+                await SetGradientInternal(gradientPoint, relativeSmoothness);
+            }
+        }
+
+        protected abstract Task SetGradientInternal(GradientPoint gradientPoint, int relativeSmoothness);
+
+        public async Task<byte> GetBrightnessPercentage()
         {
             if (DeviceMetadata.SupportedOperations.Contains(OperationType.GetBrightness))
             {
-               return GetBrightnessPercentageInternal();
+               return await GetBrightnessPercentageInternal();
             }
 
             return 0;
         }
 
-        protected abstract byte GetBrightnessPercentageInternal();
+        protected abstract Task<byte> GetBrightnessPercentageInternal();
 
-        public void SetBrightnessPercentage(byte brightness)
+        public async Task SetBrightnessPercentage(byte brightness)
         {
             if (DeviceMetadata.SupportedOperations.Contains(OperationType.SetBrightness))
             {
-                SetBrightnessPercentageInternal(brightness);
+                await SetBrightnessPercentageInternal(brightness);
             }
         }
 
-        protected abstract void SetBrightnessPercentageInternal(byte brightness);
+        protected abstract Task SetBrightnessPercentageInternal(byte brightness);
 
-        public void TurnOn()
+        public async Task TurnOn()
         {
             if (DeviceMetadata.SupportedOperations.Contains(OperationType.TurnOn))
             {
-                TurnOnInternal();
+                await TurnOnInternal();
                 IsTurnedOn = true;
             }
         }
 
-        public void TurnOff()
+        public async Task TurnOff()
         {
             if (DeviceMetadata.SupportedOperations.Contains(OperationType.TurnOff))
             {
-                TurnOffInternal();
+                await TurnOffInternal();
                 IsTurnedOn = false;
             }
         }
 
-        protected abstract void TurnOnInternal();
-        protected abstract void TurnOffInternal();
+        protected abstract Task TurnOnInternal();
+        protected abstract Task TurnOffInternal();
 
         public async Task<bool> Connect()
         {
+            await deviceConnectionChangesSemaphore.WaitAsync();
+
             bool didSucceed;
 
             if (IsConnected)
@@ -117,11 +132,15 @@ namespace Provider
                 }
             }
 
+            deviceConnectionChangesSemaphore.Release();
+
             return didSucceed;
         }
 
         public async Task<bool> Disconnect()
         {
+            await deviceConnectionChangesSemaphore.WaitAsync();
+
             bool didSucceed;
 
             if (!IsConnected)
@@ -148,6 +167,8 @@ namespace Provider
                     didSucceed = false;
                 }
             }
+
+            deviceConnectionChangesSemaphore.Release();
 
             return didSucceed;
         }

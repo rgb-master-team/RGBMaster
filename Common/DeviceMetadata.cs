@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Text;
 
 namespace Common
 {
@@ -62,6 +59,11 @@ namespace Common
             DeviceType = deviceType;
             DeviceName = deviceName;
             SupportedOperations = supportedOperations;
+        }
+
+        public bool IsOperationSupported(OperationType op)
+        {
+            return SupportedOperations.Contains(op);
         }
     }
 }

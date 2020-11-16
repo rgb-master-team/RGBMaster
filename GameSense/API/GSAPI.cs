@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using static System.Environment;
 
 namespace GameSense.API
@@ -33,7 +34,7 @@ namespace GameSense.API
             }
         }
 
-        public void RegisterGameMetadata(GSApiGameMetadata gameSenseGameMetadata)
+        public async Task RegisterGameMetadata(GSApiGameMetadata gameSenseGameMetadata)
         {
             var restRequest = new RestRequest("game_metadata");
             restRequest.AddHeader("Content-Type", "application/json");
@@ -41,7 +42,7 @@ namespace GameSense.API
             var bodyJson = JsonConvert.SerializeObject(gameSenseGameMetadata, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore });
             restRequest.AddParameter(null, bodyJson, ParameterType.RequestBody);
 
-            var restResponse = gameSenseRestClient.Post(restRequest);
+            var restResponse = await gameSenseRestClient.ExecutePostAsync(restRequest).ConfigureAwait(false);
 
             if (!restResponse.IsSuccessful)
             {
@@ -49,7 +50,7 @@ namespace GameSense.API
             }
         }
 
-        public void BindGameEvent(GSApiBindEventPayload GSApiBindEventPayload)
+        public async Task BindGameEvent(GSApiBindEventPayload GSApiBindEventPayload)
         {
             var restRequest = new RestRequest("bind_game_event");
             restRequest.AddHeader("Content-Type", "application/json");
@@ -58,7 +59,7 @@ namespace GameSense.API
 
             restRequest.AddParameter(null, bodyJson, ParameterType.RequestBody);
 
-            var restResponse = gameSenseRestClient.Post(restRequest);
+            var restResponse = await gameSenseRestClient.ExecutePostAsync(restRequest).ConfigureAwait(false);
             if (!restResponse.IsSuccessful)
             
             {
@@ -66,7 +67,7 @@ namespace GameSense.API
             }
         }
 
-        public void RegisterGameEvent(GSApiRegisterGameEventPayload gSApiRegisterGameEventPayload)
+        public async Task RegisterGameEvent(GSApiRegisterGameEventPayload gSApiRegisterGameEventPayload)
         {
             var restRequest = new RestRequest("register_game_event");
             restRequest.AddHeader("Content-Type", "application/json");
@@ -75,7 +76,7 @@ namespace GameSense.API
 
             restRequest.AddParameter(null, bodyJson, ParameterType.RequestBody);
 
-            var restResponse = gameSenseRestClient.Post(restRequest);
+            var restResponse = await gameSenseRestClient.ExecutePostAsync(restRequest).ConfigureAwait(false);
 
             if (!restResponse.IsSuccessful)
             {
@@ -83,7 +84,7 @@ namespace GameSense.API
             }
         }
 
-        public void SendGameEvent(GSApiSendGameEventPayload gsApiSendGameEventPayload)
+        public async Task SendGameEvent(GSApiSendGameEventPayload gsApiSendGameEventPayload)
         {
             var restRequest = new RestRequest("game_event");
             restRequest.AddHeader("Content-Type", "application/json");
@@ -92,7 +93,7 @@ namespace GameSense.API
 
             restRequest.AddParameter(null, bodyJson, ParameterType.RequestBody);
 
-            var restResponse = gameSenseRestClient.Post(restRequest);
+            var restResponse = await gameSenseRestClient.ExecutePostAsync(restRequest).ConfigureAwait(false);
 
             if (!restResponse.IsSuccessful)
             {
@@ -100,7 +101,7 @@ namespace GameSense.API
             }
         }
 
-        public void RemoveGameEvent(GSApiRemoveGameEventPayload gSApiRemoveGameEventPayload)
+        public async Task RemoveGameEvent(GSApiRemoveGameEventPayload gSApiRemoveGameEventPayload)
         {
             var restRequest = new RestRequest("remove_game_event");
             restRequest.AddHeader("Content-Type", "application/json");
@@ -109,7 +110,7 @@ namespace GameSense.API
 
             restRequest.AddParameter(null, bodyJson, ParameterType.RequestBody);
 
-            var restResponse = gameSenseRestClient.Post(restRequest);
+            var restResponse = await gameSenseRestClient.ExecutePostAsync(restRequest).ConfigureAwait(false);
 
             if (!restResponse.IsSuccessful)
             {
@@ -117,7 +118,7 @@ namespace GameSense.API
             }
         }
 
-        public void RemoveGame(GSApiRemoveGamePayload gSApiRemoveGamePayload)
+        public async Task RemoveGame(GSApiRemoveGamePayload gSApiRemoveGamePayload)
         {
             var restRequest = new RestRequest("remove_game");
             restRequest.AddHeader("Content-Type", "application/json");
@@ -126,7 +127,7 @@ namespace GameSense.API
 
             restRequest.AddParameter(null, bodyJson, ParameterType.RequestBody);
 
-            var restResponse = gameSenseRestClient.Post(restRequest);
+            var restResponse = await gameSenseRestClient.ExecutePostAsync(restRequest).ConfigureAwait(false);
 
             if (!restResponse.IsSuccessful)
             {

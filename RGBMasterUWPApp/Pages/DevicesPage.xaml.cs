@@ -3,22 +3,15 @@ using AppExecutionManager.State;
 using Common;
 using Microsoft.UI.Xaml.Controls;
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.IO;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using Utils;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
@@ -29,8 +22,12 @@ namespace RGBMasterUWPApp.Pages
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class DevicesPage : Page
+    public sealed partial class DevicesPage : Page, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        public double ProvidersLoadingProgressValue => AppState.Instance.ProvidersLoadingProgress;
+        public ProviderMetadata CurrentProcessedProvider => AppState.Instance.CurrentProcessedProvider;
+
         public ObservableCollection<RegisteredProvider> RegisteredProviders 
         { 
             get
@@ -44,6 +41,26 @@ namespace RGBMasterUWPApp.Pages
             this.InitializeComponent();
             RefreshDeviceCounter();
             AppState.Instance.RegisteredProviders.CollectionChanged += RefreshDeviceCounter;
+            AppState.Instance.PropertyChanged += AppState_PropertyChanged;
+        }
+
+        private void AppState_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(AppState.IsLoadingProviders))
+            {
+                if (IsLoaded)
+                {
+                    HandleProgressbarAnimation();
+                }
+            }
+            else if (e.PropertyName == nameof(AppState.ProvidersLoadingProgress))
+            {
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this, nameof(ProvidersLoadingProgressValue));
+            }
+            else if (e.PropertyName == nameof(AppState.CurrentProcessedProvider))
+            {
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this, nameof(CurrentProcessedProvider));
+            }
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
@@ -149,20 +166,9 @@ namespace RGBMasterUWPApp.Pages
         {
          //   this.ChosenDevicesListView.ItemsSource = AppState.Instance.RegisteredProviders.Select(provider=> new RegisteredProvider() { Provider = provider.Provider, Devices = provider.Devices.Where(device => device.IsChecked)})
         }
-
-        private void Change_Device_Name_Button_Click(object sender, RoutedEventArgs e)
+        private async void DevicePropertiesContextItem(object sender, RoutedEventArgs e)
         {
-            var button = (Button)sender;
-
-            var teachingTip = button.Resources["TeachingTip_SetName"] as Microsoft.UI.Xaml.Controls.TeachingTip;
-            teachingTip.Target = button;
-            teachingTip.PreferredPlacement = TeachingTipPlacementMode.Right;
-            teachingTip.IsOpen = true;
-        }
-
-        private async void Device_Info_Button_Click(object sender, RoutedEventArgs e)
-        {
-            var button = (Button)sender;
+            var button = (MenuFlyoutItem)sender;
             var discoveredDevice = (DiscoveredDevice)button.DataContext;
             var deviceInfoContentDialog = GenerateDeviceInfoContentDialog(discoveredDevice.Device, button.XamlRoot); // lmfaooo
             await deviceInfoContentDialog.ShowAsync();
@@ -318,14 +324,47 @@ namespace RGBMasterUWPApp.Pages
             return deviceTypeText;
         }
 
-        //private void Change_Device_Name_Button_Click(object sender, RoutedEventArgs e)
-        //{
-        //    TeachingTip_SetName.IsOpen = true;
-        //}
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            HandleProgressbarAnimation();
+        }
 
-        //private void TeachingTip_SetName_ActionButtonClick(TeachingTip sender, object args)
-        //{
-        //    TeachingTip_SetName.IsOpen = false;
-        //}
+        private void HandleProgressbarAnimation()
+        {
+            if (AppState.Instance.IsLoadingProviders)
+            {
+                ProvidersProgress.Visibility = Visibility.Visible;
+                EnterStoryboard.Begin();
+            }
+            else
+            {
+                ExitStoryboard.Begin();
+            }
+        }
+
+        private void TurnOnDeviceContextItem_Click(object sender, RoutedEventArgs e)
+        {
+            var device = (DiscoveredDevice)((MenuFlyoutItem)sender).DataContext;
+            EventManager.Instance.TurnOnDevices(new System.Collections.Generic.List<DiscoveredDevice>() { device });
+        }
+
+        private void SetNameContextItem_Click(object sender, RoutedEventArgs e)
+        {
+            var flyoutItem = (MenuFlyoutItem)sender;
+
+            var triggeringCheckbox = (CheckBox)flyoutItem.FindName("DeviceSelectionCheckbox");
+
+            var teachingTip = triggeringCheckbox.Resources["TeachingTip_SetName"] as Microsoft.UI.Xaml.Controls.TeachingTip;
+            teachingTip.Target = triggeringCheckbox;
+            teachingTip.PreferredPlacement = TeachingTipPlacementMode.Right;
+            teachingTip.XamlRoot = triggeringCheckbox.XamlRoot;
+            teachingTip.IsOpen = true;
+        }
+
+        private void TurnOffDeviceContextItem_Click(object sender, RoutedEventArgs e)
+        {
+            var device = (DiscoveredDevice)((MenuFlyoutItem)sender).DataContext;
+            EventManager.Instance.TurnOffDevices(new System.Collections.Generic.List<DiscoveredDevice>() { device });
+        }
     }
 }

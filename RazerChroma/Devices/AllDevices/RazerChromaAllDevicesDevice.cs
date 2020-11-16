@@ -1,4 +1,5 @@
 ﻿using Colore;
+using Common;
 using Provider;
 using System;
 using System.Collections.Generic;
@@ -26,34 +27,39 @@ namespace RazerChroma.Devices.AllDevices
             return Task.CompletedTask;
         }
 
-        protected override byte GetBrightnessPercentageInternal()
+        protected override Task<byte> GetBrightnessPercentageInternal()
         {
             throw new NotImplementedException();
         }
 
-        protected override System.Drawing.Color GetColorInternal()
+        protected override Task<System.Drawing.Color> GetColorInternal()
         {
             throw new NotImplementedException();
         }
 
-        protected override void SetBrightnessPercentageInternal(byte brightness)
+        protected override Task SetBrightnessPercentageInternal(byte brightness)
         {
             throw new NotImplementedException();
         }
 
-        protected async override void SetColorInternal(System.Drawing.Color color)
+        protected override async Task SetColorInternal(System.Drawing.Color color)
         {
-            await internalChromaDriver.SetAllAsync(new Colore.Data.Color(color.R, color.G, color.B));
+            await internalChromaDriver.SetAllAsync(new Colore.Data.Color(color.R, color.G, color.B)).ConfigureAwait(false);
         }
 
-        protected override void TurnOffInternal()
+        protected override Task SetGradientInternal(GradientPoint gradientPoint, int relativeSmoothness)
         {
-            internalChromaDriver.SetAllAsync(new Colore.Data.Color(0, 0, 0)).Wait(10000);
+            throw new NotImplementedException();
         }
 
-        protected override void TurnOnInternal()
+        protected override async Task TurnOffInternal()
         {
-            internalChromaDriver.SetAllAsync(new Colore.Data.Color(255, 255, 255)).Wait(10000);
+            await internalChromaDriver.SetAllAsync(new Colore.Data.Color(0, 0, 0)).ConfigureAwait(false);
+        }
+
+        protected override async Task TurnOnInternal()
+        {
+            await internalChromaDriver.SetAllAsync(new Colore.Data.Color(255, 255, 255)).ConfigureAwait(false);
         }
     }
 }

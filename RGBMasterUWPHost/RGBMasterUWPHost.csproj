@@ -146,10 +146,12 @@
     <Content Include="Assets\Logos\CorsairiCueLogo.png" />
     <Content Include="Assets\Logos\DiscordLogo.png" />
     <Content Include="Assets\Logos\GitHubLogo.png" />
+    <Content Include="Assets\Logos\HueLogo.png" />
     <Content Include="Assets\Logos\LogitechGHubLogo.png" />
     <Content Include="Assets\Logos\MagicHomeLogo.png" />
     <Content Include="Assets\Logos\MsiMysticLightLogo.png" />
-    <Content Include="Assets\Logos\SteelSeries.png" />
+    <Content Include="Assets\Logos\NZXTProviderLogo.png" />
+    <Content Include="Assets\Logos\SteelSeriesLogo.png" />
     <Content Include="Assets\Logos\YeelightLogo.png" />
     <Content Include="Assets\SplashScreen.png" />
     <Content Include="Assets\Logos\SynapseLogo.png" />

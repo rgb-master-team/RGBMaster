@@ -8,6 +8,21 @@
     xmlns:winui="using:Microsoft.UI.Xaml.Controls"
     Loaded="RGBMasterUserControl_Loaded"
     mc:Ignorable="d">
+    <UserControl.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Dark">
+                    <!--<SolidColorBrush x:Key="ButtonBackground" Color="#00a69a"/>
+                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#4cc0b8"/>
+                    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#00635c"/>
+                    <SolidColorBrush x:Key="PivotHeaderItemSelectedPipeFill" Color="#00a69a" />
+                    
+                    <SolidColorBrush x:Key="TextControlBorderBrush" Color="#00a69a"/>
+                    <SolidColorBrush x:Key="TextControlBorderBrushPointerOver" Color="#4cc0b8"/>-->
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+            </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
@@ -38,7 +53,8 @@
                 <winui:NavigationView.PaneHeader>
                 <StackPanel Orientation="Horizontal">
                     <Image Source="Assets/128.png" Width="23" Height="23" Margin="4 0 4 0" />
-                    <TextBlock VerticalAlignment="Center" Text="RGB Master" FontWeight="Bold" FontSize="18" />
+                    <TextBlock VerticalAlignment="Center" Text="RGB Master" FontWeight="SemiBold" FontSize="16" />
+                    <TextBlock Text="{x:Bind CurrentEffectName, Mode=OneWay}" />
                 </StackPanel>
             </winui:NavigationView.PaneHeader>
             <winui:NavigationView.MenuItems>
@@ -55,11 +71,6 @@
             </winui:NavigationView.MenuItems>
             <ScrollViewer>
                 <StackPanel>
-                    <CommandBar OverflowButtonVisibility="Collapsed" DefaultLabelPosition="Right">
-                        <CommandBar.PrimaryCommands>
-                            <AppBarButton Label="{x:Bind CurrentEffectName}" x:Name="DisplayCurrentSyncMode" Visibility="Collapsed" />
-                        </CommandBar.PrimaryCommands>
-                    </CommandBar>
                     <Frame x:Name="MainAppContentFrame" Padding="12,0,12,24" IsTabStop="True"
                    NavigationFailed="MainAppContentFrame_NavigationFailed"/>
                 </StackPanel>

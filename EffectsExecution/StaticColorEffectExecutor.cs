@@ -19,10 +19,10 @@ namespace EffectsExecution
 
             foreach (var device in Devices)
             {
-                tasksList.Add(Task.Run(() =>
+                tasksList.Add(Task.Run(async () =>
                 {
-                    device.SetColor(newStaticColorEffectProps.SelectedColor);
-                    device.SetBrightnessPercentage(newStaticColorEffectProps.SelectedBrightness);
+                    await device.SetColor(newStaticColorEffectProps.SelectedColor);
+                    await device.SetBrightnessPercentage(newStaticColorEffectProps.SelectedBrightness);
                 }));
             }
 

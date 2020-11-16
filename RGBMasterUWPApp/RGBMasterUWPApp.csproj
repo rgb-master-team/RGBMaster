@@ -129,6 +129,9 @@
     <Compile Include="Pages\EffectsControls\DominantDisplayColorEffectControl.xaml.cs">
       <DependentUpon>DominantDisplayColorEffectControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\EffectsControls\GradientEffectControl.xaml.cs">
+      <DependentUpon>GradientEffectControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\EffectsControls\MusicEffectControl.xaml.cs">
       <DependentUpon>MusicEffectControl.xaml</DependentUpon>
     </Compile>
@@ -145,6 +148,7 @@
     <Compile Include="RGBMasterUserControl.xaml.cs">
       <DependentUpon>RGBMasterUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utils\DrawingColorToBrushColor.cs" />
     <Compile Include="Utils\ExtensionMethods.cs" />
     <EmbeddedResource Include="Properties\RGBMasterUWPApp.rd.xml" />
   </ItemGroup>
@@ -166,6 +170,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\EffectsControls\DominantDisplayColorEffectControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\EffectsControls\GradientEffectControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -198,6 +206,10 @@
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{043D9F41-3261-453B-BCB9-E6921B67E4B5}</Project>
       <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utils\Utils.csproj">
+      <Project>{E9D5574F-DD24-4DC1-9993-673CD9AACE84}</Project>
+      <Name>Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

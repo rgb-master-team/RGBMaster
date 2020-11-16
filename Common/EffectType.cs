@@ -10,5 +10,6 @@ namespace Common
         StaticColor,
         DominantColor,
         CursorColor,
+        Gradient,
     }
 }

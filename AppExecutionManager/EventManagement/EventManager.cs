@@ -2,8 +2,6 @@
 using Common;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
 
 namespace AppExecutionManager.EventManagement
 {
@@ -16,6 +14,9 @@ namespace AppExecutionManager.EventManagement
         private event EventHandler<List<DiscoveredDevice>> SelectedDevicesChanged;
         private event EventHandler InitializeProvidersRequested;
         private event EventHandler TurnOnAllLightsRequested;
+        private event EventHandler LoadAudioDevicesRequested;
+        private event EventHandler<List<DiscoveredDevice>> TurnOnDevicesRequested;
+        private event EventHandler<List<DiscoveredDevice>> TurnOffDevicesRequested;
 
         static EventManager()
         {
@@ -104,6 +105,42 @@ namespace AppExecutionManager.EventManagement
         public void TurnOnAllLights()
         {
             TurnOnAllLightsRequested?.Invoke(this, null);
+        }
+        public void SubscribeToLoadAudioDevicesRequests(EventHandler callback)
+        {
+            LoadAudioDevicesRequested += callback;
+        }
+        public void UnubscribeFromLoadAudioDevicesRequests(EventHandler callback)
+        {
+            LoadAudioDevicesRequested -= callback;
+        }
+        public void LoadAudioDevices()
+        {
+            LoadAudioDevicesRequested?.Invoke(this, null);
+        }
+        public void SubscribeToTurnOnDevicesRequests(EventHandler<List<DiscoveredDevice>> callback)
+        {
+            TurnOnDevicesRequested += callback;
+        }
+        public void UnsubscribeFromTurnOnDevicesRequests(EventHandler<List<DiscoveredDevice>> callback)
+        {
+            TurnOnDevicesRequested -= callback;
+        }
+        public void TurnOnDevices(List<DiscoveredDevice> devices)
+        {
+            TurnOnDevicesRequested?.Invoke(this, devices);
+        }
+        public void SubscribeToTurnOffDevicesRequests(EventHandler<List<DiscoveredDevice>> callback)
+        {
+            TurnOffDevicesRequested += callback;
+        }
+        public void UnsubscribeFromTurnOffDevicesRequests(EventHandler<List<DiscoveredDevice>> callback)
+        {
+            TurnOffDevicesRequested -= callback;
+        }
+        public void TurnOffDevices(List<DiscoveredDevice> devices)
+        {
+            TurnOffDevicesRequested?.Invoke(this, devices);
         }
     }
 }

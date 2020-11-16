@@ -21,9 +21,9 @@ namespace GameSense.Devices.Headset
             this.gsAPI = gsAPI;
         }
 
-        protected override Task ConnectInternal()
+        protected override async Task ConnectInternal()
         {
-            gsAPI.BindGameEvent(new GSApiBindEventPayload()
+            await gsAPI.BindGameEvent(new GSApiBindEventPayload()
             {
                 Game = GameSenseConstants.RGB_MASTER_GAME_NAME,
                 Event = GameSenseConstants.RGB_MASTER_SET_COLOR_EVENT_NAME,
@@ -39,38 +39,34 @@ namespace GameSense.Devices.Headset
                     }
                 },
                 IconID = GameSenseConstants.RGB_MASTER_ICON_ID
-            });
-
-            return Task.CompletedTask;
+            }).ConfigureAwait(false);
         }
 
-        protected override Task DisconnectInternal()
+        protected override async Task DisconnectInternal()
         {
-            gsAPI.RemoveGameEvent(new GSApiRemoveGameEventPayload()
+            await gsAPI.RemoveGameEvent(new GSApiRemoveGameEventPayload()
             {
                 Game = GameSenseConstants.RGB_MASTER_GAME_NAME,
                 Event = GameSenseConstants.RGB_MASTER_SET_COLOR_EVENT_NAME
-            });
-
-            return Task.CompletedTask;
+            }).ConfigureAwait(false);
         }
 
-        protected override byte GetBrightnessPercentageInternal()
+        protected override Task<byte> GetBrightnessPercentageInternal()
         {
             throw new NotImplementedException();
         }
 
-        protected override Color GetColorInternal()
+        protected override Task<Color> GetColorInternal()
         {
             throw new NotImplementedException();
         }
 
-        protected override void SetBrightnessPercentageInternal(byte brightness)
+        protected override Task SetBrightnessPercentageInternal(byte brightness)
         {
             throw new NotImplementedException();
         }
 
-        protected override void SetColorInternal(Color color)
+        protected override async Task SetColorInternal(Color color)
         {
             // GameSenseConstants.DYNAMIC_COLOR_CONTEXT_FRAME_KEY
 
@@ -87,7 +83,7 @@ namespace GameSense.Devices.Headset
                 }
             };
 
-            gsAPI.SendGameEvent(new GSApiSendGameEventPayload()
+            await gsAPI.SendGameEvent(new GSApiSendGameEventPayload()
             {
                 Game = GameSenseConstants.RGB_MASTER_GAME_NAME,
                 Event = GameSenseConstants.RGB_MASTER_SET_COLOR_EVENT_NAME,
@@ -95,15 +91,20 @@ namespace GameSense.Devices.Headset
                 {
                     Frame = frameObject
                 }
-            });
+            }).ConfigureAwait(false);
         }
 
-        protected override void TurnOffInternal()
+        protected override Task SetGradientInternal(GradientPoint gradientPoint, int relativeSmoothness)
         {
             throw new NotImplementedException();
         }
 
-        protected override void TurnOnInternal()
+        protected override Task TurnOffInternal()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override Task TurnOnInternal()
         {
             throw new NotImplementedException();
         }

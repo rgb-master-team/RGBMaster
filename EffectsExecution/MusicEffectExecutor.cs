@@ -1,10 +1,12 @@
-﻿using Common;
+﻿using AppExecutionManager.State;
+using Common;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -12,7 +14,9 @@ namespace EffectsExecution
 {
     public class MusicEffectExecutor : EffectExecutor
     {
-        private WasapiLoopbackCapture captureInstance = null;
+        private IWaveIn captureInstance = null;
+
+        private List<MusicEffectAudioPoint> orderedAudioPoints;
 
         public MusicEffectExecutor() : base(new MusicEffectMetadata())
         {
@@ -30,17 +34,45 @@ namespace EffectsExecution
 
         protected override Task StartInternal()
         {
-            MMDeviceEnumerator enumerator = new MMDeviceEnumerator();
-            foreach (MMDevice device in enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.All))
-            {
-                
-            }
+            var musicEffectMetadataProperties = ((MusicEffectMetadata)executedEffectMetadata).EffectProperties;
 
-            captureInstance = new WasapiLoopbackCapture();
+            orderedAudioPoints = musicEffectMetadataProperties.AudioPoints.OrderBy(audioPoint => audioPoint.MinimumAudioPoint).ToList();
+
+            var enumerator = new MMDeviceEnumerator();
+            var nAudioDevice = enumerator.GetDevice(musicEffectMetadataProperties.CaptureDevice.Id);
+
+            if (musicEffectMetadataProperties.CaptureDevice.FlowType == AudioCaptureDeviceFlowType.Output)
+            {
+                captureInstance = new WasapiLoopbackCapture(nAudioDevice);
+            }
+            else if (musicEffectMetadataProperties.CaptureDevice.FlowType == AudioCaptureDeviceFlowType.Input)
+            {
+                for (int i = 0; i < WaveIn.DeviceCount; i++)
+                {
+                    var capabilities = WaveIn.GetCapabilities(i);
+
+                    // HACK - This hack was made since when working on capturing input devices
+                    // using NAudio's wrappers for windows APIs we seek a WaveIn device.
+                    // However, we don't have a way of enumerating those devices completely like in 
+                    // output devices or getting a device by an id. So instead, we use the count of input
+                    // devices detected on this system, and then call `WaveIn.GetCapabilities(i)` for
+                    // every device and then compare names (because we don't have GUIDs or anything else).
+                    // Eventually - even the name isn't shown completely - but rather the first 32 chars.
+                    // So we make this comparison.
+                    if (nAudioDevice.FriendlyName.StartsWith(capabilities.ProductName))
+                    {
+                        captureInstance = new WaveIn()
+                        {
+                            DeviceNumber = i
+                        };
+
+                        break;
+                    }    
+                }
+            }
 
             captureInstance.DataAvailable += (ss, ee) => OnNewSoundReceived(ss, ee);
             captureInstance.RecordingStopped += (ss, ee) => captureInstance.Dispose();
-
             captureInstance.StartRecording();
 
             return Task.CompletedTask;
@@ -55,53 +87,34 @@ namespace EffectsExecution
             {
                 float sample = buffer.FloatBuffer[index];
 
-                // absolute value 
-                //if (sample < 0) sample = -sample;
-                if (sample < 0) sample = -sample;
-                // is this the max value?
-                if (sample > max) max = sample;
+                if (sample < 0)
+                {
+                    sample = -sample;
+                }
+
+                if (sample > max)
+                {
+                    max = sample;
+                }
             }
 
             Color color = Color.Black;
 
-            if (max > 0.01 && max <= 0.1)
-            {
-                max = 1;
-                color = Color.Red;
-            }
+            double maxAudioPoint = max * 100;
+            byte desiredBrightnessPercentage = 0;
 
-            if (max > 0.1 && max <= 0.2)
+            // We scan the audio points of the effect properties (assuming they are kept ordered in our state, which
+            // is probably a bad thing, we'll think about it later). The first audio point which minimum is surpassed by the maximum
+            // level of played audio will represent the desired brightness and color of the sound.
+            for (int i = orderedAudioPoints.Count - 1; i >= 0; i--)
             {
-                max = 1;
-                color = Color.Orange;
-            }
-
-            else if (max > 0.2 && max <= 0.35)
-            {
-                max = 30;
-                color = Color.Yellow;
-            }
-
-            else if (max > 0.35 && max <= 0.5)
-            {
-                max = 30;
-                color = Color.Cyan;
-            }
-
-            else if (max > 0.5 && max <= 0.65)
-            {
-                max = 60;
-                color = Color.Blue;
-            }
-
-            else if (max > 0.65)
-            {
-                max = 100;
-                color = Color.Violet;
-            }
-            else
-            {
-                return;
+                var audioPoint = orderedAudioPoints[i];
+                if (maxAudioPoint >= audioPoint.MinimumAudioPoint)
+                {
+                    desiredBrightnessPercentage = (byte)audioPoint.MinimumAudioPoint;
+                    color = audioPoint.Color;
+                    break;
+                }
             }
 
             var tasks = new List<Task>();
@@ -110,12 +123,12 @@ namespace EffectsExecution
             {
                 if (device.DeviceMetadata.SupportedOperations.Contains(OperationType.SetBrightness))
                 {
-                    tasks.Add(Task.Run(() => device.SetBrightnessPercentage((byte)(max))));
+                    tasks.Add(Task.Run(async () => await device.SetBrightnessPercentage(desiredBrightnessPercentage)));
                 }
 
                 if (device.DeviceMetadata.SupportedOperations.Contains(OperationType.SetColor))
                 {
-                    tasks.Add(Task.Run(() => device.SetColor(color)));
+                    tasks.Add(Task.Run(async () => await device.SetColor(color)));
                 }
             }
 

@@ -12,7 +12,7 @@ namespace Common
 
         public override string ShortDescription => "Syncs the color by the mouse cursors location";
 
-        public override string FullDescription => ShortDescription;
+        public override string FullDescription => "Syncs the colors wherever you point your cursor on your display.";
 
         public override string IconGlyph => "\uE7C9";
     }

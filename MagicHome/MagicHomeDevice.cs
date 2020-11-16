@@ -36,9 +36,9 @@ namespace MagicHome
                 SendTimeout = 1000
             };
 
-            await InternalLightSocket.ConnectAsync(IPAddress.Parse(LightIp), defaultMagicHomePort);
+            await InternalLightSocket.ConnectAsync(IPAddress.Parse(LightIp), defaultMagicHomePort).ConfigureAwait(false);
 
-            MagicHomeProtocol = await GetMagicHomeProtocol();
+            MagicHomeProtocol = await GetMagicHomeProtocol().ConfigureAwait(false);
 
             shouldUseCsum = MagicHomeProtocol == LedProtocol.LEDENET;
         }
@@ -51,54 +51,103 @@ namespace MagicHome
             return Task.CompletedTask;
         }
 
-        protected override byte GetBrightnessPercentageInternal()
+        protected override Task<byte> GetBrightnessPercentageInternal()
         {
             throw new NotImplementedException();
         }
 
-        protected override System.Drawing.Color GetColorInternal()
+        protected override Task<System.Drawing.Color> GetColorInternal()
         {
             throw new NotImplementedException();
         }
 
-        protected override void SetBrightnessPercentageInternal(byte brightness)
+        protected override Task SetBrightnessPercentageInternal(byte brightness)
         {
             throw new NotImplementedException();
         }
 
-        protected override void SetColorInternal(System.Drawing.Color color)
+        protected override async Task SetColorInternal(System.Drawing.Color color)
         {
             if (MagicHomeProtocol == LedProtocol.LEDENET)
             {
-                TrySendDataToDevice(0x41, color.R, color.G, color.B, 0x00, 0x00, 0x0f).Wait();
+                await TrySendDataToDevice(0x41, color.R, color.G, color.B, 0x00, 0x00, 0x0f).ConfigureAwait(false);
             }
             else
             {
-                TrySendDataToDevice(0x56, color.R, color.G, color.B, 0xaa).Wait();
+                await TrySendDataToDevice(0x56, color.R, color.G, color.B, 0xaa).ConfigureAwait(false);
             }
         }
 
-        protected override void TurnOffInternal()
+        protected override async Task SetGradientInternal(GradientPoint gradientPoint, int relativeSmoothness)
         {
-            if (MagicHomeProtocol == LedProtocol.LEDENET)
+            List<byte> data = new List<byte>() { 0x51, gradientPoint.Color.R, gradientPoint.Color.G, gradientPoint.Color.B };
+
+            for (int i = 0; i < 16 - 1; i++)
             {
-                TrySendDataToDevice(0x71, 0x24, 0x0f).Wait();
+                data.AddRange(new byte[] { 0, 1, 2, 3 });
+            }
+
+            data.AddRange(new byte[] { 0x00, SpeedToDelay(relativeSmoothness), Convert.ToByte(0x3a), 0xff, 0x0f });
+
+            byte[] dataReady = data.ToArray();
+            await TrySendDataToDevice(dataReady);
+        }
+
+        private byte SpeedToDelay(int speed)
+        {
+            // Speed 31, is approximately 2 second, the fastest option possible. We consider that 100%.
+            // Speed 1, is approximately 60 seconds, the slowest option possible. We consider that 1%.
+            // These are our boundries.
+            // We base our calculation according to these assumptions.
+            // We consider every speed point ~2 seconds (just a bit longer maybe).
+
+            int boundSpeed;
+
+            if (speed < 2000)
+            {
+                boundSpeed = 2000;
+            }
+            else if (speed > 62000)
+            {
+                boundSpeed = 62000;
             }
             else
             {
-                TrySendDataToDevice(0xcc, 0x24, 0x33).Wait();
+                boundSpeed = speed;
+            }
+
+            var estimatedSpeedPoints = 31 - (int)Math.Round(boundSpeed / 2000.0, MidpointRounding.AwayFromZero);
+            var estimatedSpeedPercentage = (estimatedSpeedPoints / 31.0) * 100;
+
+            var invertedSpeedPercentage = 100 - estimatedSpeedPercentage;
+
+            byte delay = Convert.ToByte((invertedSpeedPercentage * (0x1f - 1)) / 100);
+            delay += 1;
+
+            return delay;
+        }
+
+        protected override async Task TurnOffInternal()
+        {
+            if (MagicHomeProtocol == LedProtocol.LEDENET)
+            {
+                await TrySendDataToDevice(0x71, 0x24, 0x0f).ConfigureAwait(false);
+            }
+            else
+            {
+                await TrySendDataToDevice(0xcc, 0x24, 0x33).ConfigureAwait(false);
             }
         }
 
-        protected override void TurnOnInternal()
+        protected override async Task TurnOnInternal()
         {
             if (MagicHomeProtocol == LedProtocol.LEDENET)
             {
-                TrySendDataToDevice(0x71, 0x23, 0x0f).Wait();
+                await TrySendDataToDevice(0x71, 0x23, 0x0f).ConfigureAwait(false);
             }
             else
             {
-                TrySendDataToDevice(0xcc, 0x23, 0x33).Wait();
+                await TrySendDataToDevice(0xcc, 0x23, 0x33).ConfigureAwait(false);
             }
         }
 

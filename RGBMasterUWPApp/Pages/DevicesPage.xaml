@@ -4,8 +4,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:RGBMasterUWPApp.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:muxc="using:Microsoft.UI.Xaml.Controls" xmlns:state="using:AppExecutionManager.State"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:muxc="using:Microsoft.UI.Xaml.Controls" xmlns:state="using:AppExecutionManager.State" xmlns:common="using:Common"
     mc:Ignorable="d"
+    Loaded="Page_Loaded"
    >
     <Grid>
         <VisualStateManager.VisualStateGroups>
@@ -39,7 +40,23 @@
         <StackPanel Grid.Column="0">
             <Pivot ItemsSource="{x:Bind RegisteredProviders}" x:Name="ProvidersPivot">
                 <Pivot.Title>
-                    <TextBlock Text="Devices" HorizontalAlignment="Left" />
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel.Resources>
+                            <Storyboard x:Name="EnterStoryboard">
+                                <FadeInThemeAnimation Storyboard.TargetName="ProvidersProgress"/>
+                            </Storyboard>
+                            <Storyboard x:Name="ExitStoryboard">
+                                <FadeOutThemeAnimation Storyboard.TargetName="ProvidersProgress" BeginTime="0:0:1"/>
+                            </Storyboard>
+                        </StackPanel.Resources>
+                        <TextBlock Text="Devices" HorizontalAlignment="Left" />
+                        <StackPanel x:Name="ProvidersProgress" Visibility="Collapsed" Orientation="Horizontal" Padding="8, 0, 0, 0">
+                            <ProgressBar Width="150" Maximum="100" Value="{x:Bind ProvidersLoadingProgressValue, Mode=OneWay}" Margin="0, 0, 4, 0" />
+                            <TextBlock Text="Initializing" Padding="0, 0, 4, 0"/>
+                            <Image Source="{x:Bind CurrentProcessedProvider.ProviderIconAssetPath, Mode=OneWay}" Margin="0, 0, 4, 0" Width="14px" Height="14px"/>
+                            <TextBlock Text="{x:Bind CurrentProcessedProvider.ProviderName, Mode=OneWay}" />
+                        </StackPanel>
+                    </StackPanel>
                 </Pivot.Title>
                 <Pivot.HeaderTemplate>
                     <DataTemplate x:DataType="state:RegisteredProvider">
@@ -60,7 +77,7 @@
                             <TextBox x:Name="ManualConnectionAddressTxtBx" PlaceholderText="Manually connect via IP address or unique ID" Width="360"/>
                                 <Button x:Name="ManualConnectionButton" Click="ManualConnectionButton_Click" Margin="4 0 0 0" ToolTipService.ToolTip="Connect">
                                     <Button.Content>
-                                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xF0AF;"/>
+                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xF0AF;"/>
                                     </Button.Content>
                                 </Button>
                             </StackPanel>
@@ -69,38 +86,53 @@
                                     <ListView.ItemTemplate>
                                         <DataTemplate x:DataType="state:DiscoveredDevice">
                                             <StackPanel Orientation="Horizontal">
-                                                <CheckBox IsChecked="{x:Bind IsChecked, Mode=TwoWay}" Tag="{x:Bind}" Click="CheckBox_Click">
+                                                <CheckBox x:Name="DeviceSelectionCheckbox" IsChecked="{x:Bind IsChecked, Mode=TwoWay}" Tag="{x:Bind}" Click="CheckBox_Click">
+                                                    <CheckBox.Resources>
+                                                        <muxc:TeachingTip x:Name="TeachingTip_SetName" Title="Set Custom Name" Subtitle="Set a custom name for this device" ActionButtonContent="Save" CloseButtonContent="Cancel" Target="{Binding Change_Device_Name_Button}" IsLightDismissEnabled="True">
+                                                            <muxc:TeachingTip.IconSource>
+                                                                <muxc:SymbolIconSource Symbol="Edit" />
+                                                            </muxc:TeachingTip.IconSource>
+                                                            <TextBox PlaceholderText="Enter custom name" x:Name="Custom_Name_TextBox"/>
+                                                        </muxc:TeachingTip>
+                                                    </CheckBox.Resources>
                                                     <CheckBox.Content>
                                                         <StackPanel Orientation="Horizontal">
                                                             <Image Source="{x:Bind Device.DeviceIconAssetPath}" Width="24px" Height="24px" Margin="0 0 4 0"/>
                                                             <TextBlock Text="{x:Bind Device.DeviceName}" />
                                                         </StackPanel>
                                                     </CheckBox.Content>
+                                                    <CheckBox.ContextFlyout>
+                                                        <MenuFlyout>
+                                                            <MenuFlyoutItem x:Name="TurnOnDeviceContextItem" Click="TurnOnDeviceContextItem_Click" Text="Turn On" IsEnabled="{x:Bind Device.IsOperationSupported(common:OperationType.TurnOn)}">
+                                                                <MenuFlyoutItem.Icon>
+                                                                    <FontIcon Glyph="&#xE7E8;" Foreground="Green" />
+                                                                </MenuFlyoutItem.Icon>
+                                                            </MenuFlyoutItem>
+                                                            <MenuFlyoutItem x:Name="TurnOffDeviceContextItem" Click="TurnOffDeviceContextItem_Click" Text="Turn Off" IsEnabled="{x:Bind Device.IsOperationSupported(common:OperationType.TurnOff)}">
+                                                                <MenuFlyoutItem.Icon>
+                                                                    <FontIcon Glyph="&#xE7E8;" Foreground="Red"/>
+                                                                </MenuFlyoutItem.Icon>
+                                                            </MenuFlyoutItem>
+                                                            <MenuFlyoutItem Text="Set Color" IsEnabled="{x:Bind Device.IsOperationSupported(common:OperationType.TurnOn)}">
+                                                                <MenuFlyoutItem.Icon>
+                                                                    <FontIcon Glyph="&#xE790;" />
+                                                                </MenuFlyoutItem.Icon>
+                                                            </MenuFlyoutItem>
+                                                            <MenuFlyoutSeparator />
+                                                            <MenuFlyoutItem x:Name="SetNameContextItem" Click="SetNameContextItem_Click" Text="Set Custom Name" IsEnabled="{x:Bind Device.IsOperationSupported(common:OperationType.TurnOn)}">
+                                                                <MenuFlyoutItem.Icon>
+                                                                    <FontIcon Glyph="&#xE8AC;" />
+                                                                </MenuFlyoutItem.Icon>
+                                                            </MenuFlyoutItem>
+                                                            <MenuFlyoutSeparator />
+                                                            <MenuFlyoutItem Text="Properties" Click="DevicePropertiesContextItem" IsEnabled="{x:Bind Device.IsOperationSupported(common:OperationType.TurnOn)}">
+                                                                <MenuFlyoutItem.Icon>
+                                                                    <FontIcon Glyph="&#xE946;" />
+                                                                </MenuFlyoutItem.Icon>
+                                                            </MenuFlyoutItem>
+                                                        </MenuFlyout>
+                                                    </CheckBox.ContextFlyout>
                                                 </CheckBox>
-                                                <Button x:Name="Change_Device_Name_Button" Click="Change_Device_Name_Button_Click" Margin="4 0 0 0" ToolTipService.ToolTip="Set a custom name to the device">
-                                                    <Button.Background>
-                                                        <SolidColorBrush Opacity="0" />
-                                                    </Button.Background>
-                                                    <Button.Content>
-                                                        <SymbolIcon Symbol="Edit" />
-                                                    </Button.Content>
-                                                    <Button.Resources>
-                                                        <muxc:TeachingTip x:Name="TeachingTip_SetName" Title="Set Custom Name" Subtitle="Set a custom name for this device" ActionButtonContent="Save" CloseButtonContent="Cancel" Target="{Binding Change_Device_Name_Button}">
-                                                            <muxc:TeachingTip.IconSource>
-                                                                <muxc:SymbolIconSource Symbol="Edit" />
-                                                            </muxc:TeachingTip.IconSource>
-                                                            <TextBox PlaceholderText="Enter custom name" x:Name="Custom_Name_TextBox"/>
-                                                        </muxc:TeachingTip>
-                                                    </Button.Resources>
-                                                </Button>
-                                                <Button x:Name="Device_Info_Button" Click="Device_Info_Button_Click" Margin="4 0 0 0" ToolTipService.ToolTip="Show device info">
-                                                    <Button.Background>
-                                                        <SolidColorBrush Opacity="0" />
-                                                    </Button.Background>
-                                                    <Button.Content>
-                                                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE946;"/>
-                                                    </Button.Content>
-                                                </Button>
                                             </StackPanel>
                                         </DataTemplate>
                                     </ListView.ItemTemplate>
@@ -125,7 +157,7 @@
             <StackPanel Margin="0 0 0 16">
                 <Button x:Name="Refresh_Devices_Button" Click="Refresh_Button_Clicked" ToolTipService.ToolTip="Refresh Devices" Background="Transparent">
                     <StackPanel Orientation="Horizontal">
-                        <FontIcon x:Name="OuterButton" Glyph="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="Orange"/>
+                        <FontIcon x:Name="OuterButton" Glyph="&#xE72C;" FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="16" Foreground="Orange"/>
                         <TextBlock Text="Refresh devices" Margin="4 0 0 0" />
                     </StackPanel>
                     <Button.Resources>
