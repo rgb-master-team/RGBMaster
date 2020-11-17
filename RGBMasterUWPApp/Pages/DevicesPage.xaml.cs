@@ -237,7 +237,7 @@ namespace RGBMasterUWPApp.Pages
 
         private string OperationTypeToText(OperationType opType)
         {
-            string operation;
+            string operation = null;
 
             switch (opType)
             {
@@ -258,6 +258,9 @@ namespace RGBMasterUWPApp.Pages
                     break;
                 case OperationType.TurnOff:
                     operation = "Turn off";
+                    break;
+                case OperationType.SetGradient:
+                    operation = "Set gradient";
                     break;
                 default:
                     throw new NotSupportedException($"The operation type {opType} is not supported.");
