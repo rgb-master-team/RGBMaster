@@ -7,6 +7,7 @@
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/rgb-master-team/RGBMaster.svg)](http://isitmaintained.com/project/rgb-master-team/RGBMaster "Percentage of issues still open")
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/rgb-master-team/RGBMaster.svg)](http://isitmaintained.com/project/rgb-master-team/RGBMaster "Average time to resolve an issue")
 [![GitHub stars](https://img.shields.io/github/stars/rgb-master-team/RGBMaster.svg)](https://github.com/rgb-master-team/RGBMaster/stargazers)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=FVHR7JUC78CYU&item_name=Support+the+project+by+helping+us+fund+more+devices+to+support%21&currency_code=ILS)
 
 # About
 
@@ -26,6 +27,7 @@ TODO - Write a simple explanation of the project structure, how to build it, UI 
 - [Supported "Effects"](#effects)
 - ["Flows"](#flows)
 - [Contribution](#contrib)
+- [Donation](#donate)
 
 <a name="integrations"></a>
 ## Supported integrations
@@ -86,6 +88,12 @@ These effects ought to be exportable and importable to ensure community sharing 
 <a name="contrib"></a>
 ## Contribution
 Feel free to suggest any idea you have for this app, or even make one yourself and open a PR. I'll review it and continue maintaining this small app :)
+If you find any bug, let us know. It is hard for us to reproduce many of the issues, since some of them do not occure to everyone and depend on system configuration, firewall settings, specific device configurations, operating system settings, etc..
+
+<a name="donate"></a>
+## Donation
+Support the project by donating! This helps us fund more RGB peripherals to support and test for RGBMaster, and extend its features.
+* Donate via [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=FVHR7JUC78CYU&item_name=Support+the+project+by+helping+us+fund+more+devices+to+support%21&currency_code=ILS)
 
 <a name="todos"></a>
 ## TODOs
