@@ -39,6 +39,7 @@ TODO - Write a simple explanation of the project structure, how to build it, UI 
 - [ ] ShellyRGB - WIP
 - [x] Phillips Hue
 - [ ] Gigabyte RGB FUSION
+- [x] NZXT (Hue Plus & Kraken X)
 
 <a name="prerequisites"></a>
 ## Prerequisites 
