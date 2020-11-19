@@ -13,7 +13,7 @@
                 <StackPanel HorizontalAlignment="Left" Spacing="10">
                     <TextBlock  Style="{StaticResource SubtitleTextBlockStyle}"  Text="Device power toggle"/>
                     <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="When enabled, each device that you check in the Devices page will turn on once checked and off when unchecked." TextWrapping="Wrap" Width="500"></TextBlock>
-                    <ToggleSwitch x:Name="TurnOnDeviceEnabler" IsOn="True" />
+                    <ToggleSwitch x:Name="TurnOnDeviceEnabler" IsOn="{x:Bind TurnOnDeviceOnCheckUser}" Toggled="TurnOnDeviceEnabler_Toggled" />
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Left" Spacing="10">
                     <TextBlock Style="{StaticResource SubtitleTextBlockStyle}"  Text="Theme Select" />

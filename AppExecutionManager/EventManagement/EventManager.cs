@@ -17,6 +17,8 @@ namespace AppExecutionManager.EventManagement
         private event EventHandler LoadAudioDevicesRequested;
         private event EventHandler<List<DiscoveredDevice>> TurnOnDevicesRequested;
         private event EventHandler<List<DiscoveredDevice>> TurnOffDevicesRequested;
+        private event EventHandler<string> LoadUserSettingRequested;
+        private event EventHandler<Tuple<string, object>> StoreUserSettingRequested;
 
         static EventManager()
         {
@@ -141,6 +143,32 @@ namespace AppExecutionManager.EventManagement
         public void TurnOffDevices(List<DiscoveredDevice> devices)
         {
             TurnOffDevicesRequested?.Invoke(this, devices);
+        }
+
+        public void SubscribeToLoadUserSettingRequests(EventHandler<string> callback)
+        {
+            LoadUserSettingRequested += callback;
+        }
+        public void UnsubscribeFromLoadUserSettingRequests(EventHandler<string> callback)
+        {
+            LoadUserSettingRequested -= callback;
+        }
+        public void LoadUserSetting(string keyAndValue)
+        {
+            LoadUserSettingRequested?.Invoke(this, keyAndValue);
+        }
+
+        public void SubscribeToStoreUserSettingRequests(EventHandler<Tuple<string, object>> callback)
+        {
+            StoreUserSettingRequested += callback;
+        }
+        public void UnsubscribeFromStoreUserSettingRequests(EventHandler<Tuple<string, object>> callback)
+        {
+            StoreUserSettingRequested -= callback;
+        }
+        public void StoreUserSetting(Tuple<string, object> keyAndValue)
+        {
+            StoreUserSettingRequested?.Invoke(this, keyAndValue);
         }
     }
 }

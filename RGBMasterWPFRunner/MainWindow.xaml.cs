@@ -64,6 +64,32 @@ namespace RGBMasterWPFRunner
             EventManager.Instance.SubscribeToLoadAudioDevicesRequests(LoadAudioDevices);
             EventManager.Instance.SubscribeToTurnOnDevicesRequests(TurnOnDevices);
             EventManager.Instance.SubscribeToTurnOffDevicesRequests(TurnOffDevices);
+            EventManager.Instance.SubscribeToStoreUserSettingRequests(StoreUserSetting);
+            EventManager.Instance.SubscribeToLoadUserSettingRequests(LoadUserSetting);
+        }
+
+        private void LoadUserSetting(object sender, string e)
+        {
+            if (Settings1.Default[e] == null)
+            {
+                throw new KeyNotFoundException($"No key by the name of {e} was found in {nameof(Settings1)}.settings file. Please ensure there's an existing entry for it!");
+            }
+
+            // TODO - Consider propagating a notification of change. With NotifyPropertyChanged...
+            AppState.Instance.UserSettingsCache[e] = Settings1.Default[e];
+        }
+
+        private void StoreUserSetting(object sender, Tuple<string, object> e)
+        {
+            // TODO - Turn this into a service, facade, agent, whatever.
+            // Are we ever gonna use DI in here, anyway?
+            if (Settings1.Default[e.Item1] == null)
+            {
+                throw new KeyNotFoundException($"No key by the name of {e.Item1} was found in {nameof(Settings1)}.settings file. Please ensure there's an existing entry for it!");
+            }
+
+            Settings1.Default[e.Item1] = e.Item2;
+            Settings1.Default.Save();
         }
 
         private void Dispatcher_UnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)

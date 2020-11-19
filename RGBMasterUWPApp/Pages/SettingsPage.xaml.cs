@@ -1,4 +1,5 @@
-﻿using AppExecutionManager.State;
+﻿using AppExecutionManager.EventManagement;
+using AppExecutionManager.State;
 using Common;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,8 @@ namespace RGBMasterUWPApp.Pages
     /// </summary>
     public sealed partial class SettingsPage : Page
     {
+        private const string TurnOnDeviceOnCheckUserConfigKey = "TurnOnDeviceOnCheck";
+
         public ObservableCollection<ProviderMetadata> SupportedProviders
         {
             get
@@ -45,8 +48,17 @@ namespace RGBMasterUWPApp.Pages
             }
         }
 
+        public bool TurnOnDeviceOnCheckUser
+        {
+            get
+            {
+                return AppState.Instance.UserSettingsCache.TryGetValue(TurnOnDeviceOnCheckUserConfigKey, out var shouldTurnOnDeviceOnCheck) ? (bool)shouldTurnOnDeviceOnCheck : true;
+            }
+        }
+
         public SettingsPage()
         {
+            EventManager.Instance.LoadUserSetting(TurnOnDeviceOnCheckUserConfigKey);
             this.InitializeComponent();
         }
 
@@ -76,6 +88,11 @@ namespace RGBMasterUWPApp.Pages
             }
 
             await Windows.System.Launcher.LaunchUriAsync(new Uri(clickedProvider.ProviderUrl));
+        }
+
+        private void TurnOnDeviceEnabler_Toggled(object sender, RoutedEventArgs e)
+        {
+            EventManager.Instance.StoreUserSetting(new Tuple<string, object>(TurnOnDeviceOnCheckUserConfigKey, TurnOnDeviceEnabler.IsOn));
         }
     }
 }

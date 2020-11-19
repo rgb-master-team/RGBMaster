@@ -21,6 +21,7 @@ namespace AppExecutionManager.State
         private ProviderMetadata currentProcessedProvider;
         private EffectMetadata activeEffect;
         private List<AudioCaptureDevice> audioCaptureDevices;
+        private Dictionary<string, object> userSettingsCache;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -35,7 +36,8 @@ namespace AppExecutionManager.State
                 SupportedProviders = new ObservableCollection<ProviderMetadata>(),
                 IsLoadingProviders = false,
                 ProvidersLoadingProgress = 0.0,
-                AudioCaptureDevices = null
+                AudioCaptureDevices = null,
+                UserSettingsCache = new Dictionary<string, object>()
             };
 
         }
@@ -116,6 +118,20 @@ namespace AppExecutionManager.State
             set
             {
                 audioCaptureDevices = value;
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
+            }
+        }
+
+        // TODO - MAKE THIS A FUCKING ICONFIGURATION OBJECT
+        public Dictionary<string, object> UserSettingsCache
+        {
+            get
+            {
+                return userSettingsCache;
+            }
+            set
+            {
+                userSettingsCache = value;
                 NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
             }
         }
