@@ -8,6 +8,7 @@
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/rgb-master-team/RGBMaster.svg)](http://isitmaintained.com/project/rgb-master-team/RGBMaster "Average time to resolve an issue")
 [![GitHub stars](https://img.shields.io/github/stars/rgb-master-team/RGBMaster.svg)](https://github.com/rgb-master-team/RGBMaster/stargazers)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=FVHR7JUC78CYU&item_name=Support+the+project+by+helping+us+fund+more+devices+to+support%21&currency_code=ILS)
+[![Downloads](https://img.shields.io/github/downloads/rgb-master-team/RGBMaster/total)](https://github.com/rgb-master-team/RGBMaster/releases)
 
 # About
 
