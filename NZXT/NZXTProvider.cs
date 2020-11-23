@@ -3,6 +3,7 @@ using NZXT.Devices;
 using NZXTSharp.HuePlus;
 using NZXTSharp.KrakenX;
 using Provider;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,16 +21,41 @@ namespace NZXT
         }
         public override Task<List<Device>> Discover()
         {
-            var nzxtHuePlusDevice = new NZXTHuePlusDevice(ProviderMetadata.ProviderGuid, huePlusDevice);
-            var nzxtKrakenXDevice = new NZXTKrakenXDevice(ProviderMetadata.ProviderGuid, krakenXDevice);
+            var devices = new List<Device>();
 
-            return Task.FromResult(new List<Device>() { nzxtHuePlusDevice, nzxtKrakenXDevice });
+            if (huePlusDevice != null)
+            {
+                devices.Add(new NZXTHuePlusDevice(ProviderMetadata.ProviderGuid, huePlusDevice));
+            }
+
+            if (krakenXDevice != null)
+            {
+                devices.Add(new NZXTKrakenXDevice(ProviderMetadata.ProviderGuid, krakenXDevice));
+            }
+
+            return Task.FromResult(devices);
         }
 
         protected override Task InternalRegister()
         {
-            huePlusDevice = new HuePlus();
-            krakenXDevice = new KrakenX();
+            try
+            {
+                huePlusDevice = new HuePlus();
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Warning(ex, "Could not detect a HuePlus device via HID.");
+            }
+
+            try
+            {
+                krakenXDevice = new KrakenX();
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Warning(ex, "Could not detect a KrakenX device via HID.");
+            }
+
             return Task.CompletedTask;
         }
 
