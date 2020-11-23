@@ -1,69 +1,72 @@
-﻿using Common;
-using NZXT.Devices;
-using NZXTSharp.HuePlus;
-using NZXTSharp.KrakenX;
-using Provider;
-using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿// WARNING - DON'T USE THIS PROVIDER WITHOUT EXTREME TESTS AND RATE LIMITERS - THIS MAY FRY THE COMPUTER,
+// AS NO OFFICIAL SDK HAS SURFACED.
 
-namespace NZXT
-{
-    public class NZXTProvider : BaseProvider
-    {
-        private HuePlus huePlusDevice;
-        private KrakenX krakenXDevice;
+//using Common;
+//using NZXT.Devices;
+//using NZXTSharp.HuePlus;
+//using NZXTSharp.KrakenX;
+//using Provider;
+//using Serilog;
+//using System;
+//using System.Collections.Generic;
+//using System.Text;
+//using System.Threading.Tasks;
 
-        public NZXTProvider() : base(new NZXTProviderMetadata())
-        {
-        }
-        public override Task<List<Device>> Discover()
-        {
-            var devices = new List<Device>();
+//namespace NZXT
+//{
+//    public class NZXTProvider : BaseProvider
+//    {
+//        private HuePlus huePlusDevice;
+//        private KrakenX krakenXDevice;
 
-            if (huePlusDevice != null)
-            {
-                devices.Add(new NZXTHuePlusDevice(ProviderMetadata.ProviderGuid, huePlusDevice));
-            }
+//        public NZXTProvider() : base(new NZXTProviderMetadata())
+//        {
+//        }
+//        public override Task<List<Device>> Discover()
+//        {
+//            var devices = new List<Device>();
 
-            if (krakenXDevice != null)
-            {
-                devices.Add(new NZXTKrakenXDevice(ProviderMetadata.ProviderGuid, krakenXDevice));
-            }
+//            if (huePlusDevice != null)
+//            {
+//                devices.Add(new NZXTHuePlusDevice(ProviderMetadata.ProviderGuid, huePlusDevice));
+//            }
 
-            return Task.FromResult(devices);
-        }
+//            if (krakenXDevice != null)
+//            {
+//                devices.Add(new NZXTKrakenXDevice(ProviderMetadata.ProviderGuid, krakenXDevice));
+//            }
 
-        protected override Task InternalRegister()
-        {
-            try
-            {
-                huePlusDevice = new HuePlus();
-            }
-            catch (Exception ex)
-            {
-                Log.Logger.Warning(ex, "Could not detect a HuePlus device via HID.");
-            }
+//            return Task.FromResult(devices);
+//        }
 
-            try
-            {
-                krakenXDevice = new KrakenX();
-            }
-            catch (Exception ex)
-            {
-                Log.Logger.Warning(ex, "Could not detect a KrakenX device via HID.");
-            }
+//        protected override Task InternalRegister()
+//        {
+//            try
+//            {
+//                huePlusDevice = new HuePlus();
+//            }
+//            catch (Exception ex)
+//            {
+//                Log.Logger.Warning(ex, "Could not detect a HuePlus device via HID.");
+//            }
 
-            return Task.CompletedTask;
-        }
+//            try
+//            {
+//                krakenXDevice = new KrakenX();
+//            }
+//            catch (Exception ex)
+//            {
+//                Log.Logger.Warning(ex, "Could not detect a KrakenX device via HID.");
+//            }
 
-        protected override Task InternalUnregister()
-        {
-            huePlusDevice.Dispose();
-            krakenXDevice.Dispose();
-            return Task.CompletedTask;
-        }
-    }
-}
+//            return Task.CompletedTask;
+//        }
+
+//        protected override Task InternalUnregister()
+//        {
+//            huePlusDevice.Dispose();
+//            krakenXDevice.Dispose();
+//            return Task.CompletedTask;
+//        }
+//    }
+//}
