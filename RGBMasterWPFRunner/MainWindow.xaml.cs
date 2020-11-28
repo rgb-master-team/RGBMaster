@@ -90,6 +90,8 @@ namespace RGBMasterWPFRunner
 
             Settings1.Default[e.Item1] = e.Item2;
             Settings1.Default.Save();
+
+            AppState.Instance.UserSettingsCache[e.Item1] = e.Item2;
         }
 
         private void Dispatcher_UnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)

@@ -34,5 +34,17 @@ namespace RGBMasterWPFRunner {
                 this["TurnOnDeviceOnCheck"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MusicEffectAudioPointsKey {
+            get {
+                return ((string)(this["MusicEffectAudioPointsKey"]));
+            }
+            set {
+                this["MusicEffectAudioPointsKey"] = value;
+            }
+        }
     }
 }

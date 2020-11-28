@@ -104,7 +104,7 @@
                                     </MenuFlyout>
                                 </Button.ContextFlyout>
                                 <Button.Resources>
-                                    <muxc:TeachingTip x:Key="AudioPointEditTeachingTip" IsLightDismissEnabled="True" Closed="AudioPointEditTeachingTip_Closed">
+                                    <muxc:TeachingTip x:Key="AudioPointEditTeachingTip" IsLightDismissEnabled="True">
                                         <StackPanel>
                                             <ColorPicker x:Name="ColorPicker" 
                                                  ColorSpectrumShape="Ring" 

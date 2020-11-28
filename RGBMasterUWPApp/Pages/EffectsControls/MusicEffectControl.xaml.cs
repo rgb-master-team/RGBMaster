@@ -2,6 +2,7 @@
 using AppExecutionManager.State;
 using Common;
 using Microsoft.UI.Xaml.Controls;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -37,6 +38,8 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
     {
         private const double Gamma = 0.80;
         private const double IntensityMax = 255;
+
+        private const string AudioPointsUserSettingKey = "MusicEffectAudioPointsKey";
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -83,13 +86,16 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
 
         public MusicEffectControl()
         {
-            //// If the audio capture devices was not yet loaded - load it.
-            //// Otherwise, use the existing list of capture devices we have in our state.
-            //if (AppState.Instance.AudioCaptureDevices == null)
-            //{
-            //    EventManager.Instance.GetInputDevices();
-            //}
+            LoadAudioPointsFromUserSettings();
+            LoadAudioCaptureDevices();
 
+            this.InitializeComponent();
+
+            AppState.Instance.PropertyChanged += AppStateInstance_PropertyChanged;
+        }
+
+        private void LoadAudioCaptureDevices()
+        {
             // Always get the latest audio capture devices, in case they change.
             EventManager.Instance.LoadAudioDevices();
 
@@ -116,10 +122,24 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
 
                 SelectedAudioCaptureDevice = tempSelectedDevice;
             }
+        }
 
-            this.InitializeComponent();
-
-            AppState.Instance.PropertyChanged += AppStateInstance_PropertyChanged;
+        private void LoadAudioPointsFromUserSettings()
+        {
+            EventManager.Instance.LoadUserSetting(AudioPointsUserSettingKey);
+            if (AppState.Instance.UserSettingsCache.TryGetValue(AudioPointsUserSettingKey, out var audioPointsJsonObject))
+            {
+                var audioPointsJson = (string)audioPointsJsonObject;
+                try
+                {
+                    var audioPoints = JsonConvert.DeserializeObject<List<MusicEffectAudioPoint>>(audioPointsJson);
+                    AudioPoints = audioPoints;
+                }
+                catch (Exception ex)
+                {
+                    // TODO - ADD LOGGING SERVICE!
+                }
+            }
         }
 
         private void AppStateInstance_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -136,11 +156,6 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             var teachingTip = (TeachingTip)button.Resources["AudioPointEditTeachingTip"];
             teachingTip.Target = button;
             teachingTip.IsOpen = true;
-        }
-
-        private void AudioPointEditTeachingTip_Closed(TeachingTip sender, TeachingTipClosedEventArgs args)
-        {
-            //AudioPoints = AudioPoints.OrderBy(x => x.MinimumAudioPoint).ToList();
         }
 
         private static Color ColorFromWaveLength(double estimatedWavelength)
@@ -356,6 +371,18 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         {
             var selectedAudioCaptureDevice = (AudioCaptureDevice)CaptureDeviceComboBox.SelectedItem;
             SelectedAudioCaptureDevice = selectedAudioCaptureDevice;
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+
+            SaveUserSettingsForPage();
+        }
+
+        private void SaveUserSettingsForPage()
+        {
+            EventManager.Instance.StoreUserSetting(new Tuple<string, object>(AudioPointsUserSettingKey, JsonConvert.SerializeObject(AudioPoints)));
         }
     }
 }
