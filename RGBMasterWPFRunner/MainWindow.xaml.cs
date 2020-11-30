@@ -31,6 +31,9 @@ namespace RGBMasterWPFRunner
     /// </summary>
     public partial class MainWindow : System.Windows.Window
     {
+        private const string ToggleDeviceOnCheckUserSettingKey = "ToggleDeviceOnCheck";
+        private const string LogPathKey = "LogPath";
+
         private SemaphoreSlim changeConnectedDevicesSemaphore = new SemaphoreSlim(1, 1);
         private SemaphoreSlim initializeProvidersSemaphore = new SemaphoreSlim(1, 1);
         private SemaphoreSlim changeStaticColorSemaphore = new SemaphoreSlim(1, 1);
@@ -69,11 +72,6 @@ namespace RGBMasterWPFRunner
 
         private void LoadUserSetting(object sender, string e)
         {
-            if (Settings1.Default[e] == null)
-            {
-                throw new KeyNotFoundException($"No key by the name of {e} was found in {nameof(Settings1)}.settings file. Please ensure there's an existing entry for it!");
-            }
-
             // TODO - Consider propagating a notification of change. With NotifyPropertyChanged...
             AppState.Instance.UserSettingsCache[e] = Settings1.Default[e];
         }
@@ -82,11 +80,6 @@ namespace RGBMasterWPFRunner
         {
             // TODO - Turn this into a service, facade, agent, whatever.
             // Are we ever gonna use DI in here, anyway?
-            if (Settings1.Default[e.Item1] == null)
-            {
-                throw new KeyNotFoundException($"No key by the name of {e.Item1} was found in {nameof(Settings1)}.settings file. Please ensure there's an existing entry for it!");
-            }
-
             Settings1.Default[e.Item1] = e.Item2;
             Settings1.Default.Save();
 
@@ -100,10 +93,23 @@ namespace RGBMasterWPFRunner
 
         private static Serilog.Core.Logger GenerateAppLogger()
         {
-            var path = Path.Combine(
+            string path;
+
+            EventManager.Instance.LoadUserSetting(LogPathKey);
+
+            if (!AppState.Instance.UserSettingsCache.TryGetValue(LogPathKey, out var logPathObj) ||
+                string.IsNullOrWhiteSpace(logPathObj as string))
+            {
+                path = Path.Combine(
                                 Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System)),
                                 @$"RGBMaster\Logs\{AppState.Instance.AppVersion}.txt"
                             );
+                EventManager.Instance.StoreUserSetting(new Tuple<string, object>(LogPathKey, path));
+            }
+            else
+            {
+                path = (string)logPathObj;
+            }
 
             var globalLog = new LoggerConfiguration()
                 .MinimumLevel
@@ -415,6 +421,10 @@ namespace RGBMasterWPFRunner
 
         private async void Instance_SelectedDevicesChanged(object sender, List<DiscoveredDevice> devices)
         {
+            EventManager.Instance.LoadUserSetting(ToggleDeviceOnCheckUserSettingKey);
+
+            var shouldToggleDevice = AppState.Instance.UserSettingsCache.TryGetValue(ToggleDeviceOnCheckUserSettingKey, out var shouldTurnOnDeviceObj) ? (bool)shouldTurnOnDeviceObj : true;
+
             var newSelectedDevices = devices;
 
             await changeConnectedDevicesSemaphore.WaitAsync();
@@ -427,8 +437,10 @@ namespace RGBMasterWPFRunner
                 // and turn if off by the user's configuration.
                 if (!item.IsChecked && concreteDevice.IsConnected)
                 {
-                    // TODO - only turn off device if the user requested so in his settings/configuration.
-                    await TurnOffDevice(item);
+                    if (shouldToggleDevice)
+                    {
+                        await TurnOffDevice(item);
+                    }
 
                     var didDisconnect = await AttemptDeviceDisconnection(concreteDevice);
                 }
@@ -438,12 +450,11 @@ namespace RGBMasterWPFRunner
                 {
                     var didConnect = await AttemptDeviceConnection(concreteDevice);
 
-                    // TODO - only turn on device if the user requested so in his settings/configuration.
-                    if (didConnect)
+                    if (didConnect && shouldToggleDevice)
                     {
                         await TurnOnDevice(item);
                     }
-                    else
+                    else if (!didConnect)
                     {
                         item.IsChecked = false;
                     }

@@ -17,6 +17,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Media;
 using Windows.Networking.Sockets;
+using Windows.UI.Core.Preview;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -39,7 +40,7 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         private const double Gamma = 0.80;
         private const double IntensityMax = 255;
 
-        private const string AudioPointsUserSettingKey = "MusicEffectAudioPointsKey";
+        private const string AudioPointsUserSettingKey = "MusicEffectAudioPoints";
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -89,9 +90,9 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             LoadAudioPointsFromUserSettings();
             LoadAudioCaptureDevices();
 
-            this.InitializeComponent();
-
             AppState.Instance.PropertyChanged += AppStateInstance_PropertyChanged;
+
+            this.InitializeComponent();
         }
 
         private void LoadAudioCaptureDevices()
@@ -127,7 +128,8 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         private void LoadAudioPointsFromUserSettings()
         {
             EventManager.Instance.LoadUserSetting(AudioPointsUserSettingKey);
-            if (AppState.Instance.UserSettingsCache.TryGetValue(AudioPointsUserSettingKey, out var audioPointsJsonObject))
+            if (AppState.Instance.UserSettingsCache.TryGetValue(AudioPointsUserSettingKey, out var audioPointsJsonObject) &&
+                !string.IsNullOrWhiteSpace(audioPointsJsonObject as string))
             {
                 var audioPointsJson = (string)audioPointsJsonObject;
                 try

@@ -4,10 +4,12 @@ using Common;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Utils;
 using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -28,9 +30,28 @@ namespace RGBMasterUWPApp.Pages
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class SettingsPage : Page
+    public sealed partial class SettingsPage : Page, INotifyPropertyChanged
     {
-        private const string TurnOnDeviceOnCheckUserConfigKey = "TurnOnDeviceOnCheck";
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private const string ToggleDeviceOnCheckUserConfigKey = "ToggleDeviceOnCheck";
+        private const string LogPathKey = "LogPath";
+
+        private string logPath;
+        private bool toggleDeviceOnCheck;
+
+        public string LogPath
+        {
+            get
+            {
+                return logPath;
+            }
+            set
+            {
+                logPath = value;
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
+            }
+        }
 
         public ObservableCollection<ProviderMetadata> SupportedProviders
         {
@@ -48,17 +69,27 @@ namespace RGBMasterUWPApp.Pages
             }
         }
 
-        public bool TurnOnDeviceOnCheckUser
+        public bool ToggleDeviceOnCheckUser
         {
             get
             {
-                return AppState.Instance.UserSettingsCache.TryGetValue(TurnOnDeviceOnCheckUserConfigKey, out var shouldTurnOnDeviceOnCheck) ? (bool)shouldTurnOnDeviceOnCheck : true;
+                return toggleDeviceOnCheck;
+            }
+            set
+            {
+                toggleDeviceOnCheck = value;
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
             }
         }
 
         public SettingsPage()
         {
-            EventManager.Instance.LoadUserSetting(TurnOnDeviceOnCheckUserConfigKey);
+            EventManager.Instance.LoadUserSetting(ToggleDeviceOnCheckUserConfigKey);
+            ToggleDeviceOnCheckUser = AppState.Instance.UserSettingsCache.TryGetValue(ToggleDeviceOnCheckUserConfigKey, out var shouldToggleDeviceOnCheck) ? (bool)shouldToggleDeviceOnCheck : true;
+
+            EventManager.Instance.LoadUserSetting(LogPathKey);
+            LogPath = AppState.Instance.UserSettingsCache.TryGetValue(LogPathKey, out var logPathKeyObj) && !string.IsNullOrWhiteSpace(logPathKeyObj as string) ? (string)logPathKeyObj : null;
+
             this.InitializeComponent();
         }
 
@@ -92,7 +123,7 @@ namespace RGBMasterUWPApp.Pages
 
         private void TurnOnDeviceEnabler_Toggled(object sender, RoutedEventArgs e)
         {
-            EventManager.Instance.StoreUserSetting(new Tuple<string, object>(TurnOnDeviceOnCheckUserConfigKey, TurnOnDeviceEnabler.IsOn));
+            EventManager.Instance.StoreUserSetting(new Tuple<string, object>(ToggleDeviceOnCheckUserConfigKey, TurnOnDeviceEnabler.IsOn));
         }
     }
 }

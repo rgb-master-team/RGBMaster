@@ -13,7 +13,7 @@
                 <StackPanel HorizontalAlignment="Left" Spacing="10">
                     <TextBlock  Style="{StaticResource SubtitleTextBlockStyle}"  Text="Device power toggle"/>
                     <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="When enabled, each device that you check in the Devices page will turn on once checked and off when unchecked." TextWrapping="Wrap" Width="500"></TextBlock>
-                    <ToggleSwitch x:Name="TurnOnDeviceEnabler" IsOn="{x:Bind TurnOnDeviceOnCheckUser}" Toggled="TurnOnDeviceEnabler_Toggled" />
+                    <ToggleSwitch x:Name="TurnOnDeviceEnabler" IsOn="{x:Bind ToggleDeviceOnCheckUser}" Toggled="TurnOnDeviceEnabler_Toggled" />
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Left" Spacing="10">
                     <TextBlock Style="{StaticResource SubtitleTextBlockStyle}"  Text="Theme Select" />
@@ -24,11 +24,7 @@
                     <TextBlock Style="{StaticResource SubtitleTextBlockStyle}"  Text="Application Files" />
                     <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="Choose where to save the application files"/>
                     <StackPanel Orientation="Horizontal" Spacing="4">
-                        <TextBox Header="Configuration file" PlaceholderText="Bind conf. file path" IsReadOnly="True" Width="250"/>
-                        <Button Content="Browse" VerticalAlignment="Bottom"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Spacing="4">
-                        <TextBox Header="Log file" PlaceholderText="Bind log file path" IsReadOnly="True" Width="250"/>
+                        <TextBox Header="Log file" PlaceholderText="Bind log file path" Text="{x:Bind LogPath, Mode=OneWay}" Width="250"/>
                         <Button Content="Browse" VerticalAlignment="Bottom"/>
                     </StackPanel>
                 </StackPanel>

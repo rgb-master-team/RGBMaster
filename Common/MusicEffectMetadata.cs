@@ -21,7 +21,15 @@ namespace Common
         {
             EffectProperties = new MusicEffectMetadataProperties()
             {
-                AudioPoints = new List<MusicEffectAudioPoint>() { new MusicEffectAudioPoint() { Color = Color.White, Index = 0, MinimumAudioPoint = 0 } }
+                AudioPoints = new List<MusicEffectAudioPoint>() 
+                { 
+                    new MusicEffectAudioPoint()
+                    {
+                        Color = Color.White, 
+                        Index = 0, 
+                        MinimumAudioPoint = 0
+                    }
+                }
             };
         }
     }

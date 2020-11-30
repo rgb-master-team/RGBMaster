@@ -2,10 +2,13 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="RGBMasterWPFRunner" GeneratedClassName="Settings1">
   <Profiles />
   <Settings>
-    <Setting Name="TurnOnDeviceOnCheck" Type="System.Boolean" Scope="User">
+    <Setting Name="ToggleDeviceOnCheck" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="MusicEffectAudioPointsKey" Type="System.String" Scope="User">
+    <Setting Name="MusicEffectAudioPoints" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="LogPath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

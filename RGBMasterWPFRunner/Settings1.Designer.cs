@@ -26,24 +26,36 @@ namespace RGBMasterWPFRunner {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool TurnOnDeviceOnCheck {
+        public bool ToggleDeviceOnCheck {
             get {
-                return ((bool)(this["TurnOnDeviceOnCheck"]));
+                return ((bool)(this["ToggleDeviceOnCheck"]));
             }
             set {
-                this["TurnOnDeviceOnCheck"] = value;
+                this["ToggleDeviceOnCheck"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string MusicEffectAudioPointsKey {
+        public string MusicEffectAudioPoints {
             get {
-                return ((string)(this["MusicEffectAudioPointsKey"]));
+                return ((string)(this["MusicEffectAudioPoints"]));
             }
             set {
-                this["MusicEffectAudioPointsKey"] = value;
+                this["MusicEffectAudioPoints"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LogPath {
+            get {
+                return ((string)(this["LogPath"]));
+            }
+            set {
+                this["LogPath"] = value;
             }
         }
     }
