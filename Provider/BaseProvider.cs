@@ -12,9 +12,35 @@ namespace Provider
 {
     public abstract class BaseProvider
     {
+        private List<Device> lastDiscoveredDevices;
+
+        public List<Device> LastDiscoveredDevices => lastDiscoveredDevices;
+
         public readonly ProviderMetadata ProviderMetadata;
         public bool IsRegistered { get; private set; }
-        public abstract Task<List<Device>> Discover();
+
+        public async Task<(bool didSuccess, List<Device>)> Discover()
+        {
+            var discoverTimeoutSpan = TimeSpan.FromSeconds(5);
+
+            var cancellationToken = new CancellationTokenSource(discoverTimeoutSpan).Token;
+
+            List<Device> devices = null;
+
+            try
+            {
+                devices = await InternalDiscover(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Failed to discover devices for provider {A} with GUID {B}.", ProviderMetadata.ProviderName, ProviderMetadata.ProviderGuid);
+                return (false, devices);
+            }
+
+            return (true, devices);
+        }
+
+        protected abstract Task<List<Device>> InternalDiscover(CancellationToken cancellationToken = default);
 
         public async Task<bool> Register()
         {

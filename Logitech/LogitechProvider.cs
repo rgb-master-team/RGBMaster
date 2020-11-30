@@ -37,7 +37,7 @@ namespace Logitech
 
         }
 
-        public override Task<List<Device>> Discover()
+        protected override Task<List<Device>> InternalDiscover(CancellationToken cancellationToken = default)
         {
             return Task.FromResult(new List<Device>() { new LogitechMouseDevice(new LogitechMouseDeviceMetadata(ProviderMetadata.ProviderGuid, "Logitech G mouse")) });
             /*
@@ -77,6 +77,8 @@ namespace Logitech
             {
                 throw new LogitechInitFailedException();
             }
+
+            cancellationToken.ThrowIfCancellationRequested();
 
             LogitechGSDK.LogiLedSetTargetDevice(LogitechGSDK.LOGI_DEVICETYPE_ALL);
 

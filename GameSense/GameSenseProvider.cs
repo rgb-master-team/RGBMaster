@@ -19,7 +19,7 @@ namespace GameSense
             gameSenseAPI = new GSAPI();
         }
 
-        public override Task<List<Device>> Discover()
+        protected override Task<List<Device>> InternalDiscover(CancellationToken cancellationToken = default)
         {
             return Task.FromResult(new List<Device>() { new GameSenseHeadsetDevice(gameSenseAPI, new GameSenseHeadsetDeviceMetadata(ProviderMetadata.ProviderGuid, "GameSense Headset Device"))});
         }

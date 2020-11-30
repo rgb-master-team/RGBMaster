@@ -19,7 +19,7 @@ namespace Aura
         {
         }
 
-        public override Task<List<Device>> Discover()
+        protected override Task<List<Device>> InternalDiscover(CancellationToken cancellationToken = default)
         {
             return Task.FromResult(internalSdk.Motherboards.Select(mb => new AuraMotherboardDevice(mb, new AuraMotherboardDeviceMetadata(ProviderMetadata.ProviderGuid, "Unknown Aura Motherboard", new HashSet<OperationType>() { OperationType.SetColor }))).ToList<Device>());
         }

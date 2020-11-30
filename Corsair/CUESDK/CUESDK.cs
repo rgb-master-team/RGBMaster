@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Common;
 using Corsair.Device;
 using Corsair.Enums;
@@ -48,16 +49,15 @@ namespace Corsair.CUESDK
         /// Get all the connected device from the cue driver
         /// </summary>
         /// <returns>List of all the connected devices</returns>
-        public static List<CorsairDevice> GetAllDevices(Guid discoveringProvider)
+        public static List<CorsairDevice> GetAllDevices(Guid discoveringProvider, CancellationToken cancellationToken)
 	    {
 		    var devicesCount = GetDeviceCount();
 
 		    var devices = new List<CorsairDevice>();
 		    for (var deviceIndex = 0; deviceIndex < devicesCount; deviceIndex++)
 		    {
+                cancellationToken.ThrowIfCancellationRequested();
 			    devices.Add(GetDeviceInfo(deviceIndex, discoveringProvider));
-
-			    devices[deviceIndex].Load();
 			}
 
 		    return devices;

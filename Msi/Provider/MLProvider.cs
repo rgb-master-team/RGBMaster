@@ -26,7 +26,7 @@ namespace Msi.Provider
 			return Task.CompletedTask;
 		}
 
-		public override Task<List<RGBProvider.Device>> Discover()
+		protected override Task<List<RGBProvider.Device>> InternalDiscover(CancellationToken cancellationToken = default)
 		{
 			return Task.FromResult(MysticLightSdk.GetAllDevices(ProviderMetadata.ProviderGuid).ToList<RGBProvider.Device>());
 		}

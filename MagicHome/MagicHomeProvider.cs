@@ -21,7 +21,7 @@ namespace MagicHome
 
         }
 
-        public override async Task<List<Device>> Discover()
+        protected override async Task<List<Device>> InternalDiscover(CancellationToken cancellationToken = default)
         {
             var lights = new List<Device>();
 
@@ -33,6 +33,8 @@ namespace MagicHome
             {
                 using (var timeoutCancellationTokenSource = new CancellationTokenSource())
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
+
                     var socketReceiveTask = discoveryUdpClient.ReceiveAsync();
                     socketReceiveTask.ConfigureAwait(false);
 

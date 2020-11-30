@@ -52,7 +52,7 @@ namespace RazerChroma
 
         }
 
-        public override /*async*/ Task<List<Device>> Discover()
+        protected override /*async*/ Task<List<Device>> InternalDiscover(CancellationToken cancellationToken = default)
         {
             /*var discoveredDevices = new List<Device>() { new RazerChromaAllDevicesDevice(internalChromaProvider) };
 

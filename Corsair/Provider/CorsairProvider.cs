@@ -26,9 +26,9 @@ namespace CorsairProvider
 			return Task.CompletedTask;
 		}
 
-        public override Task<List<Device>> Discover()
+        protected override Task<List<Device>> InternalDiscover(CancellationToken cancellationToken = default)
         {
-			var devices = Corsair.CUESDK.CUESDK.GetAllDevices(ProviderMetadata.ProviderGuid);
+			var devices = Corsair.CUESDK.CUESDK.GetAllDevices(ProviderMetadata.ProviderGuid, cancellationToken);
 			return Task.FromResult(devices.ToList<Device>());
 		}
 	}

@@ -17,7 +17,7 @@ namespace Msi.Devices
 			Leds = new MLLed[ledsCount];
 		}
 
-		internal void Load()
+		private void Load()
 		{
 			for (var ledIndex = 0; ledIndex < Leds.Length; ledIndex++)
 			{
@@ -59,6 +59,7 @@ namespace Msi.Devices
 
 		protected override Task ConnectInternal()
 		{
+			Load();
 			return Task.CompletedTask;
 		}
 

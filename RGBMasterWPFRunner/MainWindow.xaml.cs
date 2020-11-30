@@ -327,7 +327,7 @@ namespace RGBMasterWPFRunner
 
             foreach (var provider in supportedProviders.Values)
             {
-                Log.Logger.Warning("Trying to innitialize provider {A} with guid: {B}.", provider.ProviderMetadata.ProviderName, provider.ProviderMetadata.ProviderGuid);
+                Log.Logger.Warning("Trying to initialize provider {A} with guid: {B}.", provider.ProviderMetadata.ProviderName, provider.ProviderMetadata.ProviderGuid);
 
                 var didInitialize = await provider.Register();
 
@@ -348,7 +348,13 @@ namespace RGBMasterWPFRunner
             {
                 AppState.Instance.CurrentProcessedProvider = provider.ProviderMetadata;
 
-                var discoveredDevices = await provider.Discover();
+                var (didDiscoverSucceed, discoveredDevices) = await provider.Discover();
+
+                if (!didDiscoverSucceed)
+                {
+                    Log.Logger.Warning("Provider {A} with GUID {B} failed to discover devices!", provider.ProviderMetadata.ProviderName, provider.ProviderMetadata.ProviderGuid);
+                    continue;
+                }
 
                 if ((discoveredDevices?.Count).GetValueOrDefault() > 0)
                 {

@@ -79,7 +79,7 @@ namespace Corsair.Device
 		/// <summary>
 		/// Load the leds details from the cue sdk
 		/// </summary>
-		internal void Load()
+		private void Load()
 		{
 			LedPositions = CUESDK.CUESDK.GetLedPositionsByDeviceIndex(Id);
 
@@ -105,6 +105,7 @@ namespace Corsair.Device
 
 		protected override Task ConnectInternal()
 		{
+			Load();
 			return Task.CompletedTask;
 		}
 
