@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Hue
@@ -58,12 +59,12 @@ namespace Hue
             return lights;
         }
 
-        protected override Task InternalRegister()
+        protected override Task InternalRegister(CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;
         }
 
-        protected override Task InternalUnregister()
+        protected override Task InternalUnregister(CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;
         }

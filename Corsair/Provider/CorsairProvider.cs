@@ -2,6 +2,7 @@
 using Provider;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CorsairProvider
@@ -13,14 +14,14 @@ namespace CorsairProvider
         {
         }
 
-        protected override Task InternalRegister()
+        protected override Task InternalRegister(CancellationToken cancellationToken = default)
 		{
 			Corsair.CUESDK.CUESDK.PerformProtocolHandshake();
 
 			return Task.CompletedTask;
 		}
 
-		protected override Task InternalUnregister()
+		protected override Task InternalUnregister(CancellationToken cancellationToken = default)
 		{
 			return Task.CompletedTask;
 		}

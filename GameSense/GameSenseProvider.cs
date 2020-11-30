@@ -5,6 +5,7 @@ using Provider;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GameSense
@@ -23,15 +24,15 @@ namespace GameSense
             return Task.FromResult(new List<Device>() { new GameSenseHeadsetDevice(gameSenseAPI, new GameSenseHeadsetDeviceMetadata(ProviderMetadata.ProviderGuid, "GameSense Headset Device"))});
         }
 
-        protected override async Task InternalUnregister()
+        protected override async Task InternalUnregister(CancellationToken cancellationToken = default)
         {
             await gameSenseAPI.RemoveGame(new GSApiRemoveGamePayload()
             {
                 Game = GameSenseConstants.RGB_MASTER_GAME_NAME
-            }).ConfigureAwait(false);
+            }, cancellationToken).ConfigureAwait(false);
         }
 
-        protected override async Task InternalRegister()
+        protected override async Task InternalRegister(CancellationToken cancellationToken = default)
         {
             gameSenseAPI.Initialize();
             await gameSenseAPI.RegisterGameMetadata(new GSApiGameMetadata()
@@ -39,7 +40,7 @@ namespace GameSense
                 Game = GameSenseConstants.RGB_MASTER_GAME_NAME,
                 Developer = GameSenseConstants.RGB_MASTER_GAME_DEVELOPER,
                 GameDisplayName = GameSenseConstants.RGB_MASTER_GAME_NAME
-            }).ConfigureAwait(false);
+            }, cancellationToken).ConfigureAwait(false);
         }
     }
 }

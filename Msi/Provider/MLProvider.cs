@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Msi.SDKs;
 using RGBProvider = Provider;
@@ -13,14 +14,14 @@ namespace Msi.Provider
 
         }
 
-		protected override Task InternalRegister()
+		protected override Task InternalRegister(CancellationToken cancellationToken = default)
 		{
 			MysticLightSdk.Initialize();
 
 			return Task.CompletedTask;
 		}
 
-		protected override Task InternalUnregister()
+		protected override Task InternalUnregister(CancellationToken cancellationToken = default)
 		{
 			return Task.CompletedTask;
 		}

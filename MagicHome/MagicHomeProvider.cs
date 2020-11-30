@@ -61,14 +61,14 @@ namespace MagicHome
             return lights;
         }
 
-        protected override Task InternalRegister()
+        protected override Task InternalRegister(CancellationToken cancellationToken = default)
         {
             discoveryUdpClient = new UdpClient(DISCOVERY_PORT);
 
             return Task.CompletedTask;
         }
 
-        protected override Task InternalUnregister()
+        protected override Task InternalUnregister(CancellationToken cancellationToken = default)
         {
             discoveryUdpClient.Close();
             discoveryUdpClient.Dispose();

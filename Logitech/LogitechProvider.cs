@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using RgbMasterDeviceType = Common.DeviceType;
 
@@ -67,7 +68,7 @@ namespace Logitech
            */
         }
 
-        protected override Task InternalRegister()
+        protected override Task InternalRegister(CancellationToken cancellationToken = default)
         {
             // Initialize the LED SDK
             bool LedInitialized = LogitechGSDK.LogiLedInit();
@@ -82,7 +83,7 @@ namespace Logitech
             return Task.CompletedTask;
         }
 
-        protected override Task InternalUnregister()
+        protected override Task InternalUnregister(CancellationToken cancellationToken = default)
         {
             LogitechGSDK.LogiLedShutdown();
             return Task.CompletedTask;

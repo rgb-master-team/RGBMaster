@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Utils;
 
@@ -21,10 +22,11 @@ namespace Provider
             {
                 if (!IsRegistered)
                 {
-                    // TODO - Move to a CancellationToken mechanism and enforce receiving CancellationTokens
-                    // in all InternalRegister methods.
                     var registerTimeoutSpan = TimeSpan.FromSeconds(5);
-                    await InternalRegister().TimeoutAfter(registerTimeoutSpan, $"Failed to register to provider {ProviderMetadata.ProviderName} with guid {ProviderMetadata.ProviderGuid}").ConfigureAwait(false);
+
+                    var cancellationToken = new CancellationTokenSource(registerTimeoutSpan).Token;
+
+                    await InternalRegister(cancellationToken).TimeoutAfter(registerTimeoutSpan, $"Failed to register to provider {ProviderMetadata.ProviderName} with guid {ProviderMetadata.ProviderGuid}").ConfigureAwait(false);
                     IsRegistered = true;
                 }
 
@@ -43,10 +45,11 @@ namespace Provider
             {
                 if (IsRegistered)
                 {
-                    // TODO - Move to a CancellationToken mechanism and enforce receiving CancellationTokens
-                    // in all InternalUnregister methods.
                     var unregisterTimeoutSpan = TimeSpan.FromSeconds(5);
-                    await InternalUnregister().TimeoutAfter(unregisterTimeoutSpan, $"Failed to unregister from provider {ProviderMetadata.ProviderName} with guid {ProviderMetadata.ProviderGuid}").ConfigureAwait(false);
+
+                    var cancellationToken = new CancellationTokenSource(unregisterTimeoutSpan).Token;
+
+                    await InternalUnregister(cancellationToken).TimeoutAfter(unregisterTimeoutSpan, $"Failed to unregister from provider {ProviderMetadata.ProviderName} with guid {ProviderMetadata.ProviderGuid}").ConfigureAwait(false);
                     IsRegistered = false;
                 }
 
@@ -64,7 +67,7 @@ namespace Provider
             ProviderMetadata = providerMetadata;
         }
 
-        protected abstract Task InternalRegister();
-        protected abstract Task InternalUnregister();
+        protected abstract Task InternalRegister(CancellationToken cancellationToken = default);
+        protected abstract Task InternalUnregister(CancellationToken cancellationToken = default);
     }
 }
