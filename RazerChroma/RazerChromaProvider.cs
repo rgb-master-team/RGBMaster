@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RazerChroma
@@ -99,13 +100,13 @@ namespace RazerChroma
             return Task.FromResult(new List<Device> { new RazerChromaAllDevicesDevice(internalChromaProvider, new RazerChromaAllDevicesDeviceMetadata(ProviderMetadata.ProviderGuid)), new RazerChromaKeyboardDevice(internalChromaProvider, new RazerChromaKeyboardDeviceMetadata(ProviderMetadata.ProviderGuid, "Razer Keyboard", new HashSet<OperationType>() { OperationType.SetColor })), new RazerChromaMousepadDevice(internalChromaProvider, new RazerChromaMousepadDeviceMetadata(ProviderMetadata.ProviderGuid, "Razer Mousepad", new HashSet<OperationType>() { OperationType.SetColor})) });
         }
 
-        protected async override Task InternalRegister()
+        protected async override Task InternalRegister(CancellationToken cancellationToken = default)
         {
             internalChromaProvider = await ColoreProvider.CreateNativeAsync();
             await internalChromaProvider.InitializeAsync(new Colore.Data.AppInfo("RGBMaster", "Syncs your brothers and sisters into the light", "RGBMasters", "RGBMaster@github", Colore.Data.Category.Application));
         }
 
-        protected async override Task InternalUnregister()
+        protected async override Task InternalUnregister(CancellationToken cancellationToken = default)
         {
             internalChromaProvider.Unregister();
             await internalChromaProvider.UninitializeAsync();
