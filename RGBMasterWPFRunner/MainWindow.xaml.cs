@@ -9,7 +9,6 @@ using Logitech;
 using MagicHome;
 using Microsoft.Toolkit.Wpf.UI.XamlHost;
 using NAudio.CoreAudioApi;
-using NZXT;
 using Provider;
 using RazerChroma;
 using Serilog;
