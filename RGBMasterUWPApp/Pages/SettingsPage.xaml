@@ -18,16 +18,17 @@
                 <StackPanel HorizontalAlignment="Left" Spacing="10">
                     <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Theme Select" />
                     <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="Toggle between dark mode and light mode theme"/>
-                    <ToggleSwitch x:Name="LightOrDarkToggleSwitch" IsOn="{x:Bind IsDarkMode, Mode=OneWay}" OffContent="Light Mode" OnContent="Dark Mode" Toggled="LightOrDarkToggleSwitch_Toggled" />
-                    <TextBlock Text="Due to Xaml Islands constraints changes to theme only apply after restarting the app." />
+                    <ToggleSwitch x:Name="LightOrDarkToggleSwitch" IsEnabled="False" IsOn="{x:Bind IsDarkMode, Mode=OneWay}" OffContent="Light Mode" OnContent="Dark Mode" Toggled="LightOrDarkToggleSwitch_Toggled" />
+                    <TextBlock Text="Due to Xaml Islands constraints, the theme cannot be changed. Will be supported in a later version." />
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Left" Spacing="10">
                     <TextBlock Style="{StaticResource SubtitleTextBlockStyle}"  Text="Application Files" />
                     <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="Choose where to save the application files"/>
                     <StackPanel Orientation="Horizontal" Spacing="4">
-                        <TextBox Header="Log file" PlaceholderText="Bind log file path" Text="{x:Bind LogPath, Mode=OneWay}" Width="250"/>
-                        <Button Name="BrowseLogPath" Content="Browse" VerticalAlignment="Bottom" Click="BrowseLogPath_Click"/>
+                        <TextBox Header="Log file" IsReadOnly="True" PlaceholderText="Bind log file path" Text="{x:Bind LogPath, Mode=OneWay}" Width="250"/>
+                        <Button Name="BrowseLogPath" IsEnabled="False" Content="Browse" VerticalAlignment="Bottom" Click="BrowseLogPath_Click"/>
                     </StackPanel>
+                    <TextBlock Text="Due to Xaml Islands constraints, the log path cannot be changed. Will be supported in a later version." />
                 </StackPanel>
             </StackPanel>
         </PivotItem>

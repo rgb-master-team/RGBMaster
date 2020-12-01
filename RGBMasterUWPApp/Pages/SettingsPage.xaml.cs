@@ -145,26 +145,8 @@ namespace RGBMasterUWPApp.Pages
             EventManager.Instance.StoreUserSetting(new Tuple<string, object>(ToggleDeviceOnCheckUserConfigKey, TurnOnDeviceEnabler.IsOn));
         }
 
-        private async void BrowseLogPath_Click(object sender, RoutedEventArgs e)
+        private void BrowseLogPath_Click(object sender, RoutedEventArgs e)
         {
-            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
-            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
-            folderPicker.FileTypeFilter.Add("*");
-
-            Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
-            if (folder != null)
-            {
-                // Application now has read/write access to all contents in the picked folder
-                // (including other sub-folder contents)
-                Windows.Storage.AccessCache.StorageApplicationPermissions.
-                FutureAccessList.AddOrReplace("PickedFolderToken", folder);
-                
-                // TODO.
-            }
-            else
-            {
-                // TODO.
-            }
         }
 
         private void LightOrDarkToggleSwitch_Toggled(object sender, RoutedEventArgs e)
