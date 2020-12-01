@@ -48,16 +48,6 @@ namespace RGBMasterWPFRunner
         {
             Dispatcher.UnhandledException += Dispatcher_UnhandledException;
 
-            InitializeComponent();
-            SetAppVersion();
-            Serilog.Core.Logger globalLog = GenerateAppLogger();
-
-            globalLog.Information("Initializing RGBMaster.....");
-
-            CreateAndSetSupportedProviders(new List<BaseProvider>() { new YeelightProvider(), new MagicHomeProvider(), new RazerChromaProvider(), new LogitechProvider(), new GameSenseProvider(), new HueProvider(), /*new NZXTProvider()*/ });
-            CreateAndSetSupportedEffectsExecutors(new List<EffectExecutor>() { new MusicEffectExecutor(), new DominantDisplayColorEffectExecutor(), new CursorColorEffectExecutor(), new StaticColorEffectExecutor(), new GradientEffectExecutor() });
-            SetUIStateEffects();
-
             EventManager.Instance.SubscribeToEffectActivationRequests(Instance_EffectChanged);
             EventManager.Instance.SubscribeToSelectedDevicesChanged(Instance_SelectedDevicesChanged);
             EventManager.Instance.SubscribeToInitializeProvidersRequests(InitializeProviders);
@@ -68,6 +58,17 @@ namespace RGBMasterWPFRunner
             EventManager.Instance.SubscribeToTurnOffDevicesRequests(TurnOffDevices);
             EventManager.Instance.SubscribeToStoreUserSettingRequests(StoreUserSetting);
             EventManager.Instance.SubscribeToLoadUserSettingRequests(LoadUserSetting);
+
+            SetAppVersion();
+            Serilog.Core.Logger globalLog = GenerateAppLogger();
+
+            globalLog.Information("Initializing RGBMaster.....");
+
+            CreateAndSetSupportedProviders(new List<BaseProvider>() { new YeelightProvider(), new MagicHomeProvider(), new RazerChromaProvider(), new LogitechProvider(), new GameSenseProvider(), new HueProvider(), /*new NZXTProvider()*/ });
+            CreateAndSetSupportedEffectsExecutors(new List<EffectExecutor>() { new MusicEffectExecutor(), new DominantDisplayColorEffectExecutor(), new CursorColorEffectExecutor(), new StaticColorEffectExecutor(), new GradientEffectExecutor() });
+            SetUIStateEffects();
+
+            InitializeComponent();
         }
 
         private void LoadUserSetting(object sender, string e)

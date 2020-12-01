@@ -16,16 +16,17 @@
                     <ToggleSwitch x:Name="TurnOnDeviceEnabler" IsOn="{x:Bind ToggleDeviceOnCheckUser}" Toggled="TurnOnDeviceEnabler_Toggled" />
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Left" Spacing="10">
-                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}"  Text="Theme Select" />
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Theme Select" />
                     <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="Toggle between dark mode and light mode theme"/>
-                    <ToggleSwitch x:Name="AlwaysDisplayProviders" IsOn="True" OffContent="Light Mode" OnContent="Dark Mode"/>
+                    <ToggleSwitch x:Name="LightOrDarkToggleSwitch" IsOn="{x:Bind IsDarkMode, Mode=OneWay}" OffContent="Light Mode" OnContent="Dark Mode" Toggled="LightOrDarkToggleSwitch_Toggled" />
+                    <TextBlock Text="Due to Xaml Islands constraints changes to theme only apply after restarting the app." />
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Left" Spacing="10">
                     <TextBlock Style="{StaticResource SubtitleTextBlockStyle}"  Text="Application Files" />
                     <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="Choose where to save the application files"/>
                     <StackPanel Orientation="Horizontal" Spacing="4">
                         <TextBox Header="Log file" PlaceholderText="Bind log file path" Text="{x:Bind LogPath, Mode=OneWay}" Width="250"/>
-                        <Button Content="Browse" VerticalAlignment="Bottom"/>
+                        <Button Name="BrowseLogPath" Content="Browse" VerticalAlignment="Bottom" Click="BrowseLogPath_Click"/>
                     </StackPanel>
                 </StackPanel>
             </StackPanel>

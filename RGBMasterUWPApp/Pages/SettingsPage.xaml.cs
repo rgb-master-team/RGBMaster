@@ -36,9 +36,25 @@ namespace RGBMasterUWPApp.Pages
 
         private const string ToggleDeviceOnCheckUserConfigKey = "ToggleDeviceOnCheck";
         private const string LogPathKey = "LogPath";
+        private const string IsDarkModeKey = "IsDarkMode";
+
 
         private string logPath;
         private bool toggleDeviceOnCheck;
+        private bool isDarkMode;
+
+        public bool IsDarkMode
+        {
+            get
+            {
+                return isDarkMode;
+            }
+            set
+            {
+                isDarkMode = value;
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
+            }
+        }
 
         public string LogPath
         {
@@ -90,6 +106,9 @@ namespace RGBMasterUWPApp.Pages
             EventManager.Instance.LoadUserSetting(LogPathKey);
             LogPath = AppState.Instance.UserSettingsCache.TryGetValue(LogPathKey, out var logPathKeyObj) && !string.IsNullOrWhiteSpace(logPathKeyObj as string) ? (string)logPathKeyObj : null;
 
+            EventManager.Instance.LoadUserSetting(IsDarkModeKey);
+            IsDarkMode = AppState.Instance.UserSettingsCache.TryGetValue(IsDarkModeKey, out var isDarkModeObj) ? (bool)isDarkModeObj : true;
+
             this.InitializeComponent();
         }
 
@@ -124,6 +143,33 @@ namespace RGBMasterUWPApp.Pages
         private void TurnOnDeviceEnabler_Toggled(object sender, RoutedEventArgs e)
         {
             EventManager.Instance.StoreUserSetting(new Tuple<string, object>(ToggleDeviceOnCheckUserConfigKey, TurnOnDeviceEnabler.IsOn));
+        }
+
+        private async void BrowseLogPath_Click(object sender, RoutedEventArgs e)
+        {
+            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
+            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
+            folderPicker.FileTypeFilter.Add("*");
+
+            Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+            if (folder != null)
+            {
+                // Application now has read/write access to all contents in the picked folder
+                // (including other sub-folder contents)
+                Windows.Storage.AccessCache.StorageApplicationPermissions.
+                FutureAccessList.AddOrReplace("PickedFolderToken", folder);
+                
+                // TODO.
+            }
+            else
+            {
+                // TODO.
+            }
+        }
+
+        private void LightOrDarkToggleSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            EventManager.Instance.StoreUserSetting(new Tuple<string, object>(IsDarkModeKey, LightOrDarkToggleSwitch.IsOn));
         }
     }
 }

@@ -58,5 +58,17 @@ namespace RGBMasterWPFRunner {
                 this["LogPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsDarkMode {
+            get {
+                return ((bool)(this["IsDarkMode"]));
+            }
+            set {
+                this["IsDarkMode"] = value;
+            }
+        }
     }
 }
