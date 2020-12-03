@@ -19,6 +19,7 @@ namespace AppExecutionManager.EventManagement
         private event EventHandler<List<DiscoveredDevice>> TurnOffDevicesRequested;
         private event EventHandler<string> LoadUserSettingRequested;
         private event EventHandler<Tuple<string, object>> StoreUserSettingRequested;
+        private event EventHandler AppClosingTriggered;
 
         static EventManager()
         {
@@ -169,6 +170,19 @@ namespace AppExecutionManager.EventManagement
         public void StoreUserSetting(Tuple<string, object> keyAndValue)
         {
             StoreUserSettingRequested?.Invoke(this, keyAndValue);
+        }
+
+        public void SubscribeToAppClosingTriggers(EventHandler callback)
+        {
+            AppClosingTriggered += callback;
+        }
+        public void UnsubscribeFromAppClosingTriggers(EventHandler callback)
+        {
+            AppClosingTriggered -= callback;
+        }
+        public void InformAppClosing()
+        {
+            AppClosingTriggered.Invoke(this, null);
         }
     }
 }

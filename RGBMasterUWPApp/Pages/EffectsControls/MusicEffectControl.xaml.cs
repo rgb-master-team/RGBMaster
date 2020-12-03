@@ -89,10 +89,16 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         {
             LoadAudioPointsFromUserSettings();
             LoadAudioCaptureDevices();
+            EventManager.Instance.SubscribeToAppClosingTriggers(AppClosingTriggered);
 
             AppState.Instance.PropertyChanged += AppStateInstance_PropertyChanged;
 
             this.InitializeComponent();
+        }
+
+        private void AppClosingTriggered(object sender, EventArgs e)
+        {
+            SaveUserSettingsForPage();
         }
 
         private void LoadAudioCaptureDevices()

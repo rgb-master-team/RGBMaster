@@ -505,6 +505,7 @@ namespace RGBMasterWPFRunner
         private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             await CleanupDevicesAndProviders();
+            EventManager.Instance.InformAppClosing();
         }
 
         private async Task CleanupDevicesAndProviders()
