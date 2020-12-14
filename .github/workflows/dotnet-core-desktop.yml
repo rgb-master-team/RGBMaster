@@ -51,7 +51,7 @@ jobs:
     strategy:
       matrix:
         configuration: [Release]
-        targetplatform: [x64]
+        targetplatform: [win10-x64]
 
     runs-on: windows-latest  # For a list of available runner types, refer to
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
@@ -83,8 +83,8 @@ jobs:
     - name:  Restore the Wpf application to populate the obj folder
       run: msbuild $env:Solution_Path /t:Restore /p:Configuration=$env:Configuration /p:RuntimeIdentifier=$env:RuntimeIdentifier
       env:
-        Configuration: Debug
-        RuntimeIdentifier: rgbmr-${{ matrix.targetplatform }}
+        Configuration: ${{ matrix.configuration }}
+        RuntimeIdentifier: ${{ matrix.targetplatform }}
 
     # Execute all unit tests in the solution
     - name: Execute unit tests
