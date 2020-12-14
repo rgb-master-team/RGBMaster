@@ -6,7 +6,7 @@
     <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x64;x86</Platforms>
     <StartupObject>RGBMasterWPFRunner.Program</StartupObject>
-    <RuntimeIdentifiers>rgbmr-x64;rgbmr-x86;rgbmr-ARM;rgbmr-ARM64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win10-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>
