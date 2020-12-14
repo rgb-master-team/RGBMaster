@@ -8,5 +8,6 @@ namespace Common
     {
         public List<MusicEffectAudioPoint> AudioPoints { get; set; }
         public AudioCaptureDevice CaptureDevice { get; set; }
+        public MusicEffectBrightnessMode BrightnessMode { get; set; }
     }
 }

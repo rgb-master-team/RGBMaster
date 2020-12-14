@@ -101,7 +101,9 @@ namespace EffectsExecution
             Color color = Color.Black;
 
             double maxAudioPoint = max * 100;
+
             byte desiredBrightnessPercentage = 0;
+            bool shouldChangeBrightness = true;
 
             // We scan the audio points of the effect properties (assuming they are kept ordered in our state, which
             // is probably a bad thing, we'll think about it later). The first audio point which minimum is surpassed by the maximum
@@ -111,8 +113,25 @@ namespace EffectsExecution
                 var audioPoint = orderedAudioPoints[i];
                 if (maxAudioPoint >= audioPoint.MinimumAudioPoint)
                 {
-                    desiredBrightnessPercentage = (byte)audioPoint.MinimumAudioPoint;
+                    var brightnessMode = ((MusicEffectMetadata)executedEffectMetadata).EffectProperties.BrightnessMode;
+
                     color = audioPoint.Color;
+
+                    switch (brightnessMode)
+                    {
+                        case MusicEffectBrightnessMode.Unchanged:
+                            shouldChangeBrightness = false;
+                            break;
+                        case MusicEffectBrightnessMode.ByHSL:
+                            desiredBrightnessPercentage = (byte)(color.GetBrightness() * 100);
+                            break;
+                        case MusicEffectBrightnessMode.ByVolumeLvl:
+                            desiredBrightnessPercentage = (byte)audioPoint.MinimumAudioPoint;
+                            break;
+                        default:
+                            break;
+                    }
+
                     break;
                 }
             }
@@ -121,7 +140,7 @@ namespace EffectsExecution
 
             foreach (var device in Devices)
             {
-                if (device.DeviceMetadata.SupportedOperations.Contains(OperationType.SetBrightness))
+                if (shouldChangeBrightness && device.DeviceMetadata.SupportedOperations.Contains(OperationType.SetBrightness))
                 {
                     tasks.Add(Task.Run(async () => await device.SetBrightnessPercentage(desiredBrightnessPercentage)));
                 }

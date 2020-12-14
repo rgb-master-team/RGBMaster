@@ -40,6 +40,18 @@
 
         <ContentControl x:Name="AudioPointsContentControl" IsEnabled="{x:Bind IsAudioPointsEditingEnabled, Mode=OneWay}">
             <StackPanel Orientation="Vertical" Spacing="10">
+                <StackPanel>
+                    <ComboBox x:Name="BrightnessModeComboBox" PlaceholderText="Brightness mode" ItemsSource="{x:Bind BrightnessModes}" SelectionChanged="BrightnessModeComboBox_SelectionChanged">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="local:MusicEffectBrightnessModeDescriptor">
+                                <StackPanel Orientation="Horizontal">
+                                    <!--<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="{x:Bind GlyphIcon}" Margin="0 0 4 0" />-->
+                                    <TextBlock Text="{x:Bind Title}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="4" Margin="0 0 0 4">
                     <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE7F5;"/>
                     <TextBlock Text="Capture Device" Style="{StaticResource BodyTextBlockStyle}"/>

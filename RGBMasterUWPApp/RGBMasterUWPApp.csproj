@@ -132,6 +132,7 @@
     <Compile Include="Pages\EffectsControls\GradientEffectControl.xaml.cs">
       <DependentUpon>GradientEffectControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\EffectsControls\MusicEffectBrightnessModeDescriptor.cs" />
     <Compile Include="Pages\EffectsControls\MusicEffectControl.xaml.cs">
       <DependentUpon>MusicEffectControl.xaml</DependentUpon>
     </Compile>

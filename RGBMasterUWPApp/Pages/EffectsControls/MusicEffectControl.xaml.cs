@@ -37,6 +37,13 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
     /// </summary>
     public sealed partial class MusicEffectControl : Page, INotifyPropertyChanged
     {
+        private static readonly List<MusicEffectBrightnessModeDescriptor> brightnessModes = new List<MusicEffectBrightnessModeDescriptor>()
+        {
+            new MusicEffectBrightnessModeDescriptor() { Mode = MusicEffectBrightnessMode.Unchanged, Title = "None" },
+            new MusicEffectBrightnessModeDescriptor() { Mode = MusicEffectBrightnessMode.ByHSL, Title="HSL"},
+            new MusicEffectBrightnessModeDescriptor() { Mode = MusicEffectBrightnessMode.ByVolumeLvl, Title = "Volume Level" }
+        };
+
         private const double Gamma = 0.80;
         private const double IntensityMax = 255;
 
@@ -45,6 +52,8 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         public event PropertyChangedEventHandler PropertyChanged;
 
         public bool IsAudioPointsEditingEnabled => !AppState.Instance.IsEffectRunning;
+
+        public List<MusicEffectBrightnessModeDescriptor> BrightnessModes => brightnessModes;
 
         public List<MusicEffectAudioPoint> AudioPoints
         {
@@ -391,6 +400,12 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         private void SaveUserSettingsForPage()
         {
             EventManager.Instance.StoreUserSetting(new Tuple<string, object>(AudioPointsUserSettingKey, JsonConvert.SerializeObject(AudioPoints)));
+        }
+
+        private void BrightnessModeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var musicEffectProperties = ((MusicEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Music)).EffectProperties;
+            musicEffectProperties.BrightnessMode = ((MusicEffectBrightnessModeDescriptor)BrightnessModeComboBox.SelectedItem).Mode;
         }
     }
 }
