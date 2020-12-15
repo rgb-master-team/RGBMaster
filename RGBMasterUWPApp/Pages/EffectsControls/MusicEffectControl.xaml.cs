@@ -39,9 +39,9 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
     {
         private static readonly List<MusicEffectBrightnessModeDescriptor> brightnessModes = new List<MusicEffectBrightnessModeDescriptor>()
         {
-            new MusicEffectBrightnessModeDescriptor() { Mode = MusicEffectBrightnessMode.Unchanged, Title = "None" },
-            new MusicEffectBrightnessModeDescriptor() { Mode = MusicEffectBrightnessMode.ByHSL, Title="HSL"},
-            new MusicEffectBrightnessModeDescriptor() { Mode = MusicEffectBrightnessMode.ByVolumeLvl, Title = "Volume Level" }
+            new MusicEffectBrightnessModeDescriptor() { Mode = MusicEffectBrightnessMode.Unchanged, Title = "Unmodified", Description = "Brightness stays the same as current one" },
+            new MusicEffectBrightnessModeDescriptor() { Mode = MusicEffectBrightnessMode.ByHSL, Title="Color", Description = "Brightness changes by the output color intensity"},
+            new MusicEffectBrightnessModeDescriptor() { Mode = MusicEffectBrightnessMode.ByVolumeLvl, Title = "Volume Level", Description = "Brightness changes by the volume level set at the audio point" }
         };
 
         private const double Gamma = 0.80;
@@ -103,6 +103,8 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             AppState.Instance.PropertyChanged += AppStateInstance_PropertyChanged;
 
             this.InitializeComponent();
+
+            BrightnessModeComboBox.SelectedItem = BrightnessModes[1];
         }
 
         private void AppClosingTriggered(object sender, EventArgs e)

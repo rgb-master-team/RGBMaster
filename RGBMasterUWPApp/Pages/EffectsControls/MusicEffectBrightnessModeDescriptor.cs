@@ -12,6 +12,7 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
     {
         public MusicEffectBrightnessMode Mode { get; set; }
         public string Title { get; set; }
+        public string Description { get; set; }
         public string GlyphIcon 
         { 
             get 
@@ -19,11 +20,11 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
                 switch (Mode)
                 {
                     case MusicEffectBrightnessMode.Unchanged:
-                        break;
+                        return "\uF140";
                     case MusicEffectBrightnessMode.ByHSL:
-                        break;
+                        return "\uE790";
                     case MusicEffectBrightnessMode.ByVolumeLvl:
-                        break;
+                        return "\uE993";
                     default:
                         break;
                 }
