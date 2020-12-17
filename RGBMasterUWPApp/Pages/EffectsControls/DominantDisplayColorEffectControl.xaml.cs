@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AppExecutionManager.State;
+using Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,6 +24,7 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
     /// </summary>
     public sealed partial class DominantDisplayColorEffectControl : Page
     {
+        public DominantDisplayColorEffectMetadataProperties DominantDisplayColorEffectProps => ((DominantDisplayColorEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.DominantColor)).EffectProperties;
         public DominantDisplayColorEffectControl()
         {
             this.InitializeComponent();

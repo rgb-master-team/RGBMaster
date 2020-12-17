@@ -30,13 +30,25 @@ namespace EffectsExecution
         {
             while (!backgroundWorkCancellationTokenSource.IsCancellationRequested)
             {
-                var c = GfxUtils.GetDominantColorFromThief();
+                var smoothness = ((DominantDisplayColorEffectMetadata)executedEffectMetadata).EffectProperties.RelativeSmoothness;
+
+                var color = GfxUtils.GetDominantColorFromThief();
 
                 List<Task> setColorTasks = new List<Task>();
 
-                foreach (var device in devices)
+                if (smoothness > 0)
                 {
-                    setColorTasks.Add(Task.Run(async () => await device.SetColor(c)));
+                    foreach (var device in devices)
+                    {
+                        setColorTasks.Add(Task.Run(async () => await device.SetColorSmoothly(color, smoothness)));
+                    }
+                }
+                else
+                {
+                    foreach (var device in devices)
+                    {
+                        setColorTasks.Add(Task.Run(async () => await device.SetColor(color)));
+                    }
                 }
 
                 await Task.WhenAll(setColorTasks);
