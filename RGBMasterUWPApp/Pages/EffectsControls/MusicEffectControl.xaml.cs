@@ -53,20 +53,21 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
 
         public bool IsAudioPointsEditingEnabled => !AppState.Instance.IsEffectRunning;
 
+        public MusicEffectMetadataProperties MusicEffectMetadataProps = ((MusicEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Music)).EffectProperties;
+
         public List<MusicEffectBrightnessModeDescriptor> BrightnessModes => brightnessModes;
 
         public List<MusicEffectAudioPoint> AudioPoints
         {
             get
             {
-                return ((MusicEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Music)).EffectProperties.AudioPoints;
+                return MusicEffectMetadataProps.AudioPoints;
             }
             set
             {
                 // TODO - FIX THIS TO USE UPDATE PROPS INSTEAD OF DIRECT ASSIGNMENTS.
                 // IMMUTABILITY......................
-                var musicEffectProperties = ((MusicEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Music)).EffectProperties;
-                musicEffectProperties.AudioPoints = value;
+                MusicEffectMetadataProps.AudioPoints = value;
                 NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
                 NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this, nameof(AudioPointsCount));
                 NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this, nameof(IsAddAudioPointEnabled));
@@ -86,11 +87,11 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         {
             get
             {
-                return ((MusicEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Music)).EffectProperties.CaptureDevice;
+                return MusicEffectMetadataProps.CaptureDevice;
             }
             set
             {
-                ((MusicEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Music)).EffectProperties.CaptureDevice = value;
+                MusicEffectMetadataProps.CaptureDevice = value;
             }
         }
 
@@ -406,8 +407,7 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
 
         private void BrightnessModeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var musicEffectProperties = ((MusicEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Music)).EffectProperties;
-            musicEffectProperties.BrightnessMode = ((MusicEffectBrightnessModeDescriptor)BrightnessModeComboBox.SelectedItem).Mode;
+            MusicEffectMetadataProps.BrightnessMode = ((MusicEffectBrightnessModeDescriptor)BrightnessModeComboBox.SelectedItem).Mode;
         }
     }
 }

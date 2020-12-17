@@ -67,7 +67,7 @@ namespace EffectsExecution
                         };
 
                         break;
-                    }    
+                    }
                 }
             }
 
@@ -105,6 +105,8 @@ namespace EffectsExecution
             byte desiredBrightnessPercentage = 0;
             bool shouldChangeBrightness = true;
 
+            var effectProps = ((MusicEffectMetadata)executedEffectMetadata).EffectProperties;
+
             // We scan the audio points of the effect properties (assuming they are kept ordered in our state, which
             // is probably a bad thing, we'll think about it later). The first audio point which minimum is surpassed by the maximum
             // level of played audio will represent the desired brightness and color of the sound.
@@ -113,7 +115,7 @@ namespace EffectsExecution
                 var audioPoint = orderedAudioPoints[i];
                 if (maxAudioPoint >= audioPoint.MinimumAudioPoint)
                 {
-                    var brightnessMode = ((MusicEffectMetadata)executedEffectMetadata).EffectProperties.BrightnessMode;
+                    var brightnessMode = effectProps.BrightnessMode;
 
                     color = audioPoint.Color;
 
@@ -138,6 +140,8 @@ namespace EffectsExecution
 
             var tasks = new List<Task>();
 
+            var relativeSmoothness = effectProps.RelativeSmoothness;
+
             foreach (var device in Devices)
             {
                 if (shouldChangeBrightness && device.DeviceMetadata.SupportedOperations.Contains(OperationType.SetBrightness))
@@ -147,7 +151,14 @@ namespace EffectsExecution
 
                 if (device.DeviceMetadata.SupportedOperations.Contains(OperationType.SetColor))
                 {
-                    tasks.Add(Task.Run(async () => await device.SetColor(color)));
+                    if (relativeSmoothness > 0 && device.DeviceMetadata.SupportedOperations.Contains(OperationType.SetColorSmoothly))
+                    {
+                        tasks.Add(Task.Run(async () => await device.SetColorSmoothly(color, relativeSmoothness)));
+                    }
+                    else
+                    {
+                        tasks.Add(Task.Run(async () => await device.SetColor(color)));
+                    }
                 }
             }
 

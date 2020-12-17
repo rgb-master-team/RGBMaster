@@ -40,16 +40,13 @@ namespace EffectsExecution
 
                 List<Task> setColorTasks = new List<Task>();
 
-                if (smoothness > 0)
+                foreach (var device in devices)
                 {
-                    foreach (var device in devices)
+                    if (smoothness > 0 && device.DeviceMetadata.IsOperationSupported(OperationType.SetColorSmoothly))
                     {
                         setColorTasks.Add(Task.Run(async () => await device.SetColorSmoothly(color, smoothness)));
                     }
-                }
-                else
-                {
-                    foreach (var device in devices)
+                    else
                     {
                         setColorTasks.Add(Task.Run(async () => await device.SetColor(color)));
                     }

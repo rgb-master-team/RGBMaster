@@ -21,6 +21,7 @@ namespace Common
         {
             EffectProperties = new MusicEffectMetadataProperties()
             {
+                RelativeSmoothness = 0,
                 AudioPoints = new List<MusicEffectAudioPoint>() 
                 { 
                     new MusicEffectAudioPoint()

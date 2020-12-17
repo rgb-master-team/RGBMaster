@@ -22,17 +22,23 @@ namespace EffectsExecution
                 var smoothness = newStaticColorEffectProps.RelativeSmoothness;
                 var color = newStaticColorEffectProps.SelectedColor;
 
-                tasksList.Add(Task.Run(async () =>
+                if (smoothness > 0 && device.DeviceMetadata.IsOperationSupported(OperationType.SetColorSmoothly))
                 {
-                    if (smoothness > 0)
+                    tasksList.Add(Task.Run(async () =>
                     {
                         await device.SetColorSmoothly(color, smoothness);
-                    }
-                    else
+                    }));
+                }
+                else
+                {
+                    tasksList.Add(Task.Run(async () =>
                     {
                         await device.SetColor(color);
-                    }
+                    }));
+                }
 
+                tasksList.Add(Task.Run(async () =>
+                {
                     await device.SetBrightnessPercentage(newStaticColorEffectProps.SelectedBrightness);
                 }));
             }
