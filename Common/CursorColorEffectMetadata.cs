@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Common
 {
-    public class CursorColorEffectMetadata : EffectMetadata
+    public class CursorColorEffectMetadata : EffectMetadata<CursorColorEffectMetadataProperties>
     {
         public override EffectType Type => EffectType.CursorColor;
 
@@ -15,5 +15,13 @@ namespace Common
         public override string FullDescription => "Syncs the colors wherever you point your cursor on your display.";
 
         public override string IconGlyph => "\uE7C9";
+
+        public CursorColorEffectMetadata()
+        {
+            EffectProperties = new CursorColorEffectMetadataProperties()
+            {
+                RelativeSmoothness = 0
+            };
+        }
     }
 }

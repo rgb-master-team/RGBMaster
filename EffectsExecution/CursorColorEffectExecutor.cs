@@ -32,15 +32,27 @@ namespace EffectsExecution
         {
             while (!backgroundWorkCancellationTokenSource.IsCancellationRequested)
             {
+                var smoothness = ((CursorColorEffectMetadata)executedEffectMetadata).EffectProperties.RelativeSmoothness;
+
                 var cursorLoc = GfxUtils.GetCursorLocation();
 
-                var c = GfxUtils.GetColorAt(cursorLoc.X, cursorLoc.Y);
+                var color = GfxUtils.GetColorAt(cursorLoc.X, cursorLoc.Y);
 
                 List<Task> setColorTasks = new List<Task>();
 
-                foreach (var device in devices)
+                if (smoothness > 0)
                 {
-                    setColorTasks.Add(Task.Run(async () => await device.SetColor(c)));
+                    foreach (var device in devices)
+                    {
+                        setColorTasks.Add(Task.Run(async () => await device.SetColorSmoothly(color, smoothness)));
+                    }
+                }
+                else
+                {
+                    foreach (var device in devices)
+                    {
+                        setColorTasks.Add(Task.Run(async () => await device.SetColor(color)));
+                    }
                 }
 
                 await Task.WhenAll(setColorTasks);
