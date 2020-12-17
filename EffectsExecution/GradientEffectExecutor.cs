@@ -43,7 +43,7 @@ namespace EffectsExecution
 
                 foreach (var device in Devices)
                 {
-                    tasks.Add(Task.Run(async () => await device.SetGradient(currentGradientPoint, effectProps.RelativeSmoothness)));
+                    tasks.Add(Task.Run(async () => await device.SetColorSmoothly(currentGradientPoint.Color, effectProps.RelativeSmoothness)));
                 }
 
                 await Task.WhenAll(tasks).ContinueWith(async (_) => await Task.Delay(TimeSpan.FromMilliseconds(effectProps.RelativeSmoothness + effectProps.DelayInterval))).Unwrap();

@@ -19,9 +19,20 @@ namespace EffectsExecution
 
             foreach (var device in Devices)
             {
+                var smoothness = newStaticColorEffectProps.RelativeSmoothness;
+                var color = newStaticColorEffectProps.SelectedColor;
+
                 tasksList.Add(Task.Run(async () =>
                 {
-                    await device.SetColor(newStaticColorEffectProps.SelectedColor);
+                    if (smoothness > 0)
+                    {
+                        await device.SetColorSmoothly(color, smoothness);
+                    }
+                    else
+                    {
+                        await device.SetColor(color);
+                    }
+
                     await device.SetBrightnessPercentage(newStaticColorEffectProps.SelectedBrightness);
                 }));
             }

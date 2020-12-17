@@ -25,6 +25,8 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
     /// </summary>
     public sealed partial class StaticColorEffectControl : Page
     {
+        public StaticColorEffectProps StaticColorEffectProps => ((StaticColorEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.StaticColor)).EffectProperties;
+
         public StaticColorEffectControl()
         {
             this.InitializeComponent();

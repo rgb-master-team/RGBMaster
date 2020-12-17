@@ -48,15 +48,15 @@ namespace Provider
 
         protected abstract Task SetColorInternal(Color color);
 
-        public async Task SetGradient(GradientPoint gradientPoint, int relativeSmoothness)
+        public async Task SetColorSmoothly(Color color, int relativeSmoothness)
         {
-            if (DeviceMetadata.SupportedOperations.Contains(OperationType.SetGradient))
+            if (DeviceMetadata.SupportedOperations.Contains(OperationType.SetColorSmoothly))
             {
-                await SetGradientInternal(gradientPoint, relativeSmoothness);
+                await SetColorSmoothlyInternal(color, relativeSmoothness);
             }
         }
 
-        protected abstract Task SetGradientInternal(GradientPoint gradientPoint, int relativeSmoothness);
+        protected abstract Task SetColorSmoothlyInternal(Color color, int relativeSmoothness);
 
         public async Task<byte> GetBrightnessPercentage()
         {

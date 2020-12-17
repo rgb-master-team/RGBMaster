@@ -52,7 +52,7 @@ namespace Yeelight
                 {
                     case METHODS.SetRGBColor:
                         operationTypes.Add(OperationType.SetColor);
-                        operationTypes.Add(OperationType.SetGradient);
+                        operationTypes.Add(OperationType.SetColorSmoothly);
                         break;
                     case METHODS.SetBrightness:
                         operationTypes.Add(OperationType.SetBrightness);
@@ -268,11 +268,11 @@ namespace Yeelight
             }
         }
 
-        protected override async Task SetGradientInternal(GradientPoint gradientPoint, int relativeSmoothness)
+        protected override async Task SetColorSmoothlyInternal(Color color, int relativeSmoothness)
         {
             if (IsMusicModeSupported())
             {
-                var colorValue = RGBColorHelper.ComputeRGBColor(gradientPoint.Color.R, gradientPoint.Color.G, gradientPoint.Color.B);
+                var colorValue = RGBColorHelper.ComputeRGBColor(color.R, color.G, color.B);
 
                 Command colorCommand = new Command()
                 {
@@ -290,7 +290,7 @@ namespace Yeelight
             {
                 await ExecuteIfQuotaAllowsAsync(async () =>
                 {
-                    await InternalDevice.SetRGBColor(gradientPoint.Color.R, gradientPoint.Color.G, gradientPoint.Color.B, relativeSmoothness).ConfigureAwait(false);
+                    await InternalDevice.SetRGBColor(color.R, color.G, color.B, relativeSmoothness).ConfigureAwait(false);
                 });
             }
         }

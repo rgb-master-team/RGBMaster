@@ -140,7 +140,7 @@ namespace Corsair.Device
 			throw new NotImplementedException();
 		}
 
-        protected override Task SetGradientInternal(GradientPoint gradientPoint, int relativeSmoothness)
+        protected override Task SetColorSmoothlyInternal(Color color, int relativeSmoothness)
         {
             throw new NotImplementedException();
         }
