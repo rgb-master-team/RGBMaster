@@ -31,7 +31,7 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         {
             this.InitializeComponent();
 
-            var lastStateRgbColor = AppState.Instance.StaticColorEffectProperties.SelectedColor;
+            var lastStateRgbColor = StaticColorEffectProps.SelectedColor;
 
             ColorPicker.Color = new Windows.UI.Color()
             {
@@ -40,18 +40,18 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
                 B = lastStateRgbColor.B
             };
 
-            Brighness_Slider.Value = AppState.Instance.StaticColorEffectProperties.SelectedBrightness;
+            Brighness_Slider.Value = StaticColorEffectProps.SelectedBrightness;
         }
 
         private void ColorPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
         {
             var color = System.Drawing.Color.FromArgb(sender.Color.R, sender.Color.G, sender.Color.B);
-            EventManager.Instance.ChangeStaticColor(new StaticColorEffectProps() { SelectedColor = color, SelectedBrightness = AppState.Instance.StaticColorEffectProperties.SelectedBrightness });
+            EventManager.Instance.ChangeStaticColor(new StaticColorEffectProps() { SelectedColor = color, SelectedBrightness = StaticColorEffectProps.SelectedBrightness, RelativeSmoothness = StaticColorEffectProps.RelativeSmoothness });
         }
 
         private void Brightness_Value_Changed(object sender, RangeBaseValueChangedEventArgs e)
         {
-            EventManager.Instance.ChangeStaticColor(new StaticColorEffectProps() { SelectedColor = AppState.Instance.StaticColorEffectProperties.SelectedColor, SelectedBrightness = (byte)Brighness_Slider.Value });
+            EventManager.Instance.ChangeStaticColor(new StaticColorEffectProps() { SelectedColor = StaticColorEffectProps.SelectedColor, SelectedBrightness = (byte)Brighness_Slider.Value, RelativeSmoothness = StaticColorEffectProps.RelativeSmoothness });
 
         }
     }

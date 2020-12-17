@@ -13,12 +13,14 @@ namespace EffectsExecution
         {
         }
 
-        private async Task ChangeStaticColor(StaticColorEffectProps newStaticColorEffectProps)
+        private async Task ChangeStaticColor()
         {
             var tasksList = new List<Task>();
 
             foreach (var device in Devices)
             {
+                var newStaticColorEffectProps = ((StaticColorEffectMetadata)executedEffectMetadata).EffectProperties;
+
                 var smoothness = newStaticColorEffectProps.RelativeSmoothness;
                 var color = newStaticColorEffectProps.SelectedColor;
 
@@ -48,7 +50,7 @@ namespace EffectsExecution
 
         protected override async Task StartInternal()
         {
-            await ChangeStaticColor(AppState.Instance.StaticColorEffectProperties);
+            await ChangeStaticColor();
         }
 
         protected override Task StopInternal()

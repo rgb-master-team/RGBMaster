@@ -31,8 +31,6 @@ namespace AppExecutionManager.State
             {
                 RegisteredProviders = new ObservableCollection<RegisteredProvider>(),
                 Effects = new ObservableCollection<EffectMetadata>(),
-                // TODO - REMOVE THIS AND MAKE EVERYONE USE THE EFFECT METADATA INSTEAD.
-                StaticColorEffectProperties = new StaticColorEffectProps() { SelectedColor = Color.White, SelectedBrightness = 100 },
                 SupportedProviders = new ObservableCollection<ProviderMetadata>(),
                 IsLoadingProviders = false,
                 ProvidersLoadingProgress = 0.0,
@@ -66,7 +64,6 @@ namespace AppExecutionManager.State
             }
         }
         public ObservableCollection<EffectMetadata> Effects { get; set; }
-        public StaticColorEffectProps StaticColorEffectProperties { get; set; }
         public string AppVersion { get; set; }
         public ObservableCollection<ProviderMetadata> SupportedProviders { get; set; }
         public bool IsEffectRunning => ActiveEffect != null;
