@@ -270,7 +270,7 @@ namespace RGBMasterWPFRunner
         private async void ChangeStaticColor(object sender, StaticColorEffectProps staticColorEffectProps)
         {
             // TODO - Fix this into having a single source of truth...
-            AppState.Instance.StaticColorEffectProperties = staticColorEffectProps;
+            ((StaticColorEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.StaticColor)).UpdateProps(staticColorEffectProps);
 
             if (AppState.Instance.IsEffectRunning)
             {

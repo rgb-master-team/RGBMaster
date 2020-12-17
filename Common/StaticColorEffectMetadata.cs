@@ -42,5 +42,10 @@ namespace Common
         public override string IconGlyph => "\uEF3C";
 
         public override EffectType Type => EffectType.StaticColor;
+
+        public StaticColorEffectMetadata()
+        {
+            UpdateProps(new StaticColorEffectProps() { RelativeSmoothness = 0, SelectedBrightness = 100, SelectedColor = Color.White });
+        }
     }
 }
