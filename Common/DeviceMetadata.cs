@@ -7,6 +7,7 @@ namespace Common
     {
         public Guid RgbMasterDiscoveringProvider { get; }
         public Guid RgbMasterDeviceGuid { get; }
+        public DeviceInterface DeviceInterface { get; }
         public string DeviceName { get; }
         public HashSet<OperationType> SupportedOperations { get; }
         public DeviceType DeviceType { get; }
@@ -52,13 +53,14 @@ namespace Common
             }
         }
 
-        public DeviceMetadata(Guid rgbMasterDiscoveringProvider, DeviceType deviceType, string deviceName, HashSet<OperationType> supportedOperations)
+        public DeviceMetadata(Guid rgbMasterDiscoveringProvider, DeviceType deviceType, string deviceName, HashSet<OperationType> supportedOperations, DeviceInterface deviceInterface = null)
         {
             RgbMasterDiscoveringProvider = rgbMasterDiscoveringProvider;
             RgbMasterDeviceGuid = Guid.NewGuid();
             DeviceType = deviceType;
             DeviceName = deviceName;
             SupportedOperations = supportedOperations;
+            DeviceInterface = deviceInterface;
         }
 
         public bool IsOperationSupported(OperationType op)
