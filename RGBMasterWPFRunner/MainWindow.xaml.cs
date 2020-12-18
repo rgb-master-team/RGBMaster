@@ -102,9 +102,8 @@ namespace RGBMasterWPFRunner
             {
                 path = Path.Combine(
                                 Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System)),
-                                @$"RGBMaster\Logs\{AppState.Instance.AppVersion}.txt"
+                                @$"RGBMaster\Logs\RGBMaster.txt"
                             );
-                EventManager.Instance.StoreUserSetting(new Tuple<string, object>(LogPathKey, path));
             }
             else
             {
