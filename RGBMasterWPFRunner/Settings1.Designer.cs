@@ -166,5 +166,29 @@ namespace RGBMasterWPFRunner {
                 this["DominantDisplayColorEffectSyncBrightnessByHSL"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int CursorColorEffectRelativeSmoothness {
+            get {
+                return ((int)(this["CursorColorEffectRelativeSmoothness"]));
+            }
+            set {
+                this["CursorColorEffectRelativeSmoothness"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool CursorColorEffectSyncBrightnessByHSL {
+            get {
+                return ((bool)(this["CursorColorEffectSyncBrightnessByHSL"]));
+            }
+            set {
+                this["CursorColorEffectSyncBrightnessByHSL"] = value;
+            }
+        }
     }
 }

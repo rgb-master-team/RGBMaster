@@ -395,7 +395,7 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             var menuFlyout = (MenuFlyoutItem)sender;
             var audioPoint = (MusicEffectAudioPoint)menuFlyout.DataContext;
 
-            var newAudioPoint = new MusicEffectAudioPoint() { Index = audioPoint.Index == 0 ? 0 : audioPoint.Index - 1, MinimumAudioPoint = 100, Color = Color.White };
+            var newAudioPoint = new MusicEffectAudioPoint() { Index = audioPoint.Index == 0 ? 0 : audioPoint.Index, MinimumAudioPoint = 100, Color = Color.White };
 
             AudioPoints.Insert(newAudioPoint.Index, newAudioPoint);
 
