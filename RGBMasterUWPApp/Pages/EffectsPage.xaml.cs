@@ -57,22 +57,6 @@ namespace RGBMasterUWPApp.Pages
             this.InitializeComponent();
         }
 
-        private void ColorPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
-        {
-            var color = System.Drawing.Color.FromArgb(sender.Color.R, sender.Color.G, sender.Color.B);
-            EventManager.Instance.ChangeStaticColor(new StaticColorEffectProps() { SelectedColor = color, SelectedBrightness = AppState.Instance.StaticColorEffectProperties.SelectedBrightness });
-          
-            /*AppState.Instance.StaticColor = color;
-
-            if (AppState.Instance.IsEffectRunning)
-            {
-                var staticColorEffect = AppState.Instance.SelectedEffect as StaticColorEffectMetadata;
-                staticColorEffect.UpdateProps(new StaticColorEffectProps() { SelectedColor = color });
-
-                EventManager.Instance.UpdateEffect(staticColorEffect);
-            }*/
-        }
-
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var pivot = (Pivot)sender;

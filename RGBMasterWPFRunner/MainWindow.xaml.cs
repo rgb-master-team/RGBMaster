@@ -31,6 +31,9 @@ namespace RGBMasterWPFRunner
     /// </summary>
     public partial class MainWindow : System.Windows.Window
     {
+        private const string ToggleDeviceOnCheckUserSettingKey = "ToggleDeviceOnCheck";
+        private const string LogPathKey = "LogPath";
+
         private SemaphoreSlim changeConnectedDevicesSemaphore = new SemaphoreSlim(1, 1);
         private SemaphoreSlim initializeProvidersSemaphore = new SemaphoreSlim(1, 1);
         private SemaphoreSlim changeStaticColorSemaphore = new SemaphoreSlim(1, 1);
@@ -45,7 +48,16 @@ namespace RGBMasterWPFRunner
         {
             Dispatcher.UnhandledException += Dispatcher_UnhandledException;
 
-            InitializeComponent();
+            EventManager.Instance.SubscribeToEffectActivationRequests(Instance_EffectChanged);
+            EventManager.Instance.SubscribeToSelectedDevicesChanged(Instance_SelectedDevicesChanged);
+            EventManager.Instance.SubscribeToInitializeProvidersRequests(InitializeProviders);
+            EventManager.Instance.SubscribeToStaticColorChanges(ChangeStaticColor);
+            EventManager.Instance.SubscribeToLoadAudioDevicesRequests(LoadAudioDevices);
+            EventManager.Instance.SubscribeToTurnOnDevicesRequests(TurnOnDevices);
+            EventManager.Instance.SubscribeToTurnOffDevicesRequests(TurnOffDevices);
+            EventManager.Instance.SubscribeToStoreUserSettingRequests(StoreUserSetting);
+            EventManager.Instance.SubscribeToLoadUserSettingRequests(LoadUserSetting);
+
             SetAppVersion();
             Serilog.Core.Logger globalLog = GenerateAppLogger();
 
@@ -55,14 +67,23 @@ namespace RGBMasterWPFRunner
             CreateAndSetSupportedEffectsExecutors(new List<EffectExecutor>() { new MusicEffectExecutor(), new DominantDisplayColorEffectExecutor(), new CursorColorEffectExecutor(), new StaticColorEffectExecutor(), new GradientEffectExecutor() });
             SetUIStateEffects();
 
-            EventManager.Instance.SubscribeToEffectActivationRequests(Instance_EffectChanged);
-            EventManager.Instance.SubscribeToSelectedDevicesChanged(Instance_SelectedDevicesChanged);
-            EventManager.Instance.SubscribeToInitializeProvidersRequests(InitializeProviders);
-            EventManager.Instance.SubscribeToStaticColorChanges(ChangeStaticColor);
-            EventManager.Instance.SubscribeToTurnOnAllLightsRequests(TurnOnAllLights);
-            EventManager.Instance.SubscribeToLoadAudioDevicesRequests(LoadAudioDevices);
-            EventManager.Instance.SubscribeToTurnOnDevicesRequests(TurnOnDevices);
-            EventManager.Instance.SubscribeToTurnOffDevicesRequests(TurnOffDevices);
+            InitializeComponent();
+        }
+
+        private void LoadUserSetting(object sender, string e)
+        {
+            // TODO - Consider propagating a notification of change. With NotifyPropertyChanged...
+            AppState.Instance.UserSettingsCache[e] = Settings1.Default[e];
+        }
+
+        private void StoreUserSetting(object sender, Tuple<string, object> e)
+        {
+            // TODO - Turn this into a service, facade, agent, whatever.
+            // Are we ever gonna use DI in here, anyway?
+            Settings1.Default[e.Item1] = e.Item2;
+            Settings1.Default.Save();
+
+            AppState.Instance.UserSettingsCache[e.Item1] = e.Item2;
         }
 
         private void Dispatcher_UnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
@@ -72,10 +93,22 @@ namespace RGBMasterWPFRunner
 
         private static Serilog.Core.Logger GenerateAppLogger()
         {
-            var path = Path.Combine(
+            string path;
+
+            EventManager.Instance.LoadUserSetting(LogPathKey);
+
+            if (!AppState.Instance.UserSettingsCache.TryGetValue(LogPathKey, out var logPathObj) ||
+                string.IsNullOrWhiteSpace(logPathObj as string))
+            {
+                path = Path.Combine(
                                 Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System)),
-                                @$"RGBMaster\Logs\{AppState.Instance.AppVersion}.txt"
+                                @$"RGBMaster\Logs\RGBMaster.txt"
                             );
+            }
+            else
+            {
+                path = (string)logPathObj;
+            }
 
             var globalLog = new LoggerConfiguration()
                 .MinimumLevel
@@ -104,33 +137,47 @@ namespace RGBMasterWPFRunner
             AppState.Instance.AppVersion = string.Format($"{version.Major}.{version.Minor}.{version.Build}.{version.Revision}");
         }
 
-        private async Task<bool> AttemptDeviceConnection(Device concreteDevice)
+        private async Task<ConnectionAlterResult> AttemptDeviceConnection(Device concreteDevice, DiscoveredDevice discoveredDevice)
         {
+            discoveredDevice.ConnectionStatus = ConnectionStatus.Connecting;
+
             Log.Logger.Warning("Device with GUID {A} is not connected. Attempting connection.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
 
-            var didConnect = await concreteDevice.Connect();
+            var connectionResult = await concreteDevice.Connect();
 
-            if (!didConnect)
+            if (connectionResult == ConnectionAlterResult.Failed)
             {
                 Log.Logger.Error("Failed connecting to device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
                 InformErrorOnFlyout($"Failed to connect to device {concreteDevice.DeviceMetadata.DeviceName}. \nThis might be a problem in the {AppState.Instance.SupportedProviders.First(x => x.ProviderGuid == concreteDevice.DeviceMetadata.RgbMasterDiscoveringProvider).ProviderName} provider. \nMake sure network connection is valid and try to refresh devices or restart the app.");
+                discoveredDevice.ConnectionStatus = ConnectionStatus.Disconnected;
+            }
+            else if (connectionResult == ConnectionAlterResult.Succeeded)
+            {
+                discoveredDevice.ConnectionStatus = ConnectionStatus.Connected;
             }
 
-            return didConnect;
+            return connectionResult;
         }
 
-        private async Task<bool> AttemptDeviceDisconnection(Device concreteDevice)
+        private async Task<ConnectionAlterResult> AttemptDeviceDisconnection(Device concreteDevice, DiscoveredDevice discoveredDevice)
         {
-            Log.Logger.Warning("Disconnecting from device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
-            var didDisconnect = await concreteDevice.Disconnect();
+            discoveredDevice.ConnectionStatus = ConnectionStatus.Disconnecting;
 
-            if (!didDisconnect)
+            Log.Logger.Warning("Disconnecting from device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
+            var connectionAlterResult = await concreteDevice.Disconnect();
+
+            if (connectionAlterResult == ConnectionAlterResult.Failed)
             {
                 Log.Logger.Error("Failed disconnecting from device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
                 InformErrorOnFlyout($"Failed to disconnect from device {concreteDevice.DeviceMetadata.DeviceName}. \nThis might be a problem in the {AppState.Instance.SupportedProviders.First(x => x.ProviderGuid == concreteDevice.DeviceMetadata.RgbMasterDiscoveringProvider).ProviderName} provider. \nMake sure network connection is valid and try to refresh devices or restart the app.");
+                discoveredDevice.ConnectionStatus = ConnectionStatus.Disconnected;
+            }
+            else if (connectionAlterResult == ConnectionAlterResult.Succeeded)
+            {
+                discoveredDevice.ConnectionStatus = ConnectionStatus.Disconnected;
             }
 
-            return didDisconnect;
+            return connectionAlterResult;
         }
 
         private async void TurnOffDevices(object sender, List<DiscoveredDevice> e)
@@ -153,9 +200,9 @@ namespace RGBMasterWPFRunner
         {
             var concreteDevice = concreteDevices[item.Device.RgbMasterDeviceGuid];
 
-            var isDeviceConnected = await AttemptDeviceConnection(concreteDevice);
+            var isDeviceConnected = await AttemptDeviceConnection(concreteDevice, item);
 
-            if (isDeviceConnected)
+            if (isDeviceConnected == ConnectionAlterResult.Succeeded && concreteDevice.DeviceMetadata.IsOperationSupported(OperationType.TurnOff))
             {
                 Log.Logger.Warning("Turning off device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
                 await concreteDevice.TurnOff();
@@ -166,9 +213,9 @@ namespace RGBMasterWPFRunner
         {
             var concreteDevice = concreteDevices[item.Device.RgbMasterDeviceGuid];
 
-            var isDeviceConnected = await AttemptDeviceConnection(concreteDevice);
+            var isDeviceConnected = await AttemptDeviceConnection(concreteDevice, item);
 
-            if (isDeviceConnected)
+            if (isDeviceConnected == ConnectionAlterResult.Succeeded && concreteDevice.DeviceMetadata.IsOperationSupported(OperationType.TurnOn))
             {
                 Log.Logger.Warning("Turning on device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
                 await concreteDevice.TurnOn();
@@ -213,29 +260,10 @@ namespace RGBMasterWPFRunner
             };
         }
 
-        private async void TurnOnAllLights(object sender, EventArgs e)
-        {
-            var tasks = new List<Task>();
-
-            foreach (var provider in AppState.Instance.RegisteredProviders)
-            {
-                foreach (var device in provider.Devices)
-                {
-                    if (device.IsChecked)
-                    {
-                        var deviceGuid = device.Device.RgbMasterDeviceGuid;
-                        tasks.Add(Task.Run(() => concreteDevices[deviceGuid].TurnOn()));
-                    }
-                }
-            }
-
-            await Task.WhenAll(tasks);
-        }
-
         private async void ChangeStaticColor(object sender, StaticColorEffectProps staticColorEffectProps)
         {
             // TODO - Fix this into having a single source of truth...
-            AppState.Instance.StaticColorEffectProperties = staticColorEffectProps;
+            ((StaticColorEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.StaticColor)).UpdateProps(staticColorEffectProps);
 
             if (AppState.Instance.IsEffectRunning)
             {
@@ -299,7 +327,7 @@ namespace RGBMasterWPFRunner
 
             foreach (var provider in supportedProviders.Values)
             {
-                Log.Logger.Warning("Trying to innitialize provider {A} with guid: {B}.", provider.ProviderMetadata.ProviderName, provider.ProviderMetadata.ProviderGuid);
+                Log.Logger.Warning("Trying to initialize provider {A} with guid: {B}.", provider.ProviderMetadata.ProviderName, provider.ProviderMetadata.ProviderGuid);
 
                 var didInitialize = await provider.Register();
 
@@ -320,7 +348,13 @@ namespace RGBMasterWPFRunner
             {
                 AppState.Instance.CurrentProcessedProvider = provider.ProviderMetadata;
 
-                var discoveredDevices = await provider.Discover();
+                var (didDiscoverSucceed, discoveredDevices) = await provider.Discover();
+
+                if (!didDiscoverSucceed)
+                {
+                    Log.Logger.Warning("Provider {A} with GUID {B} failed to discover devices!", provider.ProviderMetadata.ProviderName, provider.ProviderMetadata.ProviderGuid);
+                    continue;
+                }
 
                 if ((discoveredDevices?.Count).GetValueOrDefault() > 0)
                 {
@@ -335,7 +369,7 @@ namespace RGBMasterWPFRunner
                     AppState.Instance.RegisteredProviders.Add(new RegisteredProvider()
                     {
                         Provider = provider.ProviderMetadata,
-                        Devices = new System.Collections.ObjectModel.ObservableCollection<DiscoveredDevice>(discoveredDevices.Select(device => new DiscoveredDevice() { Device = device.DeviceMetadata, IsChecked = false }))
+                        Devices = new System.Collections.ObjectModel.ObservableCollection<DiscoveredDevice>(discoveredDevices.Select(device => new DiscoveredDevice() { Device = device.DeviceMetadata, IsChecked = false, ConnectionStatus = ConnectionStatus.Disconnected }))
                     });
                 }
 
@@ -381,6 +415,10 @@ namespace RGBMasterWPFRunner
 
         private async void Instance_SelectedDevicesChanged(object sender, List<DiscoveredDevice> devices)
         {
+            EventManager.Instance.LoadUserSetting(ToggleDeviceOnCheckUserSettingKey);
+
+            var shouldToggleDevice = AppState.Instance.UserSettingsCache.TryGetValue(ToggleDeviceOnCheckUserSettingKey, out var shouldTurnOnDeviceObj) ? (bool)shouldTurnOnDeviceObj : true;
+
             var newSelectedDevices = devices;
 
             await changeConnectedDevicesSemaphore.WaitAsync();
@@ -393,23 +431,24 @@ namespace RGBMasterWPFRunner
                 // and turn if off by the user's configuration.
                 if (!item.IsChecked && concreteDevice.IsConnected)
                 {
-                    // TODO - only turn off device if the user requested so in his settings/configuration.
-                    await TurnOffDevice(item);
+                    if (shouldToggleDevice)
+                    {
+                        await TurnOffDevice(item);
+                    }
 
-                    var didDisconnect = await AttemptDeviceDisconnection(concreteDevice);
+                    var didDisconnect = await AttemptDeviceDisconnection(concreteDevice, item);
                 }
                 // If the item is checked, and is not connected - we need to attempt connecting it,
                 // and turn it on by the user's configuration.
                 else if (item.IsChecked && !concreteDevice.IsConnected)
                 {
-                    var didConnect = await AttemptDeviceConnection(concreteDevice);
+                    var didConnect = await AttemptDeviceConnection(concreteDevice, item);
 
-                    // TODO - only turn on device if the user requested so in his settings/configuration.
-                    if (didConnect)
+                    if (didConnect == ConnectionAlterResult.Succeeded && shouldToggleDevice)
                     {
                         await TurnOnDevice(item);
                     }
-                    else
+                    else if (didConnect == ConnectionAlterResult.Failed)
                     {
                         item.IsChecked = false;
                     }
@@ -459,6 +498,7 @@ namespace RGBMasterWPFRunner
         private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             await CleanupDevicesAndProviders();
+            EventManager.Instance.InformAppClosing();
         }
 
         private async Task CleanupDevicesAndProviders()

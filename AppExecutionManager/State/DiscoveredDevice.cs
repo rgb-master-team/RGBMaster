@@ -15,7 +15,7 @@ namespace AppExecutionManager.State
         public event PropertyChangedEventHandler PropertyChanged;
 
         private bool isChecked;
-
+        private ConnectionStatus connectionStatus;
 
         public DeviceMetadata Device { get; set; }
 
@@ -25,6 +25,16 @@ namespace AppExecutionManager.State
             set
             {
                 isChecked = value;
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
+            }
+        }
+
+        public ConnectionStatus ConnectionStatus
+        {
+            get => connectionStatus;
+            set
+            {
+                connectionStatus = value;
                 NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
             }
         }

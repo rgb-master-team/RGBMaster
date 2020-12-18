@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Aura
@@ -18,18 +19,18 @@ namespace Aura
         {
         }
 
-        public override Task<List<Device>> Discover()
+        protected override Task<List<Device>> InternalDiscover(CancellationToken cancellationToken = default)
         {
             return Task.FromResult(internalSdk.Motherboards.Select(mb => new AuraMotherboardDevice(mb, new AuraMotherboardDeviceMetadata(ProviderMetadata.ProviderGuid, "Unknown Aura Motherboard", new HashSet<OperationType>() { OperationType.SetColor }))).ToList<Device>());
         }
 
-        protected override Task InternalRegister()
+        protected override Task InternalRegister(CancellationToken cancellationToken = default)
         {
             internalSdk = new AuraSDK();
             return Task.CompletedTask;
         }
 
-        protected override Task InternalUnregister()
+        protected override Task InternalUnregister(CancellationToken cancellationToken = default)
         {
             internalSdk.Unload();
             return Task.CompletedTask;

@@ -21,7 +21,7 @@ namespace EffectsExecution
             var enumeratedDevices = Devices.ToList();
 
             backgroundWorkCancellationTokenSource = new CancellationTokenSource();
-            Task.Run(async () => await DoWork(enumeratedDevices), backgroundWorkCancellationTokenSource.Token);
+            Task.Run(async () => await DoWork(enumeratedDevices), backgroundWorkCancellationTokenSource.Token).ConfigureAwait(false);
 
             return Task.CompletedTask;
         }
@@ -30,13 +30,38 @@ namespace EffectsExecution
         {
             while (!backgroundWorkCancellationTokenSource.IsCancellationRequested)
             {
-                var c = GfxUtils.GetDominantColorFromThief();
+                var effectProps = ((DominantDisplayColorEffectMetadata)executedEffectMetadata).EffectProperties;
+
+                bool shouldSyncBrightnessByHSL = effectProps.SyncBrightnessByHSL;
+
+                var smoothness = effectProps.RelativeSmoothness;
+
+                var color = GfxUtils.GetDominantColorFromThief();
 
                 List<Task> setColorTasks = new List<Task>();
 
+                byte desiredBrightnessPercentage = 0;
+
+                if (shouldSyncBrightnessByHSL)
+                {
+                    desiredBrightnessPercentage = (byte)(color.GetBrightness() * 100);
+                }
+
                 foreach (var device in devices)
                 {
-                    setColorTasks.Add(Task.Run(async () => await device.SetColor(c)));
+                    if (smoothness > 0 && device.DeviceMetadata.IsOperationSupported(OperationType.SetColorSmoothly))
+                    {
+                        setColorTasks.Add(Task.Run(async () => await device.SetColorSmoothly(color, smoothness).ConfigureAwait(false)));
+                    }
+                    else if (device.DeviceMetadata.IsOperationSupported(OperationType.SetColor))
+                    {
+                        setColorTasks.Add(Task.Run(async () => await device.SetColor(color).ConfigureAwait(false)));
+                    }
+
+                    if (shouldSyncBrightnessByHSL && device.DeviceMetadata.IsOperationSupported(OperationType.SetBrightness))
+                    {
+                        setColorTasks.Add(Task.Run(async () => await device.SetBrightnessPercentage(desiredBrightnessPercentage).ConfigureAwait(false)));
+                    }
                 }
 
                 await Task.WhenAll(setColorTasks);

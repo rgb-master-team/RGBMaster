@@ -78,9 +78,9 @@ namespace MagicHome
             }
         }
 
-        protected override async Task SetGradientInternal(GradientPoint gradientPoint, int relativeSmoothness)
+        protected override async Task SetColorSmoothlyInternal(System.Drawing.Color color, int relativeSmoothness)
         {
-            List<byte> data = new List<byte>() { 0x51, gradientPoint.Color.R, gradientPoint.Color.G, gradientPoint.Color.B };
+            List<byte> data = new List<byte>() { 0x51, color.R, color.G, color.B };
 
             for (int i = 0; i < 16 - 1; i++)
             {

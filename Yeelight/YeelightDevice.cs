@@ -52,7 +52,7 @@ namespace Yeelight
                 {
                     case METHODS.SetRGBColor:
                         operationTypes.Add(OperationType.SetColor);
-                        operationTypes.Add(OperationType.SetGradient);
+                        operationTypes.Add(OperationType.SetColorSmoothly);
                         break;
                     case METHODS.SetBrightness:
                         operationTypes.Add(OperationType.SetBrightness);
@@ -114,12 +114,36 @@ namespace Yeelight
 
         private async Task ConnectViaMusicMode()
         {
-            var ipAddress = Dns.GetHostEntry(Dns.GetHostName()).AddressList.Where(addr => addr.AddressFamily == AddressFamily.InterNetwork).First();
+            var yeelightDeviceIpAddr = IPAddress.Parse(InternalDevice.Hostname);
+            var yeelightDevicePort = InternalDevice.Port;
 
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 0);
+            IPAddress localIpAddress = null;
+
+            var yeelightEndpoint = new IPEndPoint(yeelightDeviceIpAddr, yeelightDevicePort);
+
+            Socket testSocket = new Socket(yeelightEndpoint.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
+            testSocket.Connect(yeelightEndpoint);
+
+            if (testSocket.LocalEndPoint is IPEndPoint localIpEp)
+            {
+                localIpAddress = localIpEp.Address;
+            }
+
+            testSocket.Close();
+            testSocket.Dispose();
+
+            if (localIpAddress == null)
+            {
+                // TODO - MAKE SOME SPECIAL EXCEPTION FOR THIS CASE WITH FLOWERS AND DECORATIONS
+                throw new Exception($"Could not find a matching network adapter of which to connect to yeelight with ip address {yeelightDeviceIpAddr}:{yeelightDevicePort}.");
+            }
+
+            //var ipAddress = Dns.GetHostEntry(Dns.GetHostName()).AddressList.Where(addr => addr.AddressFamily == AddressFamily.InterNetwork).First();
+
+            IPEndPoint localEndPoint = new IPEndPoint(localIpAddress, 0);
 
 
-            using (var musicModeSocketListener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp))
+            using (var musicModeSocketListener = new Socket(localIpAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp))
             {
                 try
                 {
@@ -127,7 +151,7 @@ namespace Yeelight
 
                     musicModeSocketListener.Listen(1);
 
-                    await InternalDevice.StartMusicMode(ipAddress.ToString(), ((IPEndPoint)musicModeSocketListener.LocalEndPoint).Port);
+                    await InternalDevice.StartMusicMode(localIpAddress.ToString(), ((IPEndPoint)musicModeSocketListener.LocalEndPoint).Port);
 
                     musicModeSocket = await musicModeSocketListener.AcceptAsync();
                 }
@@ -268,11 +292,11 @@ namespace Yeelight
             }
         }
 
-        protected override async Task SetGradientInternal(GradientPoint gradientPoint, int relativeSmoothness)
+        protected override async Task SetColorSmoothlyInternal(Color color, int relativeSmoothness)
         {
             if (IsMusicModeSupported())
             {
-                var colorValue = RGBColorHelper.ComputeRGBColor(gradientPoint.Color.R, gradientPoint.Color.G, gradientPoint.Color.B);
+                var colorValue = RGBColorHelper.ComputeRGBColor(color.R, color.G, color.B);
 
                 Command colorCommand = new Command()
                 {
@@ -290,7 +314,7 @@ namespace Yeelight
             {
                 await ExecuteIfQuotaAllowsAsync(async () =>
                 {
-                    await InternalDevice.SetRGBColor(gradientPoint.Color.R, gradientPoint.Color.G, gradientPoint.Color.B, relativeSmoothness).ConfigureAwait(false);
+                    await InternalDevice.SetRGBColor(color.R, color.G, color.B, relativeSmoothness).ConfigureAwait(false);
                 });
             }
         }

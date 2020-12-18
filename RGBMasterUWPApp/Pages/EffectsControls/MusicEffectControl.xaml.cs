@@ -2,6 +2,7 @@
 using AppExecutionManager.State;
 using Common;
 using Microsoft.UI.Xaml.Controls;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,6 +17,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Media;
 using Windows.Networking.Sockets;
+using Windows.UI.Core.Preview;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -35,25 +37,65 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
     /// </summary>
     public sealed partial class MusicEffectControl : Page, INotifyPropertyChanged
     {
+        private static readonly List<MusicEffectBrightnessModeDescriptor> brightnessModes = new List<MusicEffectBrightnessModeDescriptor>()
+        {
+            new MusicEffectBrightnessModeDescriptor() { Mode = MusicEffectBrightnessMode.Unchanged, Title = "Unmodified", Description = "Brightness stays the same as current one" },
+            new MusicEffectBrightnessModeDescriptor() { Mode = MusicEffectBrightnessMode.ByHSL, Title="Color", Description = "Brightness changes by the output color intensity"},
+            new MusicEffectBrightnessModeDescriptor() { Mode = MusicEffectBrightnessMode.ByVolumeLvl, Title = "Volume Level", Description = "Brightness changes by the volume level set at the audio point" }
+        };
+
         private const double Gamma = 0.80;
         private const double IntensityMax = 255;
+
+        private const string AudioPointsUserSettingKey = "MusicEffectAudioPoints";
+        private const string BrightnessModeSettingsKey = "MusicEffectBrightnessMode";
+        private const string SmoothnessSettingsKey = "MusicEffectSmoothness";
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public bool IsAudioPointsEditingEnabled => !AppState.Instance.IsEffectRunning;
 
+        public MusicEffectMetadataProperties MusicEffectMetadataProps = ((MusicEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Music)).EffectProperties;
+
+        public MusicEffectBrightnessModeDescriptor BrightnessModeDescriptor
+        {
+            get
+            {
+                return BrightnessModes.First(bm => bm.Mode == MusicEffectMetadataProps.BrightnessMode);
+            }
+            set
+            {
+                MusicEffectMetadataProps.BrightnessMode = value.Mode;
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
+            }
+        }
+
+        public int RelativeSmoothness
+        {
+            get
+            {
+                return MusicEffectMetadataProps.RelativeSmoothness;
+            }
+            set
+            {
+                MusicEffectMetadataProps.RelativeSmoothness = value;
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
+            }
+        }
+
+        public List<MusicEffectBrightnessModeDescriptor> BrightnessModes => brightnessModes;
+
         public List<MusicEffectAudioPoint> AudioPoints
         {
             get
             {
-                return ((MusicEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Music)).EffectProperties.AudioPoints;
+                return MusicEffectMetadataProps.AudioPoints;
             }
             set
             {
                 // TODO - FIX THIS TO USE UPDATE PROPS INSTEAD OF DIRECT ASSIGNMENTS.
                 // IMMUTABILITY......................
-                var musicEffectProperties = ((MusicEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Music)).EffectProperties;
-                musicEffectProperties.AudioPoints = value;
+                MusicEffectMetadataProps.AudioPoints = value;
                 NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
                 NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this, nameof(AudioPointsCount));
                 NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this, nameof(IsAddAudioPointEnabled));
@@ -73,23 +115,66 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         {
             get
             {
-                return ((MusicEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Music)).EffectProperties.CaptureDevice;
+                return MusicEffectMetadataProps.CaptureDevice;
             }
             set
             {
-                ((MusicEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Music)).EffectProperties.CaptureDevice = value;
+                MusicEffectMetadataProps.CaptureDevice = value;
             }
         }
 
         public MusicEffectControl()
         {
-            //// If the audio capture devices was not yet loaded - load it.
-            //// Otherwise, use the existing list of capture devices we have in our state.
-            //if (AppState.Instance.AudioCaptureDevices == null)
-            //{
-            //    EventManager.Instance.GetInputDevices();
-            //}
+            LoadAudioPointsFromUserSettings();
+            LoadAudioCaptureDevices();
+            LoadBrightnessMode();
+            LoadSmoothness();
+            EventManager.Instance.SubscribeToAppClosingTriggers(AppClosingTriggered);
 
+            AppState.Instance.PropertyChanged += AppStateInstance_PropertyChanged;
+
+            this.InitializeComponent();
+        }
+
+        private void LoadSmoothness()
+        {
+            EventManager.Instance.LoadUserSetting(SmoothnessSettingsKey);
+
+            if (AppState.Instance.UserSettingsCache.TryGetValue(SmoothnessSettingsKey, out var smoothnessObj))
+            {
+                int smoothness = (int)smoothnessObj;
+                RelativeSmoothness = smoothness;
+            }
+            else
+            {
+                RelativeSmoothness = 0;
+            }
+        }
+
+        private void LoadBrightnessMode()
+        {
+            EventManager.Instance.LoadUserSetting(BrightnessModeSettingsKey);
+
+            MusicEffectBrightnessMode brightnessMode;
+            if (AppState.Instance.UserSettingsCache.TryGetValue(BrightnessModeSettingsKey, out var brightnessModeObj))
+            {
+                brightnessMode = (MusicEffectBrightnessMode)brightnessModeObj;
+            }
+            else
+            {
+                brightnessMode = MusicEffectBrightnessMode.ByHSL;
+            }
+
+            BrightnessModeDescriptor = BrightnessModes.First(bm => bm.Mode == brightnessMode);
+        }
+
+        private void AppClosingTriggered(object sender, EventArgs e)
+        {
+            SaveUserSettingsForPage();
+        }
+
+        private void LoadAudioCaptureDevices()
+        {
             // Always get the latest audio capture devices, in case they change.
             EventManager.Instance.LoadAudioDevices();
 
@@ -116,10 +201,25 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
 
                 SelectedAudioCaptureDevice = tempSelectedDevice;
             }
+        }
 
-            this.InitializeComponent();
-
-            AppState.Instance.PropertyChanged += AppStateInstance_PropertyChanged;
+        private void LoadAudioPointsFromUserSettings()
+        {
+            EventManager.Instance.LoadUserSetting(AudioPointsUserSettingKey);
+            if (AppState.Instance.UserSettingsCache.TryGetValue(AudioPointsUserSettingKey, out var audioPointsJsonObject) &&
+                !string.IsNullOrWhiteSpace(audioPointsJsonObject as string))
+            {
+                var audioPointsJson = (string)audioPointsJsonObject;
+                try
+                {
+                    var audioPoints = JsonConvert.DeserializeObject<List<MusicEffectAudioPoint>>(audioPointsJson);
+                    AudioPoints = audioPoints;
+                }
+                catch (Exception ex)
+                {
+                    // TODO - ADD LOGGING SERVICE!
+                }
+            }
         }
 
         private void AppStateInstance_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -136,11 +236,6 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             var teachingTip = (TeachingTip)button.Resources["AudioPointEditTeachingTip"];
             teachingTip.Target = button;
             teachingTip.IsOpen = true;
-        }
-
-        private void AudioPointEditTeachingTip_Closed(TeachingTip sender, TeachingTipClosedEventArgs args)
-        {
-            //AudioPoints = AudioPoints.OrderBy(x => x.MinimumAudioPoint).ToList();
         }
 
         private static Color ColorFromWaveLength(double estimatedWavelength)
@@ -300,7 +395,7 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             var menuFlyout = (MenuFlyoutItem)sender;
             var audioPoint = (MusicEffectAudioPoint)menuFlyout.DataContext;
 
-            var newAudioPoint = new MusicEffectAudioPoint() { Index = audioPoint.Index == 0 ? 0 : audioPoint.Index - 1, MinimumAudioPoint = 100, Color = Color.White };
+            var newAudioPoint = new MusicEffectAudioPoint() { Index = audioPoint.Index == 0 ? 0 : audioPoint.Index, MinimumAudioPoint = 100, Color = Color.White };
 
             AudioPoints.Insert(newAudioPoint.Index, newAudioPoint);
 
@@ -356,6 +451,25 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         {
             var selectedAudioCaptureDevice = (AudioCaptureDevice)CaptureDeviceComboBox.SelectedItem;
             SelectedAudioCaptureDevice = selectedAudioCaptureDevice;
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+
+            SaveUserSettingsForPage();
+        }
+
+        private void SaveUserSettingsForPage()
+        {
+            EventManager.Instance.StoreUserSetting(new Tuple<string, object>(AudioPointsUserSettingKey, JsonConvert.SerializeObject(AudioPoints)));
+            EventManager.Instance.StoreUserSetting(new Tuple<string, object>(BrightnessModeSettingsKey, (int)BrightnessModeDescriptor.Mode));
+            EventManager.Instance.StoreUserSetting(new Tuple<string, object>(SmoothnessSettingsKey, (int)RelativeSmoothness));
+        }
+
+        private void BrightnessModeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            BrightnessModeDescriptor = (MusicEffectBrightnessModeDescriptor)BrightnessModeComboBox.SelectedItem;
         }
     }
 }

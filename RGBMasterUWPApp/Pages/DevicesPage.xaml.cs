@@ -259,7 +259,7 @@ namespace RGBMasterUWPApp.Pages
                 case OperationType.TurnOff:
                     operation = "Turn off";
                     break;
-                case OperationType.SetGradient:
+                case OperationType.SetColorSmoothly:
                     operation = "Set gradient";
                     break;
                 default:

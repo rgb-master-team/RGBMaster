@@ -4,10 +4,18 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:RGBMasterUWPApp.Pages.EffectsControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
 
     <Grid>
-
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBlock>Smoothness:&#160;</TextBlock>
+                <TextBlock Text="{x:Bind CursorColorEffectProps.RelativeSmoothness, Mode=OneWay}"/>
+                <TextBlock Text="ms"/>
+            </StackPanel>
+            <muxc:NumberBox x:Name="SmoothnessSlider" Value="{x:Bind RelativeSmoothness, Mode=TwoWay}" Minimum="0" ToolTipService.ToolTip="Time between previous color to this color, in milliseconds" />
+            <CheckBox x:Name="HSLCheckBox" IsChecked="{x:Bind SyncBrightnessByHSL, Mode=TwoWay}" ToolTipService.ToolTip="Brightness changes by the output color intensity" Content="Sync by color" />
+        </StackPanel>
     </Grid>
 </Page>

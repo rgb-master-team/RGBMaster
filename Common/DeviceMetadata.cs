@@ -7,6 +7,7 @@ namespace Common
     {
         public Guid RgbMasterDiscoveringProvider { get; }
         public Guid RgbMasterDeviceGuid { get; }
+        public DeviceInterface DeviceInterface { get; }
         public string DeviceName { get; }
         public HashSet<OperationType> SupportedOperations { get; }
         public DeviceType DeviceType { get; }
@@ -17,48 +18,49 @@ namespace Common
                 switch (DeviceType)
                 {
                     case DeviceType.Unknown:
-                        return @"/Assets/Icons/Unknown.png";
+                        return @"/Assets/Icons/White/Unknown.png";
                     case DeviceType.Lightbulb:
-                        return @"/Assets/Icons/Lightbulb.png";
+                        return @"/Assets/Icons/White/Lightbulb.png";
                     case DeviceType.LedStrip:
-                        return @"/Assets/Icons/Ledstrip.png";
+                        return @"/Assets/Icons/White/Ledstrip.png";
                     case DeviceType.Keyboard:
-                        return @"/Assets/Icons/Keyboard.png";
+                        return @"/Assets/Icons/White/Keyboard.png";
                     case DeviceType.Mouse:
-                        return @"/Assets/Icons/Mouse.png";
+                        return @"/Assets/Icons/White/Mouse.png";
                     case DeviceType.Fan:
-                        return @"/Assets/Icons/Fan.png";
+                        return @"/Assets/Icons/White/Fan.png";
                     case DeviceType.Mousepad:
-                        return @"/Assets/Icons/Mousepad.png";
+                        return @"/Assets/Icons/White/Mousepad.png";
                     case DeviceType.Speaker:
-                        return @"/Assets/Icons/Speaker.png";
+                        return @"/Assets/Icons/White/Speaker.png";
                     case DeviceType.Headset:
-                        return @"/Assets/Icons/Headset.png";
+                        return @"/Assets/Icons/White/Headset.png";
                     case DeviceType.Keypad:
-                        return @"/Assets/Icons/Keypad.png";
+                        return @"/Assets/Icons/White/Keypad.png";
                     case DeviceType.Memory:
-                        return @"/Assets/Icons/Memory.png";
+                        return @"/Assets/Icons/White/Memory.png";
                     case DeviceType.GPU:
-                        return @"/Assets/Icons/GPU.png";
+                        return @"/Assets/Icons/White/GPU.png";
                     case DeviceType.Motherboard:
-                        return @"/Assets/Icons/Motherboard.png";
+                        return @"/Assets/Icons/White/Motherboard.png";
                     case DeviceType.Chair:
-                        return @"/Assets/Icons/Chair.png";
+                        return @"/Assets/Icons/White/Chair.png";
                     case DeviceType.AllDevices:
-                        return @"/Assets/Icons/AllDevices.png";
+                        return @"/Assets/Icons/White/AllDevices.png";
                     default:
                         throw new NotSupportedException($"An icon is not mapped to device type {DeviceType}.");
                 }
             }
         }
 
-        public DeviceMetadata(Guid rgbMasterDiscoveringProvider, DeviceType deviceType, string deviceName, HashSet<OperationType> supportedOperations)
+        public DeviceMetadata(Guid rgbMasterDiscoveringProvider, DeviceType deviceType, string deviceName, HashSet<OperationType> supportedOperations, DeviceInterface deviceInterface = null)
         {
             RgbMasterDiscoveringProvider = rgbMasterDiscoveringProvider;
             RgbMasterDeviceGuid = Guid.NewGuid();
             DeviceType = deviceType;
             DeviceName = deviceName;
             SupportedOperations = supportedOperations;
+            DeviceInterface = deviceInterface;
         }
 
         public bool IsOperationSupported(OperationType op)

@@ -55,7 +55,7 @@
 //            return Task.CompletedTask;
 //        }
 
-//        protected override Task SetGradientInternal(GradientPoint gradientPoint, int relativeSmoothness)
+//        protected override Task SetColorSmoothlyInternal(Color color, int relativeSmoothness)
 //        {
 //            throw new NotImplementedException();
 //        }

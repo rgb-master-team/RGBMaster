@@ -4,10 +4,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:RGBMasterUWPApp.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:muxc="using:Microsoft.UI.Xaml.Controls" xmlns:state="using:AppExecutionManager.State" xmlns:common="using:Common"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:muxc="using:Microsoft.UI.Xaml.Controls" xmlns:state="using:AppExecutionManager.State" xmlns:common="using:Common" xmlns:utils="using:RGBMasterUWPApp.Utils"
     mc:Ignorable="d"
     Loaded="Page_Loaded"
    >
+    <Page.Resources>
+        <utils:ConnStatusToProgBarIsActiveConverter x:Key="ConnStatusToProgBarIsActive" />
+        <utils:ConnStatusToProgBarOpacityConverter x:Key="ConnStatusToProgBarOpacity" />
+        <utils:ConnStatusToCheckboxIsEnabledConverter x:Key="ConnStatusToCheckboxIsEnabled" />
+    </Page.Resources>
     <Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
@@ -82,11 +87,12 @@
                                 </Button>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
-                                <ListView ItemsSource="{x:Bind Devices}" x:Name="listviewname">
+                                <ListView ItemsSource="{x:Bind Devices}" x:Name="listviewname" SelectionMode="None">
                                     <ListView.ItemTemplate>
                                         <DataTemplate x:DataType="state:DiscoveredDevice">
                                             <StackPanel Orientation="Horizontal">
-                                                <CheckBox x:Name="DeviceSelectionCheckbox" IsChecked="{x:Bind IsChecked, Mode=TwoWay}" Tag="{x:Bind}" Click="CheckBox_Click">
+                                                <muxc:ProgressRing Margin="0 0 8 0" Opacity="{x:Bind ConnectionStatus, Mode=OneWay, Converter={StaticResource ConnStatusToProgBarOpacity}}" IsActive="{x:Bind ConnectionStatus, Mode=OneWay, Converter={StaticResource ConnStatusToProgBarIsActive}}" Width="24" Height="24" />
+                                                <CheckBox x:Name="DeviceSelectionCheckbox" IsEnabled="{x:Bind ConnectionStatus, Mode=OneWay, Converter={StaticResource ConnStatusToCheckboxIsEnabled}}" IsChecked="{x:Bind IsChecked, Mode=TwoWay}" Tag="{x:Bind}" Click="CheckBox_Click">
                                                     <CheckBox.Resources>
                                                         <muxc:TeachingTip x:Name="TeachingTip_SetName" Title="Set Custom Name" Subtitle="Set a custom name for this device" ActionButtonContent="Save" CloseButtonContent="Cancel" Target="{Binding Change_Device_Name_Button}" IsLightDismissEnabled="True">
                                                             <muxc:TeachingTip.IconSource>

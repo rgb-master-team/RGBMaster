@@ -13,17 +13,39 @@ namespace EffectsExecution
         {
         }
 
-        private async Task ChangeStaticColor(StaticColorEffectProps newStaticColorEffectProps)
+        private async Task ChangeStaticColor()
         {
             var tasksList = new List<Task>();
 
             foreach (var device in Devices)
             {
-                tasksList.Add(Task.Run(async () =>
+                var newStaticColorEffectProps = ((StaticColorEffectMetadata)executedEffectMetadata).EffectProperties;
+
+                var smoothness = newStaticColorEffectProps.RelativeSmoothness;
+                var color = newStaticColorEffectProps.SelectedColor;
+
+                if (smoothness > 0 && device.DeviceMetadata.IsOperationSupported(OperationType.SetColorSmoothly))
                 {
-                    await device.SetColor(newStaticColorEffectProps.SelectedColor);
-                    await device.SetBrightnessPercentage(newStaticColorEffectProps.SelectedBrightness);
-                }));
+                    tasksList.Add(Task.Run(async () =>
+                    {
+                        await device.SetColorSmoothly(color, smoothness).ConfigureAwait(false);
+                    }));
+                }
+                else if (device.DeviceMetadata.IsOperationSupported(OperationType.SetColor))
+                {
+                    tasksList.Add(Task.Run(async () =>
+                    {
+                        await device.SetColor(color).ConfigureAwait(false);
+                    }));
+                }
+
+                if (device.DeviceMetadata.IsOperationSupported(OperationType.SetBrightness))
+                {
+                    tasksList.Add(Task.Run(async () =>
+                    {
+                        await device.SetBrightnessPercentage(newStaticColorEffectProps.SelectedBrightness).ConfigureAwait(false);
+                    }));
+                }
             }
 
             await Task.WhenAll(tasksList);
@@ -31,7 +53,7 @@ namespace EffectsExecution
 
         protected override async Task StartInternal()
         {
-            await ChangeStaticColor(AppState.Instance.StaticColorEffectProperties);
+            await ChangeStaticColor();
         }
 
         protected override Task StopInternal()

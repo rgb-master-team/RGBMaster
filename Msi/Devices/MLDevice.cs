@@ -17,7 +17,7 @@ namespace Msi.Devices
 			Leds = new MLLed[ledsCount];
 		}
 
-		internal void Load()
+		private void Load()
 		{
 			for (var ledIndex = 0; ledIndex < Leds.Length; ledIndex++)
 			{
@@ -59,6 +59,7 @@ namespace Msi.Devices
 
 		protected override Task ConnectInternal()
 		{
+			Load();
 			return Task.CompletedTask;
 		}
 
@@ -77,7 +78,7 @@ namespace Msi.Devices
 			throw new System.NotImplementedException();
 		}
 
-        protected override Task SetGradientInternal(GradientPoint gradientPoint, int relativeSmoothness)
+        protected override Task SetColorSmoothlyInternal(Color color, int relativeSmoothness)
         {
             throw new System.NotImplementedException();
         }

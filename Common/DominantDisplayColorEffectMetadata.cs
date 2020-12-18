@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Common
 {
-    public class DominantDisplayColorEffectMetadata : EffectMetadata
+    public class DominantDisplayColorEffectMetadata : EffectMetadata<DominantDisplayColorEffectMetadataProperties>
     {
 
         public override string EffectName => "Dominant color sync";
@@ -20,5 +20,13 @@ namespace Common
         public override string IconGlyph => "\uE7F4";
 
         public override EffectType Type => EffectType.DominantColor;
+
+        public DominantDisplayColorEffectMetadata()
+        {
+            EffectProperties = new DominantDisplayColorEffectMetadataProperties()
+            {
+                RelativeSmoothness = 0
+            };
+        }
     }
 }

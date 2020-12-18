@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Hue
@@ -18,18 +19,20 @@ namespace Hue
         {
         }
 
-        public async override Task<List<Device>> Discover()
+        protected async override Task<List<Device>> InternalDiscover(CancellationToken cancellationToken = default)
         {
             var lights = new List<Device>();
 
             IBridgeLocator locator = new LocalNetworkScanBridgeLocator(); //Or: LocalNetworkScanBridgeLocator, MdnsBridgeLocator, MUdpBasedBridgeLocator
-            var bridges = await locator.LocateBridgesAsync(TimeSpan.FromSeconds(5));
+            var bridges = await locator.LocateBridgesAsync(cancellationToken);
 
             // TODO - SUPPORT MULTIPLE BRIDGES
             if (bridges != null)
             {
                 foreach (var bridge in bridges)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
+
                     ILocalHueClient client = new LocalHueClient(bridges.First().IpAddress);
                     //Make sure the user has pressed the button on the bridge before calling RegisterAsync
                     //It will throw an LinkButtonNotPressedException if the user did not press the button
@@ -37,6 +40,7 @@ namespace Hue
                     try
                     {
                         hueApiAppKey = await client.RegisterAsync("RGBMaster", "RGBMasterClient");
+                        cancellationToken.ThrowIfCancellationRequested();
                     }
                     catch (LinkButtonNotPressedException exception)
                     {
@@ -58,12 +62,12 @@ namespace Hue
             return lights;
         }
 
-        protected override Task InternalRegister()
+        protected override Task InternalRegister(CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;
         }
 
-        protected override Task InternalUnregister()
+        protected override Task InternalUnregister(CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;
         }

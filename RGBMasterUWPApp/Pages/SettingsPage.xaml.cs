@@ -1,12 +1,15 @@
-﻿using AppExecutionManager.State;
+﻿using AppExecutionManager.EventManagement;
+using AppExecutionManager.State;
 using Common;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Utils;
 using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -27,8 +30,45 @@ namespace RGBMasterUWPApp.Pages
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class SettingsPage : Page
+    public sealed partial class SettingsPage : Page, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private const string ToggleDeviceOnCheckUserConfigKey = "ToggleDeviceOnCheck";
+        private const string LogPathKey = "LogPath";
+        private const string IsDarkModeKey = "IsDarkMode";
+
+
+        private string logPath;
+        private bool toggleDeviceOnCheck;
+        private bool isDarkMode;
+
+        public bool IsDarkMode
+        {
+            get
+            {
+                return isDarkMode;
+            }
+            set
+            {
+                isDarkMode = value;
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
+            }
+        }
+
+        public string LogPath
+        {
+            get
+            {
+                return logPath;
+            }
+            set
+            {
+                logPath = value;
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
+            }
+        }
+
         public ObservableCollection<ProviderMetadata> SupportedProviders
         {
             get
@@ -45,8 +85,30 @@ namespace RGBMasterUWPApp.Pages
             }
         }
 
+        public bool ToggleDeviceOnCheckUser
+        {
+            get
+            {
+                return toggleDeviceOnCheck;
+            }
+            set
+            {
+                toggleDeviceOnCheck = value;
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
+            }
+        }
+
         public SettingsPage()
         {
+            EventManager.Instance.LoadUserSetting(ToggleDeviceOnCheckUserConfigKey);
+            ToggleDeviceOnCheckUser = AppState.Instance.UserSettingsCache.TryGetValue(ToggleDeviceOnCheckUserConfigKey, out var shouldToggleDeviceOnCheck) ? (bool)shouldToggleDeviceOnCheck : true;
+
+            EventManager.Instance.LoadUserSetting(LogPathKey);
+            LogPath = AppState.Instance.UserSettingsCache.TryGetValue(LogPathKey, out var logPathKeyObj) && !string.IsNullOrWhiteSpace(logPathKeyObj as string) ? (string)logPathKeyObj : null;
+
+            EventManager.Instance.LoadUserSetting(IsDarkModeKey);
+            IsDarkMode = AppState.Instance.UserSettingsCache.TryGetValue(IsDarkModeKey, out var isDarkModeObj) ? (bool)isDarkModeObj : true;
+
             this.InitializeComponent();
         }
 
@@ -76,6 +138,20 @@ namespace RGBMasterUWPApp.Pages
             }
 
             await Windows.System.Launcher.LaunchUriAsync(new Uri(clickedProvider.ProviderUrl));
+        }
+
+        private void TurnOnDeviceEnabler_Toggled(object sender, RoutedEventArgs e)
+        {
+            EventManager.Instance.StoreUserSetting(new Tuple<string, object>(ToggleDeviceOnCheckUserConfigKey, TurnOnDeviceEnabler.IsOn));
+        }
+
+        private void BrowseLogPath_Click(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void LightOrDarkToggleSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            EventManager.Instance.StoreUserSetting(new Tuple<string, object>(IsDarkModeKey, LightOrDarkToggleSwitch.IsOn));
         }
     }
 }

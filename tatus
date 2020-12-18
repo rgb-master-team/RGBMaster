@@ -1,0 +1,116 @@
+[1mdiff --git a/RGBMasterUWPApp/Pages/DevicesPage.xaml b/RGBMasterUWPApp/Pages/DevicesPage.xaml[m
+[1mindex 747239e..98b24bb 100644[m
+[1m--- a/RGBMasterUWPApp/Pages/DevicesPage.xaml[m
+[1m+++ b/RGBMasterUWPApp/Pages/DevicesPage.xaml[m
+[36m@@ -4,10 +4,15 @@[m
+     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"[m
+     xmlns:local="using:RGBMasterUWPApp.Pages"[m
+     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"[m
+[31m-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:muxc="using:Microsoft.UI.Xaml.Controls" xmlns:state="using:AppExecutionManager.State" xmlns:common="using:Common"[m
+[32m+[m[32m    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:muxc="using:Microsoft.UI.Xaml.Controls" xmlns:state="using:AppExecutionManager.State" xmlns:common="using:Common" xmlns:utils="using:RGBMasterUWPApp.Utils"[m
+     mc:Ignorable="d"[m
+     Loaded="Page_Loaded"[m
+    >[m
+[32m+[m[32m    <Page.Resources>[m
+[32m+[m[32m        <utils:ConnStatusToProgBarIsActiveConverter x:Key="ConnStatusToProgBarIsActive" />[m
+[32m+[m[32m        <utils:ConnStatusToProgBarVisibilityConverter x:Key="ConnStatusToProgBarVisibility" />[m
+[32m+[m[32m        <utils:ConnStatusToCheckboxIsEnabledConverter x:Key="ConnStatusToCheckboxIsEnabled" />[m
+[32m+[m[32m    </Page.Resources>[m
+     <Grid>[m
+         <VisualStateManager.VisualStateGroups>[m
+             <VisualStateGroup>[m
+[36m@@ -86,7 +91,8 @@[m
+                                     <ListView.ItemTemplate>[m
+                                         <DataTemplate x:DataType="state:DiscoveredDevice">[m
+                                             <StackPanel Orientation="Horizontal">[m
+[31m-                                                <CheckBox x:Name="DeviceSelectionCheckbox" IsChecked="{x:Bind IsChecked, Mode=TwoWay}" Tag="{x:Bind}" Click="CheckBox_Click">[m
+[32m+[m[32m                                                <ProgressRing Visibility="{x:Bind ConnectionStatus, Mode=OneWay, Converter={StaticResource ConnStatusToProgBarVisibility}}" IsActive="{x:Bind ConnectionStatus, Mode=OneWay, Converter={StaticResource ConnStatusToProgBarIsActive}}" Width="130"/>[m
+[32m+[m[32m                                                <CheckBox x:Name="DeviceSelectionCheckbox" IsEnabled="{x:Bind ConnectionStatus, Mode=OneWay, Converter={StaticResource ConnStatusToCheckboxIsEnabled}}" IsChecked="{x:Bind IsChecked, Mode=TwoWay}" Tag="{x:Bind}" Click="CheckBox_Click">[m
+                                                     <CheckBox.Resources>[m
+                                                         <muxc:TeachingTip x:Name="TeachingTip_SetName" Title="Set Custom Name" Subtitle="Set a custom name for this device" ActionButtonContent="Save" CloseButtonContent="Cancel" Target="{Binding Change_Device_Name_Button}" IsLightDismissEnabled="True">[m
+                                                             <muxc:TeachingTip.IconSource>[m
+[1mdiff --git a/RGBMasterUWPApp/Pages/EffectsControls/GradientEffectControl.xaml b/RGBMasterUWPApp/Pages/EffectsControls/GradientEffectControl.xaml[m
+[1mindex 509cf9a..73e7611 100644[m
+[1m--- a/RGBMasterUWPApp/Pages/EffectsControls/GradientEffectControl.xaml[m
+[1m+++ b/RGBMasterUWPApp/Pages/EffectsControls/GradientEffectControl.xaml[m
+[36m@@ -9,7 +9,7 @@[m
+     mc:Ignorable="d"[m
+     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">[m
+     <Page.Resources>[m
+[31m-        <utils:DrawingColorToBrushColor x:Key="ColorConverter" />[m
+[32m+[m[32m        <utils:DrawingColorToBrushColorValueConverter x:Key="ColorConverter" />[m
+     </Page.Resources>[m
+ [m
+     <StackPanel x:Name="GradientStopsStackpanel" Orientation="Vertical" HorizontalAlignment="Left">[m
+[1mdiff --git a/RGBMasterUWPApp/Pages/EffectsControls/MusicEffectControl.xaml b/RGBMasterUWPApp/Pages/EffectsControls/MusicEffectControl.xaml[m
+[1mindex 86b6ad6..edd9a4c 100644[m
+[1m--- a/RGBMasterUWPApp/Pages/EffectsControls/MusicEffectControl.xaml[m
+[1m+++ b/RGBMasterUWPApp/Pages/EffectsControls/MusicEffectControl.xaml[m
+[36m@@ -8,7 +8,7 @@[m
+     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:common="using:Common" xmlns:utils="using:RGBMasterUWPApp.Utils" xmlns:muxc="using:Microsoft.UI.Xaml.Controls" xmlns:state="using:AppExecutionManager.State"[m
+     mc:Ignorable="d">[m
+     <Page.Resources>[m
+[31m-        <utils:DrawingColorToBrushColor x:Key="ColorConverter" />[m
+[32m+[m[32m        <utils:DrawingColorToBrushColorValueConverter x:Key="ColorConverter" />[m
+     </Page.Resources>[m
+     <StackPanel>[m
+         <ContentDialog x:Name="InfoContentDialog" CloseButtonText="Close">[m
+[1mdiff --git a/RGBMasterUWPApp/RGBMasterUWPApp.csproj b/RGBMasterUWPApp/RGBMasterUWPApp.csproj[m
+[1mindex a1f509d..6905c01 100644[m
+[1m--- a/RGBMasterUWPApp/RGBMasterUWPApp.csproj[m
+[1m+++ b/RGBMasterUWPApp/RGBMasterUWPApp.csproj[m
+[36m@@ -149,7 +149,10 @@[m
+     <Compile Include="RGBMasterUserControl.xaml.cs">[m
+       <DependentUpon>RGBMasterUserControl.xaml</DependentUpon>[m
+     </Compile>[m
+[31m-    <Compile Include="Utils\DrawingColorToBrushColor.cs" />[m
+[32m+[m[32m    <Compile Include="Utils\ConnStatusToCheckboxIsEnabledConverter.cs" />[m
+[32m+[m[32m    <Compile Include="Utils\ConnStatusToProgBarIsActiveConverter.cs" />[m
+[32m+[m[32m    <Compile Include="Utils\ConnStatusToProgBarVisibilityConverter.cs" />[m
+[32m+[m[32m    <Compile Include="Utils\DrawingColorToBrushColorValueConverter.cs" />[m
+     <Compile Include="Utils\ExtensionMethods.cs" />[m
+     <EmbeddedResource Include="Properties\RGBMasterUWPApp.rd.xml" />[m
+   </ItemGroup>[m
+[1mdiff --git a/RGBMasterUWPApp/Utils/DrawingColorToBrushColor.cs b/RGBMasterUWPApp/Utils/DrawingColorToBrushColor.cs[m
+[1mdeleted file mode 100644[m
+[1mindex 4e682b4..0000000[m
+[1m--- a/RGBMasterUWPApp/Utils/DrawingColorToBrushColor.cs[m
+[1m+++ /dev/null[m
+[36m@@ -1,24 +0,0 @@[m
+[31m-﻿using System;[m
+[31m-using System.Collections.Generic;[m
+[31m-using System.Linq;[m
+[31m-using System.Text;[m
+[31m-using System.Threading.Tasks;[m
+[31m-using Windows.UI.Xaml.Data;[m
+[31m-[m
+[31m-namespace RGBMasterUWPApp.Utils[m
+[31m-{[m
+[31m-    public class DrawingColorToBrushColor : IValueConverter[m
+[31m-    {[m
+[31m-        public object Convert(object value, Type targetType, object parameter, string language)[m
+[31m-        {[m
+[31m-            var drawingColor = (System.Drawing.Color)value;[m
+[31m-            return Windows.UI.Color.FromArgb(drawingColor.A, drawingColor.R, drawingColor.G, drawingColor.B);[m
+[31m-        }[m
+[31m-[m
+[31m-        public object ConvertBack(object value, Type targetType, object parameter, string language)[m
+[31m-        {[m
+[31m-            var uiColor = (Windows.UI.Color)value;[m
+[31m-            return System.Drawing.Color.FromArgb(uiColor.A, uiColor.R, uiColor.G, uiColor.B);[m
+[31m-        }[m
+[31m-    }[m
+[31m-}[m
+[1mdiff --git a/RGBMasterWPFRunner/MainWindow.xaml.cs b/RGBMasterWPFRunner/MainWindow.xaml.cs[m
+[1mindex 008e145..50cdc3c 100644[m
+[1m--- a/RGBMasterWPFRunner/MainWindow.xaml.cs[m
+[1m+++ b/RGBMasterWPFRunner/MainWindow.xaml.cs[m
+[36m@@ -370,7 +370,7 @@[m [mnamespace RGBMasterWPFRunner[m
+                     AppState.Instance.RegisteredProviders.Add(new RegisteredProvider()[m
+                     {[m
+                         Provider = provider.ProviderMetadata,[m
+[31m-                        Devices = new System.Collections.ObjectModel.ObservableCollection<DiscoveredDevice>(discoveredDevices.Select(device => new DiscoveredDevice() { Device = device.DeviceMetadata, IsChecked = false }))[m
+[32m+[m[32m                        Devices = new System.Collections.ObjectModel.ObservableCollection<DiscoveredDevice>(discoveredDevices.Select(device => new DiscoveredDevice() { Device = device.DeviceMetadata, IsChecked = false, ConnectionStatus = ConnectionStatus.Disconnected }))[m
+                     });[m
+                 }[m
+ [m

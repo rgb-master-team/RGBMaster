@@ -13,10 +13,12 @@ namespace AppExecutionManager.EventManagement
         private event EventHandler<EffectMetadata> NewEffectActivationRequested;
         private event EventHandler<List<DiscoveredDevice>> SelectedDevicesChanged;
         private event EventHandler InitializeProvidersRequested;
-        private event EventHandler TurnOnAllLightsRequested;
         private event EventHandler LoadAudioDevicesRequested;
         private event EventHandler<List<DiscoveredDevice>> TurnOnDevicesRequested;
         private event EventHandler<List<DiscoveredDevice>> TurnOffDevicesRequested;
+        private event EventHandler<string> LoadUserSettingRequested;
+        private event EventHandler<Tuple<string, object>> StoreUserSettingRequested;
+        private event EventHandler AppClosingTriggered;
 
         static EventManager()
         {
@@ -92,20 +94,6 @@ namespace AppExecutionManager.EventManagement
         {
             StaticColorChanged?.Invoke(this, color);
         }
-
-        public void SubscribeToTurnOnAllLightsRequests(EventHandler callback)
-        {
-            TurnOnAllLightsRequested += callback;
-        }
-
-        public void UnsubscribeFromTurnOnAllLightsRequests(EventHandler callback)
-        {
-            TurnOnAllLightsRequested -= callback;
-        }
-        public void TurnOnAllLights()
-        {
-            TurnOnAllLightsRequested?.Invoke(this, null);
-        }
         public void SubscribeToLoadAudioDevicesRequests(EventHandler callback)
         {
             LoadAudioDevicesRequested += callback;
@@ -114,6 +102,7 @@ namespace AppExecutionManager.EventManagement
         {
             LoadAudioDevicesRequested -= callback;
         }
+
         public void LoadAudioDevices()
         {
             LoadAudioDevicesRequested?.Invoke(this, null);
@@ -141,6 +130,45 @@ namespace AppExecutionManager.EventManagement
         public void TurnOffDevices(List<DiscoveredDevice> devices)
         {
             TurnOffDevicesRequested?.Invoke(this, devices);
+        }
+
+        public void SubscribeToLoadUserSettingRequests(EventHandler<string> callback)
+        {
+            LoadUserSettingRequested += callback;
+        }
+        public void UnsubscribeFromLoadUserSettingRequests(EventHandler<string> callback)
+        {
+            LoadUserSettingRequested -= callback;
+        }
+        public void LoadUserSetting(string keyAndValue)
+        {
+            LoadUserSettingRequested?.Invoke(this, keyAndValue);
+        }
+
+        public void SubscribeToStoreUserSettingRequests(EventHandler<Tuple<string, object>> callback)
+        {
+            StoreUserSettingRequested += callback;
+        }
+        public void UnsubscribeFromStoreUserSettingRequests(EventHandler<Tuple<string, object>> callback)
+        {
+            StoreUserSettingRequested -= callback;
+        }
+        public void StoreUserSetting(Tuple<string, object> keyAndValue)
+        {
+            StoreUserSettingRequested?.Invoke(this, keyAndValue);
+        }
+
+        public void SubscribeToAppClosingTriggers(EventHandler callback)
+        {
+            AppClosingTriggered += callback;
+        }
+        public void UnsubscribeFromAppClosingTriggers(EventHandler callback)
+        {
+            AppClosingTriggered -= callback;
+        }
+        public void InformAppClosing()
+        {
+            AppClosingTriggered?.Invoke(this, null);
         }
     }
 }

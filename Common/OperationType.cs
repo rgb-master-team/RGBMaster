@@ -10,7 +10,7 @@ namespace Common
     {
         GetColor,
         SetColor,
-        SetGradient,
+        SetColorSmoothly,
         GetBrightness,
         SetBrightness,
         TurnOn,

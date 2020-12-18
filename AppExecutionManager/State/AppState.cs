@@ -21,6 +21,7 @@ namespace AppExecutionManager.State
         private ProviderMetadata currentProcessedProvider;
         private EffectMetadata activeEffect;
         private List<AudioCaptureDevice> audioCaptureDevices;
+        private Dictionary<string, object> userSettingsCache;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -30,12 +31,11 @@ namespace AppExecutionManager.State
             {
                 RegisteredProviders = new ObservableCollection<RegisteredProvider>(),
                 Effects = new ObservableCollection<EffectMetadata>(),
-                // TODO - REMOVE THIS AND MAKE EVERYONE USE THE EFFECT METADATA INSTEAD.
-                StaticColorEffectProperties = new StaticColorEffectProps() { SelectedColor = Color.White, SelectedBrightness = 100 },
                 SupportedProviders = new ObservableCollection<ProviderMetadata>(),
                 IsLoadingProviders = false,
                 ProvidersLoadingProgress = 0.0,
-                AudioCaptureDevices = null
+                AudioCaptureDevices = null,
+                UserSettingsCache = new Dictionary<string, object>()
             };
 
         }
@@ -64,7 +64,6 @@ namespace AppExecutionManager.State
             }
         }
         public ObservableCollection<EffectMetadata> Effects { get; set; }
-        public StaticColorEffectProps StaticColorEffectProperties { get; set; }
         public string AppVersion { get; set; }
         public ObservableCollection<ProviderMetadata> SupportedProviders { get; set; }
         public bool IsEffectRunning => ActiveEffect != null;
@@ -116,6 +115,20 @@ namespace AppExecutionManager.State
             set
             {
                 audioCaptureDevices = value;
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
+            }
+        }
+
+        // TODO - MAKE THIS A FUCKING ICONFIGURATION OBJECT
+        public Dictionary<string, object> UserSettingsCache
+        {
+            get
+            {
+                return userSettingsCache;
+            }
+            set
+            {
+                userSettingsCache = value;
                 NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
             }
         }

@@ -24,8 +24,6 @@ namespace Msi.SDKs
 
 			var allDevices = devicesTypes.Select((deviceType, index) => new MLDevice(ledsCount[index], new Provider.MLDeviceMetadata(providerGuid, DeviceType.Unknown, deviceType))).ToList();
 
-			allDevices.ForEach(x => x.Load());
-
 			return allDevices;
 		}
 

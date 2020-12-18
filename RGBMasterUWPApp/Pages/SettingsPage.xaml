@@ -13,24 +13,22 @@
                 <StackPanel HorizontalAlignment="Left" Spacing="10">
                     <TextBlock  Style="{StaticResource SubtitleTextBlockStyle}"  Text="Device power toggle"/>
                     <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="When enabled, each device that you check in the Devices page will turn on once checked and off when unchecked." TextWrapping="Wrap" Width="500"></TextBlock>
-                    <ToggleSwitch x:Name="TurnOnDeviceEnabler" IsOn="True" />
+                    <ToggleSwitch x:Name="TurnOnDeviceEnabler" IsOn="{x:Bind ToggleDeviceOnCheckUser}" Toggled="TurnOnDeviceEnabler_Toggled" />
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Left" Spacing="10">
-                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}"  Text="Theme Select" />
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Theme Select" />
                     <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="Toggle between dark mode and light mode theme"/>
-                    <ToggleSwitch x:Name="AlwaysDisplayProviders" IsOn="True" OffContent="Light Mode" OnContent="Dark Mode"/>
+                    <ToggleSwitch x:Name="LightOrDarkToggleSwitch" IsEnabled="False" IsOn="{x:Bind IsDarkMode, Mode=OneWay}" OffContent="Light Mode" OnContent="Dark Mode" Toggled="LightOrDarkToggleSwitch_Toggled" />
+                    <TextBlock Text="Due to Xaml Islands constraints, the theme cannot be changed. Will be supported in a later version." />
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Left" Spacing="10">
                     <TextBlock Style="{StaticResource SubtitleTextBlockStyle}"  Text="Application Files" />
                     <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="Choose where to save the application files"/>
                     <StackPanel Orientation="Horizontal" Spacing="4">
-                        <TextBox Header="Configuration file" PlaceholderText="Bind conf. file path" IsReadOnly="True" Width="250"/>
-                        <Button Content="Browse" VerticalAlignment="Bottom"/>
+                        <TextBox Header="Log file" IsReadOnly="True" PlaceholderText="Bind log file path" Text="{x:Bind LogPath, Mode=OneWay}" Width="250"/>
+                        <Button Name="BrowseLogPath" IsEnabled="False" Content="Browse" VerticalAlignment="Bottom" Click="BrowseLogPath_Click"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Spacing="4">
-                        <TextBox Header="Log file" PlaceholderText="Bind log file path" IsReadOnly="True" Width="250"/>
-                        <Button Content="Browse" VerticalAlignment="Bottom"/>
-                    </StackPanel>
+                    <TextBlock Text="Due to Xaml Islands constraints, the log path cannot be changed. Will be supported in a later version." />
                 </StackPanel>
             </StackPanel>
         </PivotItem>

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using RgbMasterDeviceType = Common.DeviceType;
 
@@ -36,7 +37,7 @@ namespace Logitech
 
         }
 
-        public override Task<List<Device>> Discover()
+        protected override Task<List<Device>> InternalDiscover(CancellationToken cancellationToken = default)
         {
             return Task.FromResult(new List<Device>() { new LogitechMouseDevice(new LogitechMouseDeviceMetadata(ProviderMetadata.ProviderGuid, "Logitech G mouse")) });
             /*
@@ -67,7 +68,7 @@ namespace Logitech
            */
         }
 
-        protected override Task InternalRegister()
+        protected override Task InternalRegister(CancellationToken cancellationToken = default)
         {
             // Initialize the LED SDK
             bool LedInitialized = LogitechGSDK.LogiLedInit();
@@ -77,12 +78,14 @@ namespace Logitech
                 throw new LogitechInitFailedException();
             }
 
+            cancellationToken.ThrowIfCancellationRequested();
+
             LogitechGSDK.LogiLedSetTargetDevice(LogitechGSDK.LOGI_DEVICETYPE_ALL);
 
             return Task.CompletedTask;
         }
 
-        protected override Task InternalUnregister()
+        protected override Task InternalUnregister(CancellationToken cancellationToken = default)
         {
             LogitechGSDK.LogiLedShutdown();
             return Task.CompletedTask;

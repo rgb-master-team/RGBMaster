@@ -9,7 +9,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.Resources>
-        <utils:DrawingColorToBrushColor x:Key="ColorConverter" />
+        <utils:DrawingColorToBrushColorValueConverter x:Key="ColorConverter" />
     </Page.Resources>
 
     <StackPanel x:Name="GradientStopsStackpanel" Orientation="Vertical" HorizontalAlignment="Left">
@@ -71,17 +71,17 @@
         <StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <TextBlock>Delay Interval:&#160;</TextBlock>
-                <TextBlock Text="{x:Bind GradientEffectMdProps.DelayInterval, Mode=OneWay}"/>
+                <TextBlock Text="{x:Bind DelayInterval, Mode=OneWay}"/>
                 <TextBlock Text="ms"/>
             </StackPanel>
-            <muxc:NumberBox x:Name="DelayIntervalNumberBox" Value="{x:Bind GradientEffectMdProps.DelayInterval, Mode=TwoWay}" Minimum="0" ToolTipService.ToolTip="Delay between color cycling, in milliseconds" />
+            <muxc:NumberBox x:Name="DelayIntervalNumberBox" Value="{x:Bind DelayInterval, Mode=TwoWay}" Minimum="0" ToolTipService.ToolTip="Delay between color cycling, in milliseconds" />
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <TextBlock>Smoothness:&#160;</TextBlock>
-                <TextBlock Text="{x:Bind GradientEffectMdProps.RelativeSmoothness, Mode=OneWay}"/>
+                <TextBlock Text="{x:Bind RelativeSmoothness, Mode=OneWay}"/>
                 <TextBlock Text="ms"/>
             </StackPanel>
-            <muxc:NumberBox x:Name="SmoothnessSlider" Value="{x:Bind GradientEffectMdProps.RelativeSmoothness, Mode=TwoWay}" Minimum="0" ToolTipService.ToolTip="Time between previous color to this color, in milliseconds" />
+            <muxc:NumberBox x:Name="SmoothnessSlider" Value="{x:Bind RelativeSmoothness, Mode=TwoWay}" Minimum="0" ToolTipService.ToolTip="Time between previous color to this color, in milliseconds" />
         </StackPanel>
     </StackPanel>
 </Page>
