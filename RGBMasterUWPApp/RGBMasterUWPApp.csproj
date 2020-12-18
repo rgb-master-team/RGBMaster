@@ -151,7 +151,7 @@
     </Compile>
     <Compile Include="Utils\ConnStatusToCheckboxIsEnabledConverter.cs" />
     <Compile Include="Utils\ConnStatusToProgBarIsActiveConverter.cs" />
-    <Compile Include="Utils\ConnStatusToProgBarVisibilityConverter.cs" />
+    <Compile Include="Utils\ConnStatusToProgBarOpacityConverter.cs" />
     <Compile Include="Utils\DrawingColorToBrushColorValueConverter.cs" />
     <Compile Include="Utils\ExtensionMethods.cs" />
     <EmbeddedResource Include="Properties\RGBMasterUWPApp.rd.xml" />

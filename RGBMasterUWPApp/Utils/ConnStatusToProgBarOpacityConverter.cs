@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Data;
 
 namespace RGBMasterUWPApp.Utils
 {
-    public class ConnStatusToProgBarVisibilityConverter : IValueConverter
+    public class ConnStatusToProgBarOpacityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
@@ -17,10 +17,10 @@ namespace RGBMasterUWPApp.Utils
 
             if (connStatus == ConnectionStatus.Connecting || connStatus == ConnectionStatus.Disconnecting)
             {
-                return Visibility.Visible;
+                return 1.0;
             }
 
-            return Visibility.Collapsed;
+            return 0.0;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
