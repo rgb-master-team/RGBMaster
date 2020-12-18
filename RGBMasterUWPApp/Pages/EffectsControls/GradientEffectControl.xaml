@@ -9,7 +9,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.Resources>
-        <utils:DrawingColorToBrushColor x:Key="ColorConverter" />
+        <utils:DrawingColorToBrushColorValueConverter x:Key="ColorConverter" />
     </Page.Resources>
 
     <StackPanel x:Name="GradientStopsStackpanel" Orientation="Vertical" HorizontalAlignment="Left">

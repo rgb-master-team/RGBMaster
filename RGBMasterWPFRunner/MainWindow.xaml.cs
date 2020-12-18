@@ -370,7 +370,7 @@ namespace RGBMasterWPFRunner
                     AppState.Instance.RegisteredProviders.Add(new RegisteredProvider()
                     {
                         Provider = provider.ProviderMetadata,
-                        Devices = new System.Collections.ObjectModel.ObservableCollection<DiscoveredDevice>(discoveredDevices.Select(device => new DiscoveredDevice() { Device = device.DeviceMetadata, IsChecked = false }))
+                        Devices = new System.Collections.ObjectModel.ObservableCollection<DiscoveredDevice>(discoveredDevices.Select(device => new DiscoveredDevice() { Device = device.DeviceMetadata, IsChecked = false, ConnectionStatus = ConnectionStatus.Disconnected }))
                     });
                 }
 
