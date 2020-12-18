@@ -11,11 +11,11 @@
         <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <TextBlock>Smoothness:&#160;</TextBlock>
-                <TextBlock Text="{x:Bind DominantDisplayColorEffectProps.RelativeSmoothness, Mode=OneWay}"/>
+                <TextBlock Text="{x:Bind RelativeSmoothness, Mode=OneWay}"/>
                 <TextBlock Text="ms"/>
             </StackPanel>
-            <muxc:NumberBox x:Name="SmoothnessSlider" Value="{x:Bind DominantDisplayColorEffectProps.RelativeSmoothness, Mode=TwoWay}" Minimum="0" ToolTipService.ToolTip="Time between previous color to this color, in milliseconds" />
-            <CheckBox x:Name="HSLCheckBox" Content="Sync by color" Checked="HSLCheckBox_Checked_Changed" Unchecked="HSLCheckBox_Checked_Changed"/>
+            <muxc:NumberBox x:Name="SmoothnessSlider" Value="{x:Bind RelativeSmoothness, Mode=TwoWay}" Minimum="0" ToolTipService.ToolTip="Time between previous color to this color, in milliseconds" />
+            <CheckBox x:Name="HSLCheckBox" Content="Sync by color" IsChecked="{x:Bind SyncBrightnessByHSL, Mode=TwoWay}" />
         </StackPanel>
     </Grid>
 </Page>

@@ -94,5 +94,77 @@ namespace RGBMasterWPFRunner {
                 this["MusicEffectSmoothness"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int StaticColorEffectSmoothness {
+            get {
+                return ((int)(this["StaticColorEffectSmoothness"]));
+            }
+            set {
+                this["StaticColorEffectSmoothness"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GradientEffectGradientPoints {
+            get {
+                return ((string)(this["GradientEffectGradientPoints"]));
+            }
+            set {
+                this["GradientEffectGradientPoints"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int GradientEffectDelayInterval {
+            get {
+                return ((int)(this["GradientEffectDelayInterval"]));
+            }
+            set {
+                this["GradientEffectDelayInterval"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int GradientEffectRelativeSmoothness {
+            get {
+                return ((int)(this["GradientEffectRelativeSmoothness"]));
+            }
+            set {
+                this["GradientEffectRelativeSmoothness"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int DominantDisplayColorEffectRelativeSmoothness {
+            get {
+                return ((int)(this["DominantDisplayColorEffectRelativeSmoothness"]));
+            }
+            set {
+                this["DominantDisplayColorEffectRelativeSmoothness"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool DominantDisplayColorEffectSyncBrightnessByHSL {
+            get {
+                return ((bool)(this["DominantDisplayColorEffectSyncBrightnessByHSL"]));
+            }
+            set {
+                this["DominantDisplayColorEffectSyncBrightnessByHSL"] = value;
+            }
+        }
     }
 }

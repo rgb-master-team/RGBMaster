@@ -471,10 +471,5 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         {
             BrightnessModeDescriptor = (MusicEffectBrightnessModeDescriptor)BrightnessModeComboBox.SelectedItem;
         }
-
-        private void SmoothnessSlider_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
-        {
-            RelativeSmoothness = (int)sender.Value;
-        }
     }
 }

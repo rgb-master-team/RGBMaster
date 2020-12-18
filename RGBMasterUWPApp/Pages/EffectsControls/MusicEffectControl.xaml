@@ -90,10 +90,10 @@
                         <StackPanel Orientation="Horizontal" Spacing="4" Margin="0 0 0 4">
                             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xEDA8;" Margin="0 0 4 0" />
                             <TextBlock>Smoothness&#160;</TextBlock>
-                            <TextBlock Text="{x:Bind MusicEffectMetadataProps.RelativeSmoothness, Mode=OneWay}"/>
+                            <TextBlock Text="{x:Bind RelativeSmoothness, Mode=OneWay}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" MaxWidth="82">
-                        <muxc:NumberBox x:Name="SmoothnessSlider" Value="{x:Bind RelativeSmoothness, Mode=OneWay}" ValueChanged="SmoothnessSlider_ValueChanged" Minimum="0" ToolTipService.ToolTip="Time between previous color to this color, in milliseconds" Width="82"/>
+                        <muxc:NumberBox x:Name="SmoothnessSlider" Value="{x:Bind RelativeSmoothness, Mode=TwoWay}" Minimum="0" ToolTipService.ToolTip="Time between previous color to this color, in milliseconds" Width="82"/>
                         <TextBlock Text="ms" Margin="4"/>
                         </StackPanel>
                     </StackPanel>

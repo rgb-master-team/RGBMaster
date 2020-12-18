@@ -1,22 +1,16 @@
-﻿using AppExecutionManager.State;
+﻿using AppExecutionManager.EventManagement;
+using AppExecutionManager.State;
 using Common;
 using Microsoft.UI.Xaml.Controls;
-using RGBMasterUWPApp.Utils;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Utils;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
@@ -31,6 +25,10 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private const string GradientPointsUserSettingKey = "GradientEffectGradientPoints";
+        private const string DelayIntervalUserSettingKey = "GradientEffectDelayInterval";
+        private const string RelativeSmoothnessUserSettingKey = "GradientEffectRelativeSmoothness";
+
         public Thickness AudioStopButtonMargin
         {
             get
@@ -40,6 +38,32 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         }
 
         public GradientEffectMetadataProperties GradientEffectMdProps => ((GradientEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Gradient)).EffectProperties;
+
+        public int DelayInterval
+        {
+            get
+            {
+                return GradientEffectMdProps.DelayInterval;
+            }
+            set
+            {
+                GradientEffectMdProps.DelayInterval = value;
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
+            }
+        }
+
+        public int RelativeSmoothness
+        {
+            get
+            {
+                return GradientEffectMdProps.RelativeSmoothness;
+            }
+            set
+            {
+                GradientEffectMdProps.RelativeSmoothness = value;
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
+            }
+        }
 
         public List<GradientPoint> GradientPoints
         {
@@ -90,8 +114,77 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
 
         public GradientEffectControl()
         {
+            EventManager.Instance.SubscribeToAppClosingTriggers(AppClosingTriggered);
+            LoadGradientPoints();
+            LoadDelayInterval();
+            LoadRelativeSmoothness();
+
             this.InitializeComponent();
             ReApplyGradientStopsButtonsStyle();
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+
+            SaveUserSettingsForPage();
+        }
+
+        private void SaveUserSettingsForPage()
+        {
+            EventManager.Instance.StoreUserSetting(new Tuple<string, object>(GradientPointsUserSettingKey, JsonConvert.SerializeObject(GradientPoints)));
+            EventManager.Instance.StoreUserSetting(new Tuple<string, object>(DelayIntervalUserSettingKey, DelayInterval));
+            EventManager.Instance.StoreUserSetting(new Tuple<string, object>(RelativeSmoothnessUserSettingKey, RelativeSmoothness));
+        }
+
+        private void LoadRelativeSmoothness()
+        {
+            EventManager.Instance.LoadUserSetting(RelativeSmoothnessUserSettingKey);
+            if (AppState.Instance.UserSettingsCache.TryGetValue(RelativeSmoothnessUserSettingKey, out var relativeSmoothness))
+            {
+                RelativeSmoothness = (int)relativeSmoothness;
+            }
+            else
+            {
+                RelativeSmoothness = 0;
+            }
+        }
+
+        private void LoadDelayInterval()
+        {
+            EventManager.Instance.LoadUserSetting(DelayIntervalUserSettingKey);
+            if (AppState.Instance.UserSettingsCache.TryGetValue(DelayIntervalUserSettingKey, out var delayInterval))
+            {
+                DelayInterval = (int)delayInterval;
+            }
+            else
+            {
+                DelayInterval = 0;
+            }
+        }
+
+        private void AppClosingTriggered(object sender, EventArgs e)
+        {
+            SaveUserSettingsForPage();
+        }
+
+        private void LoadGradientPoints()
+        {
+            EventManager.Instance.LoadUserSetting(GradientPointsUserSettingKey);
+            if (AppState.Instance.UserSettingsCache.TryGetValue(GradientPointsUserSettingKey, out var gradientPointsJsonObject) &&
+                !string.IsNullOrWhiteSpace(gradientPointsJsonObject as string))
+            {
+                var gradientPointsJson = (string)gradientPointsJsonObject;
+                try
+                {
+                    var gradientPoints = JsonConvert.DeserializeObject<List<GradientPoint>>(gradientPointsJson);
+                    GradientPoints = gradientPoints;
+                }
+                catch (Exception ex)
+                {
+                    // TODO - ADD LOGGING SERVICE!
+                }
+            }
         }
 
         private void ChangeColor_Click(object sender, RoutedEventArgs e)

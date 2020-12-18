@@ -22,10 +22,10 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
             <TextBlock>Smoothness:&#160;</TextBlock>
-            <TextBlock Text="{x:Bind StaticColorEffectProps.RelativeSmoothness, Mode=OneWay}"/>
+            <TextBlock Text="{x:Bind RelativeSmoothness, Mode=OneWay}"/>
             <TextBlock Text="ms"/>
         </StackPanel>
-        <muxc:NumberBox x:Name="SmoothnessSlider" Value="{x:Bind StaticColorEffectProps.RelativeSmoothness, Mode=TwoWay}" Minimum="0" ToolTipService.ToolTip="Time between previous color to this color, in milliseconds" />
+        <muxc:NumberBox x:Name="SmoothnessSlider" Value="{x:Bind RelativeSmoothness, Mode=TwoWay}" Minimum="0" ToolTipService.ToolTip="Time between previous color to this color, in milliseconds" />
 
     </StackPanel>
 </Page>

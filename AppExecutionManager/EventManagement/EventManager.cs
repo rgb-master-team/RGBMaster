@@ -102,6 +102,7 @@ namespace AppExecutionManager.EventManagement
         {
             LoadAudioDevicesRequested -= callback;
         }
+
         public void LoadAudioDevices()
         {
             LoadAudioDevicesRequested?.Invoke(this, null);
