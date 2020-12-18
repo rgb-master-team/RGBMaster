@@ -167,7 +167,7 @@ namespace AppExecutionManager.EventManagement
         }
         public void InformAppClosing()
         {
-            AppClosingTriggered.Invoke(this, null);
+            AppClosingTriggered?.Invoke(this, null);
         }
     }
 }

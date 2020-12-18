@@ -128,21 +128,36 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\128.png" />
-    <Content Include="Assets\Icons\AllDevices.png" />
-    <Content Include="Assets\Icons\Chair.png" />
-    <Content Include="Assets\Icons\Fan.png" />
-    <Content Include="Assets\Icons\GPU.png" />
-    <Content Include="Assets\Icons\Headset.png" />
-    <Content Include="Assets\Icons\Keyboard.png" />
-    <Content Include="Assets\Icons\Keypad.png" />
-    <Content Include="Assets\Icons\LedStrip.png" />
-    <Content Include="Assets\Icons\Lightbulb.png" />
-    <Content Include="Assets\Icons\Memory.png" />
-    <Content Include="Assets\Icons\Motherboard.png" />
-    <Content Include="Assets\Icons\Mouse.png" />
-    <Content Include="Assets\Icons\Mousepad.png" />
-    <Content Include="Assets\Icons\Speaker.png" />
-    <Content Include="Assets\Icons\Unknown.png" />
+    <Content Include="Assets\Icons\Black\AllDevices.png" />
+    <Content Include="Assets\Icons\Black\Chair.png" />
+    <Content Include="Assets\Icons\Black\Fan.png" />
+    <Content Include="Assets\Icons\Black\GPU.png" />
+    <Content Include="Assets\Icons\Black\Headset.png" />
+    <Content Include="Assets\Icons\Black\Keyboard.png" />
+    <Content Include="Assets\Icons\Black\Keypad.png" />
+    <Content Include="Assets\Icons\Black\LedStrip.png" />
+    <Content Include="Assets\Icons\Black\Lightbulb.png" />
+    <Content Include="Assets\Icons\Black\Memory.png" />
+    <Content Include="Assets\Icons\Black\Motherboard.png" />
+    <Content Include="Assets\Icons\Black\Mouse.png" />
+    <Content Include="Assets\Icons\Black\Mousepad.png" />
+    <Content Include="Assets\Icons\Black\Speaker.png" />
+    <Content Include="Assets\Icons\Black\Unknown.png" />
+    <Content Include="Assets\Icons\White\AllDevices.png" />
+    <Content Include="Assets\Icons\White\Chair.png" />
+    <Content Include="Assets\Icons\White\Fan.png" />
+    <Content Include="Assets\Icons\White\GPU.png" />
+    <Content Include="Assets\Icons\White\Headset.png" />
+    <Content Include="Assets\Icons\White\Keyboard.png" />
+    <Content Include="Assets\Icons\White\Keypad.png" />
+    <Content Include="Assets\Icons\White\LedStrip.png" />
+    <Content Include="Assets\Icons\White\Lightbulb.png" />
+    <Content Include="Assets\Icons\White\Memory.png" />
+    <Content Include="Assets\Icons\White\Motherboard.png" />
+    <Content Include="Assets\Icons\White\Mouse.png" />
+    <Content Include="Assets\Icons\White\Mousepad.png" />
+    <Content Include="Assets\Icons\White\Speaker.png" />
+    <Content Include="Assets\Icons\White\Unknown.png" />
     <Content Include="Assets\Logos\CorsairiCueLogo.png" />
     <Content Include="Assets\Logos\DiscordLogo.png" />
     <Content Include="Assets\Logos\GitHubLogo.png" />
@@ -184,6 +199,7 @@
       <Name>RGBMasterUWPApp</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
