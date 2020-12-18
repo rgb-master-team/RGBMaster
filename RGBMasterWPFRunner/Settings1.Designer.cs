@@ -70,5 +70,29 @@ namespace RGBMasterWPFRunner {
                 this["IsDarkMode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int MusicEffectBrightnessMode {
+            get {
+                return ((int)(this["MusicEffectBrightnessMode"]));
+            }
+            set {
+                this["MusicEffectBrightnessMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int MusicEffectSmoothness {
+            get {
+                return ((int)(this["MusicEffectSmoothness"]));
+            }
+            set {
+                this["MusicEffectSmoothness"] = value;
+            }
+        }
     }
 }

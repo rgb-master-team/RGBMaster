@@ -48,12 +48,40 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         private const double IntensityMax = 255;
 
         private const string AudioPointsUserSettingKey = "MusicEffectAudioPoints";
+        private const string BrightnessModeSettingsKey = "MusicEffectBrightnessMode";
+        private const string SmoothnessSettingsKey = "MusicEffectSmoothness";
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public bool IsAudioPointsEditingEnabled => !AppState.Instance.IsEffectRunning;
 
         public MusicEffectMetadataProperties MusicEffectMetadataProps = ((MusicEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Music)).EffectProperties;
+
+        public MusicEffectBrightnessModeDescriptor BrightnessModeDescriptor
+        {
+            get
+            {
+                return BrightnessModes.First(bm => bm.Mode == MusicEffectMetadataProps.BrightnessMode);
+            }
+            set
+            {
+                MusicEffectMetadataProps.BrightnessMode = value.Mode;
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
+            }
+        }
+
+        public int RelativeSmoothness
+        {
+            get
+            {
+                return MusicEffectMetadataProps.RelativeSmoothness;
+            }
+            set
+            {
+                MusicEffectMetadataProps.RelativeSmoothness = value;
+                NotifyPropertyChangedUtils.OnPropertyChanged(PropertyChanged, this);
+            }
+        }
 
         public List<MusicEffectBrightnessModeDescriptor> BrightnessModes => brightnessModes;
 
@@ -99,13 +127,45 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         {
             LoadAudioPointsFromUserSettings();
             LoadAudioCaptureDevices();
+            LoadBrightnessMode();
+            LoadSmoothness();
             EventManager.Instance.SubscribeToAppClosingTriggers(AppClosingTriggered);
 
             AppState.Instance.PropertyChanged += AppStateInstance_PropertyChanged;
 
             this.InitializeComponent();
+        }
 
-            BrightnessModeComboBox.SelectedItem = BrightnessModes[1];
+        private void LoadSmoothness()
+        {
+            EventManager.Instance.LoadUserSetting(SmoothnessSettingsKey);
+
+            if (AppState.Instance.UserSettingsCache.TryGetValue(SmoothnessSettingsKey, out var smoothnessObj))
+            {
+                int smoothness = (int)smoothnessObj;
+                RelativeSmoothness = smoothness;
+            }
+            else
+            {
+                RelativeSmoothness = 0;
+            }
+        }
+
+        private void LoadBrightnessMode()
+        {
+            EventManager.Instance.LoadUserSetting(BrightnessModeSettingsKey);
+
+            MusicEffectBrightnessMode brightnessMode;
+            if (AppState.Instance.UserSettingsCache.TryGetValue(BrightnessModeSettingsKey, out var brightnessModeObj))
+            {
+                brightnessMode = (MusicEffectBrightnessMode)brightnessModeObj;
+            }
+            else
+            {
+                brightnessMode = MusicEffectBrightnessMode.ByHSL;
+            }
+
+            BrightnessModeDescriptor = BrightnessModes.First(bm => bm.Mode == brightnessMode);
         }
 
         private void AppClosingTriggered(object sender, EventArgs e)
@@ -403,11 +463,18 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         private void SaveUserSettingsForPage()
         {
             EventManager.Instance.StoreUserSetting(new Tuple<string, object>(AudioPointsUserSettingKey, JsonConvert.SerializeObject(AudioPoints)));
+            EventManager.Instance.StoreUserSetting(new Tuple<string, object>(BrightnessModeSettingsKey, (int)BrightnessModeDescriptor.Mode));
+            EventManager.Instance.StoreUserSetting(new Tuple<string, object>(SmoothnessSettingsKey, (int)RelativeSmoothness));
         }
 
         private void BrightnessModeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            MusicEffectMetadataProps.BrightnessMode = ((MusicEffectBrightnessModeDescriptor)BrightnessModeComboBox.SelectedItem).Mode;
+            BrightnessModeDescriptor = (MusicEffectBrightnessModeDescriptor)BrightnessModeComboBox.SelectedItem;
+        }
+
+        private void SmoothnessSlider_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
+        {
+            RelativeSmoothness = (int)sender.Value;
         }
     }
 }

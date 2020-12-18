@@ -7,6 +7,8 @@ namespace Common
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public bool SyncBrightnessByHSL { get; set; }
+
         private int relativeSmoothness;
         public int RelativeSmoothness
         {

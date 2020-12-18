@@ -74,7 +74,7 @@
                             <TextBlock Text="Brightness Mode" Style="{StaticResource BodyTextBlockStyle}"/>
                         </StackPanel>
                         <StackPanel>
-                            <ComboBox x:Name="BrightnessModeComboBox" PlaceholderText="Brightness mode" ItemsSource="{x:Bind BrightnessModes}" SelectionChanged="BrightnessModeComboBox_SelectionChanged">
+                            <ComboBox x:Name="BrightnessModeComboBox" PlaceholderText="Brightness mode" SelectedItem="{x:Bind BrightnessModeDescriptor, Mode=OneWay}" ItemsSource="{x:Bind BrightnessModes}" SelectionChanged="BrightnessModeComboBox_SelectionChanged">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate x:DataType="local:MusicEffectBrightnessModeDescriptor">
                                         <StackPanel Orientation="Horizontal" ToolTipService.ToolTip="{x:Bind Description}">
@@ -93,7 +93,7 @@
                             <TextBlock Text="{x:Bind MusicEffectMetadataProps.RelativeSmoothness, Mode=OneWay}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" MaxWidth="82">
-                        <muxc:NumberBox x:Name="SmoothnessSlider" Value="{x:Bind MusicEffectMetadataProps.RelativeSmoothness, Mode=TwoWay}" Minimum="0" ToolTipService.ToolTip="Time between previous color to this color, in milliseconds" Width="82"/>
+                        <muxc:NumberBox x:Name="SmoothnessSlider" Value="{x:Bind RelativeSmoothness, Mode=OneWay}" ValueChanged="SmoothnessSlider_ValueChanged" Minimum="0" ToolTipService.ToolTip="Time between previous color to this color, in milliseconds" Width="82"/>
                         <TextBlock Text="ms" Margin="4"/>
                         </StackPanel>
                     </StackPanel>

@@ -32,13 +32,24 @@ namespace EffectsExecution
         {
             while (!backgroundWorkCancellationTokenSource.IsCancellationRequested)
             {
-                var smoothness = ((CursorColorEffectMetadata)executedEffectMetadata).EffectProperties.RelativeSmoothness;
+                var effectProps = ((CursorColorEffectMetadata)executedEffectMetadata).EffectProperties;
+
+                var shouldSyncBrightnessByHSL = effectProps.SyncBrightnessByHSL;
+
+                var smoothness = effectProps.RelativeSmoothness;
 
                 var cursorLoc = GfxUtils.GetCursorLocation();
 
                 var color = GfxUtils.GetColorAt(cursorLoc.X, cursorLoc.Y);
 
                 List<Task> setColorTasks = new List<Task>();
+
+                byte desiredBrightnessPercentage = 0;
+
+                if (shouldSyncBrightnessByHSL)
+                {
+                    desiredBrightnessPercentage = (byte)(color.GetBrightness() * 100);
+                }
 
                 foreach (var device in devices)
                 {
@@ -49,6 +60,11 @@ namespace EffectsExecution
                     else if (device.DeviceMetadata.IsOperationSupported(OperationType.SetColor))
                     {
                         setColorTasks.Add(Task.Run(async () => await device.SetColor(color).ConfigureAwait(false)));
+                    }
+
+                    if (shouldSyncBrightnessByHSL && device.DeviceMetadata.IsOperationSupported(OperationType.SetBrightness))
+                    {
+                        setColorTasks.Add(Task.Run(async () => await device.SetBrightnessPercentage(desiredBrightnessPercentage).ConfigureAwait(false)));
                     }
                 }
 

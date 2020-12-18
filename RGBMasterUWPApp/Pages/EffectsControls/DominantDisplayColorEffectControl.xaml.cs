@@ -29,5 +29,10 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         {
             this.InitializeComponent();
         }
+
+        private void HSLCheckBox_Checked_Changed(object sender, RoutedEventArgs e)
+        {
+            DominantDisplayColorEffectProps.SyncBrightnessByHSL = HSLCheckBox.IsChecked.Value;
+        }
     }
 }
