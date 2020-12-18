@@ -13,7 +13,6 @@ namespace AppExecutionManager.EventManagement
         private event EventHandler<EffectMetadata> NewEffectActivationRequested;
         private event EventHandler<List<DiscoveredDevice>> SelectedDevicesChanged;
         private event EventHandler InitializeProvidersRequested;
-        private event EventHandler TurnOnAllLightsRequested;
         private event EventHandler LoadAudioDevicesRequested;
         private event EventHandler<List<DiscoveredDevice>> TurnOnDevicesRequested;
         private event EventHandler<List<DiscoveredDevice>> TurnOffDevicesRequested;
@@ -94,20 +93,6 @@ namespace AppExecutionManager.EventManagement
         public void ChangeStaticColor(StaticColorEffectProps color)
         {
             StaticColorChanged?.Invoke(this, color);
-        }
-
-        public void SubscribeToTurnOnAllLightsRequests(EventHandler callback)
-        {
-            TurnOnAllLightsRequested += callback;
-        }
-
-        public void UnsubscribeFromTurnOnAllLightsRequests(EventHandler callback)
-        {
-            TurnOnAllLightsRequested -= callback;
-        }
-        public void TurnOnAllLights()
-        {
-            TurnOnAllLightsRequested?.Invoke(this, null);
         }
         public void SubscribeToLoadAudioDevicesRequests(EventHandler callback)
         {

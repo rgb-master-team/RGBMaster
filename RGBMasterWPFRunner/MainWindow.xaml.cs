@@ -52,7 +52,6 @@ namespace RGBMasterWPFRunner
             EventManager.Instance.SubscribeToSelectedDevicesChanged(Instance_SelectedDevicesChanged);
             EventManager.Instance.SubscribeToInitializeProvidersRequests(InitializeProviders);
             EventManager.Instance.SubscribeToStaticColorChanges(ChangeStaticColor);
-            EventManager.Instance.SubscribeToTurnOnAllLightsRequests(TurnOnAllLights);
             EventManager.Instance.SubscribeToLoadAudioDevicesRequests(LoadAudioDevices);
             EventManager.Instance.SubscribeToTurnOnDevicesRequests(TurnOnDevices);
             EventManager.Instance.SubscribeToTurnOffDevicesRequests(TurnOffDevices);
@@ -139,33 +138,47 @@ namespace RGBMasterWPFRunner
             AppState.Instance.AppVersion = string.Format($"{version.Major}.{version.Minor}.{version.Build}.{version.Revision}");
         }
 
-        private async Task<bool> AttemptDeviceConnection(Device concreteDevice)
+        private async Task<ConnectionAlterResult> AttemptDeviceConnection(Device concreteDevice, DiscoveredDevice discoveredDevice)
         {
+            discoveredDevice.ConnectionStatus = ConnectionStatus.Connecting;
+
             Log.Logger.Warning("Device with GUID {A} is not connected. Attempting connection.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
 
-            var didConnect = await concreteDevice.Connect();
+            var connectionResult = await concreteDevice.Connect();
 
-            if (!didConnect)
+            if (connectionResult == ConnectionAlterResult.Failed)
             {
                 Log.Logger.Error("Failed connecting to device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
                 InformErrorOnFlyout($"Failed to connect to device {concreteDevice.DeviceMetadata.DeviceName}. \nThis might be a problem in the {AppState.Instance.SupportedProviders.First(x => x.ProviderGuid == concreteDevice.DeviceMetadata.RgbMasterDiscoveringProvider).ProviderName} provider. \nMake sure network connection is valid and try to refresh devices or restart the app.");
+                discoveredDevice.ConnectionStatus = ConnectionStatus.Disconnected;
+            }
+            else if (connectionResult == ConnectionAlterResult.Succeeded)
+            {
+                discoveredDevice.ConnectionStatus = ConnectionStatus.Connected;
             }
 
-            return didConnect;
+            return connectionResult;
         }
 
-        private async Task<bool> AttemptDeviceDisconnection(Device concreteDevice)
+        private async Task<ConnectionAlterResult> AttemptDeviceDisconnection(Device concreteDevice, DiscoveredDevice discoveredDevice)
         {
-            Log.Logger.Warning("Disconnecting from device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
-            var didDisconnect = await concreteDevice.Disconnect();
+            discoveredDevice.ConnectionStatus = ConnectionStatus.Disconnecting;
 
-            if (!didDisconnect)
+            Log.Logger.Warning("Disconnecting from device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
+            var connectionAlterResult = await concreteDevice.Disconnect();
+
+            if (connectionAlterResult == ConnectionAlterResult.Failed)
             {
                 Log.Logger.Error("Failed disconnecting from device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
                 InformErrorOnFlyout($"Failed to disconnect from device {concreteDevice.DeviceMetadata.DeviceName}. \nThis might be a problem in the {AppState.Instance.SupportedProviders.First(x => x.ProviderGuid == concreteDevice.DeviceMetadata.RgbMasterDiscoveringProvider).ProviderName} provider. \nMake sure network connection is valid and try to refresh devices or restart the app.");
+                discoveredDevice.ConnectionStatus = ConnectionStatus.Disconnected;
+            }
+            else if (connectionAlterResult == ConnectionAlterResult.Succeeded)
+            {
+                discoveredDevice.ConnectionStatus = ConnectionStatus.Disconnected;
             }
 
-            return didDisconnect;
+            return connectionAlterResult;
         }
 
         private async void TurnOffDevices(object sender, List<DiscoveredDevice> e)
@@ -188,9 +201,9 @@ namespace RGBMasterWPFRunner
         {
             var concreteDevice = concreteDevices[item.Device.RgbMasterDeviceGuid];
 
-            var isDeviceConnected = await AttemptDeviceConnection(concreteDevice);
+            var isDeviceConnected = await AttemptDeviceConnection(concreteDevice, item);
 
-            if (isDeviceConnected)
+            if (isDeviceConnected == ConnectionAlterResult.Succeeded && concreteDevice.DeviceMetadata.IsOperationSupported(OperationType.TurnOff))
             {
                 Log.Logger.Warning("Turning off device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
                 await concreteDevice.TurnOff();
@@ -201,9 +214,9 @@ namespace RGBMasterWPFRunner
         {
             var concreteDevice = concreteDevices[item.Device.RgbMasterDeviceGuid];
 
-            var isDeviceConnected = await AttemptDeviceConnection(concreteDevice);
+            var isDeviceConnected = await AttemptDeviceConnection(concreteDevice, item);
 
-            if (isDeviceConnected)
+            if (isDeviceConnected == ConnectionAlterResult.Succeeded && concreteDevice.DeviceMetadata.IsOperationSupported(OperationType.TurnOn))
             {
                 Log.Logger.Warning("Turning on device with GUID {A}.", concreteDevice.DeviceMetadata.RgbMasterDeviceGuid);
                 await concreteDevice.TurnOn();
@@ -246,25 +259,6 @@ namespace RGBMasterWPFRunner
                 DataFlow.Capture => AudioCaptureDeviceFlowType.Input,
                 _ => AudioCaptureDeviceFlowType.Unknown,
             };
-        }
-
-        private async void TurnOnAllLights(object sender, EventArgs e)
-        {
-            var tasks = new List<Task>();
-
-            foreach (var provider in AppState.Instance.RegisteredProviders)
-            {
-                foreach (var device in provider.Devices)
-                {
-                    if (device.IsChecked)
-                    {
-                        var deviceGuid = device.Device.RgbMasterDeviceGuid;
-                        tasks.Add(Task.Run(() => concreteDevices[deviceGuid].TurnOn()));
-                    }
-                }
-            }
-
-            await Task.WhenAll(tasks);
         }
 
         private async void ChangeStaticColor(object sender, StaticColorEffectProps staticColorEffectProps)
@@ -443,19 +437,19 @@ namespace RGBMasterWPFRunner
                         await TurnOffDevice(item);
                     }
 
-                    var didDisconnect = await AttemptDeviceDisconnection(concreteDevice);
+                    var didDisconnect = await AttemptDeviceDisconnection(concreteDevice, item);
                 }
                 // If the item is checked, and is not connected - we need to attempt connecting it,
                 // and turn it on by the user's configuration.
                 else if (item.IsChecked && !concreteDevice.IsConnected)
                 {
-                    var didConnect = await AttemptDeviceConnection(concreteDevice);
+                    var didConnect = await AttemptDeviceConnection(concreteDevice, item);
 
-                    if (didConnect && shouldToggleDevice)
+                    if (didConnect == ConnectionAlterResult.Succeeded && shouldToggleDevice)
                     {
                         await TurnOnDevice(item);
                     }
-                    else if (!didConnect)
+                    else if (didConnect == ConnectionAlterResult.Failed)
                     {
                         item.IsChecked = false;
                     }

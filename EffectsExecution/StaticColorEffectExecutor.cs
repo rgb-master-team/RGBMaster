@@ -28,21 +28,24 @@ namespace EffectsExecution
                 {
                     tasksList.Add(Task.Run(async () =>
                     {
-                        await device.SetColorSmoothly(color, smoothness);
+                        await device.SetColorSmoothly(color, smoothness).ConfigureAwait(false);
                     }));
                 }
-                else
+                else if (device.DeviceMetadata.IsOperationSupported(OperationType.SetColor))
                 {
                     tasksList.Add(Task.Run(async () =>
                     {
-                        await device.SetColor(color);
+                        await device.SetColor(color).ConfigureAwait(false);
                     }));
                 }
 
-                tasksList.Add(Task.Run(async () =>
+                if (device.DeviceMetadata.IsOperationSupported(OperationType.SetBrightness))
                 {
-                    await device.SetBrightnessPercentage(newStaticColorEffectProps.SelectedBrightness);
-                }));
+                    tasksList.Add(Task.Run(async () =>
+                    {
+                        await device.SetBrightnessPercentage(newStaticColorEffectProps.SelectedBrightness).ConfigureAwait(false);
+                    }));
+                }
             }
 
             await Task.WhenAll(tasksList);

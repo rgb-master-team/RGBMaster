@@ -146,19 +146,16 @@ namespace EffectsExecution
             {
                 if (shouldChangeBrightness && device.DeviceMetadata.SupportedOperations.Contains(OperationType.SetBrightness))
                 {
-                    tasks.Add(Task.Run(async () => await device.SetBrightnessPercentage(desiredBrightnessPercentage)));
+                    tasks.Add(Task.Run(async () => await device.SetBrightnessPercentage(desiredBrightnessPercentage).ConfigureAwait(false)));
                 }
 
-                if (device.DeviceMetadata.SupportedOperations.Contains(OperationType.SetColor))
+                if (relativeSmoothness > 0 && device.DeviceMetadata.IsOperationSupported(OperationType.SetColorSmoothly))
                 {
-                    if (relativeSmoothness > 0 && device.DeviceMetadata.SupportedOperations.Contains(OperationType.SetColorSmoothly))
-                    {
-                        tasks.Add(Task.Run(async () => await device.SetColorSmoothly(color, relativeSmoothness)));
-                    }
-                    else
-                    {
-                        tasks.Add(Task.Run(async () => await device.SetColor(color)));
-                    }
+                    tasks.Add(Task.Run(async () => await device.SetColorSmoothly(color, relativeSmoothness).ConfigureAwait(false)));
+                }
+                else if (device.DeviceMetadata.IsOperationSupported(OperationType.SetColor))
+                {
+                    tasks.Add(Task.Run(async () => await device.SetColor(color).ConfigureAwait(false)));
                 }
             }
 

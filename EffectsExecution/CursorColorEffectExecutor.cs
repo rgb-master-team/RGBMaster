@@ -23,7 +23,7 @@ namespace EffectsExecution
             var enumeratedDevices = Devices.ToList();
 
             backgroundWorkCancellationTokenSource = new CancellationTokenSource();
-            Task.Run(() => DoWork(enumeratedDevices), backgroundWorkCancellationTokenSource.Token);
+            Task.Run(() => DoWork(enumeratedDevices), backgroundWorkCancellationTokenSource.Token).ConfigureAwait(false);
 
             return Task.CompletedTask;
         }
@@ -44,11 +44,11 @@ namespace EffectsExecution
                 {
                     if (smoothness > 0 && device.DeviceMetadata.IsOperationSupported(OperationType.SetColorSmoothly))
                     {
-                        setColorTasks.Add(Task.Run(async () => await device.SetColorSmoothly(color, smoothness)));
+                        setColorTasks.Add(Task.Run(async () => await device.SetColorSmoothly(color, smoothness).ConfigureAwait(false)));
                     }
-                    else
+                    else if (device.DeviceMetadata.IsOperationSupported(OperationType.SetColor))
                     {
-                        setColorTasks.Add(Task.Run(async () => await device.SetColor(color)));
+                        setColorTasks.Add(Task.Run(async () => await device.SetColor(color).ConfigureAwait(false)));
                     }
                 }
 

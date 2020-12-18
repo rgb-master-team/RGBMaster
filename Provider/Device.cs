@@ -28,82 +28,62 @@ namespace Provider
 
         public async Task<Color> GetColor()
         {
-            if (DeviceMetadata.SupportedOperations.Contains(OperationType.GetColor))
-            {
-                return await GetColorInternal();
-            }
-
-            return Color.Empty;
+            return await GetColorInternal();
         }
 
         protected abstract Task<Color> GetColorInternal();
 
         public async Task SetColor(Color color)
         {
-            if (DeviceMetadata.SupportedOperations.Contains(OperationType.SetColor))
-            {
-                await SetColorInternal(color);
-            }
+            await SetColorInternal(color);
         }
 
         protected abstract Task SetColorInternal(Color color);
 
         public async Task SetColorSmoothly(Color color, int relativeSmoothness)
         {
-            if (DeviceMetadata.SupportedOperations.Contains(OperationType.SetColorSmoothly))
-            {
-                await SetColorSmoothlyInternal(color, relativeSmoothness);
-            }
+            await SetColorSmoothlyInternal(color, relativeSmoothness);
         }
 
         protected abstract Task SetColorSmoothlyInternal(Color color, int relativeSmoothness);
 
         public async Task<byte> GetBrightnessPercentage()
         {
-            if (DeviceMetadata.SupportedOperations.Contains(OperationType.GetBrightness))
-            {
-               return await GetBrightnessPercentageInternal();
-            }
-
-            return 0;
+            return await GetBrightnessPercentageInternal();
         }
 
         protected abstract Task<byte> GetBrightnessPercentageInternal();
 
         public async Task SetBrightnessPercentage(byte brightness)
         {
-            if (DeviceMetadata.SupportedOperations.Contains(OperationType.SetBrightness))
-            {
-                await SetBrightnessPercentageInternal(brightness);
-            }
+            await SetBrightnessPercentageInternal(brightness);
         }
 
         protected abstract Task SetBrightnessPercentageInternal(byte brightness);
 
         public async Task TurnOn()
         {
-            if (DeviceMetadata.SupportedOperations.Contains(OperationType.TurnOn))
-            {
-                await TurnOnInternal();
-                IsTurnedOn = true;
-            }
+            await TurnOnInternal();
+            IsTurnedOn = true;
         }
 
         public async Task TurnOff()
         {
-            if (DeviceMetadata.SupportedOperations.Contains(OperationType.TurnOff))
-            {
-                await TurnOffInternal();
-                IsTurnedOn = false;
-            }
+            await TurnOffInternal();
+            IsTurnedOn = false;
         }
 
         protected abstract Task TurnOnInternal();
         protected abstract Task TurnOffInternal();
 
-        public async Task<bool> Connect()
+        public async Task<ConnectionAlterResult> Connect()
         {
-            await deviceConnectionChangesSemaphore.WaitAsync();
+            var isFree = await deviceConnectionChangesSemaphore.WaitAsync(0);
+
+            if (!isFree)
+            {
+                return ConnectionAlterResult.Busy;
+            }
 
             bool didSucceed;
 
@@ -134,12 +114,17 @@ namespace Provider
 
             deviceConnectionChangesSemaphore.Release();
 
-            return didSucceed;
+            return didSucceed ? ConnectionAlterResult.Succeeded : ConnectionAlterResult.Failed;
         }
 
-        public async Task<bool> Disconnect()
+        public async Task<ConnectionAlterResult> Disconnect()
         {
-            await deviceConnectionChangesSemaphore.WaitAsync();
+            var isFree = await deviceConnectionChangesSemaphore.WaitAsync(0);
+
+            if (!isFree)
+            {
+                return ConnectionAlterResult.Busy;
+            }
 
             bool didSucceed;
 
@@ -170,7 +155,7 @@ namespace Provider
 
             deviceConnectionChangesSemaphore.Release();
 
-            return didSucceed;
+            return didSucceed ? ConnectionAlterResult.Succeeded : ConnectionAlterResult.Failed;
         }
 
         protected abstract Task ConnectInternal();
