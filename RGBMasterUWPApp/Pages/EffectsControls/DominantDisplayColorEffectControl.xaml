@@ -15,7 +15,7 @@
                 <TextBlock Text="ms"/>
             </StackPanel>
             <muxc:NumberBox x:Name="SmoothnessSlider" Value="{x:Bind RelativeSmoothness, Mode=TwoWay}" Minimum="0" ToolTipService.ToolTip="Time between previous color to this color, in milliseconds" />
-            <CheckBox x:Name="HSLCheckBox" Content="Sync by color" ToolTipService.ToolTip="Brightness changes by the output color intensity" IsChecked="{x:Bind SyncBrightnessByHSL, Mode=TwoWay}" />
+            <CheckBox x:Name="HSLCheckBox" Content="Sync brightness by color" ToolTipService.ToolTip="Brightness changes by the output color intensity" IsChecked="{x:Bind SyncBrightnessByHSL, Mode=TwoWay}" />
         </StackPanel>
     </Grid>
 </Page>
