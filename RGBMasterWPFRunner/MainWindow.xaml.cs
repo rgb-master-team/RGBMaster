@@ -57,6 +57,7 @@ namespace RGBMasterWPFRunner
             EventManager.Instance.SubscribeToTurnOffDevicesRequests(TurnOffDevices);
             EventManager.Instance.SubscribeToStoreUserSettingRequests(StoreUserSetting);
             EventManager.Instance.SubscribeToLoadUserSettingRequests(LoadUserSetting);
+            EventManager.Instance.SubscribeToResetUserSettingsToDefaultRequests(ResetUserSettingsToDefault);
 
             SetAppVersion();
             Serilog.Core.Logger globalLog = GenerateAppLogger();
@@ -68,6 +69,25 @@ namespace RGBMasterWPFRunner
             SetUIStateEffects();
 
             InitializeComponent();
+        }
+
+        private void ResetUserSettingsToDefault(object sender, IEnumerable<string> keys)
+        {
+            foreach (var key in keys)
+            {
+                var propValueObj = Settings1.Default.PropertyValues[key];
+                var defaultValue = Settings1.Default.Properties[key].DefaultValue;
+
+                propValueObj.SerializedValue = defaultValue;
+                propValueObj.Deserialized = false;
+            }
+
+            Settings1.Default.Save();
+
+            foreach (var key in keys)
+            {
+                AppState.Instance.UserSettingsCache[key] = Settings1.Default[key];
+            }
         }
 
         private void LoadUserSetting(object sender, string e)

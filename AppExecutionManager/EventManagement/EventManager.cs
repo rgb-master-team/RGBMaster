@@ -18,6 +18,7 @@ namespace AppExecutionManager.EventManagement
         private event EventHandler<List<DiscoveredDevice>> TurnOffDevicesRequested;
         private event EventHandler<string> LoadUserSettingRequested;
         private event EventHandler<Tuple<string, object>> StoreUserSettingRequested;
+        private event EventHandler<IEnumerable<string>> ResetUserSettingsToDefaultRequested;
         private event EventHandler AppClosingTriggered;
 
         static EventManager()
@@ -156,6 +157,19 @@ namespace AppExecutionManager.EventManagement
         public void StoreUserSetting(Tuple<string, object> keyAndValue)
         {
             StoreUserSettingRequested?.Invoke(this, keyAndValue);
+        }
+
+        public void SubscribeToResetUserSettingsToDefaultRequests(EventHandler<IEnumerable<string>> callback)
+        {
+            ResetUserSettingsToDefaultRequested += callback;
+        }
+        public void UnsubscribeFromResetUserSettingsToDefaultRequests(EventHandler<IEnumerable<string>> callback)
+        {
+            ResetUserSettingsToDefaultRequested -= callback;
+        }
+        public void ResetUserSettingsToDefault(IEnumerable<string> keys)
+        {
+            ResetUserSettingsToDefaultRequested?.Invoke(this, keys);
         }
 
         public void SubscribeToAppClosingTriggers(EventHandler callback)

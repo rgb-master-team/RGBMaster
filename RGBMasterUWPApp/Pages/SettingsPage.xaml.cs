@@ -100,6 +100,13 @@ namespace RGBMasterUWPApp.Pages
 
         public SettingsPage()
         {
+            this.InitializeComponent();
+
+            LoadSettings();
+        }
+
+        private void LoadSettings()
+        {
             EventManager.Instance.LoadUserSetting(ToggleDeviceOnCheckUserConfigKey);
             ToggleDeviceOnCheckUser = AppState.Instance.UserSettingsCache.TryGetValue(ToggleDeviceOnCheckUserConfigKey, out var shouldToggleDeviceOnCheck) ? (bool)shouldToggleDeviceOnCheck : true;
 
@@ -108,8 +115,6 @@ namespace RGBMasterUWPApp.Pages
 
             EventManager.Instance.LoadUserSetting(IsDarkModeKey);
             IsDarkMode = AppState.Instance.UserSettingsCache.TryGetValue(IsDarkModeKey, out var isDarkModeObj) ? (bool)isDarkModeObj : true;
-
-            this.InitializeComponent();
         }
 
         private async void GitHub_Button_Click(object sender, RoutedEventArgs e)
@@ -152,6 +157,12 @@ namespace RGBMasterUWPApp.Pages
         private void LightOrDarkToggleSwitch_Toggled(object sender, RoutedEventArgs e)
         {
             EventManager.Instance.StoreUserSetting(new Tuple<string, object>(IsDarkModeKey, LightOrDarkToggleSwitch.IsOn));
+        }
+
+        private void ResetButtonClicked_Click(object sender, RoutedEventArgs e)
+        {
+            EventManager.Instance.ResetUserSettingsToDefault(new List<string> { ToggleDeviceOnCheckUserConfigKey, IsDarkModeKey, LogPathKey });
+            LoadSettings();
         }
     }
 }
