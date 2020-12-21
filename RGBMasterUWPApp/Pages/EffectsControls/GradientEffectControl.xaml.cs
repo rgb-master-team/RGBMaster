@@ -115,11 +115,12 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         public GradientEffectControl()
         {
             EventManager.Instance.SubscribeToAppClosingTriggers(AppClosingTriggered);
+
+            this.InitializeComponent();
+
             LoadGradientPoints();
             LoadDelayInterval();
             LoadRelativeSmoothness();
-
-            this.InitializeComponent();
             ReApplyGradientStopsButtonsStyle();
         }
 
