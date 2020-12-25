@@ -124,13 +124,6 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             ReApplyGradientStopsButtonsStyle();
         }
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
-
-            SaveUserSettingsForPage();
-        }
-
         private void SaveUserSettingsForPage()
         {
             EventManager.Instance.StoreUserSetting(new Tuple<string, object>(GradientPointsUserSettingKey, JsonConvert.SerializeObject(GradientPoints)));
@@ -300,6 +293,11 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             newGradientPoints.RemoveAt(clickedGradientPoint.Index);
 
             GradientPoints = newGradientPoints;
+        }
+
+        private void GradientEffectControlPage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            SaveUserSettingsForPage();
         }
     }
 }

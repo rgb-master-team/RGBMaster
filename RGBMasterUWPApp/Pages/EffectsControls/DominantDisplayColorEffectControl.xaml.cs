@@ -83,13 +83,6 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             }
         }
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
-
-            SaveUserSettingsForPage();
-        }
-
         private void LoadSyncBrightnessByHSL()
         {
             EventManager.Instance.LoadUserSetting(SyncBrightnessByHSLUserSettingKey);
@@ -113,6 +106,11 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         {
             EventManager.Instance.StoreUserSetting(new Tuple<string, object>(SyncBrightnessByHSLUserSettingKey, SyncBrightnessByHSL));
             EventManager.Instance.StoreUserSetting(new Tuple<string, object>(RelativeSmoothnessUserSettingKey, RelativeSmoothness));
+        }
+
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            SaveUserSettingsForPage();
         }
     }
 }

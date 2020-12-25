@@ -103,17 +103,15 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             SaveUserSettingsForPage();
         }
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
-
-            SaveUserSettingsForPage();
-        }
-
         private void SaveUserSettingsForPage()
         {
             EventManager.Instance.StoreUserSetting(new Tuple<string, object>(RelativeSmoothnessUserSettingKey, RelativeSmoothness));
             EventManager.Instance.StoreUserSetting(new Tuple<string, object>(SyncBrightnessByHSLUserSettingKey, SyncBrightnessByHSL));
+        }
+
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            SaveUserSettingsForPage();
         }
     }
 }

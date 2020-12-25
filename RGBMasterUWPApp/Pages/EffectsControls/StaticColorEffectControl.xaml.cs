@@ -65,13 +65,6 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             Brighness_Slider.Value = StaticColorEffectProps.SelectedBrightness;
         }
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
-
-            SaveUserSettingsForPage();
-        }
-
         private void AppClosingTriggered(object sender, EventArgs e)
         {
             SaveUserSettingsForPage();
@@ -106,6 +99,11 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         private void SaveUserSettingsForPage()
         {
             EventManager.Instance.StoreUserSetting(new Tuple<string, object>(SmoothnessSettingsKey, RelativeSmoothness));
+        }
+
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            SaveUserSettingsForPage();
         }
     }
 }

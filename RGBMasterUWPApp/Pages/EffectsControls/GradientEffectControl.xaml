@@ -7,7 +7,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:muxc="using:Microsoft.UI.Xaml.Controls" xmlns:utils="using:RGBMasterUWPApp.Utils" xmlns:common="using:Common"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    Unloaded="GradientEffectControlPage_Unloaded">
     <Page.Resources>
         <utils:DrawingColorToBrushColorValueConverter x:Key="ColorConverter" />
     </Page.Resources>

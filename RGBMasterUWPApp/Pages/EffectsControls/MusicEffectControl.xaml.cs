@@ -453,13 +453,6 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             SelectedAudioCaptureDevice = selectedAudioCaptureDevice;
         }
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
-
-            SaveUserSettingsForPage();
-        }
-
         private void SaveUserSettingsForPage()
         {
             EventManager.Instance.StoreUserSetting(new Tuple<string, object>(AudioPointsUserSettingKey, JsonConvert.SerializeObject(AudioPoints)));
@@ -470,6 +463,11 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         private void BrightnessModeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             BrightnessModeDescriptor = (MusicEffectBrightnessModeDescriptor)BrightnessModeComboBox.SelectedItem;
+        }
+
+        private void MusicEffectControlContainerPage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            SaveUserSettingsForPage();
         }
     }
 }
