@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using Corsair.Channel;
 using Corsair.Layout;
 
-namespace Corsair.Device
+namespace Corsair.DeviceImpl
 {
     /// <summary>
     /// Contains information about device.

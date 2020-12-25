@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Corsair.Device;
+using Corsair.DeviceImpl;
 using Corsair.Enums;
 using Corsair.Led;
 using Corsair.Protocol;

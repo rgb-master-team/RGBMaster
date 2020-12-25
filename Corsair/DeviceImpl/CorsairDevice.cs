@@ -8,15 +8,14 @@ using Common;
 using Corsair.Channel;
 using Corsair.Layout;
 using Corsair.Led;
-using Corsair.Provider;
-using RGBDevice = Provider.Device;
+using Provider;
 
-namespace Corsair.Device
+namespace Corsair.DeviceImpl
 {
     /// <summary>
     /// Contains information about device.
     /// </summary>
-    public class CorsairDevice : RGBDevice
+    public class CorsairDevice : Device
 	{
 		#region Corsair Native
 

@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Common;
-using Corsair.Device;
+using Corsair.DeviceImpl;
 using Corsair.Enums;
 using Corsair.Led;
 using Corsair.Protocol;
-using Corsair.Provider;
 
 namespace Corsair.CUESDK
 {
@@ -16,7 +15,7 @@ namespace Corsair.CUESDK
     /// </summary>
     public class CUESDK
     {
-        private static DeviceType GetDeviceTypeForCorsair(Corsair.Device.CorsairDeviceType internalDevice)
+        private static DeviceType GetDeviceTypeForCorsair(CorsairDeviceType internalDevice)
         {
             switch (internalDevice)
             {

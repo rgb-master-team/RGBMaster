@@ -1,4 +1,4 @@
-﻿namespace Corsair.Device
+﻿namespace Corsair.DeviceImpl
 {
     /// <summary>
     /// Contains list of properties types.

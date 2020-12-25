@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace Corsair.Provider
+namespace Corsair.DeviceImpl
 {
     public class CorsairDeviceMetadata : DeviceMetadata
     {

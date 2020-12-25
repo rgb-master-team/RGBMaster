@@ -1,7 +1,6 @@
 ﻿using Common;
-using System.Drawing;
 
-namespace Corsair.Provider
+namespace Corsair.ProviderImpl
 {
     public class CorsairProviderMetadata : ProviderMetadata
     {

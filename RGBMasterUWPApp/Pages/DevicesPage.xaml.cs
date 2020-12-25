@@ -118,7 +118,7 @@ namespace RGBMasterUWPApp.Pages
                 }
             }
 
-            EventManager.Instance.UpdateSelectedDevices(AppState.Instance.RegisteredProviders.Select(prov => prov.Devices).SelectMany(devices => devices).ToImmutableList().ToList());
+            EventManager.Instance.UpdateSelectedDevices(AppState.Instance.RegisteredProviders.SelectMany(prov => prov.Devices).ToImmutableList().ToList());
         }
 
         private void ManualConnectionButton_Click(object sender, RoutedEventArgs e)

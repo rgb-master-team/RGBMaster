@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AppExecutionManager\AppExecutionManager.csproj" />
+    <ProjectReference Include="..\Corsair\Corsair.csproj" />
     <ProjectReference Include="..\EffectsExecution\EffectsExecution.csproj" />
     <ProjectReference Include="..\GameSense\GameSense.csproj" />
     <ProjectReference Include="..\Hue\Hue.csproj" />

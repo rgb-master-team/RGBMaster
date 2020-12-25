@@ -5,6 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="CUESDK\CUESDK.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="CUESDK.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Provider\Provider.csproj" />
   </ItemGroup>
 
