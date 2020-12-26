@@ -1,6 +1,7 @@
 ﻿using Common;
 using GameSense.API;
 using GameSense.Devices.Headset;
+using GameSense.Devices.Mouse;
 using Provider;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace GameSense
 
         protected override Task<List<Device>> InternalDiscover(CancellationToken cancellationToken = default)
         {
-            return Task.FromResult(new List<Device>() { new GameSenseHeadsetDevice(gameSenseAPI, new GameSenseHeadsetDeviceMetadata(ProviderMetadata.ProviderGuid, "GameSense Headset Device"))});
+            return Task.FromResult(new List<Device>() { new GameSenseHeadsetDevice(gameSenseAPI, new GameSenseHeadsetDeviceMetadata(ProviderMetadata.ProviderGuid, "GameSense Headset Device")), new GameSenseMouseDevice(gameSenseAPI,new GameSenseMouseDeviceMetadata(ProviderMetadata.ProviderGuid, "GameSense Mouse Device")) });
         }
 
         protected override async Task InternalUnregister(CancellationToken cancellationToken = default)

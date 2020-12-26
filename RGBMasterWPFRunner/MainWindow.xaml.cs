@@ -2,6 +2,7 @@
 using AppExecutionManager.State;
 using Colore.Logging;
 using Common;
+using Corsair.ProviderImpl;
 using EffectsExecution;
 using GameSense;
 using Hue;
@@ -64,7 +65,7 @@ namespace RGBMasterWPFRunner
 
             globalLog.Information("Initializing RGBMaster.....");
 
-            CreateAndSetSupportedProviders(new List<BaseProvider>() { new YeelightProvider(), new MagicHomeProvider(), new RazerChromaProvider(), new LogitechProvider(), new GameSenseProvider(), new HueProvider(), new CorsairProvider.CorsairProvider() /*new NZXTProvider()*/ });
+            CreateAndSetSupportedProviders(new List<BaseProvider>() { new YeelightProvider(), new MagicHomeProvider(), new RazerChromaProvider(), new LogitechProvider(), new GameSenseProvider(), new HueProvider(), new CorsairProvider() /*new NZXTProvider()*/ });
             CreateAndSetSupportedEffectsExecutors(new List<EffectExecutor>() { new MusicEffectExecutor(), new DominantDisplayColorEffectExecutor(), new CursorColorEffectExecutor(), new StaticColorEffectExecutor(), new GradientEffectExecutor() });
             SetUIStateEffects();
 

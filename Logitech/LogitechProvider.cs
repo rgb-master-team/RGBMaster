@@ -1,4 +1,8 @@
-﻿using Provider;
+﻿using Logitech.Devices.Headset;
+using Logitech.Devices.Keyboard;
+using Logitech.Devices.Mousepad;
+using Logitech.Devices.Speaker;
+using Provider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +43,7 @@ namespace Logitech
 
         protected override Task<List<Device>> InternalDiscover(CancellationToken cancellationToken = default)
         {
-            return Task.FromResult(new List<Device>() { new LogitechMouseDevice(new LogitechMouseDeviceMetadata(ProviderMetadata.ProviderGuid, "Logitech G mouse")) });
+            return Task.FromResult(new List<Device>() { new LogitechMouseDevice(new LogitechMouseDeviceMetadata(ProviderMetadata.ProviderGuid, "Logitech G Mouse")), new LogitechHeadsetDevice(new LogitechHeadsetDeviceMetadata(ProviderMetadata.ProviderGuid, "Logitech G Headset")), new LogitechKeyboardDevice(new LogitechKeyboardDeviceMetadata(ProviderMetadata.ProviderGuid, "Logitech G Keyboard")), new LogitechMousepadDevice(new LogitechMousepadDeviceMetadata(ProviderMetadata.ProviderGuid, "Logitech G Mousepad")), new LogitechSpeakerDevice(new LogitechSpeakerDeviceMetadata(ProviderMetadata.ProviderGuid, "Logitech G Speaker")) });
             /*
             // Set all devices to Black
             LogitechGSDK.LogiLedSetLighting(0, 0, 0);

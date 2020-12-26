@@ -23,17 +23,20 @@ namespace GameSense.Devices.Headset
 
         protected override async Task ConnectInternal()
         {
+            var gameSenseDeviceType = GameSenseConstants.RGB_2_ZONE;
+            var gameSenseZone = GameSenseConstants.HEADSET_ZONE_EARCUP;
+
             await gsAPI.BindGameEvent(new GSApiBindEventPayload()
             {
                 Game = GameSenseConstants.RGB_MASTER_GAME_NAME,
-                Event = GameSenseConstants.RGB_MASTER_SET_COLOR_EVENT_NAME,
+                Event = $"{GameSenseConstants.RGB_MASTER_SET_COLOR_EVENT_NAME}_{gameSenseDeviceType}_{gameSenseZone}",
                 Handlers = new List<API.Handlers.GSApiHandler>()
                 {
                     new GSApiColorHandler()
                     {
-                        DeviceType = GameSenseConstants.HEADSET_DEVICE_TYPE,
-                        Mode = GameSenseConstants.DYNAMIC_COLOR_MODE,
-                        Zone = GameSenseConstants.HEADSET_ZONE_EARCUP,
+                        DeviceType = GameSenseConstants.RGB_2_ZONE,
+                        Mode = gameSenseDeviceType,
+                        Zone = gameSenseZone,
                         ContextFrameKey = GameSenseConstants.DYNAMIC_COLOR_CONTEXT_FRAME_KEY,
                         Rate = new API.Handlers.Rate.GSApiRateDefinition()
                     }
