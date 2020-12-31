@@ -55,7 +55,9 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
 
         public bool IsAudioPointsEditingEnabled => !AppState.Instance.IsEffectRunning;
 
-        public MusicEffectMetadataProperties MusicEffectMetadataProps = ((MusicEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Music)).EffectProperties;
+        public MusicEffectMetadata MusicEffectMd => (MusicEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Music);
+
+        public MusicEffectMetadataProperties MusicEffectMetadataProps => MusicEffectMd.EffectProperties;
 
         public MusicEffectBrightnessModeDescriptor BrightnessModeDescriptor
         {
@@ -134,6 +136,8 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             AppState.Instance.PropertyChanged += AppStateInstance_PropertyChanged;
 
             this.InitializeComponent();
+
+            EffectControlWrapper.IsEffectActivationEnabled = false;
         }
 
         private void LoadSmoothness()

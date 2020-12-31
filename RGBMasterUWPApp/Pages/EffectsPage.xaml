@@ -27,9 +27,6 @@
                 </DataTemplate>
             </Pivot.ItemTemplate>
         </Pivot>
-        <StackPanel Orientation="Vertical" Margin="0, -8, 0, 8">
-            <ToggleSwitch x:Name="EffectActivationControl" Toggled="EffectActivationControl_Toggled" Margin="4, 8, 0, 0"/>
-        </StackPanel>
         <Frame x:Name="effectControlFrame" Margin="0 4 0 0"/>
     </StackPanel>
 </Page>

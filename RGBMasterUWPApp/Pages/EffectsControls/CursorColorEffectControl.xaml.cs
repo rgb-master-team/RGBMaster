@@ -32,7 +32,8 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public CursorColorEffectMetadataProperties CursorColorEffectProps => ((CursorColorEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.CursorColor)).EffectProperties;
+        public CursorColorEffectMetadata CursorColorEffectMd => (CursorColorEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.CursorColor);
+        public CursorColorEffectMetadataProperties CursorColorEffectProps => CursorColorEffectMd.EffectProperties;
 
         public int RelativeSmoothness
         {

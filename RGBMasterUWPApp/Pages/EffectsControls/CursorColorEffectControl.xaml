@@ -8,15 +8,17 @@
     mc:Ignorable="d"
     Unloaded="Page_Unloaded">
 
-    <Grid>
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <TextBlock>Smoothness:&#160;</TextBlock>
-                <TextBlock Text="{x:Bind CursorColorEffectProps.RelativeSmoothness, Mode=OneWay}"/>
-                <TextBlock Text="ms"/>
+    <local:EffectControl EffectMetadata="{x:Bind CursorColorEffectMd}">
+        <Grid>
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBlock>Smoothness:&#160;</TextBlock>
+                    <TextBlock Text="{x:Bind CursorColorEffectProps.RelativeSmoothness, Mode=OneWay}"/>
+                    <TextBlock Text="ms"/>
+                </StackPanel>
+                <muxc:NumberBox x:Name="SmoothnessSlider" Value="{x:Bind RelativeSmoothness, Mode=TwoWay}" Minimum="0" ToolTipService.ToolTip="Time between previous color to this color, in milliseconds" />
+                <CheckBox x:Name="HSLCheckBox" IsChecked="{x:Bind SyncBrightnessByHSL, Mode=TwoWay}" ToolTipService.ToolTip="Brightness changes by the output color intensity" Content="Sync brightness by color" />
             </StackPanel>
-            <muxc:NumberBox x:Name="SmoothnessSlider" Value="{x:Bind RelativeSmoothness, Mode=TwoWay}" Minimum="0" ToolTipService.ToolTip="Time between previous color to this color, in milliseconds" />
-            <CheckBox x:Name="HSLCheckBox" IsChecked="{x:Bind SyncBrightnessByHSL, Mode=TwoWay}" ToolTipService.ToolTip="Brightness changes by the output color intensity" Content="Sync brightness by color" />
-        </StackPanel>
-    </Grid>
+        </Grid>
+    </local:EffectControl>
 </Page>

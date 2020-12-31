@@ -65,11 +65,11 @@ namespace RGBMasterUWPApp.Pages
 
             selectedEffectMetadata = (EffectMetadata)selectedPivotItem.DataContext;
 
-            var currentActiveEffect = AppState.Instance.ActiveEffect;
+            /*var currentActiveEffect = AppState.Instance.ActiveEffect;
 
-            var isEffectRunning = AppState.Instance.IsEffectRunning;
+            var isEffectRunning = AppState.Instance.IsEffectRunning;*/
 
-            bool shouldToggleBeOn;
+            /*bool shouldToggleBeOn;
 
             if (isEffectRunning && currentActiveEffect.EffectMetadataGuid == selectedEffectMetadata.EffectMetadataGuid)
             {
@@ -78,13 +78,13 @@ namespace RGBMasterUWPApp.Pages
             else
             {
                 shouldToggleBeOn = false;
-            }
+            }*/
 
-            if (shouldToggleBeOn != EffectActivationControl.IsOn)
+            /*if (shouldToggleBeOn != EffectActivationControl.IsOn)
             {
                 shouldIgnoreToggleEvent = true;
                 EffectActivationControl.IsOn = shouldToggleBeOn;
-            }
+            }*/
 
             if (!contentByEffectType.TryGetValue(selectedEffectMetadata.Type, out var effectType))
             {
