@@ -2,6 +2,7 @@
 using GameSense.API;
 using GameSense.Devices.Headset;
 using GameSense.Devices.Mouse;
+using GameSense.DeviceScanner;
 using Provider;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace GameSense
     public class GameSenseProvider : BaseProvider
     {
         private readonly GSAPI gameSenseAPI;
-        private static int VENDOR_ID = 0x1038;
+
         public GameSenseProvider() : base(new GameSenseProviderMetadata())
         {
             gameSenseAPI = new GSAPI();
@@ -22,7 +23,38 @@ namespace GameSense
 
         protected override Task<List<Device>> InternalDiscover(CancellationToken cancellationToken = default)
         {
-            return Task.FromResult(new List<Device>() { new GameSenseHeadsetDevice(gameSenseAPI, new GameSenseHeadsetDeviceMetadata(ProviderMetadata.ProviderGuid, "GameSense Headset Device")), new GameSenseMouseDevice(gameSenseAPI,new GameSenseMouseDeviceMetadata(ProviderMetadata.ProviderGuid, "GameSense Mouse Device")) });
+            var scannedAndMappedDevices = SteelSeriesDeviceScanner.ScanGameSenseDevices();
+
+            var gameSenseDevices = new List<Device>();
+
+            foreach (var scannedDeviceMapping in scannedAndMappedDevices)
+            {
+                switch (scannedDeviceMapping.DeviceType)
+                {
+                    case DeviceType.Headset:
+                        gameSenseDevices.Add(new GameSenseHeadsetDevice(gameSenseAPI, scannedDeviceMapping, new GameSenseHeadsetDeviceMetadata(ProviderMetadata.ProviderGuid, scannedDeviceMapping.DeviceName)));
+                        break;
+                    case DeviceType.Unknown:
+                    case DeviceType.Lightbulb:
+                    case DeviceType.LedStrip:
+                    case DeviceType.Keyboard:
+                    case DeviceType.Mouse:
+                    case DeviceType.Fan:
+                    case DeviceType.Mousepad:
+                    case DeviceType.Speaker:
+                    case DeviceType.Keypad:
+                    case DeviceType.Memory:
+                    case DeviceType.GPU:
+                    case DeviceType.Motherboard:
+                    case DeviceType.Chair:
+                    case DeviceType.AllDevices:
+                    default:
+                        break;
+                }
+            }
+
+            //return Task.FromResult(new List<Device>() { new GameSenseHeadsetDevice(gameSenseAPI, new GameSenseHeadsetDeviceMetadata(ProviderMetadata.ProviderGuid, "GameSense Headset Device")), new GameSenseMouseDevice(gameSenseAPI,new GameSenseMouseDeviceMetadata(ProviderMetadata.ProviderGuid, "GameSense Mouse Device")) });
+            return Task.FromResult(gameSenseDevices);
         }
 
         protected override async Task InternalUnregister(CancellationToken cancellationToken = default)

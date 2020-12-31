@@ -4,7 +4,7 @@ namespace Corsair.ProviderImpl
 {
     public class CorsairProviderMetadata : ProviderMetadata
     {
-        public override string ProviderName => "Corsair Sync";
+        public override string ProviderName => "Corsair iCUE";
 
         public override string ProviderShortDescription => "Corsair Sync provider for all corsair synced devices.";
 

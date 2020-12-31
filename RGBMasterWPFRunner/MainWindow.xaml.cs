@@ -66,7 +66,7 @@ namespace RGBMasterWPFRunner
             globalLog.Information("Initializing RGBMaster.....");
 
             CreateAndSetSupportedProviders(new List<BaseProvider>() { new YeelightProvider(), new MagicHomeProvider(), new RazerChromaProvider(), new LogitechProvider(), new GameSenseProvider(), new HueProvider(), new CorsairProvider() /*new NZXTProvider()*/ });
-            CreateAndSetSupportedEffectsExecutors(new List<EffectExecutor>() { new MusicEffectExecutor(), new DominantDisplayColorEffectExecutor(), new CursorColorEffectExecutor(), new StaticColorEffectExecutor(), new GradientEffectExecutor() });
+            CreateAndSetSupportedEffectsExecutors(new List<EffectExecutor>() { new MusicEffectExecutor(), new GradientEffectExecutor(), new DominantDisplayColorEffectExecutor(), new StaticColorEffectExecutor(), new CursorColorEffectExecutor() });
             SetUIStateEffects();
 
             InitializeComponent();

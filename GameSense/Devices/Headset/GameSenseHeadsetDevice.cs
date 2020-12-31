@@ -2,6 +2,7 @@
 using GameSense.API;
 using GameSense.API.Handlers.ColorDefinitions;
 using GameSense.API.Handlers.ColorDefinitions.Static;
+using GameSense.DeviceScanner;
 using Provider;
 using System;
 using System.Collections.Generic;
@@ -14,43 +15,56 @@ namespace GameSense.Devices.Headset
 {
     public class GameSenseHeadsetDevice : Device
     {
+        private readonly ScannedSteelSeriesDeviceMapping gameSenseDeviceMapping;
         private readonly GSAPI gsAPI;
 
-        public GameSenseHeadsetDevice(GSAPI gsAPI, GameSenseHeadsetDeviceMetadata gameSenseHeadsetDeviceMetadata) : base(gameSenseHeadsetDeviceMetadata)
+        public GameSenseHeadsetDevice(GSAPI gsAPI, ScannedSteelSeriesDeviceMapping gameSenseDeviceMapping, GameSenseHeadsetDeviceMetadata gameSenseHeadsetDeviceMetadata) : base(gameSenseHeadsetDeviceMetadata)
         {
             this.gsAPI = gsAPI;
+            this.gameSenseDeviceMapping = gameSenseDeviceMapping;
+        }
+
+        // TODO - THIS SERIOUSLY CAN'T STAY HERE LOL
+        private string GetFixedEventName(string gameSensebasicEventName, string gameSenseAppliedZone)
+        {
+            return $"{gameSensebasicEventName}_{gameSenseAppliedZone}_{DeviceMetadata.RgbMasterDeviceGuid}".ToUpper();
         }
 
         protected override async Task ConnectInternal()
         {
-            var gameSenseDeviceType = GameSenseConstants.RGB_2_ZONE;
-            var gameSenseZone = GameSenseConstants.HEADSET_ZONE_EARCUP;
+            var gameSenseDeviceType = gameSenseDeviceMapping.GameSenseDeviceType;
 
-            await gsAPI.BindGameEvent(new GSApiBindEventPayload()
+            await RunForAllZones(async (zone) =>
             {
-                Game = GameSenseConstants.RGB_MASTER_GAME_NAME,
-                Event = $"{GameSenseConstants.RGB_MASTER_SET_COLOR_EVENT_NAME}_{gameSenseDeviceType}_{gameSenseZone}",
-                Handlers = new List<API.Handlers.GSApiHandler>()
+                await gsAPI.BindGameEvent(new GSApiBindEventPayload()
+                {
+                    Game = GameSenseConstants.RGB_MASTER_GAME_NAME,
+                    Event = GetFixedEventName(GameSenseConstants.RGB_MASTER_SET_COLOR_EVENT_NAME, zone),
+                    Handlers = new List<API.Handlers.GSApiHandler>()
                 {
                     new GSApiColorHandler()
                     {
-                        DeviceType = GameSenseConstants.RGB_2_ZONE,
-                        Mode = gameSenseDeviceType,
-                        Zone = gameSenseZone,
+                        DeviceType = gameSenseDeviceMapping.GameSenseDeviceType,
+                        Mode = GameSenseConstants.DYNAMIC_COLOR_MODE,
+                        Zone = zone,
                         ContextFrameKey = GameSenseConstants.DYNAMIC_COLOR_CONTEXT_FRAME_KEY,
                         Rate = new API.Handlers.Rate.GSApiRateDefinition()
                     }
                 },
-                IconID = GameSenseConstants.RGB_MASTER_ICON_ID
+                    IconID = GameSenseConstants.RGB_MASTER_ICON_ID
+                }).ConfigureAwait(false);
             }).ConfigureAwait(false);
         }
 
         protected override async Task DisconnectInternal()
         {
-            await gsAPI.RemoveGameEvent(new GSApiRemoveGameEventPayload()
+            await RunForAllZones(async (zone) =>
             {
-                Game = GameSenseConstants.RGB_MASTER_GAME_NAME,
-                Event = GameSenseConstants.RGB_MASTER_SET_COLOR_EVENT_NAME
+                await gsAPI.RemoveGameEvent(new GSApiRemoveGameEventPayload()
+                {
+                    Game = GameSenseConstants.RGB_MASTER_GAME_NAME,
+                    Event = GetFixedEventName(GameSenseConstants.RGB_MASTER_SET_COLOR_EVENT_NAME, zone)
+                }).ConfigureAwait(false);
             }).ConfigureAwait(false);
         }
 
@@ -71,8 +85,6 @@ namespace GameSense.Devices.Headset
 
         protected override async Task SetColorInternal(Color color)
         {
-            // GameSenseConstants.DYNAMIC_COLOR_CONTEXT_FRAME_KEY
-
             var frameObject = new Dictionary<string, object>
             {
                 {
@@ -86,14 +98,17 @@ namespace GameSense.Devices.Headset
                 }
             };
 
-            await gsAPI.SendGameEvent(new GSApiSendGameEventPayload()
+            await RunForAllZones(async (zone) =>
             {
-                Game = GameSenseConstants.RGB_MASTER_GAME_NAME,
-                Event = GameSenseConstants.RGB_MASTER_SET_COLOR_EVENT_NAME,
-                Data = new GSApiSendGameEventDataPayload()
+                await gsAPI.SendGameEvent(new GSApiSendGameEventPayload()
                 {
-                    Frame = frameObject
-                }
+                    Game = GameSenseConstants.RGB_MASTER_GAME_NAME,
+                    Event = GetFixedEventName(GameSenseConstants.RGB_MASTER_SET_COLOR_EVENT_NAME, zone),
+                    Data = new GSApiSendGameEventDataPayload()
+                    {
+                        Frame = frameObject
+                    }
+                }).ConfigureAwait(false);
             }).ConfigureAwait(false);
         }
 
@@ -110,6 +125,22 @@ namespace GameSense.Devices.Headset
         protected override Task TurnOnInternal()
         {
             throw new NotImplementedException();
+        }
+
+        // TODO - MOVE THIS TO THE BASE CLASS AND REFACTOR SOME BASE STEELSERIES DEVICE CLASS.
+        private async Task RunForAllZones(Func<string, Task> asyncFunction, IEnumerable<string> zones = null)
+        {
+            // If no zones were wanted just take them all.
+            zones = zones ?? gameSenseDeviceMapping.GameSenseZones;
+
+            var tasks = new List<Task>();
+
+            foreach (var gameSenseZone in zones)
+            {
+                tasks.Add(Task.Run(async () => await asyncFunction(gameSenseZone)));
+            }
+
+            await Task.WhenAll(tasks);
         }
     }
 }
