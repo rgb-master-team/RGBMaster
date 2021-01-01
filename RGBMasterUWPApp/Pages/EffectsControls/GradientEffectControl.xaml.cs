@@ -37,7 +37,8 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             }
         }
 
-        public GradientEffectMetadataProperties GradientEffectMdProps => ((GradientEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Gradient)).EffectProperties;
+        public GradientEffectMetadata GradientEffectMd => (GradientEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.Gradient);
+        public GradientEffectMetadataProperties GradientEffectMdProps => GradientEffectMd.EffectProperties;
 
         public int DelayInterval
         {
@@ -118,10 +119,16 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
 
             this.InitializeComponent();
 
+            LoadSettings();
+
+            ReApplyGradientStopsButtonsStyle();
+        }
+
+        private void LoadSettings()
+        {
             LoadGradientPoints();
             LoadDelayInterval();
             LoadRelativeSmoothness();
-            ReApplyGradientStopsButtonsStyle();
         }
 
         private void SaveUserSettingsForPage()
@@ -178,6 +185,27 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
                 {
                     // TODO - ADD LOGGING SERVICE!
                 }
+            }
+            else
+            {
+                GradientPoints = new List<GradientPoint>()
+                {
+                    new GradientPoint()
+                    {
+                        Index = 0,
+                        Color = Color.Red
+                    },
+                    new GradientPoint()
+                    {
+                        Index = 1,
+                        Color = Color.Green
+                    },
+                    new GradientPoint()
+                    {
+                        Index = 2,
+                        Color = Color.Blue
+                    }
+                };
             }
         }
 
@@ -298,6 +326,12 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         private void GradientEffectControlPage_Unloaded(object sender, RoutedEventArgs e)
         {
             SaveUserSettingsForPage();
+        }
+
+        private void EffectControl_ResetButton_Clicked(object sender, EventArgs e)
+        {
+            EventManager.Instance.ResetUserSettingsToDefault(new List<string>() { GradientPointsUserSettingKey, DelayIntervalUserSettingKey, RelativeSmoothnessUserSettingKey });
+            LoadSettings();
         }
     }
 }

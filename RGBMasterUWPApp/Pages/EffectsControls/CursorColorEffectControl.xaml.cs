@@ -65,10 +65,15 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         {
             EventManager.Instance.SubscribeToAppClosingTriggers(AppClosingTriggered);
 
-            LoadRelativeSmoothness();
-            LoadSyncBrightnessByHSL();
+            LoadSettings();
 
             this.InitializeComponent();
+        }
+
+        private void LoadSettings()
+        {
+            LoadRelativeSmoothness();
+            LoadSyncBrightnessByHSL();
         }
 
         private void LoadSyncBrightnessByHSL()
@@ -113,6 +118,12 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
             SaveUserSettingsForPage();
+        }
+
+        private void EffectControl_ResetButton_Clicked(object sender, EventArgs e)
+        {
+            EventManager.Instance.ResetUserSettingsToDefault(new List<string>() { RelativeSmoothnessUserSettingKey, SyncBrightnessByHSLUserSettingKey });
+            LoadSettings();
         }
     }
 }

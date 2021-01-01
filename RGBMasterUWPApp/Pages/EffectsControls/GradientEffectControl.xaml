@@ -13,76 +13,78 @@
         <utils:DrawingColorToBrushColorValueConverter x:Key="ColorConverter" />
     </Page.Resources>
 
-    <StackPanel x:Name="GradientStopsStackpanel" Orientation="Vertical" HorizontalAlignment="Left">
-        <Rectangle x:Name="GradientStopsBrushRectangle" Width="400" Height="65" HorizontalAlignment="Left">
-            <Rectangle.Fill>
-                <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5" GradientStops="{x:Bind GradientStops, Mode=OneWay}" />
-            </Rectangle.Fill>
-        </Rectangle>
-        <GridView Name="GradientStopButtonsGridView" ItemsSource="{x:Bind GradientPoints, Mode=OneWay}" SelectionMode="None">
-            <GridView.ItemTemplate>
-                <DataTemplate x:DataType="common:GradientPoint">
-                    <Button x:Name="GradientStopButton" Height="30" Width="30" HorizontalAlignment="Left">
-                        <Button.Background>
-                            <SolidColorBrush Color="{x:Bind Color, Converter={StaticResource ColorConverter}, Mode=OneWay}" />
-                        </Button.Background>
-                        <Button.ContextFlyout>
-                            <MenuFlyout>
-                                <MenuFlyoutItem x:Name="ChangeColor" Text="Change Color" Click="ChangeColor_Click">
-                                    <MenuFlyoutItem.Icon>
-                                        <FontIcon Glyph="&#xE790;" />
-                                    </MenuFlyoutItem.Icon>
-                                </MenuFlyoutItem>
-                                <MenuFlyoutSeparator/>
-                                <MenuFlyoutItem x:Name="AddGradientPointBefore" Click="AddGradientPointBefore_Click" Text="Add Before">
-                                    <MenuFlyoutItem.Icon>
-                                        <FontIcon Glyph="&#xE112;" />
-                                    </MenuFlyoutItem.Icon>
-                                </MenuFlyoutItem>
-                                <MenuFlyoutItem x:Name="DuplicateGradientPoint" Click="DuplicateGradientPoint_Click" Text="Duplicate">
-                                    <MenuFlyoutItem.Icon>
-                                        <FontIcon Glyph="&#xE16F;" />
-                                    </MenuFlyoutItem.Icon>
-                                </MenuFlyoutItem>
-                                <MenuFlyoutItem x:Name="AddGradientPointAfter" Click="AddGradientPointAfter_Click" Text="Add After">
-                                    <MenuFlyoutItem.Icon>
-                                        <FontIcon Glyph="&#xE111;" />
-                                    </MenuFlyoutItem.Icon>
-                                </MenuFlyoutItem>
-                                <MenuFlyoutItem x:Name="RemoveGradientPoint" Click="RemoveGradientPoint_Click" Text="Remove Point">
-                                    <MenuFlyoutItem.Icon>
-                                        <FontIcon Glyph="&#xE106;" />
-                                    </MenuFlyoutItem.Icon>
-                                </MenuFlyoutItem>
-                            </MenuFlyout>
-                        </Button.ContextFlyout>
-                        <Button.Resources>
-                            <muxc:TeachingTip x:Key="GradientPointTeachingTip" IsLightDismissEnabled="True">
-                                <ColorPicker x:Name="ColorPicker" 
+    <local:EffectControl EffectMetadata="{x:Bind GradientEffectMd}" ShouldShowResetButton="True" ResetButton_Clicked="EffectControl_ResetButton_Clicked">
+        <StackPanel x:Name="GradientStopsStackpanel" Orientation="Vertical" HorizontalAlignment="Left">
+            <Rectangle x:Name="GradientStopsBrushRectangle" Width="400" Height="65" HorizontalAlignment="Left">
+                <Rectangle.Fill>
+                    <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5" GradientStops="{x:Bind GradientStops, Mode=OneWay}" />
+                </Rectangle.Fill>
+            </Rectangle>
+            <GridView Name="GradientStopButtonsGridView" ItemsSource="{x:Bind GradientPoints, Mode=OneWay}" SelectionMode="None">
+                <GridView.ItemTemplate>
+                    <DataTemplate x:DataType="common:GradientPoint">
+                        <Button x:Name="GradientStopButton" Height="30" Width="30" HorizontalAlignment="Left">
+                            <Button.Background>
+                                <SolidColorBrush Color="{x:Bind Color, Converter={StaticResource ColorConverter}, Mode=OneWay}" />
+                            </Button.Background>
+                            <Button.ContextFlyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem x:Name="ChangeColor" Text="Change Color" Click="ChangeColor_Click">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon Glyph="&#xE790;" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                    <MenuFlyoutSeparator/>
+                                    <MenuFlyoutItem x:Name="AddGradientPointBefore" Click="AddGradientPointBefore_Click" Text="Add Before">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon Glyph="&#xE112;" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                    <MenuFlyoutItem x:Name="DuplicateGradientPoint" Click="DuplicateGradientPoint_Click" Text="Duplicate">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon Glyph="&#xE16F;" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                    <MenuFlyoutItem x:Name="AddGradientPointAfter" Click="AddGradientPointAfter_Click" Text="Add After">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon Glyph="&#xE111;" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                    <MenuFlyoutItem x:Name="RemoveGradientPoint" Click="RemoveGradientPoint_Click" Text="Remove Point">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon Glyph="&#xE106;" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                </MenuFlyout>
+                            </Button.ContextFlyout>
+                            <Button.Resources>
+                                <muxc:TeachingTip x:Key="GradientPointTeachingTip" IsLightDismissEnabled="True">
+                                    <ColorPicker x:Name="ColorPicker" 
                                                  ColorSpectrumShape="Ring" 
                                                  IsColorSliderVisible="True"
                                                  Color="{x:Bind Color, Converter={StaticResource ColorConverter}, Mode=OneWay}" ColorChanged="ColorPicker_ColorChanged"
                                                   />
-                            </muxc:TeachingTip>
-                        </Button.Resources>
-                    </Button>
-                </DataTemplate>
-            </GridView.ItemTemplate>
-        </GridView>
-        <StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <TextBlock>Delay Interval:&#160;</TextBlock>
-                <TextBlock Text="{x:Bind DelayInterval, Mode=OneWay}"/>
-                <TextBlock Text="ms"/>
-            </StackPanel>
-            <muxc:NumberBox x:Name="DelayIntervalNumberBox" Value="{x:Bind DelayInterval, Mode=TwoWay}" Minimum="0" ToolTipService.ToolTip="Delay between color cycling, in milliseconds" />
+                                </muxc:TeachingTip>
+                            </Button.Resources>
+                        </Button>
+                    </DataTemplate>
+                </GridView.ItemTemplate>
+            </GridView>
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBlock>Delay Interval:&#160;</TextBlock>
+                    <TextBlock Text="{x:Bind DelayInterval, Mode=OneWay}"/>
+                    <TextBlock Text="ms"/>
+                </StackPanel>
+                <muxc:NumberBox x:Name="DelayIntervalNumberBox" Value="{x:Bind DelayInterval, Mode=TwoWay}" Minimum="0" ToolTipService.ToolTip="Delay between color cycling, in milliseconds" />
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <TextBlock>Smoothness:&#160;</TextBlock>
-                <TextBlock Text="{x:Bind RelativeSmoothness, Mode=OneWay}"/>
-                <TextBlock Text="ms"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBlock>Smoothness:&#160;</TextBlock>
+                    <TextBlock Text="{x:Bind RelativeSmoothness, Mode=OneWay}"/>
+                    <TextBlock Text="ms"/>
+                </StackPanel>
+                <muxc:NumberBox x:Name="SmoothnessSlider" Value="{x:Bind RelativeSmoothness, Mode=TwoWay}" Minimum="0" ToolTipService.ToolTip="Time between previous color to this color, in milliseconds" />
             </StackPanel>
-            <muxc:NumberBox x:Name="SmoothnessSlider" Value="{x:Bind RelativeSmoothness, Mode=TwoWay}" Minimum="0" ToolTipService.ToolTip="Time between previous color to this color, in milliseconds" />
         </StackPanel>
-    </StackPanel>
+    </local:EffectControl>
 </Page>

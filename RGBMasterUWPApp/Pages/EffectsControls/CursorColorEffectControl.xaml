@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     Unloaded="Page_Unloaded">
 
-    <local:EffectControl EffectMetadata="{x:Bind CursorColorEffectMd}">
+    <local:EffectControl EffectMetadata="{x:Bind CursorColorEffectMd}" ShouldShowResetButton="True" ResetButton_Clicked="EffectControl_ResetButton_Clicked">
         <Grid>
             <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">

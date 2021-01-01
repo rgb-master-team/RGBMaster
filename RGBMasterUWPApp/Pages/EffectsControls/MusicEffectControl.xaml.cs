@@ -127,10 +127,9 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
 
         public MusicEffectControl()
         {
-            LoadAudioPointsFromUserSettings();
             LoadAudioCaptureDevices();
-            LoadBrightnessMode();
-            LoadSmoothness();
+            LoadSettings();
+
             EventManager.Instance.SubscribeToAppClosingTriggers(AppClosingTriggered);
 
             AppState.Instance.PropertyChanged += AppStateInstance_PropertyChanged;
@@ -138,6 +137,13 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             this.InitializeComponent();
 
             EffectControlWrapper.IsEffectActivationEnabled = false;
+        }
+
+        private void LoadSettings()
+        {
+            LoadAudioPointsFromUserSettings();
+            LoadBrightnessMode();
+            LoadSmoothness();
         }
 
         private void LoadSmoothness()
@@ -223,6 +229,18 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
                 {
                     // TODO - ADD LOGGING SERVICE!
                 }
+            }
+            else
+            {
+                AudioPoints = new List<MusicEffectAudioPoint>()
+                {
+                    new MusicEffectAudioPoint()
+                    {
+                        Color = Color.White,
+                        Index = 0,
+                        MinimumAudioPoint = 0
+                    }
+                };
             }
         }
 
@@ -472,6 +490,13 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         private void MusicEffectControlContainerPage_Unloaded(object sender, RoutedEventArgs e)
         {
             SaveUserSettingsForPage();
+        }
+
+        private void EffectControlWrapper_ResetButton_Clicked(object sender, EventArgs e)
+        {
+            EventManager.Instance.ResetUserSettingsToDefault(new List<string>() { AudioPointsUserSettingKey, BrightnessModeSettingsKey, SmoothnessSettingsKey });
+
+            LoadSettings();
         }
     }
 }

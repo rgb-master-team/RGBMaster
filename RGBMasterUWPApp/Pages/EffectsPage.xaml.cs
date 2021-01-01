@@ -42,8 +42,6 @@ namespace RGBMasterUWPApp.Pages
             { EffectType.Gradient, typeof(GradientEffectControl) }
         };
 
-        private bool shouldIgnoreToggleEvent = false;
-
         public ObservableCollection<EffectMetadata> SupportedEffects
         {
             get
@@ -65,27 +63,6 @@ namespace RGBMasterUWPApp.Pages
 
             selectedEffectMetadata = (EffectMetadata)selectedPivotItem.DataContext;
 
-            /*var currentActiveEffect = AppState.Instance.ActiveEffect;
-
-            var isEffectRunning = AppState.Instance.IsEffectRunning;*/
-
-            /*bool shouldToggleBeOn;
-
-            if (isEffectRunning && currentActiveEffect.EffectMetadataGuid == selectedEffectMetadata.EffectMetadataGuid)
-            {
-                shouldToggleBeOn = true;
-            }
-            else
-            {
-                shouldToggleBeOn = false;
-            }*/
-
-            /*if (shouldToggleBeOn != EffectActivationControl.IsOn)
-            {
-                shouldIgnoreToggleEvent = true;
-                EffectActivationControl.IsOn = shouldToggleBeOn;
-            }*/
-
             if (!contentByEffectType.TryGetValue(selectedEffectMetadata.Type, out var effectType))
             {
                 throw new NotImplementedException($"A view for effect {selectedEffectMetadata.EffectName} is not implemented. Implement it and be sure to include it on contentByEffectType.");
@@ -94,29 +71,11 @@ namespace RGBMasterUWPApp.Pages
             effectControlFrame.Navigate(effectType);
         }
 
-        private void EffectActivationControl_Toggled(object sender, RoutedEventArgs e)
+        private void EffectSelectionPivot_Loaded(object sender, RoutedEventArgs e)
         {
-            if (shouldIgnoreToggleEvent)
+            if (AppState.Instance.IsEffectRunning)
             {
-                shouldIgnoreToggleEvent = false;
-                return;
-            }
-
-            var newEffectMetadata = (EffectMetadata)EffectSelectionPivot.SelectedItem;
-
-            var selectedEffectMetadata = AppState.Instance.ActiveEffect;
-
-            var isEffectRunning = AppState.Instance.IsEffectRunning;
-
-            // If an effect is running and is the one we're currently on, stop it
-            if (isEffectRunning && selectedEffectMetadata.EffectMetadataGuid == newEffectMetadata.EffectMetadataGuid)
-            {
-                EventManager.Instance.RequestEffectActivation(null);
-            }
-            // If an effect isn't running, or the running effect isn't the one we selected - update the effect to the relevant one
-            else
-            {
-                EventManager.Instance.RequestEffectActivation(newEffectMetadata);        
+                EffectSelectionPivot.SelectedItem = ((IEnumerable<EffectMetadata>)EffectSelectionPivot.ItemsSource).First(item => item.EffectMetadataGuid == AppState.Instance.ActiveEffect?.EffectMetadataGuid);
             }
         }
     }

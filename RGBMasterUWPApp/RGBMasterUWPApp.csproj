@@ -152,6 +152,7 @@
     <Compile Include="RGBMasterUserControl.xaml.cs">
       <DependentUpon>RGBMasterUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utils\BoolToVisibilityConverter.cs" />
     <Compile Include="Utils\ConnStatusToCheckboxIsEnabledConverter.cs" />
     <Compile Include="Utils\ConnStatusToProgBarIsActiveConverter.cs" />
     <Compile Include="Utils\ConnStatusToProgBarOpacityConverter.cs" />

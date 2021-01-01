@@ -9,7 +9,7 @@
     >
 
     <StackPanel Orientation="Vertical">
-        <Pivot x:Name="EffectSelectionPivot" Title="Effects" SelectionChanged="Pivot_SelectionChanged" ItemsSource="{x:Bind SupportedEffects}">
+        <Pivot Loaded="EffectSelectionPivot_Loaded" x:Name="EffectSelectionPivot" Title="Effects" SelectionChanged="Pivot_SelectionChanged" ItemsSource="{x:Bind SupportedEffects}">
             <Pivot.HeaderTemplate>
                 <DataTemplate x:DataType="common:EffectMetadata">
                     <StackPanel Orientation="Horizontal" ToolTipService.ToolTip="{x:Bind ShortDescription}">

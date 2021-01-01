@@ -24,17 +24,7 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
     [ContentProperty(Name = "MainContent")]
     public sealed partial class EffectControl : UserControl
     {
-        public EffectControl()
-        {
-            this.InitializeComponent();
-            IsEffectActivationEnabled = true;
-            Loaded += EffectControl_Loaded;
-        }
-
-        private void EffectControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            EffectActivationControl.IsOn = AppState.Instance.ActiveEffect?.EffectMetadataGuid == EffectMetadata.EffectMetadataGuid;
-        }
+        public event EventHandler ResetButton_Clicked;
 
         public static DependencyProperty MainContentProperty =
                 DependencyProperty.Register("MainContent", typeof(object), typeof(EffectControl), null);
@@ -43,6 +33,15 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         {
             get => GetValue(MainContentProperty);
             set => SetValue(MainContentProperty, value);
+        }
+
+        public static DependencyProperty ShouldShowResetButtonProperty =
+                DependencyProperty.Register("ShouldShowResetButton", typeof(bool), typeof(EffectControl), null);
+
+        public bool ShouldShowResetButton
+        {
+            get => (bool)GetValue(ShouldShowResetButtonProperty);
+            set => SetValue(ShouldShowResetButtonProperty, value);
         }
 
         public static DependencyProperty IsEffectActivationEnabledProperty =
@@ -63,9 +62,34 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             set => SetValue(EffectMetadataProperty, value);
         }
 
-        private void EffectActivationControl_Toggled(object sender, RoutedEventArgs e)
+        public EffectControl()
         {
-            var toggle = sender as ToggleSwitch;
+            this.InitializeComponent();
+            IsEffectActivationEnabled = true;
+            ShouldShowResetButton = false;
+            Loaded += EffectControl_Loaded;
+        }
+
+        private void SetEffectActivationPropsByState(bool isEffectRunning)
+        {
+            if (isEffectRunning)
+            {
+                EffectActivationButton.IsChecked = true;
+            }
+            else
+            {
+                EffectActivationButton.IsChecked = false;
+            }
+        }
+
+        private void EffectControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            SetEffectActivationPropsByState(AppState.Instance.ActiveEffect?.EffectMetadataGuid == EffectMetadata.EffectMetadataGuid);
+        }
+
+        private void EffectActivationButton_Click(object sender, RoutedEventArgs e)
+        {
+            var toggle = sender as AppBarToggleButton;
             if (!toggle.IsLoaded)
             {
                 return;
@@ -79,7 +103,7 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             if (selectedEffectMetadata?.EffectMetadataGuid == newEffectMetadata.EffectMetadataGuid)
             {
                 // and the toggle has been turned off - deactivate it.
-                if (!toggle.IsOn)
+                if (toggle.IsChecked == false)
                 {
                     EventManager.Instance.RequestEffectActivation(null);
                 }
@@ -88,11 +112,21 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
             else if (selectedEffectMetadata?.EffectMetadataGuid != newEffectMetadata.EffectMetadataGuid)
             {
                 // ... and the toggle has been turned on - activate it.
-                if (toggle.IsOn)
+                if (toggle.IsChecked == true)
                 {
                     EventManager.Instance.RequestEffectActivation(newEffectMetadata);
                 }
             }
+        }
+
+        private void ResetButtonClicked_Click(object sender, RoutedEventArgs e)
+        {
+            ResetButton_Clicked?.Invoke(sender, null);
+        }
+
+        private void ControlsCommandBar_Closed(object sender, object e)
+        {
+            ControlsCommandBar.IsOpen = true;
         }
     }
 }

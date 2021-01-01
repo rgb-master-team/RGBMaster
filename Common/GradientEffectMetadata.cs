@@ -39,7 +39,7 @@ namespace Common
                         Color = Color.Blue
                     }
                 },
-                RelativeSmoothness = 1000,
+                RelativeSmoothness = 0,
                 DelayInterval = 0,
             };
         }

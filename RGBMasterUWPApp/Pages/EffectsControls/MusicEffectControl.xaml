@@ -11,7 +11,7 @@
     <Page.Resources>
         <utils:DrawingColorToBrushColorValueConverter x:Key="ColorConverter" />
     </Page.Resources>
-    <local:EffectControl x:Name="EffectControlWrapper" EffectMetadata="{x:Bind MusicEffectMd}">
+    <local:EffectControl x:Name="EffectControlWrapper" EffectMetadata="{x:Bind MusicEffectMd}" ResetButton_Clicked="EffectControlWrapper_ResetButton_Clicked" ShouldShowResetButton="true">
         <StackPanel>
             <ContentDialog x:Name="InfoContentDialog" CloseButtonText="Close">
                 <StackPanel>

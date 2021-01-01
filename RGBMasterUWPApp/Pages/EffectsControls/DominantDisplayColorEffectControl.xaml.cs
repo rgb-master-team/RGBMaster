@@ -32,7 +32,8 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public DominantDisplayColorEffectMetadataProperties DominantDisplayColorEffectProps => ((DominantDisplayColorEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.DominantColor)).EffectProperties;
+        public DominantDisplayColorEffectMetadata DominantDisplayColorEffectMd => (DominantDisplayColorEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.DominantColor);
+        public DominantDisplayColorEffectMetadataProperties DominantDisplayColorEffectProps => DominantDisplayColorEffectMd.EffectProperties;
 
         public int RelativeSmoothness
         {
@@ -63,10 +64,16 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         public DominantDisplayColorEffectControl()
         {
             EventManager.Instance.SubscribeToAppClosingTriggers(AppClosingTriggered);
-            LoadSyncBrightnessByHSL();
-            LoadRelativeSmoothness();
+
+            LoadSettings();
 
             this.InitializeComponent();
+        }
+
+        private void LoadSettings()
+        {
+            LoadSyncBrightnessByHSL();
+            LoadRelativeSmoothness();
         }
 
         private void LoadRelativeSmoothness()
@@ -111,6 +118,12 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
             SaveUserSettingsForPage();
+        }
+
+        private void EffectControl_ResetButton_Clicked(object sender, EventArgs e)
+        {
+            EventManager.Instance.ResetUserSettingsToDefault(new List<string>() { SyncBrightnessByHSLUserSettingKey, RelativeSmoothnessUserSettingKey });
+            LoadSettings();
         }
     }
 }

@@ -31,7 +31,8 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
 
         private const string SmoothnessSettingsKey = "StaticColorEffectSmoothness";
 
-        public StaticColorEffectProps StaticColorEffectProps => ((StaticColorEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.StaticColor)).EffectProperties;
+        public StaticColorEffectMetadata StaticColorEffectMd => (StaticColorEffectMetadata)AppState.Instance.Effects.First(effect => effect.Type == EffectType.StaticColor);
+        public StaticColorEffectProps StaticColorEffectProps => StaticColorEffectMd.EffectProperties;
 
         public int RelativeSmoothness
         {
@@ -48,8 +49,7 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
 
         public StaticColorEffectControl()
         {
-            EventManager.Instance.SubscribeToAppClosingTriggers(AppClosingTriggered);
-            LoadSmoothness();
+            LoadSettings();
 
             this.InitializeComponent();
 
@@ -104,6 +104,21 @@ namespace RGBMasterUWPApp.Pages.EffectsControls
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
             SaveUserSettingsForPage();
+        }
+
+        private void EffectControl_ResetButton_Clicked(object sender, EventArgs e)
+        {
+            EventManager.Instance.ResetUserSettingsToDefault(new List<string>() { SmoothnessSettingsKey });
+            LoadSettings();
+
+            ColorPicker.Color = Windows.UI.Color.FromArgb(0, 255, 255, 255);
+            Brighness_Slider.Value = 100;
+        }
+
+        private void LoadSettings()
+        {
+            EventManager.Instance.SubscribeToAppClosingTriggers(AppClosingTriggered);
+            LoadSmoothness();
         }
     }
 }
