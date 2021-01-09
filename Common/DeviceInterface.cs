@@ -3,6 +3,6 @@
     public class DeviceInterface
     {
         public DeviceInterfaceType DeviceInterfaceType { get; set; }
-        public string DeviceCommunicationAddress { get; set; }
+        public string DeviceUniqueIdentifier { get; set; }
     }
 }

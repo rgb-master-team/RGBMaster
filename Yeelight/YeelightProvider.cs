@@ -19,7 +19,8 @@ namespace Yeelight
 
         protected override async Task<List<Provider.Device>> InternalDiscover(CancellationToken cancellationToken = default)
         {
-            var yeelightInternalDevices = await DeviceLocator.Discover();
+            DeviceLocator.UseAllAvailableMulticastAddresses = true;
+            var yeelightInternalDevices = await DeviceLocator.DiscoverAsync(cancellationToken);
 
             return yeelightInternalDevices.Select(device => new YeelightDevice(ProviderMetadata.ProviderGuid, device)).ToList<Provider.Device>();
         }

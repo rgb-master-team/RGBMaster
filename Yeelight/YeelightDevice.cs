@@ -37,7 +37,12 @@ namespace Yeelight
 
         private readonly TimeLimiter timeConstraint = TimeLimiter.GetFromMaxCountByInterval(1, TimeSpan.FromSeconds(1));
 
-        public YeelightDevice(Guid discoveringProvider, YeelightAPI.Device internalDevice) : base(new YeelightDeviceMetadata(discoveringProvider, GetDeviceTypeForYeelight(internalDevice), !String.IsNullOrWhiteSpace(internalDevice.Name) ? internalDevice.Name : internalDevice.Hostname, GetSupportedOperationsForYeelight(internalDevice)))
+        public YeelightDevice(Guid discoveringProvider, YeelightAPI.Device internalDevice) : base(new YeelightDeviceMetadata(
+            discoveringProvider, 
+            GetDeviceTypeForYeelight(internalDevice), 
+            !String.IsNullOrWhiteSpace(internalDevice.Name) ? internalDevice.Name : internalDevice.Hostname, 
+            GetSupportedOperationsForYeelight(internalDevice),
+            new DeviceInterface() { DeviceInterfaceType = DeviceInterfaceType.Network, DeviceUniqueIdentifier = internalDevice.Id }))
         {
             InternalDevice = internalDevice;
         }
@@ -142,7 +147,6 @@ namespace Yeelight
 
             IPEndPoint localEndPoint = new IPEndPoint(localIpAddress, 0);
 
-
             using (var musicModeSocketListener = new Socket(localIpAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp))
             {
                 try
@@ -151,7 +155,16 @@ namespace Yeelight
 
                     musicModeSocketListener.Listen(1);
 
-                    await InternalDevice.StartMusicMode(localIpAddress.ToString(), ((IPEndPoint)musicModeSocketListener.LocalEndPoint).Port);
+                    var port = ((IPEndPoint)musicModeSocketListener.LocalEndPoint).Port;
+
+                    // Instead of using YeelightAPI's StartMusicMode we do it manually via direct communication with the device.
+                    // This is because we want to control the acceptance of the request by the device, so we can randomize the port, own it
+                    // and tell the device to connect to it at once.
+                    // Otherwise, StartMusicMode tries to bind and listen to requests by itself - and the port we randomly received gets used twice.
+                    // ¯\_(ツ)_/¯
+                    //await InternalDevice.StartMusicMode(localIpAddress.ToString(), ((IPEndPoint)musicModeSocketListener.LocalEndPoint).Port);
+
+                    InternalDevice.ExecuteCommand(METHODS.SetMusicMode, new List<object>() { 1, localIpAddress.ToString(), port });
 
                     musicModeSocket = await musicModeSocketListener.AcceptAsync();
                 }
@@ -164,6 +177,7 @@ namespace Yeelight
 
         protected override Task DisconnectInternal()
         {
+            InternalDevice.ExecuteCommand(METHODS.SetMusicMode, new List<object>() { 0 });
             musicModeSocket?.Close();
             InternalDevice?.Disconnect();
             return Task.CompletedTask;

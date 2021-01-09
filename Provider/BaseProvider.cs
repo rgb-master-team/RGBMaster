@@ -21,7 +21,7 @@ namespace Provider
 
         public async Task<(bool didSuccess, List<Device>)> Discover()
         {
-            var discoverTimeoutSpan = TimeSpan.FromSeconds(5);
+            var discoverTimeoutSpan = TimeSpan.FromSeconds(15);
 
             var cancellationToken = new CancellationTokenSource(discoverTimeoutSpan).Token;
 

@@ -7,7 +7,7 @@ namespace Yeelight
 {
     public class YeelightDeviceMetadata : DeviceMetadata
     {
-        public YeelightDeviceMetadata(Guid discoveringProvider, DeviceType deviceType, string deviceName, HashSet<OperationType> supportedOps) : base(discoveringProvider, deviceType, deviceName, supportedOps)
+        public YeelightDeviceMetadata(Guid discoveringProvider, DeviceType deviceType, string deviceName, HashSet<OperationType> supportedOps, DeviceInterface deviceInterface) : base(discoveringProvider, deviceType, deviceName, supportedOps, deviceInterface)
         {
         }
     }
