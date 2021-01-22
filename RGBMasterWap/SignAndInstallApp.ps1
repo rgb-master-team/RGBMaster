@@ -2,9 +2,21 @@
 
 $ErrorActionPreference = "Stop"
 
+$WindowsDeveloperLicense = Get-WindowsDeveloperLicense
+# Check for developer mode
+if ($WindowsDeveloperLicense.Value -ne True)
+{
+    Write-Output "Please enable Developer Mode in order to install the app."
+    Exit
+}
+
+Write-Output "Developer mode is enabled."
+
+$rgbMasterVersion = "2.4.0.0"
+
 Write-Output "Installing rgbmaster certificate....."
 
-Import-Certificate -FilePath "RGBMasterWap_2.4.0.0_x64.cer" -CertStoreLocation Cert:\LocalMachine\TrustedAppRoot
+Import-Certificate -FilePath "RGBMasterWap_$($rgbMasterVersion)_x64.cer" -CertStoreLocation Cert:\LocalMachine\TrustedAppRoot
 
 Write-Output "rgbmaster certificate installed successfully."
 Write-Output "Installing actual RGBMaster app-bundle....."
@@ -18,4 +30,4 @@ if ($package -ne $null) {
     Remove-AppPackage -Package $packageFullname
 }
 
-Add-AppPackage -path "RGBMasterWap_2.4.0.0_x64.msixbundle"
+Add-AppPackage -path "RGBMasterWap_$($rgbMasterVersion)_x64.msixbundle"
