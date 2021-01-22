@@ -12,7 +12,7 @@ if ($WindowsDeveloperLicense.Value -ne True)
 
 Write-Output "Developer mode is enabled."
 
-$rgbMasterVersion = "2.4.0.0"
+$rgbMasterVersion = "2.5.0.0"
 
 Write-Output "Installing rgbmaster certificate....."
 

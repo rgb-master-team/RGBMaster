@@ -9,7 +9,7 @@
   <Identity
     Name="6442bda9-8e61-4e00-a286-4af1d801567a"
     Publisher="CN=rgbmaster"
-    Version="2.4.0.0" />
+    Version="2.5.0.0" />
 
   <Properties>
     <DisplayName>RGBMasterWap</DisplayName>
