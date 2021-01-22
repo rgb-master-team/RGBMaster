@@ -20,6 +20,7 @@ namespace Common
         GPU,
         Motherboard,
         Chair,
+        HeadphoneStand,
         AllDevices,
     }
 }

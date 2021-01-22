@@ -132,6 +132,7 @@
     <Content Include="Assets\Icons\Black\Chair.png" />
     <Content Include="Assets\Icons\Black\Fan.png" />
     <Content Include="Assets\Icons\Black\GPU.png" />
+    <Content Include="Assets\Icons\Black\HeadphoneStand.png" />
     <Content Include="Assets\Icons\Black\Headset.png" />
     <Content Include="Assets\Icons\Black\Keyboard.png" />
     <Content Include="Assets\Icons\Black\Keypad.png" />
@@ -147,6 +148,7 @@
     <Content Include="Assets\Icons\White\Chair.png" />
     <Content Include="Assets\Icons\White\Fan.png" />
     <Content Include="Assets\Icons\White\GPU.png" />
+    <Content Include="Assets\Icons\White\HeadphoneStand.png" />
     <Content Include="Assets\Icons\White\Headset.png" />
     <Content Include="Assets\Icons\White\Keyboard.png" />
     <Content Include="Assets\Icons\White\Keypad.png" />

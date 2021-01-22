@@ -317,6 +317,9 @@ namespace RGBMasterUWPApp.Pages
                 case DeviceType.Chair:
                     deviceTypeText = "Chair";
                     break;
+                case DeviceType.HeadphoneStand:
+                    deviceTypeText = "Headphone Stand";
+                    break;
                 case DeviceType.AllDevices:
                     deviceTypeText = "All Devices";
                     break; 

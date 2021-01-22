@@ -45,6 +45,8 @@ namespace Common
                         return @"/Assets/Icons/White/Motherboard.png";
                     case DeviceType.Chair:
                         return @"/Assets/Icons/White/Chair.png";
+                    case DeviceType.HeadphoneStand:
+                        return @"/Assets/Icons/White/HeadphoneStand.png";
                     case DeviceType.AllDevices:
                         return @"/Assets/Icons/White/AllDevices.png";
                     default:
