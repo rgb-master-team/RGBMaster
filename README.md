@@ -32,17 +32,7 @@ TODO - Write a simple explanation of the project structure, how to build it, UI 
 
 <a name="integrations"></a>
 ## Supported integrations
-- [x] Razer Chroma
-- [x] Yeelight
-- [x] Logitech
-- [x] MagicHome
-- [ ] Corsair - WIP
-- [ ] Asus Aura - WIP
-- [x] SteelSeries
-- [ ] ShellyRGB - WIP
-- [x] Phillips Hue
-- [ ] Gigabyte RGB FUSION
-- [ ] NZXT (Hue Plus & Kraken X)
+[An updated list of integrations](https://github.com/rgb-master-team/RGBMaster/projects/3)
 
 <a name="prerequisites"></a>
 ## Prerequisites 
