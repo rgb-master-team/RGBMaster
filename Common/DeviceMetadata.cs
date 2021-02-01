@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Common
 {
@@ -52,6 +53,70 @@ namespace Common
                     default:
                         throw new NotSupportedException($"An icon is not mapped to device type {DeviceType}.");
                 }
+            }
+        }
+
+        public virtual string DeviceTypeAsText
+        {
+            get
+            {
+                string deviceTypeText;
+
+                switch (DeviceType)
+                {
+                    case DeviceType.Unknown:
+                        deviceTypeText = "Unknown";
+                        break;
+                    case DeviceType.Lightbulb:
+                        deviceTypeText = "Lightbulb";
+                        break;
+                    case DeviceType.LedStrip:
+                        deviceTypeText = "Led Strip";
+                        break;
+                    case DeviceType.Keyboard:
+                        deviceTypeText = "Keyboard";
+                        break;
+                    case DeviceType.Mouse:
+                        deviceTypeText = "Mouse";
+                        break;
+                    case DeviceType.Fan:
+                        deviceTypeText = "Fan";
+                        break;
+                    case DeviceType.Mousepad:
+                        deviceTypeText = "Mousepad";
+                        break;
+                    case DeviceType.Speaker:
+                        deviceTypeText = "Speaker";
+                        break;
+                    case DeviceType.Headset:
+                        deviceTypeText = "Headset";
+                        break;
+                    case DeviceType.Keypad:
+                        deviceTypeText = "Keypad";
+                        break;
+                    case DeviceType.Memory:
+                        deviceTypeText = "Memory";
+                        break;
+                    case DeviceType.GPU:
+                        deviceTypeText = "Graphics Card";
+                        break;
+                    case DeviceType.Motherboard:
+                        deviceTypeText = "Motherboard";
+                        break;
+                    case DeviceType.Chair:
+                        deviceTypeText = "Chair";
+                        break;
+                    case DeviceType.HeadphoneStand:
+                        deviceTypeText = "Headphone Stand";
+                        break;
+                    case DeviceType.AllDevices:
+                        deviceTypeText = "All Devices";
+                        break;
+                    default:
+                        throw new NotSupportedException($"There is no matching text for device type {DeviceType}. Make sure to include the translation in {MethodBase.GetCurrentMethod()}.");
+                }
+
+                return deviceTypeText;
             }
         }
 

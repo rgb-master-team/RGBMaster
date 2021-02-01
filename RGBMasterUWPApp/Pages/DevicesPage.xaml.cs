@@ -193,7 +193,7 @@ namespace RGBMasterUWPApp.Pages
             // Device Type
             var deviceTypeStackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
             deviceTypeStackPanel.Children.Add(new TextBlock() { Text = $"Device type: ", FontWeight = FontWeight = Windows.UI.Text.FontWeights.Bold, Margin = new Thickness(0, 0, 4, 0) });
-            deviceTypeStackPanel.Children.Add(new TextBlock() { Text = $"{DeviceTypeToText(deviceMetadata.DeviceType)}" });
+            deviceTypeStackPanel.Children.Add(new TextBlock() { Text = $"{deviceMetadata.DeviceTypeAsText}" });
             contentDialogInnerContent.Children.Add(deviceTypeStackPanel);
 
             // Device GUID
@@ -267,67 +267,6 @@ namespace RGBMasterUWPApp.Pages
             }
 
             return operation;
-        }
-
-        private string DeviceTypeToText(DeviceType deviceType)
-        {
-            string deviceTypeText;
-
-            switch (deviceType)
-            {
-                case DeviceType.Unknown:
-                    deviceTypeText = "Unknown";
-                    break;
-                case DeviceType.Lightbulb:
-                    deviceTypeText = "Lightbulb";
-                    break;
-                case DeviceType.LedStrip:
-                    deviceTypeText = "Led Strip";
-                    break;
-                case DeviceType.Keyboard:
-                    deviceTypeText = "Keyboard";
-                    break;
-                case DeviceType.Mouse:
-                    deviceTypeText = "Mouse";
-                    break;
-                case DeviceType.Fan:
-                    deviceTypeText = "Fan";
-                    break;
-                case DeviceType.Mousepad:
-                    deviceTypeText = "Mousepad";
-                    break;
-                case DeviceType.Speaker:
-                    deviceTypeText = "Speaker";
-                    break;
-                case DeviceType.Headset:
-                    deviceTypeText = "Headset";
-                    break;
-                case DeviceType.Keypad:
-                    deviceTypeText = "Keypad";
-                    break;
-                case DeviceType.Memory:
-                    deviceTypeText = "Memory";
-                    break;
-                case DeviceType.GPU:
-                    deviceTypeText = "Graphics Card";
-                    break;
-                case DeviceType.Motherboard:
-                    deviceTypeText = "Motherboard";
-                    break;
-                case DeviceType.Chair:
-                    deviceTypeText = "Chair";
-                    break;
-                case DeviceType.HeadphoneStand:
-                    deviceTypeText = "Headphone Stand";
-                    break;
-                case DeviceType.AllDevices:
-                    deviceTypeText = "All Devices";
-                    break; 
-                default:
-                    throw new NotSupportedException($"There is no matching text for device type {deviceType}. Make sure to include the translation in {MethodBase.GetCurrentMethod()}.");
-            }
-
-            return deviceTypeText;
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
