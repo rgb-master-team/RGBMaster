@@ -29,10 +29,20 @@ namespace GameSense.DeviceScanner
 
         private static readonly ReadOnlyDictionary<int, ScannedSteelSeriesDeviceMapping> hidProductIdToGsDeviceProps = new ReadOnlyDictionary<int, ScannedSteelSeriesDeviceMapping>(new Dictionary<int, ScannedSteelSeriesDeviceMapping>()
         {
+            // Mice
+            {
+                0x1836, new ScannedSteelSeriesDeviceMapping(
+                gameSenseDeviceType: GameSenseConstants.RGB_3_ZONE,
+                gameSenseZones: GameSenseConstants.MOUSE_POSSIBLE_ZONES,
+                deviceType: DeviceType.Mouse,
+                deviceName: "Aerox 3")
+            },
+
+            // Headsets
             { 
                 0x1283, new ScannedSteelSeriesDeviceMapping(
                 gameSenseDeviceType: GameSenseConstants.RGB_2_ZONE, 
-                gameSenseZones: new string[] { GameSenseConstants.HEADSET_ZONE_EARCUP }, 
+                gameSenseZones: GameSenseConstants.HEADSET_POSSIBLE_ZONES,
                 deviceType: DeviceType.Headset, 
                 deviceName: "SteelSeries Arctis Pro + Game DAC") 
             }

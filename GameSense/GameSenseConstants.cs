@@ -34,6 +34,7 @@ namespace GameSense
         // due to using "earcups" zone.
         public const string HEADSET_ZONE_EARCUP = "earcups";
         public const string DYNAMIC_COLOR_MODE = "context-color";
+        public static readonly IReadOnlyList<string> HEADSET_POSSIBLE_ZONES = new List<string>() { HEADSET_ZONE_EARCUP }.AsReadOnly();
 
         // Mouse
         public static readonly IReadOnlyList<string> MOUSE_POSSIBLE_DEVICE_TYPES = new List<string>() { RGB_2_ZONE, RGB_3_ZONE, RGB_8_ZONE }.AsReadOnly();
