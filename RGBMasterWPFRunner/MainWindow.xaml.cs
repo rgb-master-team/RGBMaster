@@ -11,6 +11,7 @@ using Microsoft.Toolkit.Wpf.UI.XamlHost;
 using NAudio.CoreAudioApi;
 using Provider;
 using RazerChroma;
+using RGBMasterUWPApp;
 using Serilog;
 using Serilog.Exceptions;
 using System;
@@ -529,7 +530,13 @@ namespace RGBMasterWPFRunner
 
         private void MainUserControlWrapper_ChildChanged(object sender, EventArgs e)
         {
-            MainUserControl = (RGBMasterUWPApp.RGBMasterUserControl) ((WindowsXamlHost)sender).Child;
+            var windowsXamlHost = sender as WindowsXamlHost;
+            var userControl = windowsXamlHost.GetUwpInternalObject() as RGBMasterUserControl;
+            
+            if (userControl != null)
+            {
+                MainUserControl = userControl;
+            }
         }
     }
 }

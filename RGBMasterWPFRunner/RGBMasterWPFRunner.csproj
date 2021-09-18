@@ -7,6 +7,7 @@
     <Platforms>AnyCPU;x64;x86</Platforms>
     <AssetTargetFallback>uap10.0.18362</AssetTargetFallback>
     <StartupObject>RGBMasterWPFRunner.Program</StartupObject>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>
@@ -48,6 +49,10 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings1.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.VCRTForwarders.140" Version="1.0.7" />
   </ItemGroup>
 
 </Project>
