@@ -6,11 +6,11 @@
     xmlns:local="using:RGBMasterUWPHost"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
     RequestedTheme="Dark">
-    <xaml:XamlApplication.Resources>
+    <Application.Resources>
         <controls:XamlControlsResources>
             <controls:XamlControlsResources.MergedDictionaries>
                 <!-- Other app resources here -->
             </controls:XamlControlsResources.MergedDictionaries>
         </controls:XamlControlsResources>
-    </xaml:XamlApplication.Resources>
+    </Application.Resources>
 </xaml:XamlApplication>
