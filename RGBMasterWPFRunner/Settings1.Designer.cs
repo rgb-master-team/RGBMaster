@@ -12,7 +12,7 @@ namespace RGBMasterWPFRunner {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.8.1.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.10.0.0")]
     internal sealed partial class Settings1 : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings1 defaultInstance = ((Settings1)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings1())));
@@ -25,7 +25,7 @@ namespace RGBMasterWPFRunner {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool ToggleDeviceOnCheck {
             get {
                 return ((bool)(this["ToggleDeviceOnCheck"]));
@@ -85,7 +85,7 @@ namespace RGBMasterWPFRunner {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("200")]
         public int MusicEffectSmoothness {
             get {
                 return ((int)(this["MusicEffectSmoothness"]));
@@ -121,7 +121,7 @@ namespace RGBMasterWPFRunner {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("400")]
         public int GradientEffectDelayInterval {
             get {
                 return ((int)(this["GradientEffectDelayInterval"]));
@@ -133,7 +133,7 @@ namespace RGBMasterWPFRunner {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("200")]
         public int GradientEffectRelativeSmoothness {
             get {
                 return ((int)(this["GradientEffectRelativeSmoothness"]));
@@ -145,7 +145,7 @@ namespace RGBMasterWPFRunner {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("200")]
         public int DominantDisplayColorEffectRelativeSmoothness {
             get {
                 return ((int)(this["DominantDisplayColorEffectRelativeSmoothness"]));
@@ -169,7 +169,7 @@ namespace RGBMasterWPFRunner {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("200")]
         public int CursorColorEffectRelativeSmoothness {
             get {
                 return ((int)(this["CursorColorEffectRelativeSmoothness"]));

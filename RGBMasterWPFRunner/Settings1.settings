@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="ToggleDeviceOnCheck" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="MusicEffectAudioPoints" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -18,7 +18,7 @@
       <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="MusicEffectSmoothness" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">200</Value>
     </Setting>
     <Setting Name="StaticColorEffectSmoothness" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
@@ -27,19 +27,19 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="GradientEffectDelayInterval" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">400</Value>
     </Setting>
     <Setting Name="GradientEffectRelativeSmoothness" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">200</Value>
     </Setting>
     <Setting Name="DominantDisplayColorEffectRelativeSmoothness" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">200</Value>
     </Setting>
     <Setting Name="DominantDisplayColorEffectSyncBrightnessByHSL" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="CursorColorEffectRelativeSmoothness" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">200</Value>
     </Setting>
     <Setting Name="CursorColorEffectSyncBrightnessByHSL" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
