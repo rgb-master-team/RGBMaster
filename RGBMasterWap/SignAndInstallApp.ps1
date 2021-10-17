@@ -3,8 +3,11 @@
 $ErrorActionPreference = "Stop"
 
 $WindowsDeveloperLicense = Get-WindowsDeveloperLicense
+
+Write-Output $WindowsDeveloperLicense.IsValid
+
 # Check for developer mode
-if ($WindowsDeveloperLicense.Value -ne True)
+if ($WindowsDeveloperLicense.IsValid -ne $True)
 {
     Write-Output "Please enable Developer Mode in order to install the app."
     Exit

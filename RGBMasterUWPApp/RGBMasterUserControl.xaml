@@ -9,8 +9,8 @@
     Loaded="RGBMasterUserControl_Loaded"
     mc:Ignorable="d">
     <UserControl.Resources>
-            <ResourceDictionary>
-                <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <!--<SolidColorBrush x:Key="ButtonBackground" Color="#00a69a"/>
                     <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#4cc0b8"/>
@@ -21,7 +21,7 @@
                     <SolidColorBrush x:Key="TextControlBorderBrushPointerOver" Color="#4cc0b8"/>-->
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
-            </ResourceDictionary>
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <VisualStateManager.VisualStateGroups>
@@ -43,14 +43,14 @@
                         <Setter Target="MainNavigationView.IsPaneOpen" Value="True" />
                     </VisualState.Setters>
                 </VisualState>
-                
+
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        
-        
-        
+
+
+
         <winui:NavigationView x:Name="MainNavigationView" PaneDisplayMode="Left" IsBackButtonVisible="Collapsed" SelectionChanged="MainNavigationView_SelectionChanged" Loaded="NavigationView_Loaded">
-                <winui:NavigationView.PaneHeader>
+            <winui:NavigationView.PaneHeader>
                 <StackPanel Orientation="Horizontal">
                     <Image Source="Assets/128.png" Width="23" Height="23" Margin="4 0 4 0" />
                     <TextBlock VerticalAlignment="Center" Text="RGB Master" FontWeight="SemiBold" FontSize="16" />
