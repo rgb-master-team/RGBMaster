@@ -5,9 +5,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x64;x86</Platforms>
-    <AssetTargetFallback>uap10.0.18362</AssetTargetFallback>
+    <AssetTargetFallback>uap10.0.19041</AssetTargetFallback>
     <StartupObject>RGBMasterWPFRunner.Program</StartupObject>
-    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>

@@ -236,6 +236,5 @@
   <PropertyGroup>
     <EnableTypeInfoReflection>false</EnableTypeInfoReflection>
     <EnableXBindDiagnostics>false</EnableXBindDiagnostics>
-    <DisableEmbeddedXbf>true</DisableEmbeddedXbf>
   </PropertyGroup>
 </Project>
