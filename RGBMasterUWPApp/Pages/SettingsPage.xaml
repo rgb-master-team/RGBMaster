@@ -36,7 +36,7 @@
         <PivotItem Header="About">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Spacing="20">
                 <StackPanel HorizontalAlignment="Center">
-                    <Image Source="/Assets/128.png" Width="50px" Height="50px" />
+                    <Image Source="Assets/128.png" Width="50px" Height="50px" />
                     <TextBlock Text="RGB Master" Style="{StaticResource SubheaderTextBlockStyle}" HorizontalAlignment="Center" FontWeight="Bold" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <TextBlock Style="{StaticResource CaptionTextBlockStyle}" HorizontalAlignment="Center" Text="Version: " />
