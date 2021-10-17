@@ -328,3 +328,8 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+
+# LEAVE THIS UNMARKED - FIXES A TEMP ISSUE WITH XAML ISLANDS - 
+# https://docs.microsoft.com/en-us/windows/apps/desktop/modernize/host-custom-control-with-xaml-islands#resolve-cannot-find-a-resource-error-when-hosting-a-winui-control
+RGBMasterWap/bin/x64/Debug/AppX/RGBMasterWPFRunner/*
+!RGBMasterWap/bin/x64/Debug/AppX/RGBMasterWPFRunner/App.xbf
