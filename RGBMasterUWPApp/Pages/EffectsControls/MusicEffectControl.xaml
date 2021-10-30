@@ -13,31 +13,6 @@
     </Page.Resources>
     <local:EffectControl x:Name="EffectControlWrapper" EffectMetadata="{x:Bind MusicEffectMd}" ResetButton_Clicked="EffectControlWrapper_ResetButton_Clicked" ShouldShowResetButton="true">
         <StackPanel>
-            <ContentDialog x:Name="InfoContentDialog" CloseButtonText="Close">
-                <StackPanel>
-                    <TextBlock TextWrapping="Wrap">
-                    <Run FontWeight="Bold">Music Effect Sync</Run> 
-                    <LineBreak />
-                    Music effect syncs your devices according to audio points defined by you.
-                    <LineBreak/>
-                    Each audio point is assinged with a <Run FontWeight="SemiBold">color</Run> and a <Run FontWeight="SemiBold">minimum volume value</Run>.
-                    <LineBreak />
-                    The devices are then synced with the color of the audio point whose minimum point is the closest (from bottom) to the current volume.
-                    <LineBreak />
-                    <LineBreak />
-                    <Run FontWeight="Bold">Minimum Volume</Run>
-                    <LineBreak />
-                    You can choose certain value between 1 to 100 that representes the volume point, that will bind the selected color to that specific point.
-                    <LineBreak />
-                    <LineBreak />
-                    <Run FontWeight="Bold">Usage</Run>
-                    <LineBreak />
-                    Use the dropdown list to choose how much audio points you want.
-                    <LineBreak />
-                    Right-click any audio point to add point, remove point and duplicate point.
-                    </TextBlock>
-                </StackPanel>
-            </ContentDialog>
             <ContentControl x:Name="AudioPointsContentControl" IsEnabled="{x:Bind IsAudioPointsEditingEnabled, Mode=OneWay}">
                 <StackPanel Orientation="Vertical" Spacing="10">
                     <StackPanel Orientation="Horizontal" Spacing="4" Margin="0 0 0 4">
@@ -154,6 +129,32 @@
                     </GridView>
                 </StackPanel>
             </ContentControl>
+
+            <ContentDialog x:Name="InfoContentDialog" CloseButtonText="Close">
+                <StackPanel>
+                    <TextBlock TextWrapping="Wrap">
+                    <Run FontWeight="Bold">Music Effect Sync</Run> 
+                    <LineBreak />
+                    Music effect syncs your devices according to audio points defined by you.
+                    <LineBreak/>
+                    Each audio point is assinged with a <Run FontWeight="SemiBold">color</Run> and a <Run FontWeight="SemiBold">minimum volume value</Run>.
+                    <LineBreak />
+                    The devices are then synced with the color of the audio point whose minimum point is the closest (from bottom) to the current volume.
+                    <LineBreak />
+                    <LineBreak />
+                    <Run FontWeight="Bold">Minimum Volume</Run>
+                    <LineBreak />
+                    You can choose certain value between 1 to 100 that representes the volume point, that will bind the selected color to that specific point.
+                    <LineBreak />
+                    <LineBreak />
+                    <Run FontWeight="Bold">Usage</Run>
+                    <LineBreak />
+                    Use the dropdown list to choose how much audio points you want.
+                    <LineBreak />
+                    Right-click any audio point to add point, remove point and duplicate point.
+                    </TextBlock>
+                </StackPanel>
+            </ContentDialog>
         </StackPanel>
     </local:EffectControl>
 </Page>
