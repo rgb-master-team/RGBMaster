@@ -1,0 +1,35 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. -->
+<!-- Licensed under the MIT License. See LICENSE in the project root for license information. -->
+
+<Page
+    x:Class="RGBMasterWinUI.Pages.EffectsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:RGBMasterWinUI.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <StackPanel Orientation="Vertical">
+        <Pivot Loaded="EffectSelectionPivot_Loaded" x:Name="EffectSelectionPivot" Title="Effects" SelectionChanged="Pivot_SelectionChanged" ItemsSource="{x:Bind SupportedEffects}">
+            <Pivot.HeaderTemplate>
+                <DataTemplate x:DataType="common:EffectMetadata">
+                    <StackPanel Orientation="Horizontal" ToolTipService.ToolTip="{x:Bind ShortDescription}">
+                        <FontIcon Glyph="{x:Bind IconGlyph}" FontFamily="{StaticResource SymbolThemeFontFamily}"  Margin="0 4 4 0"/>
+                        <TextBlock Text="{x:Bind EffectName}" />
+                    </StackPanel>
+                </DataTemplate>
+            </Pivot.HeaderTemplate>
+            <Pivot.ItemTemplate>
+                <DataTemplate x:DataType="common:EffectMetadata">
+                    <StackPanel Margin="-10, 16, 0, 0" Spacing="15">
+                        <TextBlock Text="Effect Behavior" FontWeight="Normal" FontSize="20" OpticalMarginAlignment="TrimSideBearings" />
+                        <TextBlock Text="{x:Bind FullDescription}" MaxWidth="400" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="0, 0, 0, 0"  />
+                    </StackPanel>
+                </DataTemplate>
+            </Pivot.ItemTemplate>
+        </Pivot>
+        <Frame x:Name="effectControlFrame" Margin="0 4 0 0"/>
+    </StackPanel>
+</Page>

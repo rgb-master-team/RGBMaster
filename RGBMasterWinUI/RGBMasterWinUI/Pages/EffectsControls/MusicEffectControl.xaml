@@ -1,0 +1,163 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. -->
+<!-- Licensed under the MIT License. See LICENSE in the project root for license information. -->
+
+<Page
+    x:Class="RGBMasterWinUI.Pages.EffectsControls.MusicEffectControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:RGBMasterWinUI.Pages.EffectsControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <utils:DrawingColorToBrushColorValueConverter x:Key="ColorConverter" />
+    </Page.Resources>
+    <local:EffectControl x:Name="EffectControlWrapper" EffectMetadata="{x:Bind MusicEffectMd}" ResetButton_Clicked="EffectControlWrapper_ResetButton_Clicked" ShouldShowResetButton="true">
+        <StackPanel>
+            <ContentControl x:Name="AudioPointsContentControl" IsEnabled="{x:Bind IsAudioPointsEditingEnabled, Mode=OneWay}">
+                <StackPanel Orientation="Vertical" Spacing="10">
+                    <StackPanel Orientation="Horizontal" Spacing="4" Margin="0 0 0 4">
+                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE7F5;"/>
+                        <TextBlock Text="Capture Device" Style="{StaticResource BodyTextBlockStyle}"/>
+                    </StackPanel>
+                    <ComboBox x:Name="CaptureDeviceComboBox" SelectedItem="{x:Bind SelectedAudioCaptureDevice, Mode=OneWay}" SelectionChanged="CaptureDeviceComboBox_SelectionChanged" PlaceholderText="Select capture device" Margin="0 0 0 8" ItemsSource="{x:Bind state:AppState.Instance.AudioCaptureDevices, Mode=OneWay}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="common:AudioCaptureDevice">
+                                <StackPanel Orientation="Horizontal">
+                                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="{x:Bind GlyphIcon}" Margin="0 0 4 0" />
+                                    <TextBlock Text="{x:Bind DeviceFriendlyName}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    <StackPanel Orientation="Horizontal" Spacing="20" >
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal" Spacing="4" Margin="0 0 0 4">
+                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE80A;"/>
+                                <TextBlock Text="Audio Points" Style="{StaticResource BodyTextBlockStyle}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <ComboBox SelectionChangedTrigger="Always" x:Name="AudioPointsComboBox" IsEditable="True" SelectedItem="{x:Bind AudioPointsCount, Mode=OneWay}" TextSubmitted="AudioPointsComboBox_TextSubmitted" ItemsSource="{x:Bind PossibleAudioPointsCount, Mode=OneWay}" />
+                                <Button x:Name="InfoButton" Click="InfoButton_Click" ToolTipService.ToolTip="How to use">
+                                    <Button.Content>
+                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE946;"/>
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="4" Margin="0 0 0 4">
+                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE706;"/>
+                                <TextBlock Text="Brightness Mode" Style="{StaticResource BodyTextBlockStyle}"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <ComboBox x:Name="BrightnessModeComboBox" PlaceholderText="Brightness mode" SelectedItem="{x:Bind BrightnessModeDescriptor, Mode=OneWay}" ItemsSource="{x:Bind BrightnessModes}" SelectionChanged="BrightnessModeComboBox_SelectionChanged">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:DataType="local:MusicEffectBrightnessModeDescriptor">
+                                            <StackPanel Orientation="Horizontal" ToolTipService.ToolTip="{x:Bind Description}">
+                                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="{x:Bind GlyphIcon}" Margin="0 0 4 0" />
+                                                <TextBlock Text="{x:Bind Title}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="4" Margin="0 0 0 4">
+                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xEDA8;" Margin="0 0 4 0" />
+                                <TextBlock>Smoothness:&#160;</TextBlock>
+                                <TextBlock Text="{x:Bind RelativeSmoothness, Mode=OneWay}"/>
+                                <TextBlock Text="ms" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" MaxWidth="82">
+                                <muxc:NumberBox x:Name="SmoothnessSlider" Value="{x:Bind RelativeSmoothness, Mode=TwoWay}" Minimum="0" ToolTipService.ToolTip="Time between previous color to this color, in milliseconds" Width="82"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                    <GridView ItemsSource="{x:Bind AudioPoints, Mode=OneWay}">
+                        <GridView.ItemTemplate>
+                            <DataTemplate x:DataType="common:MusicEffectAudioPoint">
+                                <Button x:Name="ColorPickButton" Click="ColorPickButton_Click" Width="50px" Height="50px">
+                                    <Button.Content>
+                                        <TextBlock Text="{x:Bind MinimumAudioPoint, Mode=OneWay}" Foreground="Black" FontWeight="SemiBold"/>
+                                    </Button.Content>
+                                    <Button.Background>
+                                        <SolidColorBrush Color="{x:Bind Color, Mode=OneWay, Converter={StaticResource ColorConverter}}" />
+                                    </Button.Background>
+                                    <Button.ContextFlyout>
+                                        <MenuFlyout>
+                                            <MenuFlyoutItem x:Name="AddAudioPointBefore" Text="Add Before" Click="AddAudioPointBefore_Click" IsEnabled="{Binding ElementName=MusicEffectControlContainerPage, Path=IsAddAudioPointEnabled, Mode=OneWay }">
+                                                <MenuFlyoutItem.Icon>
+                                                    <FontIcon Glyph="&#xE112;" />
+                                                </MenuFlyoutItem.Icon>
+                                            </MenuFlyoutItem>
+                                            <MenuFlyoutItem x:Name="RemoveAudioPoint" Text="Remove" Click="RemoveAudioPoint_Click" IsEnabled="{Binding ElementName=MusicEffectControlContainerPage, Path=IsRemoveAudioPointEnabled, Mode=OneWay}">
+                                                <MenuFlyoutItem.Icon>
+                                                    <FontIcon Glyph="&#xE106;" />
+                                                </MenuFlyoutItem.Icon>
+                                            </MenuFlyoutItem>
+                                            <MenuFlyoutItem x:Name="AddAudioPointAfter" Text="Add After" Click="AddAudioPointAfter_Click" IsEnabled="{Binding ElementName=MusicEffectControlContainerPage, Path=IsAddAudioPointEnabled, Mode=OneWay }">
+                                                <MenuFlyoutItem.Icon>
+                                                    <FontIcon Glyph="&#xE111;" />
+                                                </MenuFlyoutItem.Icon>
+                                            </MenuFlyoutItem>
+                                            <MenuFlyoutSeparator />
+                                            <MenuFlyoutItem x:Name="DuplicateAudioPoint" Text="Duplicate" Click="DuplicateAudioPoint_Click" IsEnabled="{Binding ElementName=MusicEffectControlContainerPage, Path=IsAddAudioPointEnabled, Mode=OneWay }">
+                                                <MenuFlyoutItem.Icon>
+                                                    <FontIcon Glyph="&#xE16F;" />
+                                                </MenuFlyoutItem.Icon>
+                                            </MenuFlyoutItem>
+                                        </MenuFlyout>
+                                    </Button.ContextFlyout>
+                                    <Button.Resources>
+                                        <muxc:TeachingTip x:Key="AudioPointEditTeachingTip" IsLightDismissEnabled="True">
+                                            <StackPanel>
+                                                <ColorPicker x:Name="ColorPicker" 
+                                                 ColorSpectrumShape="Ring" 
+                                                 IsColorSliderVisible="True"
+                                                 Color="{x:Bind Color, Converter={StaticResource ColorConverter}, Mode=TwoWay}"
+                                                  />
+                                                <TextBlock Text="Minimum Volume" HorizontalAlignment="Center" FontSize="16" Margin="0 4 0 0" />
+                                                <Slider x:Name="Brighness_Slider" Minimum="0" Maximum="100" StepFrequency="1" Value="{x:Bind MinimumAudioPoint, Mode=TwoWay}" />
+                                            </StackPanel>
+                                        </muxc:TeachingTip>
+                                    </Button.Resources>
+                                </Button>
+                            </DataTemplate>
+                        </GridView.ItemTemplate>
+                    </GridView>
+                </StackPanel>
+            </ContentControl>
+
+            <ContentDialog x:Name="InfoContentDialog" CloseButtonText="Close">
+                <StackPanel>
+                    <TextBlock TextWrapping="Wrap">
+                    <Run FontWeight="Bold">Music Effect Sync</Run> 
+                    <LineBreak />
+                    Music effect syncs your devices according to audio points defined by you.
+                    <LineBreak/>
+                    Each audio point is assinged with a <Run FontWeight="SemiBold">color</Run> and a <Run FontWeight="SemiBold">minimum volume value</Run>.
+                    <LineBreak />
+                    The devices are then synced with the color of the audio point whose minimum point is the closest (from bottom) to the current volume.
+                    <LineBreak />
+                    <LineBreak />
+                    <Run FontWeight="Bold">Minimum Volume</Run>
+                    <LineBreak />
+                    You can choose certain value between 1 to 100 that representes the volume point, that will bind the selected color to that specific point.
+                    <LineBreak />
+                    <LineBreak />
+                    <Run FontWeight="Bold">Usage</Run>
+                    <LineBreak />
+                    Use the dropdown list to choose how much audio points you want.
+                    <LineBreak />
+                    Right-click any audio point to add point, remove point and duplicate point.
+                    </TextBlock>
+                </StackPanel>
+            </ContentDialog>
+        </StackPanel>
+    </local:EffectControl>
+</Page>
