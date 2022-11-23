@@ -98,7 +98,7 @@
                                                 <muxc:ProgressRing Margin="0 0 8 0" Opacity="{x:Bind ConnectionStatus, Mode=OneWay, Converter={StaticResource ConnStatusToProgBarOpacity}}" IsActive="{x:Bind ConnectionStatus, Mode=OneWay, Converter={StaticResource ConnStatusToProgBarIsActive}}" Width="24" Height="24" />
                                                 <CheckBox x:Name="DeviceSelectionCheckbox" IsEnabled="{x:Bind ConnectionStatus, Mode=OneWay, Converter={StaticResource ConnStatusToCheckboxIsEnabled}}" IsChecked="{x:Bind IsChecked, Mode=TwoWay}" Tag="{x:Bind}" Click="CheckBox_Click">
                                                     <CheckBox.Resources>
-                                                        <muxc:TeachingTip x:Name="TeachingTip_SetName" Title="Set Custom Name" Subtitle="Set a custom name for this device" ActionButtonContent="Save" CloseButtonContent="Cancel" Target="{Binding Change_Device_Name_Button}" IsLightDismissEnabled="True">
+                                                        <muxc:TeachingTip x:Name="TeachingTip_SetName" Title="Set Custom Name" Subtitle="Set a custom name for this device" ActionButtonContent="Save" CloseButtonContent="Cancel" Target="{x:Bind Change_Device_Name_Button}" IsLightDismissEnabled="True">
                                                             <muxc:TeachingTip.IconSource>
                                                                 <muxc:SymbolIconSource Symbol="Edit" />
                                                             </muxc:TeachingTip.IconSource>

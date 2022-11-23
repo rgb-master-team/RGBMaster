@@ -8,8 +8,11 @@
     xmlns:local="using:RGBMasterWinUI.Pages.EffectsControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:utils="using:RGBMasterWinUI.Utils"
+    xmlns:common="using:Common" xmlns:state="using:AppExecutionManager.State"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    Unloaded="MusicEffectControlContainerPage_Unloaded">
 
     <Page.Resources>
         <utils:DrawingColorToBrushColorValueConverter x:Key="ColorConverter" />
@@ -74,7 +77,7 @@
                                 <TextBlock Text="ms" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" MaxWidth="82">
-                                <muxc:NumberBox x:Name="SmoothnessSlider" Value="{x:Bind RelativeSmoothness, Mode=TwoWay}" Minimum="0" ToolTipService.ToolTip="Time between previous color to this color, in milliseconds" Width="82"/>
+                                <NumberBox x:Name="SmoothnessSlider" Value="{x:Bind RelativeSmoothness, Mode=TwoWay}" Minimum="0" ToolTipService.ToolTip="Time between previous color to this color, in milliseconds" Width="82"/>
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
@@ -114,7 +117,7 @@
                                         </MenuFlyout>
                                     </Button.ContextFlyout>
                                     <Button.Resources>
-                                        <muxc:TeachingTip x:Key="AudioPointEditTeachingTip" IsLightDismissEnabled="True">
+                                        <TeachingTip x:Key="AudioPointEditTeachingTip" IsLightDismissEnabled="True">
                                             <StackPanel>
                                                 <ColorPicker x:Name="ColorPicker" 
                                                  ColorSpectrumShape="Ring" 
@@ -124,7 +127,7 @@
                                                 <TextBlock Text="Minimum Volume" HorizontalAlignment="Center" FontSize="16" Margin="0 4 0 0" />
                                                 <Slider x:Name="Brighness_Slider" Minimum="0" Maximum="100" StepFrequency="1" Value="{x:Bind MinimumAudioPoint, Mode=TwoWay}" />
                                             </StackPanel>
-                                        </muxc:TeachingTip>
+                                        </TeachingTip>
                                     </Button.Resources>
                                 </Button>
                             </DataTemplate>

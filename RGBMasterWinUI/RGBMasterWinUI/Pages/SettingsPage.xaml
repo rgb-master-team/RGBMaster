@@ -7,7 +7,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:RGBMasterWinUI.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:common="using:Common"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -68,7 +68,7 @@
                                 <GridView.ItemTemplate>
                                     <DataTemplate x:DataType="common:ProviderMetadata">
                                         <StackPanel Orientation="Horizontal">
-                                            <Image Source="{x:Bind ProviderIconAssetPath}" Width="35px" Height="35px" ToolTipService.ToolTip="{x:Bind ProviderName}"/>
+                                            <Image Source="{Binding ProviderIconAssetPath}" Width="35px" Height="35px" ToolTipService.ToolTip="{x:Bind ProviderName}"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </GridView.ItemTemplate>

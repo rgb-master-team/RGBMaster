@@ -25,7 +25,22 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.220902.1-preview1" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.194" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <Manifest Include="$(ApplicationManifest)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\AppExecutionManager\AppExecutionManager.csproj" />
+    <ProjectReference Include="..\..\Corsair\Corsair.csproj" />
+    <ProjectReference Include="..\..\EffectsExecution\EffectsExecution.csproj" />
+    <ProjectReference Include="..\..\GameSense\GameSense.csproj" />
+    <ProjectReference Include="..\..\Hue\Hue.csproj" />
+    <ProjectReference Include="..\..\Logitech\Logitech.csproj" />
+    <ProjectReference Include="..\..\MagicHome\MagicHome.csproj" />
+    <ProjectReference Include="..\..\RazerChroma\RazerChroma.csproj" />
+    <ProjectReference Include="..\..\Yeelight\Yeelight.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -9,7 +9,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:state="using:AppExecutionManager.State"
-    xmlns:utils="using:RGBMasterWinUI.Utils"
+    xmlns:utils="using:RGBMasterWinUI.Utils" xmlns:common="using:Common"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 

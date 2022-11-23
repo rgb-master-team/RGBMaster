@@ -1,6 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using AppExecutionManager.EventManagement;
+using AppExecutionManager.State;
+using Common;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -8,12 +11,15 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Utils;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
@@ -25,7 +31,7 @@ namespace RGBMasterWinUI.Pages.EffectsControls
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MusicEffectControl : Page
+    public sealed partial class MusicEffectControl : Page, INotifyPropertyChanged
     {
         private static readonly List<MusicEffectBrightnessModeDescriptor> brightnessModes = new List<MusicEffectBrightnessModeDescriptor>()
         {
@@ -337,7 +343,7 @@ namespace RGBMasterWinUI.Pages.EffectsControls
                 var flyoutStackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
                 flyoutStackPanel.Children.Add(new FontIcon
                 {
-                    FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets"),
+                    FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets"),
                     Glyph = "\uE783",
                     FontSize = 42,
                     Margin = new Thickness(0, 0, 8, 0)
@@ -359,7 +365,7 @@ namespace RGBMasterWinUI.Pages.EffectsControls
                 {
                     Content = flyoutStackPanel,
                     FlyoutPresenterStyle = flyoutPresenterStyle,
-                    Placement = Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Bottom,
+                    Placement = FlyoutPlacementMode.Bottom,
                     XamlRoot = sender.XamlRoot,
                 };
 

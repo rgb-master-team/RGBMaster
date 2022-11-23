@@ -1,6 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using AppExecutionManager.EventManagement;
+using AppExecutionManager.State;
+using Common;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -14,6 +17,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Utils;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
@@ -25,7 +29,7 @@ namespace RGBMasterWinUI.Pages.EffectsControls
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class DominantDisplayColorEffectControl : Page
+    public sealed partial class DominantDisplayColorEffectControl : Page, INotifyPropertyChanged
     {
         private const string RelativeSmoothnessUserSettingKey = "DominantDisplayColorEffectRelativeSmoothness";
         private const string SyncBrightnessByHSLUserSettingKey = "DominantDisplayColorEffectSyncBrightnessByHSL";

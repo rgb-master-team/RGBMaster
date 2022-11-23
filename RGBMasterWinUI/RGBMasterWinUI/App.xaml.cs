@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -35,7 +36,14 @@ namespace RGBMasterWinUI
         /// </summary>
         public App()
         {
+            this.UnhandledException += App_UnhandledException;
+
             this.InitializeComponent();
+        }
+
+        private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+        {
+            Log.Logger.Fatal(e.Exception, "An unhandled exception was thrown.");
         }
 
         /// <summary>

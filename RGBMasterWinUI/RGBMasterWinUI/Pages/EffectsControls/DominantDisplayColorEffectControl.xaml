@@ -9,7 +9,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    Unloaded="Page_Unloaded">
 
     <local:EffectControl EffectMetadata="{x:Bind DominantDisplayColorEffectMd}" ShouldShowResetButton="True" ResetButton_Clicked="EffectControl_ResetButton_Clicked">
         <Grid>
@@ -19,7 +20,7 @@
                     <TextBlock Text="{x:Bind RelativeSmoothness, Mode=OneWay}"/>
                     <TextBlock Text="ms"/>
                 </StackPanel>
-                <muxc:NumberBox x:Name="SmoothnessSlider" Value="{x:Bind RelativeSmoothness, Mode=TwoWay}" Minimum="0" ToolTipService.ToolTip="Time between previous color to this color, in milliseconds" />
+                <NumberBox x:Name="SmoothnessSlider" Value="{x:Bind RelativeSmoothness, Mode=TwoWay}" Minimum="0" ToolTipService.ToolTip="Time between previous color to this color, in milliseconds" />
                 <CheckBox x:Name="HSLCheckBox" Content="Sync brightness by color" ToolTipService.ToolTip="Brightness changes by the output color intensity" IsChecked="{x:Bind SyncBrightnessByHSL, Mode=TwoWay}" />
             </StackPanel>
         </Grid>
