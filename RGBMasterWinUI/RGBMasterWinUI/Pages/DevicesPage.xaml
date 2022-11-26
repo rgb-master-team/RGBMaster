@@ -1,0 +1,199 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. -->
+<!-- Licensed under the MIT License. See LICENSE in the project root for license information. -->
+
+<Page
+    x:Class="RGBMasterWinUI.Pages.DevicesPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:RGBMasterWinUI.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:state="using:AppExecutionManager.State"
+    xmlns:utils="using:RGBMasterWinUI.Utils" xmlns:common="using:Common"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <utils:ConnStatusToProgBarIsActiveConverter x:Key="ConnStatusToProgBarIsActive" />
+        <utils:ConnStatusToProgBarOpacityConverter x:Key="ConnStatusToProgBarOpacity" />
+        <utils:ConnStatusToCheckboxIsEnabledConverter x:Key="ConnStatusToCheckboxIsEnabled" />
+    </Page.Resources>
+    <Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="None">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="DevicesOverview.Visibility" Value="Collapsed" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState x:Name="Compact">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="600" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="DevicesOverview.Visibility" Value="Visible" />
+                    </VisualState.Setters>
+                </VisualState>
+
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0">
+            <Pivot ItemsSource="{x:Bind RegisteredProviders}" x:Name="ProvidersPivot">
+                <Pivot.Title>
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel.Resources>
+                            <Storyboard x:Name="EnterStoryboard">
+                                <FadeInThemeAnimation Storyboard.TargetName="ProvidersProgress"/>
+                            </Storyboard>
+                            <Storyboard x:Name="ExitStoryboard">
+                                <FadeOutThemeAnimation Storyboard.TargetName="ProvidersProgress" BeginTime="0:0:1"/>
+                            </Storyboard>
+                        </StackPanel.Resources>
+                        <TextBlock Text="Devices" HorizontalAlignment="Left" />
+                        <StackPanel x:Name="ProvidersProgress" Visibility="Collapsed" Orientation="Horizontal" Padding="8, 0, 0, 0">
+                            <ProgressBar Width="150" Maximum="100" Value="{x:Bind ProvidersLoadingProgressValue, Mode=OneWay}" Margin="0, 0, 4, 0" />
+                            <TextBlock Text="Initializing" Padding="0, 0, 4, 0"/>
+                            <Image Source="{x:Bind CurrentProcessedProvider.ProviderIconAssetPath, Mode=OneWay}" Margin="0, 0, 4, 0" Width="14px" Height="14px"/>
+                            <TextBlock Text="{x:Bind CurrentProcessedProvider.ProviderName, Mode=OneWay}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Pivot.Title>
+                <Pivot.HeaderTemplate>
+                    <DataTemplate x:DataType="state:RegisteredProvider">
+                        <StackPanel Orientation="Horizontal" ToolTipService.ToolTip="{x:Bind Provider.ProviderFullDescription}">
+                            <Image Source="{x:Bind Provider.ProviderIconAssetPath}" Width="30px" Height="30px" Margin="0 0 4 0"/>
+                            <TextBlock Text="{x:Bind Provider.ProviderName}" Margin="0 0 4 0" />
+                            <TextBlock Text="(" />
+                            <TextBlock Text="{x:Bind Devices.Count}" />
+                            <TextBlock Text=")" />
+                        </StackPanel>
+                    </DataTemplate>
+                </Pivot.HeaderTemplate>
+
+                <Pivot.ItemTemplate>
+                    <DataTemplate x:DataType="state:RegisteredProvider">
+                        <StackPanel HorizontalAlignment="Left" Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal" Margin="0 0 0 12">
+                                <TextBox x:Name="ManualConnectionAddressTxtBx" PlaceholderText="Manually connect via IP address or unique ID" Width="360"/>
+                                <Button x:Name="ManualConnectionButton" Click="ManualConnectionButton_Click" Margin="4 0 0 0" ToolTipService.ToolTip="Connect">
+                                    <Button.Content>
+                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xF0AF;"/>
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <ListView ItemsSource="{x:Bind Devices}" x:Name="listviewname" SelectionMode="None">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate x:DataType="state:DiscoveredDevice">
+                                            <StackPanel Orientation="Horizontal">
+                                                <ProgressRing Margin="0 0 8 0" Opacity="{x:Bind ConnectionStatus, Mode=OneWay, Converter={StaticResource ConnStatusToProgBarOpacity}}" IsActive="{x:Bind ConnectionStatus, Mode=OneWay, Converter={StaticResource ConnStatusToProgBarIsActive}}" Width="24" Height="24" />
+                                                <CheckBox x:Name="DeviceSelectionCheckbox" IsEnabled="{x:Bind ConnectionStatus, Mode=OneWay, Converter={StaticResource ConnStatusToCheckboxIsEnabled}}" IsChecked="{x:Bind IsChecked, Mode=TwoWay}" Tag="{x:Bind}" Click="CheckBox_Click">
+                                                    <CheckBox.Resources>
+                                                        <TeachingTip x:Name="TeachingTip_SetName" Title="Set Custom Name" Subtitle="Set a custom name for this device" ActionButtonContent="Save" CloseButtonContent="Cancel" Target="{Binding Change_Device_Name_Button}" IsLightDismissEnabled="True">
+                                                            <TeachingTip.IconSource>
+                                                                <SymbolIconSource Symbol="Edit" />
+                                                            </TeachingTip.IconSource>
+                                                            <TextBox PlaceholderText="Enter custom name" x:Name="Custom_Name_TextBox"/>
+                                                        </TeachingTip>
+                                                    </CheckBox.Resources>
+                                                    <CheckBox.Content>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Image Source="{x:Bind Device.DeviceIconAssetPath}" Width="24px" Height="24px" Margin="0 0 4 0"/>
+                                                            <TextBlock Text="{x:Bind Device.DeviceName}" />
+                                                        </StackPanel>
+                                                    </CheckBox.Content>
+                                                    <CheckBox.ContextFlyout>
+                                                        <MenuFlyout>
+                                                            <MenuFlyoutItem x:Name="TurnOnDeviceContextItem" Click="TurnOnDeviceContextItem_Click" Text="Turn On" IsEnabled="{x:Bind Device.IsOperationSupported(common:OperationType.TurnOn)}">
+                                                                <MenuFlyoutItem.Icon>
+                                                                    <FontIcon Glyph="&#xE7E8;" Foreground="Green" />
+                                                                </MenuFlyoutItem.Icon>
+                                                            </MenuFlyoutItem>
+                                                            <MenuFlyoutItem x:Name="TurnOffDeviceContextItem" Click="TurnOffDeviceContextItem_Click" Text="Turn Off" IsEnabled="{x:Bind Device.IsOperationSupported(common:OperationType.TurnOff)}">
+                                                                <MenuFlyoutItem.Icon>
+                                                                    <FontIcon Glyph="&#xE7E8;" Foreground="Red"/>
+                                                                </MenuFlyoutItem.Icon>
+                                                            </MenuFlyoutItem>
+                                                            <MenuFlyoutItem Text="Set Color" IsEnabled="{x:Bind Device.IsOperationSupported(common:OperationType.TurnOn)}">
+                                                                <MenuFlyoutItem.Icon>
+                                                                    <FontIcon Glyph="&#xE790;" />
+                                                                </MenuFlyoutItem.Icon>
+                                                            </MenuFlyoutItem>
+                                                            <MenuFlyoutSeparator />
+                                                            <MenuFlyoutItem x:Name="SetNameContextItem" Click="SetNameContextItem_Click" Text="Set Custom Name" IsEnabled="{x:Bind Device.IsOperationSupported(common:OperationType.TurnOn)}">
+                                                                <MenuFlyoutItem.Icon>
+                                                                    <FontIcon Glyph="&#xE8AC;" />
+                                                                </MenuFlyoutItem.Icon>
+                                                            </MenuFlyoutItem>
+                                                            <MenuFlyoutSeparator />
+                                                            <MenuFlyoutItem Text="Properties" Click="DevicePropertiesContextItem" IsEnabled="{x:Bind Device.IsOperationSupported(common:OperationType.TurnOn)}">
+                                                                <MenuFlyoutItem.Icon>
+                                                                    <FontIcon Glyph="&#xE946;" />
+                                                                </MenuFlyoutItem.Icon>
+                                                            </MenuFlyoutItem>
+                                                        </MenuFlyout>
+                                                    </CheckBox.ContextFlyout>
+                                                </CheckBox>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+
+                </Pivot.ItemTemplate>
+            </Pivot>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Margin="0 64 0 0" Orientation="Vertical" x:Name="DevicesOverview" >
+            <StackPanel Margin="0 0 0 16">
+                <TextBlock FontWeight="Bold" FontSize="18" Text="Devices Overview" HorizontalAlignment="Center"/>
+                <RichTextBlockOverflow x:Name="DevicesOverviewDescription" />
+                <RichTextBlock OverflowContentTarget="{x:Bind DevicesOverviewDescription}">
+                    <Paragraph>
+                        Watch and control discovered and connected devices...
+                    </Paragraph>
+                </RichTextBlock>
+            </StackPanel>
+            <StackPanel Margin="0 0 0 16">
+                <Button x:Name="Refresh_Devices_Button" Click="Refresh_Button_Clicked" ToolTipService.ToolTip="Refresh Devices" Background="Transparent">
+                    <StackPanel Orientation="Horizontal">
+                        <FontIcon x:Name="OuterButton" Glyph="&#xE72C;" FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="16" Foreground="Orange"/>
+                        <TextBlock Text="Refresh devices" Margin="4 0 0 0" />
+                    </StackPanel>
+                    <Button.Resources>
+                        <TeachingTip x:Name="TeachingTip_RefreshDevices" Title="Refresh devices?" Subtitle="Refreshing the devices will disconnect all connected devices." ActionButtonClick="TeachingTip_RefreshDevices_ActionButtonClick" ActionButtonContent="Refresh" CloseButtonContent="Cancel" Target="{x:Bind Refresh_Devices_Button}">
+                            <TeachingTip.IconSource>
+                                <SymbolIconSource Symbol="Refresh" Foreground="Orange" />
+                            </TeachingTip.IconSource>
+                        </TeachingTip>
+                    </Button.Resources>
+                </Button>
+            </StackPanel>
+            <StackPanel>
+                <TextBlock Text="Discovered devices" FontWeight="Bold" />
+                <ListView x:Name="ChosenDevicesListView" Loaded="ListView_Loaded" ItemsSource="{x:Bind RegisteredProviders}" SelectionMode="None" IsItemClickEnabled="False">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="state:RegisteredProvider">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{x:Bind Provider.ProviderName}" />
+                                <TextBlock Text=":" Margin="0 0 4 0" />
+                                <TextBlock Text="{x:Bind Devices.Count}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>

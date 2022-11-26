@@ -1,0 +1,82 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. -->
+<!-- Licensed under the MIT License. See LICENSE in the project root for license information. -->
+
+<Page
+    x:Class="RGBMasterWinUI.Pages.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:RGBMasterWinUI.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:common="using:Common"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <StackPanel Orientation="Vertical">
+        <CommandBar OverflowButtonVisibility="Collapsed">
+            <AppBarButton x:Name="ResetButtonClicked" Width="80" Icon="Refresh" Label="Reset settings" Click="ResetButtonClicked_Click"/>
+        </CommandBar>
+        <Pivot Title="Settings">
+            <PivotItem Header="General" >
+                <StackPanel Spacing="30">
+                    <StackPanel HorizontalAlignment="Left" Spacing="10">
+                        <TextBlock  Style="{StaticResource SubtitleTextBlockStyle}"  Text="Device power toggle"/>
+                        <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="When enabled, each device that you check in the Devices page will turn on once checked and off when unchecked." TextWrapping="Wrap" Width="500"></TextBlock>
+                        <ToggleSwitch x:Name="TurnOnDeviceEnabler" IsOn="{x:Bind ToggleDeviceOnCheckUser, Mode=OneWay}" Toggled="TurnOnDeviceEnabler_Toggled" />
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Left" Spacing="10">
+                        <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Theme Select" />
+                        <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="Toggle between dark mode and light mode theme"/>
+                        <ToggleSwitch x:Name="LightOrDarkToggleSwitch" IsEnabled="False" IsOn="{x:Bind IsDarkMode, Mode=OneWay}" OffContent="Light Mode" OnContent="Dark Mode" Toggled="LightOrDarkToggleSwitch_Toggled" />
+                        <TextBlock Text="Due to Xaml Islands constraints, the theme cannot be changed. Will be supported in a later version." />
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Left" Spacing="10">
+                        <TextBlock Style="{StaticResource SubtitleTextBlockStyle}"  Text="Application Files" />
+                        <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="Choose where to save the application files"/>
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <TextBox Header="Log file" IsReadOnly="True" PlaceholderText="Bind log file path" Text="{x:Bind LogPath, Mode=OneWay}" Width="250"/>
+                            <Button Name="BrowseLogPath" IsEnabled="False" Content="Browse" VerticalAlignment="Bottom" Click="BrowseLogPath_Click"/>
+                        </StackPanel>
+                        <TextBlock Text="Due to Xaml Islands constraints, the log path cannot be changed. Will be supported in a later version." />
+                    </StackPanel>
+                </StackPanel>
+            </PivotItem>
+            <PivotItem Header="About">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Spacing="20">
+                    <StackPanel HorizontalAlignment="Center">
+                        <Image Source="/Assets/128.png" Width="50px" Height="50px" />
+                        <TextBlock Text="RGB Master" Style="{StaticResource SubheaderTextBlockStyle}" HorizontalAlignment="Center" FontWeight="Bold" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" HorizontalAlignment="Center" Text="Version: " />
+                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" HorizontalAlignment="Center" Text="{x:Bind AppVersion}" />
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="Check us out!" Style="{StaticResource TitleTextBlockStyle}" FontSize="16" Margin="0 0 0 4" HorizontalAlignment="Center"/>
+                        <StackPanel HorizontalAlignment="Center">
+                            <Button Click="GitHub_Button_Click" Height="30px" Width="80px" Margin="0 0 0 8">
+                                <Image Source="/Assets/Logos/GitHubLogo.png" Height="20px" Width="60px" />
+                            </Button>
+                            <Button Click="Discord_Button_Click" Height="30px" Width="80px">
+                                <Image Source="/Assets/Logos/DiscordLogo.png" Height="30px" Width="60px" Margin="0 0 4 0" />
+                            </Button>
+                        </StackPanel>
+                        <StackPanel HorizontalAlignment="Center" Orientation="Vertical" VerticalAlignment="Bottom" Margin="0 40 0 0">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="Works With" FontWeight="Bold"/>
+                            </StackPanel>
+                            <GridView ItemsSource="{x:Bind SupportedProviders}" SelectionMode="None" IsItemClickEnabled="True" ItemClick="GridView_ItemClick">
+                                <GridView.ItemTemplate>
+                                    <DataTemplate x:DataType="common:ProviderMetadata">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="{Binding ProviderIconAssetPath}" Width="35px" Height="35px" ToolTipService.ToolTip="{x:Bind ProviderName}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GridView.ItemTemplate>
+                            </GridView>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </PivotItem>
+        </Pivot>
+    </StackPanel>
+</Page>
