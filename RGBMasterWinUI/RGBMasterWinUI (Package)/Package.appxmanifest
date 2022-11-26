@@ -8,8 +8,8 @@
 
   <Identity
     Name="1c8d729a-8b5f-4eac-9097-cc53064eac9a"
-    Publisher="CN=Lochness Monster"
-    Version="1.0.0.0" />
+    Publisher="CN=rgbmaster"
+    Version="2.6.0.0" />
 
   <Properties>
     <DisplayName>RGBMasterWinUI (Package)</DisplayName>
