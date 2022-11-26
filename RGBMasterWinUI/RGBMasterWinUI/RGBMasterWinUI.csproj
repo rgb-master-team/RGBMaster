@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
@@ -19,7 +19,6 @@
     <None Remove="Pages\EffectsControls\StaticColorEffectControl.xaml" />
     <None Remove="Pages\EffectsPage.xaml" />
     <None Remove="Pages\SettingsPage.xaml" />
-    <None Remove="RGBMasterUserControl.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -81,12 +80,6 @@
 
   <ItemGroup>
     <Page Update="Pages\EffectsPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Page Update="RGBMasterUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

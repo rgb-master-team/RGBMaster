@@ -32,6 +32,7 @@ using Serilog;
 using Serilog.Exceptions;
 using Windows.ApplicationModel;
 using NAudio.CoreAudioApi;
+using RGBMasterWinUI.Pages;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -55,7 +56,53 @@ namespace RGBMasterWinUI
         private readonly Dictionary<Guid, EffectExecutor> supportedEffectsExecutors = new Dictionary<Guid, EffectExecutor>();
         private readonly Dictionary<Guid, Device> concreteDevices = new Dictionary<Guid, Device>();
 
-        private RGBMasterUserControl MainUserControl;
+        public string CurrentEffectName
+        {
+            get
+            {
+                return AppState.Instance.ActiveEffect?.EffectName;
+            }
+        }
+
+        private void MainAppContentFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
+        {
+
+        }
+
+        private void NavigationView_Loaded(object sender, RoutedEventArgs e)
+        {
+            MainNavigationView.SelectedItem = MainNavigationView.MenuItems[0];
+        }
+
+        private readonly Dictionary<string, Type> pageToType = new Dictionary<string, Type>()
+                {
+                    { nameof(DevicesPage), typeof(DevicesPage) },
+                    { nameof(EffectsPage), typeof(EffectsPage) },
+                    { nameof(SettingsPage), typeof(SettingsPage) }
+                };
+
+        private SemaphoreSlim startAndStopSemaphore = new SemaphoreSlim(1, 1);
+
+        private void MainNavigationView_SelectionChanged(Microsoft.UI.Xaml.Controls.NavigationView sender, Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs args)
+        {
+            string selectionTag;
+
+            if (args.IsSettingsSelected == true)
+            {
+                selectionTag = "SettingsPage";
+            }
+            else
+            {
+                selectionTag = (string)args.SelectedItemContainer.Tag;
+            }
+
+            var navigationResult = MainAppContentFrame.Navigate(pageToType[selectionTag], null, args.RecommendedNavigationTransitionInfo);
+        }
+
+        private void ContainerGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            EventManager.Instance.InitializeProviders();
+        }
 
         public MainWindow()
         {
@@ -504,17 +551,17 @@ namespace RGBMasterWinUI
 
             var flyoutPresenterStyle = new Style(typeof(FlyoutPresenter));
 
-            flyoutPresenterStyle.Setters.Add(new Setter(FrameworkElement.MaxWidthProperty, MainUserControl.Width));
+            flyoutPresenterStyle.Setters.Add(new Setter(FrameworkElement.MaxWidthProperty, ContainerGrid.Width));
 
             var flyout = new Flyout()
             {
                 Content = flyoutContentStackPanel,
                 FlyoutPresenterStyle = flyoutPresenterStyle,
                 Placement = FlyoutPlacementMode.Bottom,
-                XamlRoot = MainUserControl.XamlRoot
+                XamlRoot = ContainerGrid.XamlRoot
             };
 
-            flyout.ShowAt(MainUserControl);
+            flyout.ShowAt(ContainerGrid);
         }
 
         private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
