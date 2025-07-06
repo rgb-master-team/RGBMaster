@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -43,7 +43,7 @@ namespace GameSense.API
             var bodyJson = JsonConvert.SerializeObject(gameSenseGameMetadata, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore });
             restRequest.AddParameter(null, bodyJson, ParameterType.RequestBody);
 
-            var restResponse = await gameSenseRestClient.ExecutePostAsync(restRequest, cancellationToken).ConfigureAwait(false);
+            RestResponse restResponse = await gameSenseRestClient.ExecutePostAsync(restRequest, cancellationToken).ConfigureAwait(false);
 
             if (!restResponse.IsSuccessful)
             {
@@ -60,7 +60,7 @@ namespace GameSense.API
 
             restRequest.AddParameter(null, bodyJson, ParameterType.RequestBody);
 
-            var restResponse = await gameSenseRestClient.ExecutePostAsync(restRequest).ConfigureAwait(false);
+            RestResponse restResponse = await gameSenseRestClient.ExecutePostAsync(restRequest).ConfigureAwait(false);
             if (!restResponse.IsSuccessful)
             
             {
@@ -77,7 +77,7 @@ namespace GameSense.API
 
             restRequest.AddParameter(null, bodyJson, ParameterType.RequestBody);
 
-            var restResponse = await gameSenseRestClient.ExecutePostAsync(restRequest).ConfigureAwait(false);
+            RestResponse restResponse = await gameSenseRestClient.ExecutePostAsync(restRequest).ConfigureAwait(false);
 
             if (!restResponse.IsSuccessful)
             {
@@ -94,7 +94,7 @@ namespace GameSense.API
 
             restRequest.AddParameter(null, bodyJson, ParameterType.RequestBody);
 
-            var restResponse = await gameSenseRestClient.ExecutePostAsync(restRequest).ConfigureAwait(false);
+            RestResponse restResponse = await gameSenseRestClient.ExecutePostAsync(restRequest).ConfigureAwait(false);
 
             if (!restResponse.IsSuccessful)
             {
@@ -111,7 +111,7 @@ namespace GameSense.API
 
             restRequest.AddParameter(null, bodyJson, ParameterType.RequestBody);
 
-            var restResponse = await gameSenseRestClient.ExecutePostAsync(restRequest, cancellationToken).ConfigureAwait(false);
+            RestResponse restResponse = await gameSenseRestClient.ExecutePostAsync(restRequest, cancellationToken).ConfigureAwait(false);
 
             if (!restResponse.IsSuccessful)
             {
@@ -128,7 +128,7 @@ namespace GameSense.API
 
             restRequest.AddParameter(null, bodyJson, ParameterType.RequestBody);
 
-            var restResponse = await gameSenseRestClient.ExecutePostAsync(restRequest, cancellationToken).ConfigureAwait(false);
+            RestResponse restResponse = await gameSenseRestClient.ExecutePostAsync(restRequest, cancellationToken).ConfigureAwait(false);
 
             if (!restResponse.IsSuccessful)
             {

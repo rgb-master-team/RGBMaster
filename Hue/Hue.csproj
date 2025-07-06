@@ -1,17 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Q42.HueApi" Version="3.15.7" />
-    <PackageReference Include="Q42.HueApi.ColorConverters" Version="3.14.0" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Provider\Provider.csproj" />
   </ItemGroup>
-
+  <ItemGroup>
+    <PackageReference Include="Q42.HueApi.ColorConverters" Version="3.23.2" />
+    <PackageReference Include="Q42.HueApi" Version="3.23.1" />
+  </ItemGroup>
 </Project>
