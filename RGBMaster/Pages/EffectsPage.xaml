@@ -14,7 +14,7 @@
                     <DataTemplate x:DataType="common:EffectMetadata">
                         <StackPanel Orientation="Horizontal" Padding="8">
                             <TextBlock Text="{x:Bind EffectName}" FontSize="16" VerticalAlignment="Center"/>
-                            <TextBlock Text="{x:Bind EffectDescription}" Margin="12,0,0,0" Opacity="0.7" VerticalAlignment="Center"/>
+                            <TextBlock Text="{x:Bind ShortDescription}" Margin="12,0,0,0" Opacity="0.7" VerticalAlignment="Center"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>

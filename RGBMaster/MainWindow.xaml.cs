@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Navigation;
 using AppExecutionManager.State;
 using System;
 using System.ComponentModel;
+using RGBMaster.Pages;
 
 namespace RGBMaster;
 
