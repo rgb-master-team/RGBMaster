@@ -1,4 +1,4 @@
-﻿using AppExecutionManager.State;
+using AppExecutionManager.State;
 using Common;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
@@ -47,9 +47,9 @@ namespace EffectsExecution
             }
             else if (musicEffectMetadataProperties.CaptureDevice.FlowType == AudioCaptureDeviceFlowType.Input)
             {
-                for (int i = 0; i < WaveIn.DeviceCount; i++)
+                for (int i = 0; i < WaveInEvent.DeviceCount; i++)
                 {
-                    var capabilities = WaveIn.GetCapabilities(i);
+                    var capabilities = WaveInEvent.GetCapabilities(i);
 
                     // HACK - This hack was made since when working on capturing input devices
                     // using NAudio's wrappers for windows APIs we seek a WaveIn device.
@@ -61,7 +61,7 @@ namespace EffectsExecution
                     // So we make this comparison.
                     if (nAudioDevice.FriendlyName.StartsWith(capabilities.ProductName))
                     {
-                        captureInstance = new WaveIn()
+                        captureInstance = new WaveInEvent()
                         {
                             DeviceNumber = i
                         };

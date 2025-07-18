@@ -1,18 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="RateLimiter" Version="2.2.0" />
-    <PackageReference Include="YeelightAPI" Version="1.7.0" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Provider\Provider.csproj" />
     <ProjectReference Include="..\Utils\Utils.csproj" />
   </ItemGroup>
-
+  <ItemGroup>
+    <PackageReference Include="RateLimiter" Version="2.2.0" />
+    <PackageReference Include="YeelightAPI" Version="1.10.2" />
+  </ItemGroup>
 </Project>

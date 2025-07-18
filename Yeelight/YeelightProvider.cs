@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using Provider;
 using System;
 using System.Collections.Generic;
@@ -19,7 +19,7 @@ namespace Yeelight
 
         protected override async Task<List<Provider.Device>> InternalDiscover(CancellationToken cancellationToken = default)
         {
-            var yeelightInternalDevices = await DeviceLocator.Discover();
+            var yeelightInternalDevices = await DeviceLocator.DiscoverAsync();
 
             return yeelightInternalDevices.Select(device => new YeelightDevice(ProviderMetadata.ProviderGuid, device)).ToList<Provider.Device>();
         }
